@@ -1,0 +1,30 @@
+* the pair-cell (polytope-cell) layer: pair-distance splits with persisted pair bounds, multiplier and Farkas leaves,
+  the minorant leaf proved once for every term list, the per-gap root cover (AMW.PCellCore, PCellGen, PCellLeaf,
+  PCellRoot, PCellT1): bridge-port, on the lead's polytope-cell design;
+* the slot lemmas, the box-sum write (`mat_gen`) and the Z8 zero-order tangent extension with its fast path
+  (AMW.PCellTZ, PCellZ, PCellLeafZ: `mat_gen`, `tangent_valZ`, `zsideF`, `mcheckGZ_sound`): bridge-port, to
+  mvt-engine's specification TZ.md / tz.py;
+* the exact-closure sizing of the eight-point walk with the Z8 lever, the certificate data and its independent
+  replay: mvt-engine;
+* the exact closure of the pair-cell constraint graph and its split lemmas (AMW.PCellClose: `cupd`, `cupd_ok`,
+  `cov_gmidC`, `cov_rmidC`): mvt-engine (TZ.md §5);
+* the closure splits at an arbitrary cut and the region-boundary cut (AMW.PCellCloseB: `cov_gsplitQ`, `cov_ssplitQ`,
+  `bcutL`, `qB`, `qBr`): mvt-engine (TZ.md §5);
+* the region-boundary split candidates (BSPLIT: a split may cut at the convex-region boundary nearest the midpoint,
+  ≥ 64 inside the range, with one mode bit per split): designed by the lead (size8pzb); in the closure sizing
+  (size8pz, BSPLIT=1): mvt-engine;
+* the derivative-read fast path (AMW.PCDF, AMW.PCDZ: cache-shared derivative and pyramid reads `lbDrF`, `lbF` with
+  `lbDrF_eq`, `lbF_eq`, `mvKF_eq`; coarse-first tangent sides `tcheckZC`, `tangent_valZC`, `mokTZC`, `mtermTZC`; the
+  leaf chain for any term check `mcheckGX`, `mcheckGX_sound`): bridge-port;
+* the instance module (AMW.PC8C5BFInst): bridge-port's instance layer (amg/genpcell4.py), with the closure splits,
+  the boundary-split mode and the closure walk by mvt-engine (eight/am8/genpcellC.py, CLOSE=1 LETC=1 BSPLIT=1 DFAST=3); the
+  data module (AMW.PC8C5BFData, unchunked): mvt-engine (eight/am8/make8pcC.py, the closure variant of bridge-port's
+  amg/make8pc.py), from the closure + BSPLIT sizing DATA_try2cb_0.00005.json (bench/eight/am8);
+* the pyramid lower-bound table: adapted from five-point-pyramid-2 by typh (Apache-2.0);
+* the edge-window certificates (AMW.PCE5Inst/PCE5Data, list-evaluated, and AMW.PCE6HInst/PCE6HData, hybrid: generic
+  closure split with unrolled leaves; the prefix truncations of W8 to 5 and 6 gaps, certified over the whole
+  nonnegative orthant, sharing PC8C5BFData's tables), their sizing and data: mvt-engine; the no-reflection pair-cell
+  layer (AMW.PCellNoRefl): mvt-engine, adapted from bridge-port's `mcheckGX_sound` and root cover;
+* the edge-window chain (AMW.BrEdge, AMW.BrEdgeChain: `window_pairs_edge_le_band`, `block_energy_band_edge`,
+  `offset_average_edge`, `Phi_g_edge`, `Phi_g_edge_ge_sqrt`, `am_dyadic_n_edge`): bridge-port; the edge-window design
+  and floors: window-scope;

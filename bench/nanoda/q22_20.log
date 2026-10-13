@@ -1,0 +1,43 @@
+[stage] waiting 21:36:18
+[stage] waiting 21:36:49
+== Cand22P export
+export exit 0
+       38.10 real        25.51 user        10.65 sys
+          1570852376  peak memory footprint
+export bytes 632310547
+== Cand22P nanoda
+nanoda exit 0
+      211.23 real       203.74 user         7.16 sys
+          4382117608  peak memory footprint
+== Cand22P lean replay (full closure)
+parse_ms 14776 constants 73461
+replay_ms 306071 OK
+replayx exit 0
+      321.01 real       319.31 user         1.31 sys
+          1058211064  peak memory footprint
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      399.24 real       384.96 user        12.71 sys
+          3077559224  peak memory footprint
+BUILD EXIT 0
+module constants: 2853; imports: 10
+kernel replay of 2853 constants: 279405 ms
+      295.93 real       275.74 user        16.39 sys
+          3029136792  peak memory footprint
+REPLAY EXIT 0
+== Cand20Pr export
+export exit 0
+       35.52 real        24.66 user         9.64 sys
+          1566658048  peak memory footprint
+export bytes 631877837
+== Cand20Pr nanoda
+nanoda exit 0
+      246.20 real       237.66 user         8.39 sys
+          3634236608  peak memory footprint
+== Cand20Pr lean replay (full closure)
+parse_ms 14745 constants 73177
+replay_ms 364150 OK
+replayx exit 0
+      379.07 real       375.67 user         2.84 sys
+          1245889952  peak memory footprint

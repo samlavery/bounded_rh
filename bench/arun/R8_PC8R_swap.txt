@@ -1,0 +1,2 @@
+/Users/samuellavery/work/riemann-submission/bench/arun/R8_PC8R_swap.lean: 1724342 B; NAME PC8R; B = 406753/100000000, c = 808720/100000000; κ = 8351261/12398910 = 0.6735479974 (+1.923e-07); code κ literals replaced: 3
+spec: candidate 8351261 12398910, record 66812491 99194876

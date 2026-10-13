@@ -1,0 +1,13 @@
+[private_check] waiting 09:42:54
+[private_check] waiting 09:43:24
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      363.54 real       346.40 user        17.35 sys
+          5641231088  peak memory footprint
+BUILD EXIT 0
+module constants: 4343; imports: 18
+kernel replay of 4343 constants: 198215 ms
+      215.04 real       195.55 user        16.63 sys
+          5076679456  peak memory footprint
+REPLAY EXIT 0

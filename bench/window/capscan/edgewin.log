@@ -1,0 +1,17 @@
+R k=1: floor c_t 0.0003075  restricted pressure B_t 0.0002890  (kappa*c_t - B_t = -8.19e-05)  at [1.063]
+R k=2: floor c_t 0.0009169  restricted pressure B_t 0.0008617  (kappa*c_t - B_t = -2.44e-04)  at [1.063 1.063]
+R k=3: floor c_t 0.0021055  restricted pressure B_t 0.0016170  (kappa*c_t - B_t = -1.99e-04)  at [1.052 1.049 1.052]
+R k=4: floor c_t 0.0037199  restricted pressure B_t 0.0024265  (kappa*c_t - B_t = +7.87e-05)  at [1.045 1.041 1.036 1.043]
+R k=5: floor c_t 0.0055279  restricted pressure B_t 0.0031818  (kappa*c_t - B_t = +5.41e-04)  at [1.047 1.046 1.974 1.039 1.041]
+R k=6: floor c_t 0.0071449  restricted pressure B_t 0.0037545  (kappa*c_t - B_t = +1.06e-03)  at [1.043 1.977 1.045 1.969 1.039 1.039]
+L k=1: floor c_t 0.0003075  restricted pressure B_t 0.0002890  (kappa*c_t - B_t = -8.19e-05)  at [1.063]
+L k=2: floor c_t 0.0009169  restricted pressure B_t 0.0008617  (kappa*c_t - B_t = -2.44e-04)  at [1.063 1.063]
+L k=3: floor c_t 0.0021055  restricted pressure B_t 0.0016170  (kappa*c_t - B_t = -1.99e-04)  at [1.052 1.049 1.052]
+L k=4: floor c_t 0.0037199  restricted pressure B_t 0.0024265  (kappa*c_t - B_t = +7.87e-05)  at [1.043 1.036 1.041 1.045]
+L k=5: floor c_t 0.0055279  restricted pressure B_t 0.0031818  (kappa*c_t - B_t = +5.41e-04)  at [1.041 1.039 1.974 1.046 1.047]
+L k=6: floor c_t 0.0071449  restricted pressure B_t 0.0037545  (kappa*c_t - B_t = +1.06e-03)  at [1.039 1.039 1.969 1.045 1.977 1.043]
+
+PC8SF kappa 0.6734832 (H 0.6721684106)
+all 12 edge windows: sum c_t 0.039445, sum B_t 0.024261 -> kappa 0.6734952 (gain +1.20e-05)
+profitable subset (6 windows): kappa 0.6735029 (gain +1.97e-05)
+gain at other m (profitable subset vs PC8SF formula at the same m): best +2.60e-05 at m 130

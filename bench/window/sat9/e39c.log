@@ -1,0 +1,8 @@
+P=256 flat maxiter  3000: LP   +958.6860 | proj-grad norm 1.55e+03 | nit 3000
+P=256 flat maxiter 10000: LP   +918.7965 | proj-grad norm 5.69e+02 | nit 10000
+P=256 arch maxiter  3000: LP   +938.6941 | proj-grad norm 1.50e+03 | nit 3000
+P=256 arch maxiter 10000: LP   +921.4927 | proj-grad norm 7.07e+02 | nit 10000
+P=512 flat maxiter  3000: LP  +1141.9423 | proj-grad norm 1.08e+03 | nit 3000
+P=512 flat maxiter 10000: LP   +910.9508 | proj-grad norm 6.32e+02 | nit 10000
+P=512 arch maxiter  3000: LP  +1128.0052 | proj-grad norm 3.37e+03 | nit 3000
+P=512 arch maxiter 10000: LP   +975.8124 | proj-grad norm 4.20e+03 | nit 10000

@@ -1,0 +1,80 @@
+1791667652 import took 25.8s
+1791668248 .olean serialization took 5.41s
+1791668248 type checking took 884ms
+1791668248 type checking took 813ms
+1791668248 type checking took 857ms
+1791668248 type checking took 810ms
+1791668248 type checking took 783ms
+1791668248 type checking took 755ms
+1791668248 type checking took 743ms
+1791668248 type checking took 676ms
+1791668248 type checking took 728ms
+1791668248 type checking took 706ms
+1791668248 type checking took 669ms
+1791668248 type checking took 743ms
+1791668248 type checking took 664ms
+1791668248 type checking took 623ms
+1791668248 type checking took 594ms
+1791668248 type checking took 507ms
+1791668248 type checking took 1.47s
+1791668248 elaboration took 210ms
+1791668248 type checking took 8.35s
+1791668248 elaboration took 920ms
+1791668248 type checking took 16.2s
+1791668248 elaboration took 5.51s
+1791668248 type checking took 40.6s
+1791668248 elaboration took 7.84s
+1791668248 type checking took 32.2s
+1791668248 elaboration took 25.1s
+1791668248 type checking took 41.6s
+1791668248 elaboration took 16.1s
+1791668248 type checking took 52.3s
+1791668248 elaboration took 5.97s
+1791668248 type checking took 27.8s
+1791668248 elaboration took 321ms
+1791668248 type checking took 10.1s
+1791668248 elaboration took 935ms
+1791668248 type checking took 15.4s
+1791668248 elaboration took 29s
+1791668248 type checking took 33.2s
+1791668248 elaboration took 30.8s
+1791668248 type checking took 54.3s
+1791668248 elaboration took 1.12s
+1791668248 type checking took 19s
+1791668248 elaboration took 4.77s
+1791668248 type checking took 25s
+1791668248 elaboration took 1.21s
+1791668248 type checking took 19.2s
+1791668248 elaboration took 330ms
+1791668248 type checking took 10.8s
+1791668248 elaboration took 641ms
+1791668248 type checking took 14.4s
+1791668248 interpretation of Mathlib.Tactic.RingNF._aux_Mathlib_Tactic_Ring_RingNF___elabRules_Mathlib_Tactic_RingNF_ringNF_1._boxed took 429ms
+1791668248 cumulative profiling times:
+1791668248 	.olean serialization 5.41s
+1791668248 	attribute application 7.03ms
+1791668248 	compilation (IR) 55.7ms
+1791668248 	compilation (LCNF base) 412ms
+1791668248 	compilation (LCNF impure) 272ms
+1791668248 	compilation (LCNF mono) 402ms
+1791668248 	congr simp thm 1.95ms
+1791668248 	elaboration 134s
+1791668248 	fix level params 9.41ms
+1791668248 	import 25.8s
+1791668248 	initialization 24.5ms
+1791668248 	instantiate metavars 10.1ms
+1791668248 	interpretation 6.45s
+1791668248 	let-to-have transformation 14.4ms
+1791668248 	linting 256ms
+1791668248 	module linting 0.000542ms
+1791668248 	norm_num 16.7ms
+1791668248 	overlappingInstancesLinter 152ms
+1791668248 	parsing 314ms
+1791668248 	process pre-definitions 690ms
+1791668248 	ring 9.4ms
+1791668248 	share common exprs 63.5ms
+1791668248 	simp 114ms
+1791668248 	tactic execution 802ms
+1791668248 	tacticAnalysis 664ms
+1791668248 	type checking 446s
+1791668248 	typeclass inference 825ms

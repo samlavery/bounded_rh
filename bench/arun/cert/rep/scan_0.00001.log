@@ -1,0 +1,36 @@
+== S sizing delta=0.00001 Sat Oct 10 10:31:32 PDT 2026
+delta=1e-05 cN=805156 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0): 126 leaves (21s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 51 leaves (29s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 139 leaves (52s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 92 leaves (67s)
+  ... 5000 leaves (Z 0, M 4579, empty 0, refl 421) nodes 5061 LP 20471 (209s)
+  ... 10000 leaves (Z 0, M 9481, empty 0, refl 519) nodes 10063 LP 40348 (312s)
+  ... 15000 leaves (Z 0, M 14422, empty 0, refl 578) nodes 15063 LP 60566 (403s)
+  ... 20000 leaves (Z 0, M 19378, empty 0, refl 622) nodes 20059 LP 81625 (502s)
+  ... 25000 leaves (Z 0, M 24244, empty 0, refl 756) nodes 25062 LP 102616 (607s)
+  ... 30000 leaves (Z 0, M 29240, empty 0, refl 760) nodes 30059 LP 124555 (705s)
+  ... 35000 leaves (Z 0, M 34239, empty 0, refl 761) nodes 35058 LP 146900 (803s)
+  ... 40000 leaves (Z 0, M 39168, empty 0, refl 832) nodes 40057 LP 169904 (918s)
+  ... 45000 leaves (Z 0, M 43643, empty 0, refl 1357) nodes 45058 LP 191100 (1044s)
+  ... 50000 leaves (Z 0, M 48242, empty 0, refl 1758) nodes 50063 LP 214090 (1170s)
+time: command terminated abnormally
+     1224.02 real      1215.58 user         3.97 sys
+          1677541376  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              278650  page reclaims
+                  73  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 203  voluntary context switches
+              237526  involuntary context switches
+      17072019011219  instructions retired
+       3988120434408  cycles elapsed
+          1851819832  peak memory footprint
+./rep_pc8c5bf.sh: line 27: 40403 Terminated: 15          SAVE=$R/dump_$TAG.pkl /usr/bin/time -l nice -n 5 python3 $A8/run8pz.py $B/window/rwin8.json $D 2>&1

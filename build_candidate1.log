@@ -1,0 +1,538 @@
+⚠ [8704/8839] Replayed Zeta23.ZeroSide.RankTraceMult
+warning: Zeta23/ZeroSide/RankTraceMult.lean:49:32: Variable name `ht0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Zeta23/ZeroSide/RankTraceMult.lean:49:60: Variable name `hx` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hx
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Zeta23/ZeroSide/RankTraceMult.lean:56:30: Variable name `hc` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hc
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Zeta23/ZeroSide/RankTraceMult.lean:56:43: Variable name `hx` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hx
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Zeta23/ZeroSide/RankTraceMult.lean:81:32: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Zeta23/ZeroSide/RankTraceMult.lean:81:58: Variable name `hc` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hc
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Zeta23/ZeroSide/RankTraceMult.lean:164:20: This simp argument is unused:
+  Matrix.mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Zeta23/ZeroSide/RankTraceMult.lean:359:28: Variable name `hc` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hc
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [8708/8839] Replayed Zeta23.Statement
+warning: Zeta23/Statement.lean:148:30: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8709/8839] Replayed Zeta23.Statement.Seam
+warning: Zeta23/Statement/Seam.lean:59:13: `ENat.toNat_coe` has been deprecated: Use `ENat.toNat_natCast` instead
+⚠ [8713/8839] Replayed Zeta23.Assembly
+warning: Zeta23/Assembly.lean:885:47: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/Assembly.lean:958:34: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/Assembly.lean:962:90: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8715/8839] Replayed Zeta23.ZetaReflect
+warning: Zeta23/ZetaReflect.lean:91:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8725/8839] Replayed Zeta23.Tail
+warning: Zeta23/Tail.lean:290:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/Tail.lean:399:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8726/8839] Replayed Zeta23.ZeroSide
+warning: Zeta23/ZeroSide.lean:701:4: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ZeroSide.lean:706:66: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ZeroSide.lean:712:52: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ZeroSide.lean:755:53: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+ℹ [8740/8839] Replayed Zeta23.GammaFacts.Mu
+info: Zeta23/GammaFacts/Mu.lean:137:2: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+ℹ [8742/8839] Replayed Zeta23.GammaFacts.StirlingVert
+info: Zeta23/GammaFacts/StirlingVert.lean:452:6: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+⚠ [8746/8839] Replayed Zeta23.FromPNTPlus.StrongPNTPrefix
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:61:71: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:202:9: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:343:10: `Set.notMem_setOf_iff` has been deprecated: Use `Set.notMem_ofPred_iff` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:368:48: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:390:10: `Set.notMem_setOf_iff` has been deprecated: Use `Set.notMem_ofPred_iff` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:432:48: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8754/8839] Replayed Zeta23.FromPNTPlus.ZetaBounds
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:859:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:952:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1092:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1099:32: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1105:56: `Set.preimage_setOf_eq` has been deprecated: Use `Set.preimage_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1115:56: `Set.preimage_setOf_eq` has been deprecated: Use `Set.preimage_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1119:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1135:54: `Set.preimage_setOf_eq` has been deprecated: Use `Set.preimage_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1157:22: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1169:15: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1169:59: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1185:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1835:19: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1837:45: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1840:28: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1844:28: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1900:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1906:20: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:2091:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:2884:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:2940:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8756/8839] Replayed Zeta23.RvM.Halving
+warning: Zeta23/RvM/Halving.lean:52:55: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/RvM/Halving.lean:62:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/RvM/Halving.lean:70:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8762/8839] Replayed Zeta23.RvM.ReZeroCount
+warning: Zeta23/RvM/ReZeroCount.lean:272:15: `ENat.toNat_coe` has been deprecated: Use `ENat.toNat_natCast` instead
+⚠ [8767/8839] Replayed Zeta23.RvM.NcountWindow
+warning: Zeta23/RvM/NcountWindow.lean:23:22: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8770/8839] Replayed Zeta23.WeilEF.ZeroSummability
+warning: Zeta23/WeilEF/ZeroSummability.lean:189:4: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8773/8839] Replayed Zeta23.WeilEF.Landau
+warning: Zeta23/WeilEF/Landau.lean:341:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/WeilEF/Landau.lean:437:64: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8775/8839] Replayed Zeta23.WeilEF.Contour
+warning: Zeta23/WeilEF/Contour.lean:69:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+ℹ [8780/8839] Replayed Zeta23.WeilEF.Main
+info: Zeta23/WeilEF/Main.lean:38:2: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+⚠ [8782/8839] Replayed Zeta23.Assembly.SeamMult
+warning: Zeta23/Assembly/SeamMult.lean:26:0: automatically included section variable(s) unused in theorem `Zeta23.Assembly.ctr_sub_frobSq_perturb`:
+  [DecidableEq n]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq n] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [8803/8839] Replayed Zeta23.PrimeSideA.EndsE1
+warning: Zeta23/PrimeSideA/EndsE1.lean:326:41: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+ℹ [8808/8839] Replayed Zeta23.PrimeSideA
+info: Zeta23/PrimeSideA.lean:372:0: lem_ends : ∀ (cϱ lam : ℝ),
+  GammaFacts →
+    ChebyshevMertens →
+      0 < lam ∧ lam ≤ 1 →
+        ∃ C, EventuallyAtCore cϱ lam fun p F ↦ |trGt2A p F - MtotalA p F| ≤ C * (p.L * p.l * log p.l * (p.l ^ 2 + p.X))
+info: Zeta23/PrimeSideA.lean:398:0: prop_mumu : ∀ (cϱ lam : ℝ),
+  GammaFacts →
+    ChebyshevMertens →
+      0 < lam ∧ lam ≤ 1 →
+        ∃ C,
+          EventuallyAtCore cϱ lam fun p F ↦
+            |Mform F.Phi p.T mu mu - 2 * π * F.b * p.L * ∫ (τ : ℝ) in p.T..2 * p.T, mu τ ^ 2| ≤ C * (p.l ^ 2 * log p.L)
+info: Zeta23/PrimeSideA.lean:404:0: prop_cross_muP : ∀ (cϱ lam : ℝ),
+  GammaFacts →
+    ChebyshevMertens →
+      0 < lam ∧ lam ≤ 1 → ∃ C, EventuallyAtCore cϱ lam fun p F ↦ |Mform F.Phi p.T mu (PX p.X)| ≤ C * (p.l * √p.X)
+⚠ [8814/8839] Replayed Zeta23.MV.Spacing
+warning: Zeta23/MV/Spacing.lean:58:0: automatically included section variable(s) unused in theorem `Zeta23.MV.Adm.itv_disjoint`:
+  [Fintype ι]
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype ι] [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Zeta23/MV/Spacing.lean:153:8: automatically included section variable(s) unused in theorem `_private.Zeta23.MV.Spacing.0.Zeta23.MV.Adm.mem_window`:
+  [Fintype ι]
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype ι] [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [8822/8839] Replayed Zeta23.ThmD.WindowCore
+warning: Zeta23/ThmD/WindowCore.lean:388:22: Variable name `u` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [8825/8839] Replayed Zeta23.ThmD.Window
+warning: Zeta23/ThmD/Window.lean:132:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8829/8839] Replayed Zeta23.ThmD.PP
+warning: Zeta23/ThmD/PP.lean:270:29: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ThmD/PP.lean:276:29: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8836/8839] Built ChallengeDeps.CandidateSpec (11s)
+✔ [8837/8839] Built Zeta23.FinalMult (13s)
+✔ [8838/8839] Built Zeta23.ThmD.Mult (14s)
+✖ [8839/8839] Building Solution.Candidate (728s)
+trace: .> LEAN_PATH=/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/Cli/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/batteries/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/Qq/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/aesop/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/importGraph/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/plausible/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/packages/mathlib/.lake/build/lib/lean:/Users/samuellavery/work/riemann-submission/zeta23/.lake/build/lib/lean /Users/samuellavery/.elan/toolchains/leanprover--lean4---v4.33.0-rc2/bin/lean /Users/samuellavery/work/riemann-submission/zeta23/comparator/Solution/Candidate.lean -o /Users/samuellavery/work/riemann-submission/zeta23/.lake/build/lib/lean/Solution/Candidate.olean -i /Users/samuellavery/work/riemann-submission/zeta23/.lake/build/lib/lean/Solution/Candidate.ilean -c /Users/samuellavery/work/riemann-submission/zeta23/.lake/build/ir/Solution/Candidate.c --setup /Users/samuellavery/work/riemann-submission/zeta23/.lake/build/ir/Solution/Candidate.setup.json --json
+error: comparator/Solution/Candidate.lean:896:16: failed to synthesize instance of type class
+  HMul (CStarMatrix κ ι 𝕜) (Matrix ι κ 𝕜) (Matrix κ κ 𝕜)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: comparator/Solution/Candidate.lean:898:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (?m.75 * ?m.76) ?m.77 ?m.78
+in the target expression
+  RCLike.re ((Y * diagonal (RCLike.ofReal ∘ d) * Yᴴ) j j) = ∑ i, ‖Y j i‖ ^ 2 * d i
+
+𝕜 : Type u_1
+inst✝⁴ : RCLike 𝕜
+ι : Type u_2
+κ : Type u_3
+inst✝³ : Fintype ι
+inst✝² : DecidableEq ι
+inst✝¹ : Fintype κ
+inst✝ : DecidableEq κ
+Y : Matrix κ ι 𝕜
+d : ι → ℝ
+j : κ
+⊢ RCLike.re ((Y * diagonal (RCLike.ofReal ∘ d) * Yᴴ) j j) = ∑ i, ‖Y j i‖ ^ 2 * d i
+
+Note: The target expression is not type-correct under the `implicit` transparency level, which may have triggered the failure. This is usually caused by unfolding of semireducible definitions in prior tactic steps. Use `set_option linter.tacticCheckInstances true` to investigate the source of the issue.
+Full error:
+  Application type mismatch: The argument
+    CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
+  has type
+    HMul (CStarMatrix κ ι 𝕜) (CStarMatrix ι ι 𝕜) (CStarMatrix κ ι 𝕜)
+  but is expected to have type
+    HMul (Matrix κ ι 𝕜) (Matrix ι ι 𝕜) (CStarMatrix κ ι 𝕜)
+  in the application
+    @HMul.hMul (Matrix κ ι 𝕜) (Matrix ι ι 𝕜) (CStarMatrix κ ι 𝕜) CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
+error: comparator/Solution/Candidate.lean:979:33: failed to synthesize instance of type class
+  HMul (CStarMatrix κ ι 𝕜) (Matrix ι κ 𝕜) (Matrix κ κ 𝕜)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: comparator/Solution/Candidate.lean:979:89: unsolved goals
+𝕜 : Type u_1
+inst✝⁴ : RCLike 𝕜
+ι : Type u_2
+κ : Type u_3
+inst✝³ : Fintype ι
+inst✝² : DecidableEq ι
+inst✝¹ : Fintype κ
+inst✝ : DecidableEq κ
+M : Matrix ι ι 𝕜
+hM : M.IsHermitian
+g : κ → ι
+hg : Function.Injective g
+U : Matrix ι ι 𝕜 := ↑hM.eigenvectorUnitary
+hUdef : U = ↑hM.eigenvectorUnitary
+hP : (M.submatrix g g).IsHermitian
+V : Matrix κ κ 𝕜 := ↑hP.eigenvectorUnitary
+hVdef : V = ↑hP.eigenvectorUnitary
+Ug : Matrix κ ι 𝕜 := U.submatrix g id
+hUgdef : Ug = U.submatrix g id
+Y : Matrix κ ι 𝕜 := star V * Ug
+hYdef : Y = star V * Ug
+hUU : U * star U = 1
+hVsV : star V * V = 1
+hVVs : V * star V = 1
+hM' : M = U * diagonal (RCLike.ofReal ∘ hM.eigenvalues) * star U
+hUgUg : Ug * Ugᴴ = 1
+⊢ U.submatrix g id * diagonal (RCLike.ofReal ∘ hM.eigenvalues) * Uᴴ.submatrix id g =
+    U.submatrix g id * diagonal (RCLike.ofReal ∘ hM.eigenvalues) * Uᴴ.submatrix id g
+error: comparator/Solution/Candidate.lean:988:8: failed to synthesize instance of type class
+  HMul (CStarMatrix κ ι 𝕜) (Matrix ι κ 𝕜) (Matrix κ κ ?m.491)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: comparator/Solution/Candidate.lean:963:79: unsolved goals
+case refine_1
+𝕜 : Type u_1
+inst✝⁴ : RCLike 𝕜
+ι : Type u_2
+κ : Type u_3
+inst✝³ : Fintype ι
+inst✝² : DecidableEq ι
+inst✝¹ : Fintype κ
+inst✝ : DecidableEq κ
+M : Matrix ι ι 𝕜
+hM : M.IsHermitian
+g : κ → ι
+hg : Function.Injective g
+U : Matrix ι ι 𝕜 := ↑hM.eigenvectorUnitary
+hUdef : U = ↑hM.eigenvectorUnitary
+hP : (M.submatrix g g).IsHermitian
+V : Matrix κ κ 𝕜 := ↑hP.eigenvectorUnitary
+hVdef : V = ↑hP.eigenvectorUnitary
+Ug : Matrix κ ι 𝕜 := U.submatrix g id
+hUgdef : Ug = U.submatrix g id
+Y : Matrix κ ι 𝕜 := star V * Ug
+hYdef : Y = star V * Ug
+hUU : U * star U = 1
+hVsV : star V * V = 1
+hVVs : V * star V = 1
+hM' : M = U * diagonal (RCLike.ofReal ∘ hM.eigenvalues) * star U
+hUgUg : Ug * Ugᴴ = 1
+hdiag0 : diagonal (RCLike.ofReal ∘ hP.eigenvalues) = star V * M.submatrix g g * V
+⊢ HMul (CStarMatrix κ ι 𝕜) (Matrix ι κ 𝕜) (Matrix κ κ 𝕜)
+error: comparator/Solution/Candidate.lean:1605:6: `Zeta23Ext.Bridge.cos_sqrt_two_mul_nonneg` has already been declared
+error: comparator/Solution/Candidate.lean:4011:29: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4011:53: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:4012:41: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4013:21: Ambiguous term
+  N0simple
+Possible interpretations:
+  ↑(_root_.N0simple T (2 * T)) : ℝ
+  
+  ↑(Zeta23.N0simple T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4011:75: unsolved goals
+n : ℕ
+c : ℝ
+m p : ℕ
+hn : 2 ≤ n
+hm : n ≤ m
+hp : 0 < p
+hc : 0 < c
+hCert : ∀ (g : Fin (n - 1) → ℝ), (∀ (i : Fin (n - 1)), 0 ≤ g i) → c ≤ F n p g
+hA0 : c * (↑m - (↑n - 1)) ≤ 1
+⊢ ∀ ε > 0, ∃ T₀, ∀ T ≥ T₀, (Phi_n n c m p - ε) * sorry ≤ sorry
+error: comparator/Solution/Candidate.lean:4027:25: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4027:49: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:4040:49: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4040:73: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:4047:50: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4062:55: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4063:10: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:4076:11: Ambiguous term
+  N0simple
+Possible interpretations:
+  ↑(_root_.N0simple T (2 * T)) : ℝ
+  
+  ↑(Zeta23.N0simple T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4076:38: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4098:58: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4099:10: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:4110:11: Ambiguous term
+  N0simple
+Possible interpretations:
+  ↑(_root_.N0simple T (2 * T)) : ℝ
+  
+  ↑(Zeta23.N0simple T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:4110:38: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5249:31: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5249:55: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:5250:43: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5251:21: Ambiguous term
+  N0simple
+Possible interpretations:
+  ↑(_root_.N0simple T (2 * T)) : ℝ
+  
+  ↑(Zeta23.N0simple T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5498:32: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5498:56: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:5501:43: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5502:21: Ambiguous term
+  N0simple
+Possible interpretations:
+  ↑(_root_.N0simple T (2 * T)) : ℝ
+  
+  ↑(Zeta23.N0simple T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5629:54: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5630:10: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:5644:58: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5645:10: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:5662:11: Ambiguous term
+  N0simple
+Possible interpretations:
+  ↑(_root_.N0simple T (2 * T)) : ℝ
+  
+  ↑(Zeta23.N0simple T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:5662:38: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+warning: comparator/Solution/Candidate.lean:25676:26: Variable name `hy2` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hy2
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+error: comparator/Solution/Candidate.lean:25920:54: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:25921:10: Ambiguous term
+  N0simple
+Possible interpretations:
+  _root_.N0simple T (2 * T) : ℕ
+  
+  Zeta23.N0simple T (2 * T) : ℕ
+error: comparator/Solution/Candidate.lean:25930:11: Ambiguous term
+  N0simple
+Possible interpretations:
+  ↑(_root_.N0simple T (2 * T)) : ℝ
+  
+  ↑(Zeta23.N0simple T (2 * T)) : ℝ
+error: comparator/Solution/Candidate.lean:25930:38: Ambiguous term
+  Ncount
+Possible interpretations:
+  ↑(_root_.Ncount T (2 * T)) : ℝ
+  
+  ↑(Zeta23.Ncount T (2 * T)) : ℝ
+warning: comparator/Solution/Candidate.lean:25966:8: declaration uses `sorry`
+warning: comparator/Solution/Candidate.lean:25971:2: 'exact
+  n_point_bound_fixed' 3 (1345 / 1000000 : ℝ) 745 3000 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    ThreePoint.three_point_cert (by norm_num)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+error: comparator/Solution/Candidate.lean:26014:8: could not synthesize default value for parameter 'ht' using tactics
+error: comparator/Solution/Candidate.lean:26014:8: failed to synthesize
+  Finite ↑(Zeta23.zerosIn T₁ T₂ ∩ {ρ | ρ.re = 1 / 2})
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+error: comparator/Solution/Candidate.lean:26015:2: No goals to be solved
+error: Lean exited with code 1
+Some required targets logged failures:
+- Solution.Candidate
+error: build failed
+
+real	12m40.387s
+user	82m5.792s
+sys	24m59.729s

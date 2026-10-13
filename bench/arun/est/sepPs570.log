@@ -1,0 +1,26 @@
+target 0.6735700 (LP kT = target + 3e-7), keep pal: word [1.04  1.975 1.046 1.983 1.983 1.046 1.975 1.04 ] pattern(s) {(0, 1, 0, 1, 1, 0, 1, 0)}
+round  0: c 0.0094859067 t 9.486e-06 (rel 1.000e-03) B 0.004987436 [min b 2.203e-04] kappa 0.67357040 | kept basin above c by -2.49e-04 | violations 601 (worst 6.30e-04) | |G| 428 | 9s
+round  1: c 0.0093063583 t 9.306e-06 (rel 1.000e-03) B 0.004866497 [min b 1.685e-04] kappa 0.67357040 | kept basin above c by -1.27e-04 | violations 352 (worst 3.31e-04) | |G| 488 | 17s
+round  2: c 0.0092973463 t 9.297e-06 (rel 1.000e-03) B 0.004860427 [min b 1.992e-04] kappa 0.67357040 | kept basin above c by -8.19e-05 | violations 188 (worst 1.62e-04) | |G| 548 | 27s
+round  3: c 0.0091744848 t 9.174e-06 (rel 1.000e-03) B 0.004777671 [min b 1.874e-04] kappa 0.67357040 | kept basin above c by -2.88e-05 | violations 55 (worst 6.52e-05) | |G| 608 | 37s
+round  4: c 0.0090457654 t 9.046e-06 (rel 1.000e-03) B 0.004690970 [min b 2.382e-04] kappa 0.67357040 | kept basin above c by -6.50e-05 | violations 75 (worst 9.73e-05) | |G| 663 | 46s
+round  5: c 0.0090121994 t 9.012e-06 (rel 1.000e-03) B 0.004668361 [min b 2.186e-04] kappa 0.67357040 | kept basin above c by -2.34e-05 | violations 40 (worst 3.89e-05) | |G| 723 | 54s
+round  6: c 0.0089961443 t 8.996e-06 (rel 1.000e-03) B 0.004657546 [min b 2.613e-04] kappa 0.67357040 | kept basin above c by -1.65e-05 | violations 22 (worst 4.24e-05) | |G| 763 | 63s
+round  7: c 0.0089732658 t 8.973e-06 (rel 1.000e-03) B 0.004642136 [min b 2.395e-04] kappa 0.67357040 | kept basin above c by -1.04e-05 | violations 28 (worst 1.82e-05) | |G| 785 | 71s
+round  8: c 0.0089402069 t 8.940e-06 (rel 1.000e-03) B 0.004619869 [min b 2.256e-04] kappa 0.67357040 | kept basin above c by -4.51e-06 | violations 24 (worst 2.52e-05) | |G| 813 | 80s
+round  9: c 0.0089238258 t 8.924e-06 (rel 1.000e-03) B 0.004608835 [min b 2.414e-04] kappa 0.67357040 | kept basin above c by -1.58e-06 | violations 20 (worst 1.03e-05) | |G| 837 | 88s
+round 10: c 0.0088898583 t 8.890e-06 (rel 1.000e-03) B 0.004585955 [min b 3.001e-04] kappa 0.67357040 | kept basin above c by -1.33e-06 | violations 23 (worst 1.24e-05) | |G| 857 | 96s
+round 11: c 0.0088760239 t 8.876e-06 (rel 1.000e-03) B 0.004576637 [min b 2.441e-04] kappa 0.67357040 | kept basin above c by -8.89e-07 | violations 18 (worst 8.34e-06) | |G| 880 | 105s
+round 12: c 0.0088447186 t 8.845e-06 (rel 1.000e-03) B 0.004555551 [min b 2.627e-04] kappa 0.67357040 | kept basin above c by -5.72e-07 | violations 16 (worst 2.33e-06) | |G| 898 | 114s
+round 13: c 0.0088345021 t 8.835e-06 (rel 1.000e-03) B 0.004548669 [min b 2.532e-04] kappa 0.67357040 | kept basin above c by -3.05e-07 | violations 16 (worst 1.98e-06) | |G| 914 | 123s
+round 14: c 0.0088327309 t 8.833e-06 (rel 1.000e-03) B 0.004547476 [min b 2.877e-04] kappa 0.67357040 | kept basin above c by -1.01e-06 | violations 18 (worst 3.10e-06) | |G| 930 | 132s
+round 15: c 0.0088357461 t 8.836e-06 (rel 1.000e-03) B 0.004549507 [min b 2.604e-04] kappa 0.67357040 | kept basin above c by -7.18e-07 | violations 18 (worst 2.67e-06) | |G| 948 | 141s
+round 16: c 0.0088316802 t 8.832e-06 (rel 1.000e-03) B 0.004546768 [min b 2.565e-04] kappa 0.67357040 | kept basin above c by -2.82e-07 | violations 18 (worst 9.03e-07) | |G| 966 | 149s
+round 17: c 0.0088284263 t 8.828e-06 (rel 1.000e-03) B 0.004544577 [min b 2.626e-04] kappa 0.67357040 | kept basin above c by -1.55e-07 | violations 16 (worst 6.40e-07) | |G| 984 | 158s
+round 18: c 0.0088274613 t 8.827e-06 (rel 1.000e-03) B 0.004543927 [min b 2.666e-04] kappa 0.67357040 | kept basin above c by -1.38e-07 | violations 16 (worst 4.02e-07) | |G| 1000 | 166s
+round 19: c 0.0088262000 t 8.826e-06 (rel 1.000e-03) B 0.004543077 [min b 2.621e-04] kappa 0.67357040 | kept basin above c by -1.53e-08 | violations 15 (worst 1.61e-07) | |G| 1016 | 175s
+round 20: c 0.0088249623 t 8.825e-06 (rel 1.000e-03) B 0.004542243 [min b 2.587e-04] kappa 0.67357040 | kept basin above c by -7.75e-08 | violations 16 (worst 1.34e-07) | |G| 1031 | 183s
+round 21: c 0.0088248729 t 8.825e-06 (rel 1.000e-03) B 0.004542183 [min b 2.570e-04] kappa 0.67357040 | kept basin above c by -6.68e-08 | violations 14 (worst 1.16e-07) | |G| 1047 | 192s
+round 22: c 0.0088248885 t 8.825e-06 (rel 1.000e-03) B 0.004542194 [min b 2.573e-04] kappa 0.67357040 | kept basin above c by -2.62e-08 | violations 3 (worst 6.38e-08) | |G| 1061 | 199s
+round 23: c 0.0088248039 t 8.825e-06 (rel 1.000e-03) B 0.004542137 [min b 2.644e-04] kappa 0.67357040 | kept basin above c by -1.08e-08 | violations 8 (worst 6.99e-08) | |G| 1064 | 207s
+round 24: c 0.0088245136 t 8.825e-06 (rel 1.000e-03) B 0.004541941 [min b 2.633e-04] kappa 0.67357040 | kept basin above c by -1.07e-08 | violations 0 (worst 0.00e+00) | |G| 1072 | 215s

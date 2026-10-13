@@ -1,0 +1,16 @@
+== iso rc10._proof_1 Sun Oct 11 16:53:40 PDT 2026
+rc10 export: 49373896017 1150272600 
+rc10 nanoda: 75268373554 5133815744 
+rc10 replayx: 72957457384 2546272584 
+export exit 0 export bytes 4785298 nanoda exit 0 replayx exit 0 
+== iso PTT_ok Sun Oct 11 16:54:13 PDT 2026
+PTT_ok export: 47317235098 1152205816 
+PTT_ok nanoda: 181294200454 1391641920 
+PTT_ok replayx: 163993112857 864240768 
+export exit 0 export bytes 3770231 nanoda exit 0 replayx exit 0 
+== iso PT Sun Oct 11 16:55:14 PDT 2026
+PT export: 46872070207 1149125696 
+PT nanoda: 561894462 7635256 
+PT replayx: 2044572004 14074384 
+export exit 0 export bytes 2775672 nanoda exit 0 replayx exit 0 
+== iso done Sun Oct 11 16:55:28 PDT 2026

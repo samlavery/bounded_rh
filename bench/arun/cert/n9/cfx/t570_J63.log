@@ -1,0 +1,33 @@
+== cfx9 tag=J63 wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9pr.py PFK=8 LPACCEPT= EXACTV= EXACTC= SO= Sun Oct 11 16:22:50 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=2,5,9,18,21,25
+root covers (bad intervals): [[(26112, 1040384)], [(28672, 51168), (51168, 557056)], [(29184, 45056), (52224, 425984)], [(29696, 44032), (53248, 376832)], [(29696, 44032), (53248, 376832)], [(29184, 45056), (52224, 425984)], [(28672, 557056)], [(26112, 1040384)]]
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 286 leaves (101s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 524 leaves (279s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 659 leaves (502s)
+  root 18 (0, 1, 0, 0, 1, 0, 0, 0): 457 leaves (661s)
+  root 21 (0, 1, 0, 1, 0, 1, 0, 0): 493 leaves (830s)
+  root 25 (0, 1, 1, 0, 0, 1, 0, 0): 329 leaves (945s)
+  bisection: 2748 leaves (Z 0, M 2650, empty 0), 2742 splits, 1312 at region boundaries (945s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2109 points (9723 point cells); failing 0 (952s)
+leaves 2748 kinds {6: 2650, 0: 98} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 2742 (pair 2060); walk bits 877171 (319.2 per leaf; multipliers 2160 x 12 bits); M nonzero multipliers [(0, 893), (1, 1384), (2, 344), (3, 28), (4, 1)]; constraints per M cell [(28, 2650)]; w 1984 d 2240 pts 2109 ptc 9723 bad 0 MSTAT lp 8741 (952s)
+nodes visited 5490 (leaves 2748 + splits 2742); explicit constraints per node: mean 28.00, dist [(28, 5490)]
+walk: 877171 bits = 0.219 MB hex, 0.146 MB base64 (roots run); x8.73: 1.91 MB hex, 1.28 MB base64
+      963.81 real       951.51 user         9.96 sys
+          2697494528  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              792749  page reclaims
+                1143  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 939  voluntary context switches
+              234633  involuntary context switches
+      14180826237709  instructions retired
+       3189014389278  cycles elapsed
+          3415051168  peak memory footprint
+== done Sun Oct 11 16:38:54 PDT 2026

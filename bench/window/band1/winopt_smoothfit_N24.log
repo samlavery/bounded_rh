@@ -1,0 +1,11 @@
+lam 0e+00 start R8: max resid 5.48e-02, min qf +6.29e-04, |c| 0.098, kappa_D,32 0.6810466
+lam 0e+00 start 0: max resid 5.48e-02, min qf +6.29e-04, |c| 0.098, kappa_D,32 0.6810466
+lam 1e-04 start R8: max resid 5.48e-02, min qf +6.29e-04, |c| 0.098, kappa_D,32 0.6810466
+lam 1e-04 start 0: max resid 5.48e-02, min qf +6.29e-04, |c| 0.098, kappa_D,32 0.6810466
+lam 1e-03 start R8: max resid 5.48e-02, min qf +6.29e-04, |c| 0.098, kappa_D,32 0.6810466
+lam 1e-03 start 0: max resid 5.48e-02, min qf +6.29e-04, |c| 0.098, kappa_D,32 0.6810466
+  N=24: smooth fit kappa_D,N 0.6812691 (Delta_1/N 0.968849) | R8 0.6779590 (0.990793)
+  N=32: smooth fit kappa_D,N 0.6810466 (Delta_1/N 0.968914) | R8 0.6777384 (0.990783)
+  N=48: smooth fit kappa_D,N 0.6808827 (Delta_1/N 0.968899) | R8 0.6775812 (0.990777)
+  N=64: smooth fit kappa_D,N 0.6808262 (Delta_1/N 0.968893) | R8 0.6775262 (0.990774)
+SMOOTH FIT continuum: kappa_D 0.6807566  delta 0.484447  int q a / int q 0.309313 ; c = [ 0.098228 -0.016617  0.0005    0.003803 -0.004748  0.004872 -0.004878  0.004616 -0.004321  0.004034 -0.003848  0.003698 -0.003627  0.003621 -0.003632  0.003653 -0.003673  0.003691 -0.003705  0.003718 -0.003731  0.003744 -0.003759  0.003773]

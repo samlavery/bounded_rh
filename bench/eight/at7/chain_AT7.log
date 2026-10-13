@@ -1,0 +1,3 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:36:20)
+== rootTW/AMW/AT7Inst exit=0 wall=37.36s peak=1250MB
+== rootTW/AMW/AT7Data exit=0 wall=206.67s peak=3696MB

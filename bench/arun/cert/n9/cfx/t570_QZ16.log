@@ -1,0 +1,29 @@
+== cfx9 tag=t570_QZ16 wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9pz.py PFK=8 LPACCEPT= EXACTV= EXACTC= SO= Sun Oct 11 09:21:52 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=2,5,9
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 922 leaves (352s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 1118 leaves (771s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1183 leaves (1269s)
+  bisection: 3223 leaves (Z 0, M 3118, empty 0), 3220 splits, 1649 at region boundaries (1269s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2240 points (6836 point cells); failing 0 (1276s)
+leaves 3223 kinds {6: 3118, 0: 105} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 3220 (pair 2369); walk bits 1006617 (312.3 per leaf; multipliers 2812 x 12 bits); M nonzero multipliers [(0, 891), (1, 1697), (2, 478), (3, 49), (4, 3)]; constraints per M cell [(28, 3118)]; w 1984 d 2240 pts 2240 ptc 6836 bad 0 MSTAT lp 10324 (1277s)
+nodes visited 6443 (leaves 3223 + splits 3220); explicit constraints per node: mean 28.00, dist [(28, 6443)]
+walk: 1006617 bits = 0.252 MB hex, 0.168 MB base64 (roots run); x8.73: 2.20 MB hex, 1.46 MB base64
+     1294.16 real      1128.88 user        24.79 sys
+          1521336320  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1354965  page reclaims
+                  99  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                1044  voluntary context switches
+             2072116  involuntary context switches
+      12263859030134  instructions retired
+       3432828312633  cycles elapsed
+          1857308472  peak memory footprint
+== done Sun Oct 11 09:43:27 PDT 2026

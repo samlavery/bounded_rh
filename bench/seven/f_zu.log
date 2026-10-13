@@ -1,0 +1,1 @@
+delta=0.001 tau=0.03 hw=1475 modes=ZU basins=16 ok=True leaves=63791 {'Z': 26070, 'U': 32407, 'refl': 2888, 'lin': 970, 'basin': 1456} (332s)

@@ -1,0 +1,66 @@
+[stage] waiting 20:01:41
+[stage] waiting 20:02:11
+[stage] waiting 20:02:42
+[stage] waiting 20:03:12
+[stage] waiting 20:03:42
+[stage] waiting 20:04:12
+[stage] waiting 20:04:42
+[stage] waiting 20:05:12
+[stage] waiting 20:05:42
+[stage] waiting 20:06:12
+[stage] waiting 20:06:42
+[stage] waiting 20:07:12
+[stage] waiting 20:07:42
+[stage] waiting 20:08:12
+[stage] waiting 20:08:42
+[stage] waiting 20:09:12
+[stage] waiting 20:09:42
+[stage] waiting 20:10:12
+[stage] waiting 20:10:42
+[stage] waiting 20:11:12
+[stage] waiting 20:11:42
+[stage] waiting 20:12:12
+[stage] waiting 20:12:42
+[stage] waiting 20:13:12
+[stage] waiting 20:13:42
+[stage] waiting 20:14:12
+[stage] waiting 20:14:42
+[stage] waiting 20:15:12
+[stage] waiting 20:15:42
+[stage] waiting 20:16:12
+[stage] waiting 20:16:42
+[stage] waiting 20:17:12
+[stage] waiting 20:17:42
+[stage] waiting 20:18:12
+[stage] waiting 20:18:42
+[stage] waiting 20:19:12
+[stage] waiting 20:19:42
+[stage] waiting 20:20:12
+[stage] waiting 20:20:42
+[stage] waiting 20:21:12
+[stage] waiting 20:21:42
+[stage] waiting 20:22:12
+[stage] waiting 20:22:42
+[stage] waiting 20:23:12
+[stage] waiting 20:23:42
+[stage] waiting 20:24:12
+[stage] waiting 20:24:42
+[stage] waiting 20:25:12
+[stage] waiting 20:25:42
+[stage] waiting 20:26:12
+[stage] waiting 20:26:42
+== CandOctM30 export
+export exit 0
+       46.33 real        32.73 user        10.62 sys
+          1902792480  peak memory footprint
+export bytes 710975380
+== CandOctM30 nanoda
+nanoda exit 0
+      274.03 real       265.44 user         8.56 sys
+          6103487672  peak memory footprint
+== CandOctM30 lean replay (full closure)
+parse_ms 16690 constants 74321
+replay_ms 276950 OK
+replayx exit 0
+      293.83 real       289.03 user         4.54 sys
+          3632843824  peak memory footprint

@@ -1,0 +1,27 @@
+== cfx9 tag=R9ctl wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9pz.py PFK=8 LPACCEPT= EXACTV= EXACTC= SO= Sun Oct 11 13:21:11 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=9
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1170 leaves (420s)
+  bisection: 1170 leaves (Z 0, M 1131, empty 0), 1169 splits, 580 at region boundaries (420s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 1450 points (4566 point cells); failing 0 (423s)
+leaves 1170 kinds {6: 1131, 0: 39} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 1169 (pair 845); walk bits 364904 (311.9 per leaf; multipliers 1028 x 12 bits); M nonzero multipliers [(0, 306), (1, 645), (2, 158), (3, 21), (4, 1)]; constraints per M cell [(28, 1131)]; w 1984 d 2240 pts 1450 ptc 4566 bad 0 MSTAT lp 3760 (423s)
+nodes visited 2339 (leaves 1170 + splits 1169); explicit constraints per node: mean 28.00, dist [(28, 2339)]
+walk: 364904 bits = 0.091 MB hex, 0.061 MB base64 (roots run); x8.73: 0.80 MB hex, 0.53 MB base64
+      435.15 real       428.80 user         3.98 sys
+          1873985536  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              206386  page reclaims
+                  99  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 483  voluntary context switches
+              241668  involuntary context switches
+       6385730213982  instructions retired
+       1411469936081  cycles elapsed
+          1865107256  peak memory footprint
+== done Sun Oct 11 13:28:26 PDT 2026

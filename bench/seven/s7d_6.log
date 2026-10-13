@@ -1,0 +1,4 @@
+delta=0.003 cN=695359 PED=6 DLO=5 DHI=6 DFUEL=14 basins=16
+  bisection: 51268 leaves (Z 19724, S 27706, basin 1382) (342s)
+  fix-up: 0 re-decided; tables: w 7936 cells, d 7680 cells, 1315 points (46958 point cells); failing 0 (349s)
+leaves 51268 Z 19724 S 27706 B 1382 w 7936 d 7680 pts 1315 ptc 46958 bad 0 (349s)

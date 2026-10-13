@@ -1,0 +1,4 @@
+cN=345747: covers done (0s) bad sizes [2, 3, 3, 3, 2]
+  bisection: 82798 leaves (6s)
+  table: {'blocks': 323, 'finest': 6197, 'entries': 12071, 'top': 511, 'bits': 399021}; distinct queries 116951; leaves failing on the built table: 323 (8s)
+python3 size_pyr.py 0.035 5 10 4  8.34s user 0.04s system 99% cpu 8.386 total

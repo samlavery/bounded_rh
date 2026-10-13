@@ -1,0 +1,12 @@
+delta=0.003 cN=854147 env GSH=None TWOGRID=1 DLO=7 DHI=8 WMIN=8 ROOTSEL=4,17 MAXD=200 GSH=5 PLO=1 MINR=0 MINPW=256 SPLIT=pf PFK=8 JSH=5 YFRAC=14 NR=2 JSH=None WMIN=None MINR=None PLO=None YFRAC=None SPLIT=None PFK=None NR=None LPEMPTY=None ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0): 4604 leaves (13s)
+  ... 5000 leaves (Z 290, M 3469, empty 0, refl 1241) nodes 5018 LP 9594 (14s)
+  ... 10000 leaves (Z 595, M 6740, empty 0, refl 2665) nodes 10018 LP 19020 (26s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 6136 leaves (28s)
+  ... 15000 leaves (Z 832, M 10373, empty 0, refl 3795) nodes 15013 LP 28623 (39s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 8480 leaves (48s)
+  ... 20000 leaves (Z 1117, M 14082, empty 0, refl 4801) nodes 20019 LP 38232 (50s)
+  ... 25000 leaves (Z 1458, M 17876, empty 0, refl 5666) nodes 25016 LP 47675 (62s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 7100 leaves (65s)
+  stuck (point cell) ((33431, 33431), (33808, 33808), (33920, 33920), (95521, 95521), (33920, 33920), (33856, 33856), (64450, 64450))
+  root 4 (0, 0, 0, 1, 0, 0, 0): 1279 leaves (69s)

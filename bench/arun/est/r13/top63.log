@@ -1,0 +1,15 @@
+distinct jj values in DATA_PC9QB4.json: 67 (per-slot max 67)
+DATA_PC9QB4.json: 10077 leaves, 223016 point indices (22.13 per leaf); today 1561112 bits = 154.9 bits/leaf
+  per-slot top-63, 6 bits    coverage 99.9767%; worst slot (>= 20 uses) (6, 1) 99.71% of 2048; 6.00 bits/index; 132.8 bits/leaf (saves 22.1) = 55.7 KB hex saved, table 7.5 KB hex -> net 48.2 KB
+  global top-63, 6 bits      coverage 99.9404%; worst slot (>= 20 uses) (28, 2) 99.33% of 149; 6.00 bits/index; 132.9 bits/leaf (saves 22.0) = 55.5 KB hex saved, table 0.1 KB hex -> net 55.4 KB
+  per-slot top-31, 5 bits    coverage 94.1950%; worst slot (>= 20 uses) (6, 1) 86.77% of 2048; 5.41 bits/index; 119.6 bits/leaf (saves 35.3) = 88.9 KB hex saved, table 3.7 KB hex -> net 85.2 KB
+  global top-31, 5 bits      coverage 90.9764%; worst slot (>= 20 uses) (19, 2) 83.33% of 150; 5.63 bits/index; 124.6 bits/leaf (saves 30.3) = 76.3 KB hex saved, table 0.1 KB hex -> net 76.2 KB
+  per-slot top-15, 4 bits    coverage 76.9689%; worst slot (>= 20 uses) (6, 1) 49.37% of 2048; 5.61 bits/index; 124.2 bits/leaf (saves 30.7) = 77.4 KB hex saved, table 1.8 KB hex -> net 75.6 KB
+  global top-15, 4 bits      coverage 65.9002%; worst slot (>= 20 uses) (33, 1) 26.63% of 6876; 6.39 bits/index; 141.4 bits/leaf (saves 13.6) = 34.2 KB hex saved, table 0.0 KB hex -> net 34.2 KB
+DATA_PC9Q.json: 11078 leaves, 239363 point indices (21.61 per leaf); today 1675541 bits = 151.2 bits/leaf
+  per-slot top-63, 6 bits    coverage 99.6817%; worst slot (>= 20 uses) (24, 2) 82.61% of 207; 6.02 bits/index; 130.1 bits/leaf (saves 21.1) = 58.5 KB hex saved, table 7.5 KB hex -> net 51.0 KB
+  global top-63, 6 bits      coverage 99.9206%; worst slot (>= 20 uses) (5, 1) 99.37% of 3004; 6.01 bits/index; 129.8 bits/leaf (saves 21.5) = 59.5 KB hex saved, table 0.1 KB hex -> net 59.4 KB
+  per-slot top-31, 5 bits    coverage 92.5995%; worst slot (>= 20 uses) (24, 2) 78.26% of 207; 5.52 bits/index; 119.2 bits/leaf (saves 32.0) = 88.7 KB hex saved, table 3.7 KB hex -> net 85.0 KB
+  global top-31, 5 bits      coverage 90.7057%; worst slot (>= 20 uses) (6, 1) 84.21% of 3210; 5.65 bits/index; 122.1 bits/leaf (saves 29.2) = 80.7 KB hex saved, table 0.1 KB hex -> net 80.7 KB
+  per-slot top-15, 4 bits    coverage 74.5775%; worst slot (>= 20 uses) (24, 2) 39.61% of 207; 5.78 bits/index; 124.9 bits/leaf (saves 26.4) = 73.0 KB hex saved, table 1.8 KB hex -> net 71.2 KB
+  global top-15, 4 bits      coverage 65.0573%; worst slot (>= 20 uses) (0, 1) 28.73% of 7253; 6.45 bits/index; 139.3 bits/leaf (saves 12.0) = 33.2 KB hex saved, table 0.0 KB hex -> net 33.1 KB

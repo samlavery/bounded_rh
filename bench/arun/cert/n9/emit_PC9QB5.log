@@ -1,0 +1,82 @@
+== E emit QB=14 Sun Oct 11 18:19:51 PDT 2026
+root covers (bad intervals): [[(26112, 1040384)], [(28672, 39936), (39936, 51168), (51168, 557056)], [(29184, 45056), (52224, 425984)], [(29696, 44032), (53248, 376832)], [(29696, 44032), (53248, 376832)], [(29184, 45056), (52224, 425984)], [(28672, 557056)], [(26112, 1040384)]]
+  root 0 (0, 0, 0, 0, 0, 0, 0, 0): 61 leaves (1s)
+  root 1 (0, 0, 0, 0, 0, 1, 0, 0): 156 leaves (1s)
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 305 leaves (1s)
+  root 3 (0, 0, 0, 0, 1, 1, 0, 0): 303 leaves (1s)
+  root 4 (0, 0, 0, 1, 0, 0, 0, 0): 400 leaves (1s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 666 leaves (1s)
+  root 6 (0, 0, 0, 1, 1, 0, 0, 0): 319 leaves (1s)
+  root 7 (0, 0, 0, 1, 1, 1, 0, 0): 196 leaves (1s)
+  root 8 (0, 0, 1, 0, 0, 0, 0, 0): 355 leaves (1s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 615 leaves (1s)
+  root 10 (0, 0, 1, 0, 1, 0, 0, 0): 650 leaves (2s)
+  root 11 (0, 0, 1, 0, 1, 1, 0, 0): 352 leaves (2s)
+  root 12 (0, 0, 1, 1, 0, 0, 0, 0): 354 leaves (2s)
+  root 13 (0, 0, 1, 1, 0, 1, 0, 0): 358 leaves (2s)
+  root 14 (0, 0, 1, 1, 1, 0, 0, 0): 237 leaves (2s)
+  root 15 (0, 0, 1, 1, 1, 1, 0, 0): 105 leaves (2s)
+  root 16 (0, 1, 0, 0, 0, 0, 0, 0): 2 leaves (2s)
+  root 17 (0, 1, 0, 0, 0, 1, 0, 0): 2 leaves (2s)
+  root 18 (0, 1, 0, 0, 1, 0, 0, 0): 2 leaves (2s)
+  root 19 (0, 1, 0, 0, 1, 1, 0, 0): 1 leaves (2s)
+  root 20 (0, 1, 0, 1, 0, 0, 0, 0): 2 leaves (2s)
+  root 21 (0, 1, 0, 1, 0, 1, 0, 0): 2 leaves (2s)
+  root 22 (0, 1, 0, 1, 1, 0, 0, 0): 2 leaves (2s)
+  root 23 (0, 1, 0, 1, 1, 1, 0, 0): 1 leaves (2s)
+  root 24 (0, 1, 1, 0, 0, 0, 0, 0): 8 leaves (2s)
+  root 25 (0, 1, 1, 0, 0, 1, 0, 0): 1 leaves (2s)
+  root 26 (0, 1, 1, 0, 1, 0, 0, 0): 2 leaves (2s)
+  root 27 (0, 1, 1, 0, 1, 1, 0, 0): 1 leaves (2s)
+  root 28 (0, 1, 1, 1, 0, 0, 0, 0): 2 leaves (2s)
+  root 29 (0, 1, 1, 1, 0, 1, 0, 0): 1 leaves (2s)
+  root 30 (0, 1, 1, 1, 1, 0, 0, 0): 1 leaves (2s)
+  root 31 (0, 1, 1, 1, 1, 1, 0, 0): 1 leaves (2s)
+  root 32 (0, 2, 0, 0, 0, 0, 0, 0): 158 leaves (2s)
+  root 33 (0, 2, 0, 0, 0, 1, 0, 0): 304 leaves (2s)
+  root 34 (0, 2, 0, 0, 1, 0, 0, 0): 459 leaves (2s)
+  root 35 (0, 2, 0, 0, 1, 1, 0, 0): 236 leaves (2s)
+  root 36 (0, 2, 0, 1, 0, 0, 0, 0): 426 leaves (2s)
+  root 37 (0, 2, 0, 1, 0, 1, 0, 0): 494 leaves (2s)
+  root 38 (0, 2, 0, 1, 1, 0, 0, 0): 397 leaves (2s)
+  root 39 (0, 2, 0, 1, 1, 1, 0, 0): 149 leaves (2s)
+  root 40 (0, 2, 1, 0, 0, 0, 0, 0): 253 leaves (2s)
+  root 41 (0, 2, 1, 0, 0, 1, 0, 0): 320 leaves (2s)
+  root 42 (0, 2, 1, 0, 1, 0, 0, 0): 343 leaves (2s)
+  root 43 (0, 2, 1, 0, 1, 1, 0, 0): 208 leaves (2s)
+  root 44 (0, 2, 1, 1, 0, 0, 0, 0): 180 leaves (2s)
+  root 45 (0, 2, 1, 1, 0, 1, 0, 0): 176 leaves (3s)
+  root 46 (0, 2, 1, 1, 1, 0, 0, 0): 109 leaves (3s)
+  root 47 (0, 2, 1, 1, 1, 1, 0, 0): 37 leaves (3s)
+  bisection: 9712 leaves (Z 0, M 9377, empty 0), 0 splits, 0 at region boundaries (3s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 3205 points (28572 point cells); failing 0 (29s)
+replay: {'split': 9664, 6: 9377, 0: 335}; leaves 9712 kinds {6: 9377, 0: 335}; verification failures 0 (29s)
+walks: 48 roots, 3048398 bits = 762.1 KB hex; encode/decode round trip OK
+wrote /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/DATA_PC9QB5.json: 1.02 MB json; points 3205, w 1984 cells, d 2240 cells
+       45.69 real        44.65 user         0.90 sys
+          2437906432  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              169143  page reclaims
+                 124  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 525  voluntary context switches
+                6069  involuntary context switches
+        663828770636  instructions retired
+        151236200998  cycles elapsed
+          2416494776  peak memory footprint
+== V Sun Oct 11 18:20:37 PDT 2026
+replayed 48 walks: {'split': 9664, 'empty': 0, 'refl': 335, 'M': 9377, 'fail': 0, 'anchor': 0, 'inc': 19328, 'bsplit': 4719}; every walk ends at its bit count
+VERIFIED: 0 failures
+3205 points with an interval (point table 3205); 215625 recorded checks; -> /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/IV_PC9QB5.json
+== P Sun Oct 11 18:20:48 PDT 2026
+replayed 48 walks: {'split': 9664, 'empty': 0, 'refl': 335, 'M': 9377, 'fail': 0, 'anchor': 0, 'inc': 19328, 'bsplit': 4719}; every walk ends at its bit count
+VERIFIED: 0 failures
+hulls failing without the derivative table: 97; blocks kept 145 of 496; all 3205 hulls pass on the pruned table -> /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/DATA_PC9QB5_dp.json
+== EVP done Sun Oct 11 18:20:59 PDT 2026

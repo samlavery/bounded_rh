@@ -1,0 +1,24 @@
+== cfx9 tag=t570_PF16 wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9pz.py PFK=16 LPACCEPT= EXACTV= EXACTC= SO= Sat Oct 10 17:36:26 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=16 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=2,5,9
+  ... 5000 leaves (Z 0, M 4276, empty 0, refl 724) nodes 5060 LP 15987 (1700s)
+time: command terminated abnormally
+     2438.31 real      2330.49 user        18.01 sys
+          1730822144  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              401559  page reclaims
+                 171  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 119  voluntary context switches
+             1254528  involuntary context switches
+      31795052827590  instructions retired
+       7640342130344  cycles elapsed
+          1852475192  peak memory footprint
+./cfx9.sh: line 16: 43926 Terminated: 15          /usr/bin/time -l nice -n 5 python3 $SZ $WJ $DELTA 2>&1
+== done Sat Oct 10 18:17:05 PDT 2026

@@ -1,0 +1,6 @@
+y=0.10: (a) DP pattern LP +3.3745e+00 (T_g 3.380) | doubles exactly at integers 1..24 LP +2.7450e-01 (= int qfB^2 9.241e-03 + T_g 0.2606 + truncation) | (b) dense cluster LP +9.2342e+02 (T_g 925.9)
+y=0.20: (a) DP pattern LP +3.4813e+00 (T_g 3.380) | doubles exactly at integers 1..24 LP +4.4472e-01 (= int qfB^2 1.636e-01 + T_g 0.2606 + truncation) | (b) dense cluster LP +9.1574e+02 (T_g 925.9)
+y=0.30: (a) DP pattern LP +4.2059e+00 (T_g 3.380) | doubles exactly at integers 1..24 LP +1.2962e+00 (= int qfB^2 9.815e-01 + T_g 0.2606 + truncation) | (b) dense cluster LP +9.0176e+02 (T_g 925.9)
+y=0.50: (a) DP pattern LP +1.5911e+01 (T_g 3.380) | doubles exactly at integers 1..24 LP +1.3627e+01 (= int qfB^2 1.312e+01 + T_g 0.2606 + truncation) | (b) dense cluster LP +8.4938e+02 (T_g 925.9)
+y=0.70: (a) DP pattern LP +1.1735e+02 (T_g 3.380) | doubles exactly at integers 1..24 LP +1.1692e+02 (= int qfB^2 1.158e+02 + T_g 0.2606 + truncation) | (b) dense cluster LP +7.8983e+02 (T_g 925.9)
+y=1.00: (a) DP pattern LP +2.7137e+03 (T_g 3.380) | doubles exactly at integers 1..24 LP +2.7245e+03 (= int qfB^2 2.718e+03 + T_g 0.2606 + truncation) | (b) dense cluster LP +2.5961e+03 (T_g 925.9)

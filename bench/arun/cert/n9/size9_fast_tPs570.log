@@ -1,0 +1,31 @@
+== size9 delta=0.00005 tag=fast_tPs570 rootsel=2,5,9 Sat Oct 10 15:33:36 PDT 2026
+window json /Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_tPs570.json
+delta=5e-05 cN=882403 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=2,5,9
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9pz.py", line 23, in <module>
+    r = S.run(cN, aN, bN, JCQ=8, basins=(), PED=6, DFUEL=14, DLO=int(os.environ.get("DLO", "5")), DHI=int(os.environ.get("DHI", "6")),
+              regions=REGS, centers=(), CRAD=0, WMIN=int(os.environ.get("WMIN", "6")), MTEST=3, NPT=9,
+              max_leaves=int(os.environ.get("MAXL", "4000000")))
+  File "/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/size9pz.py", line 141, in run
+    assert all(s < _KB and s * bN[r] >= cN * SC for r, s in enumerate(S)), S
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [1098752, 516096, 425984, 385024, 385024, 425984, 516096, 1098752]
+       11.24 real        10.75 user         0.34 sys
+          1638547456  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              128518  page reclaims
+                  63  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 260  voluntary context switches
+                4672  involuntary context switches
+        188024168674  instructions retired
+         36738238678  cycles elapsed
+          1692714664  peak memory footprint
+== done Sat Oct 10 15:33:48 PDT 2026

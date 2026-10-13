@@ -1,0 +1,5 @@
+block16  N=64  Y=0.2 P=16: P_h-free joint lower bound -0.3731 (/sum y^2 -0.583) = Q_pp 1.7498 + T_pp 0.3076 + V_env -2.1136 + tails -0.3170 | exact periodic LP 2.3230 (/sum y^2 3.630, P_h 0.864) | 7989 cells 5s
+block16  N=64  Y=0.4 P=16: P_h-free joint lower bound -1.7510 (/sum y^2 -0.684) = Q_pp 6.2630 + T_pp 1.4531 + V_env -7.6241 + tails -1.8429 | exact periodic LP 7.1961 (/sum y^2 2.811, P_h 1.710) | 7869 cells 5s
+comp8    N=64  Y=0.4 P= 8: P_h-free joint lower bound -0.1631 (/sum y^2 -0.317) = Q_pp 0.6532 + T_pp 1.1549 + V_env -1.6157 + tails -0.3555 | exact periodic LP 1.5713 (/sum y^2 3.056, P_h 0.533) | 5946 cells 3s
+comp4    N=64  Y=0.4 P= 4: P_h-free joint lower bound +0.8121 (/sum y^2 +2.335) = Q_pp 1.8796 + T_pp 1.5082 + V_env -2.3045 + tails -0.2711 | exact periodic LP 2.5184 (/sum y^2 7.240, P_h 0.226) | 4884 cells 3s
+comp8    N=64  Y=0.2 P= 8: P_h-free joint lower bound +0.0219 (/sum y^2 +0.170) = Q_pp 0.3377 + T_pp 0.1224 + V_env -0.3720 + tails -0.0661 | exact periodic LP 0.5259 (/sum y^2 4.091, P_h 0.238) | 6004 cells 4s

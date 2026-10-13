@@ -1,0 +1,2 @@
+CHECK family:winopt_smoothfit_single_N24.json N=24: kappa_D,N (single defect) 0.6812691 | typed LP min p 0.6814746 (c0 free), c0=1 value 0.6812691 at type (1, 0) | Delta_1 23.2524
+  energy per double-equivalent / Delta_1: 1,0:1.00000 2,0:1.00024 3,0:1.00053 4,0:1.00071 5,0:1.00075 6,0:1.00084 7,0:1.00305 8,0:1.00454

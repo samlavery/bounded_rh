@@ -1,0 +1,7 @@
+delta=0.001 cN=803824 regions=16 env AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin8_try1.json GSH=5 TWOGRID=1 WMIN=9 DLO=8 DHI=9
+  root 4 (0, 0, 0, 1, 0, 0, 0): 11207 leaves
+  ... 20000 leaves (Z 3738, S 0, B 0, 2nd 0, M 15458) mtests [35470, 15550, 15458] (264s)
+  root 17 (0, 1, 0, 0, 0, 1, 0): 12068 leaves
+  bisection: 23275 leaves (Z 4816, S 0, basin 0); face nodes 0 (collapses 0) (300s)
+  fix-up: 1 re-decided; tables: w 992 cells, d 966 cells, 1485 points (3240 point cells); failing 0 (305s)
+leaves 23275 Z 4816 M 17542 reflected 917 w 992 d 966 pts 1485 ptc 3240 bad 0 (305s)

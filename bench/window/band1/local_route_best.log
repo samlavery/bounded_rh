@@ -1,0 +1,12 @@
+window winopt_smoothfit_single_N24.json: K(0) = F(0)^2 = 1.00000000, qf(0) = 1.023971; lattice check sum_n K(n) = 1.02397147 (= qf(0))
+band-limited global certificate (A = 1, closed form): delta' = inf qf/(1-a) / 2 = 0.270524 at a = 0.9596  -> 27.05% of delta_true 1.000000
+window winopt_smoothfit_single_N24.json: e_inf 0.154656, qf(0) 1.023971
+R= 2: t_R 1.15e-03 | delta_R 0.404441 | two-dipole energy per defect / delta_R 1.01721 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.616185
+R= 3: t_R 1.93e-04 | delta_R 0.393495 | two-dipole energy per defect / delta_R 1.02784 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.606723
+R= 4: t_R 1.22e-04 | delta_R 0.393398 | two-dipole energy per defect / delta_R 1.03666 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.606716
+R= 5: t_R 1.20e-04 | delta_R 0.396391 | two-dipole energy per defect / delta_R 1.04447 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.609689
+R= 6: t_R 1.19e-04 | delta_R 0.400454 | two-dipole energy per defect / delta_R 1.05143 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.613649
+R= 8: t_R 1.11e-04 | delta_R 0.480750 | two-dipole energy per defect / delta_R 1.00013 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.678188
+R=10: t_R 9.88e-05 | delta_R 0.481891 | two-dipole energy per defect / delta_R 0.99998 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.678954
+R=14: t_R 7.64e-05 | delta_R 0.482824 | two-dipole energy per defect / delta_R 1.00017 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.679605
+R=20: t_R 3.75e-05 | delta_R 0.483377 | two-dipole energy per defect / delta_R 1.00018 | all-simple min (Phi_R + N t_R)/N -2.66e-11 -> extra loss 2.7e-11 | kappa_local 0.680012

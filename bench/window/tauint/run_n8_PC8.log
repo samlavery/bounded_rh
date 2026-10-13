@@ -1,0 +1,42 @@
+final6 PC8: SA 100000000 cN 805003 B 404350 m 148 Phi 0.6734812767 kappa 6734812/10000000 = 0.6734812
+window/tauint/PC8T.lean: 1711077 bytes (layer 1691487, mt block 0); modules ['Window', 'Kernel', 'Moments', 'Swap', 'Constant', 'Floor', 'Params', 'Trig', 'Adm', 'Profile', 'PV', 'ZeroSide', 'Concrete', 'BHalf', 'BrA', 'BrB', 'BrC', 'AMTail', 'BrTau', 'BrProf', 'GIv', 'GCell', 'GSinc', 'GMT', 'GTaylor', 'GBase', 'GConst', 'GFar', 'GNear', 'GAsm1', 'GAsm2', 'GCellSound', 'CFacade', 'CEngine', 'CMin', 'CMinX', 'CWindow', 'PCellCore', 'PCellGen', 'PCellLeaf', 'PCellRoot', 'PCellTZ', 'PCellZ', 'PCellLeafZ', 'PCellT1', 'PC8Inst', 'PC8Data']; dropped ['AMS02Data', 'AMS02Inst', 'AMS02Line', 'AMS02Min', 'AMT8Data', 'AMT8Inst', 'AMX002Data', 'AMX002Inst', 'AMX003Data', 'AMX003Inst', 'AMX005Data', 'AMX005Inst', 'AMX01Data', 'AMX01Inst', 'AMX05Data', 'AMX05Inst', 'BrProfAx', 'CMLeaf', 'GBench', 'GChk', 'GChk2', 'GChk3', 'GChk4', 'GXchk', 'LeverAM', 'LeverOracle', 'LeverTable', 'LineMode', 'MemT_D', 'MemT_N', 'MemT_P', 'MemT_W', 'MinMode', 'Minorant', 'PC8Ax', 'PC8ZB', 'PCellHuff', 'PSDBasin', 'TanChord']; imports 16
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      678.58 real       663.05 user        15.93 sys
+          7296475016  peak memory footprint
+BUILD EXIT 0
+module constants: 5942; imports: 18
+kernel replay of 5942 constants: 410109 ms
+      428.13 real       407.71 user        16.87 sys
+          6240435984  peak memory footprint
+REPLAY EXIT 0
+constants in module: 5942, live: 5159
+window/tauint/PC8T.lean: 1711077 B -> window/tauint/PC8TS.lean: 1549634 B  (dead declarations -75343, comments/blank -75054, indentation -11046; total -161443)
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      650.16 real       637.79 user        15.17 sys
+          7159635752  peak memory footprint
+BUILD EXIT 0
+module constants: 5767; imports: 18
+kernel replay of 5767 constants: 408707 ms
+      425.59 real       406.33 user        16.15 sys
+          6239059560  peak memory footprint
+REPLAY EXIT 0
+== stage
+== CandPC8TS export
+export exit 0
+       40.05 real        26.71 user        10.69 sys
+          1592807032  peak memory footprint
+export bytes 662402727
+== CandPC8TS nanoda
+nanoda exit 0
+      421.63 real       405.99 user        15.32 sys
+          8919080400  peak memory footprint
+== CandPC8TS lean replay (full closure)
+parse_ms 15910 constants 76444
+replay_ms 471920 OK
+replayx exit 0
+      488.06 real       481.57 user         6.15 sys
+          4401614544  peak memory footprint

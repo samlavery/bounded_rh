@@ -1,0 +1,13 @@
+leaf order check: 14906 / 14906 boxes match
+(a) perfect far-field test: leaves after collapsing all-far subtrees (t570 dump, 14906 leaves)
+   theta 1e-01:   7896 leaves (53.0% of 14906)
+   theta 3e-02:   3719 leaves (24.9% of 14906)
+   theta 1e-02:   1598 leaves (10.7% of 14906)
+   theta 3e-03:    639 leaves (4.3% of 14906)
+   theta 1e-03:    107 leaves (0.7% of 14906)
+(b) second-order vs tangent: per-leaf isotropic enlargement gain = lam2/lam1 (median, 10%, 90%) by excess band
+   eps in (-, 0.001]:     3 leaves, gain median 6.85 [6.48, 9.25], saved levels mean 20.33
+   eps in (0.001, 0.01]:   118 leaves, gain median 4.63 [4.06, 5.59], saved levels mean 12.57
+   eps in (0.01, 0.1]:  2160 leaves, gain median 2.99 [2.65, 3.58], saved levels mean 6.19
+   eps in (0.1, inf]: 12625 leaves, gain median 2.13 [1.73, 2.58], saved levels mean 3.58
+   proxy leaf count with second-order minorants: 4810 (32.3% of 14906)

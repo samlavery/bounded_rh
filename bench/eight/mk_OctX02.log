@@ -1,0 +1,8 @@
+[OctX02] 16 convex regions, 235 chain cells
+  ... 20000 leaves (Z 3869, S 0, B 0, 2nd 0, M 14980) mtests [34974, 15034, 14980] (214s)
+  bisection: 20954 leaves (Z 4187, S 0, basin 0); face nodes 0 (collapses 0) (222s)
+  fix-up: 0 re-decided; tables: w 992 cells, d 832 cells, 1813 points (2975 point cells); failing 0 (226s)
+[OctX02] sizing: 20954 leaves (Z 4187, S 0, basin 0); points 1813 (2975 point cells) (226s)
+[OctX02] re-verified on the final tables: Z 4187, M 15575, reflected 1192; failures 0
+[OctX02] point table: 1813 points, 104 blocks, 2975 stored triples
+[OctX02] delta=0.0002 cN=703436 leaves=20954 (Z 4187, M 15575, reflected 1192) w=992 d=832 points=1813 chunks=43 bits=2683723 order=[7, 25, 13, 22, 18, 0, 27, 23, 8, 14, 19, 20, 9, 15, 26, 1, 21, 3, 17, 11, 12, 4, 5, 6, 10, 16, 2, 24] data=907219 checker=362227 (232s)

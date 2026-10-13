@@ -1,0 +1,14 @@
+R=4: delta_R 0.393398; gaps around the double (sorted, centred): [1.015 1.015 1.015 1.015 1.015 1.015 1.015 1.015 1.013 1.008 1.05  1.05
+ 1.008 1.013 1.015 1.015 1.015 1.015 1.015 1.015 1.015 1.015]
+R=6: delta_R 0.400454; gaps around the double (sorted, centred): [1.015 1.015 1.015 1.015 1.015 1.016 1.015 1.014 1.011 1.005 1.047 1.047
+ 1.005 1.011 1.014 1.015 1.016 1.015 1.015 1.015 1.015 1.015]
+R=8: delta_R 0.480750; gaps around the double (sorted, centred): [1.002 1.002 1.002 1.001 1.002 1.003 1.007 1.015 1.037 1.715 1.073 1.047
+ 0.997 0.999 1.    1.001 1.001 1.002 1.002 1.002 1.002 1.002]
+R=10: delta_R 0.481891; gaps around the double (sorted, centred): [1.001 1.001 1.001 1.001 1.002 1.004 1.008 1.016 1.037 1.752 1.071 1.046
+ 0.997 0.999 1.    1.    1.    1.001 1.001 1.002 1.002 1.001]
+R=8 started from the R=4 minimiser: delta_R 0.409712
+R=8 started from the R=6 minimiser: delta_R 0.409712
+R=10 started from the R=4 minimiser: delta_R 0.419319
+R=10 started from the R=6 minimiser: delta_R 0.419319
+R=14 started from the R=4 minimiser: delta_R 0.437750
+R=14 started from the R=6 minimiser: delta_R 0.437750

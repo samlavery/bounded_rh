@@ -1,0 +1,52 @@
+provenance: typh-derived engine modules ['CEngine', 'GFar', 'GCell']
+final6 PC8C5U: SA 100000000 cN 805124 B 404350 m 152 Phi 0.6734832051 kappa 6734832/10000000 = 0.6734832
+window/tauint/PC8C5UT.lean: 1864337 bytes (layer 1842861, mt block 0); modules ['Window', 'Kernel', 'Moments', 'Swap', 'Constant', 'Floor', 'Params', 'Trig', 'Adm', 'Profile', 'PV', 'ZeroSide', 'Concrete', 'BHalf', 'BrA', 'BrB', 'BrC', 'AMTail', 'BrTau', 'BrProf', 'BrSqrtWS', 'GIv', 'GCell', 'GSinc', 'GMT', 'GTaylor', 'GBase', 'GConst', 'GFar', 'GNear', 'GAsm1', 'GAsm2', 'GCellSound', 'CFacade', 'CEngine', 'CMin', 'CMinX', 'CWindow', 'PCellCore', 'PCellGen', 'PCellLeaf', 'PCellRoot', 'PCellTZ', 'PCellZ', 'PCellLeafZ', 'PCellT1', 'PCellClose', 'PC8C5UInst', 'PC8C5UData']; dropped ['AMS02Data', 'AMS02Inst', 'AMS02Line', 'AMS02Min', 'AMT8BP', 'AMT8Data', 'AMT8Inst', 'AMT8MC', 'AMT8MO', 'AMT8MP', 'AMT8MS', 'AMT8MZ', 'AMT8S', 'AMT8S3', 'AMT8S4', 'AMT8V1', 'AMT8V2', 'AMT8V3', 'AMT8VB', 'AMT8VC', 'AMT8VK', 'AMT8VL', 'AMT8VP', 'AMT8VQ', 'AMT8VS', 'AMT8VS2', 'AMT8VW', 'AMT8VW2', 'AMT8VZ', 'AMX002Data', 'AMX002Inst', 'AMX003Data', 'AMX003Inst', 'AMX005Data', 'AMX005Inst', 'AMX01Data', 'AMX01Inst', 'AMX05Data', 'AMX05Inst', 'BrSqrtWSK', 'CMLeaf', 'GBench', 'GChk', 'GChk2', 'GChk3', 'GChk4', 'GXchk', 'LeverAM', 'LeverOracle', 'LeverTable', 'LineMode', 'MemT_D', 'MemT_N', 'MemT_P', 'MemT_W', 'MinMode', 'Minorant', 'PC8C5Ax', 'PC8C5Data', 'PC8C5Inst', 'PC8C5UAx', 'PC8CFAx', 'PC8CFData', 'PC8CFInst', 'PC8FAx', 'PC8FB', 'PC8FData', 'PC8FInst', 'PCell3', 'PCell3Ax', 'PCell3H', 'PCell3HAx', 'PCell3HI', 'PCell3HR', 'PCell3HRI', 'PCell3I', 'PCell3R', 'PCell3RI', 'PCell3T', 'PCell3TAx', 'PCell3TI', 'PCell3TR', 'PCell3TRI', 'PCellH7', 'PCellH7Ax', 'PCellH8B', 'PCellHB7', 'PCellHG7', 'PCellHGN', 'PCellHGT', 'PCellHL7', 'PCellHW8B', 'PCellHuff', 'PCellM8B', 'PCellT7', 'PCellT7Ax', 'PCellT7B', 'PCellT7BE', 'PCellT7BL', 'PCellT7BP', 'PCellT7Z', 'PCellTZG', 'PCellV8B', 'PCellV8K0', 'PCellV8N0', 'PCellV8N1', 'PCellV8N2', 'PCellZAx', 'PS8DP', 'PS8Data', 'PS8Inst', 'PS8UP', 'PS9Ax', 'PS9DP', 'PS9Data', 'PS9Inst', 'PS9UP', 'PSDBasin', 'TanChord']; imports 16
+[private_check] waiting 20:58:28
+[private_check] waiting 20:58:58
+[private_check] waiting 20:59:28
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      579.08 real       549.50 user        20.60 sys
+          5350529752  peak memory footprint
+BUILD EXIT 0
+module constants: 5858; imports: 18
+kernel replay of 5858 constants: 261636 ms
+      293.81 real       250.39 user        22.47 sys
+          4217125208  peak memory footprint
+REPLAY EXIT 0
+constants in module: 5858, live: 5079
+window/tauint/PC8C5UT.lean: 1864337 B -> window/tauint/PC8C5UTS.lean: 1704258 B  (dead declarations -63583, comments/blank -82666, indentation -13830; total -160079)
+SIZE PC8C5UTS.lean 1704258 B (watch 1900000, cap 2000000)
+[private_check] waiting 21:16:18
+[private_check] waiting 21:16:48
+[private_check] waiting 21:17:19
+[private_check] waiting 21:17:49
+[private_check] waiting 21:18:19
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      549.37 real       521.11 user        20.76 sys
+          5246065224  peak memory footprint
+BUILD EXIT 0
+module constants: 5687; imports: 18
+kernel replay of 5687 constants: 252256 ms
+      297.04 real       249.72 user        24.34 sys
+          4218566928  peak memory footprint
+REPLAY EXIT 0
+== stage
+== CandPC8C5UTS export
+export exit 0
+       49.83 real        30.03 user        14.33 sys
+          1592331800  peak memory footprint
+export bytes 661205797
+== CandPC8C5UTS nanoda
+nanoda exit 0
+      254.80 real       245.31 user         9.12 sys
+          4061253040  peak memory footprint
+== CandPC8C5UTS lean replay (full closure)
+parse_ms 15416 constants 76364
+replay_ms 267317 OK
+replayx exit 0
+      283.78 real       277.89 user         4.66 sys
+          2412382512  peak memory footprint

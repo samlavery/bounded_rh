@@ -1,0 +1,284 @@
+OctZ4.lean:315:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:317:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:319:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:321:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:323:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:325:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:327:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:329:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:331:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:333:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:335:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:337:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:339:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:341:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:343:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:345:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:347:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:349:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:351:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:353:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:355:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:357:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:359:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:361:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:363:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:365:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:367:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:369:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctZ4.lean:439:2: warning: 'push_cast at hb0' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctZ4.lean:457:2: warning: 'push_cast at hb7' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctZ4.lean:475:2: warning: 'push_cast at hb13' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctZ4.lean:490:2: warning: 'push_cast at hb18' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctZ4.lean:502:2: warning: 'push_cast at hb22' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctZ4.lean:508:2: warning: 'push_cast at hb25' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctZ4.lean:514:2: warning: 'push_cast at hb27' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctZ4.lean:928:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctZ4.lean:958:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctZ4.lean:988:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctZ4.lean:1018:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctZ4.lean:1048:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctZ4.lean:1078:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctZ4.lean:1108:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+       34.91 real        51.85 user         9.94 sys
+          7150960640  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              504179  page reclaims
+               16154  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                7999  voluntary context switches
+               41091  involuntary context switches
+        459247888441  instructions retired
+        201493950384  cycles elapsed
+          2240647976  peak memory footprint

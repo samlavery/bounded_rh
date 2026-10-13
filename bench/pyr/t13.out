@@ -1,0 +1,38 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:02:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:03:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:03:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:04:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:04:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:05:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:05:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:06:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:06:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:07:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:07:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:08:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:08:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:09:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:09:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:10:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:10:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:11:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:11:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:12:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:12:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:13:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:13:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:14:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:14:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:15:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:15:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:16:17)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:16:47)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:17:17)
+mb/T13_cosLoTUZ.lean 38.5ms
+mb/T13_CXZ.lean 136ms
+mb/T13_DHIZ.lean 23.9ms
+mb/T13_NLOZ.lean 519ms
+mb/T13_okC.lean 217ms
+mb/T13_okZ.lean 726ms
+mb/T13_trig4.lean 119ms
+mb/T13_TUZ.lean 20.4ms

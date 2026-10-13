@@ -1,0 +1,10 @@
+W=50: min N E_T -3.0779 (from random2); others -1.655 -1.091 -1.091 -1.091 -1.091
+   gaps: first 8 [2.923 1.037 1.023 1.017 1.013 1.011 1.009 1.009] | last 8 [1.018 1.026 1.044 1.328 0.    0.    0.    0.   ] | bulk mean 1.0048 sd 0.0006 min 1.0043 max 1.0063; points at the walls: 5
+W=100: min N E_T -3.7376 (from random0); others -3.171 -1.163 -1.163 -1.163 -1.163
+   gaps: first 8 [0.827 0.916 0.955 0.973 0.983 0.988 0.992 0.994] | last 8 [1.037 4.246 0.    0.    0.    0.    0.    0.   ] | bulk mean 1.0510 sd 0.2664 min 0.9998 max 2.8626; points at the walls: 8
+W=200: min N E_T -4.2891 (from random1); others -2.142 -1.824 -1.231 -1.231 -1.231
+   gaps: first 8 [1.041 1.023 1.016 1.011 1.009 1.007 1.006 1.006] | last 8 [1.038 1.31  0.    0.    0.    0.    0.    0.   ] | bulk mean 1.0261 sd 0.1474 min 1.0006 max 1.9607; points at the walls: 7
+W=300: min N E_T -5.0383 (from random0); others -2.292 -1.271 -1.271 -1.271 -1.271
+   gaps: first 8 [0.    1.99  1.043 1.94  1.039 1.931 1.023 1.013] | last 8 [0. 0. 0. 0. 0. 0. 0. 0.] | bulk mean 1.0276 sd 0.1522 min 1.0004 max 1.9504; points at the walls: 10
+W=400: min N E_T -4.3670 (from random2); others -1.298 -1.298 -1.298 -1.298 -0.909
+   gaps: first 8 [1.039 1.022 1.015 1.011 1.008 1.007 1.006 1.006] | last 8 [1.3 0.  0.  0.  0.  0.  0.  0. ] | bulk mean 1.0145 sd 0.1199 min 0.9747 max 1.9469; points at the walls: 8

@@ -1,0 +1,19 @@
+R8: H = 0.6721684106; PC8SF: c = 0.00805124, m = 152, R = g(c(m-q)) = 1.16729912 (c(m-q) = 1.167430, tau = 1.142857)
+
+P3 [1.0382,1.9618]  (mean gap 1.50000)
+  eigenvalues of G_152 in [0.92236, 1.05563]  (clip level 2 NOT reached)
+  per point: Ef (step a, infinite) 0.002347435 | Frobenius_152/m 0.002315217 | trPhi_152/m 0.002315217 | trPhi_1200/1200 0.002343234
+  per block (m=152): trPhi 0.351913  Eband 0.345098  PairSum 0.332197  Press 0.879461  R 1.167299
+  slack per block: L1 0.006815  L2c 0.012496  L2l 0.001410  L3 0.043353  total 0.064075   (per point x1e4: 0.448 0.822 0.093 2.852)
+
+Q7 period 10  (mean gap 1.42857)
+  eigenvalues of G_152 in [0.91055, 1.05920]  (clip level 2 NOT reached)
+  per point: Ef (step a, infinite) 0.002736591 | Frobenius_152/m 0.002697548 | trPhi_152/m 0.002697548 | trPhi_1200/1200 0.002731224
+  per block (m=152): trPhi 0.410027  Eband 0.398677  PairSum 0.383540  Press 0.837582  R 1.167299
+  slack per block: L1 0.011351  L2c 0.014599  L2l 0.001834  L3 0.052527  total 0.080310   (per point x1e4: 0.747 0.960 0.121 3.456)
+
+P4 [1.0284,1.0284,1.9432]  (mean gap 1.33333)
+  eigenvalues of G_152 in [0.90437, 1.06102]  (clip level 2 NOT reached)
+  per point: Ef (step a, infinite) 0.003367947 | Frobenius_152/m 0.003318036 | trPhi_152/m 0.003318036 | trPhi_1200/1200 0.003358972
+  per block (m=152): trPhi 0.504342  Eband 0.488616  PairSum 0.470067  Press 0.781743  R 1.167299
+  slack per block: L1 0.015725  L2c 0.017658  L2l 0.003371  L3 0.082032  total 0.118786   (per point x1e4: 1.035 1.162 0.222 5.397)

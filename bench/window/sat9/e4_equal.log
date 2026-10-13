@@ -1,0 +1,12 @@
+equal depth y = 0.8 (N = 160)
+  y=0.8 all relaxed      P= 8: W/def    +5.056 | s   19.077 X     5.847 Q_pp  +5.932e+01 | M_near  2 ||S_near||  1.407 far     6.579 | chainCS     -144.73 chain2      +74.44 (2W      +80.13) | y [0.8 0.8 0.8 0.8 0.8 0.8]
+  y=0.8 all relaxed      P=16: W/def    +3.733 | s   38.037 X     5.548 Q_pp  +5.408e+01 | M_near  1 ||S_near||  0.997 far     6.764 | chainCS     -266.05 chain2     +112.33 (2W     +118.31) | y [0.8 0.8 0.8 0.8 0.8 0.8]
+  y=0.8 all relaxed      P=32: W/def    +2.562 | s   40.594 X     8.167 Q_pp  +1.018e+02 | M_near  2 ||S_near||  1.405 far     7.332 | chainCS     -937.46 chain2     +152.72 (2W     +162.41) | y [0.8 0.8 0.8 0.8 0.8 0.8]
+equal depth y = 1.0 (N = 160)
+  y=1.0 all relaxed      P= 8: W/def   +14.369 | s   20.726 X    12.706 Q_pp  +2.121e+02 | M_near  1 ||S_near||  0.997 far    14.498 | chainCS     -243.61 chain2     +213.69 (2W     +227.71) | y [1. 1. 1. 1. 1. 1.]
+  y=1.0 all relaxed      P=16: W/def    +7.346 | s   40.097 X    11.245 Q_pp  +1.764e+02 | M_near  1 ||S_near||  0.997 far    13.575 | chainCS     -549.08 chain2     +220.61 (2W     +232.81) | y [1. 1. 1. 1. 1. 1.]
+  y=1.0 all relaxed      P=32: W/def    +4.079 | s   54.813 X    11.259 Q_pp  +1.843e+02 | M_near  2 ||S_near||  1.405 far    14.709 | chainCS    -1264.52 chain2     +247.59 (2W     +258.57) | y [1. 1. 1. 1. 1. 1.]
+equal depth y = 1.5 (N = 160)
+  y=1.5 all relaxed      P= 8: W/def  +619.269 | s   23.244 X    98.483 Q_pp  +9.944e+03 | M_near  0 ||S_near||  0.000 far   176.646 | chainCS    +6417.29 chain2    +9813.49 (2W    +9813.49) | y [1.5 1.5 1.5 1.5 1.5 1.5]
+  y=1.5 all relaxed      P=16: W/def  +314.742 | s   46.613 X    97.132 Q_pp  +1.011e+04 | M_near  1 ||S_near||  0.997 far   155.857 | chainCS    +2961.32 chain2    +9849.01 (2W    +9975.36) | y [1.5 1.5 1.5 1.5 1.5 1.5]
+  y=1.5 all relaxed      P=32: W/def  +134.201 | s   80.618 X    89.714 Q_pp  +8.545e+03 | M_near  1 ||S_near||  0.997 far   135.068 | chainCS    -3588.06 chain2    +8391.82 (2W    +8506.67) | y [1.5 1.5 1.5 1.5 1.5 1.5]

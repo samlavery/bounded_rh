@@ -1,0 +1,21 @@
+rb16@0.4 P=16: LB +1.2462  V_env -6.0244  chain: 2007 points, mass 4014, one-body -6.1216, bonds+cluster +0.0972
+   0-3          mass    8 (doubles   4)  field -5.1030  env-pair g +0.3330  band +0.1324  low +0.2215  | one-body/mass -0.55200
+   3-10         mass   28 (doubles  14)  field -1.8022  env-pair g +0.0511  band -0.0858  low +0.7229  | one-body/mass -0.03979
+   10-20        mass   10 (doubles   5)  field -0.2413  env-pair g +0.0094  band -0.0216  low +0.2296  | one-body/mass -0.00238
+   20-50        mass   72 (doubles  36)  field -0.2404  env-pair g +0.0098  band -0.0177  low +0.1380  | one-body/mass -0.00153
+   50-150       mass  400 (doubles 200)  field -0.3290  env-pair g +0.0137  band -0.0236  low +0.1206  | one-body/mass -0.00055
+   150+         mass 3496 (doubles 1748)  field -0.1624  env-pair g +0.0000  band -0.0824  low +0.0058  | one-body/mass -0.00007
+rb32@0.4 P=32: LB +1.4437  V_env -6.7018  chain: 2028 points, mass 4056, one-body -6.8077, bonds+cluster +0.1060
+   0-3          mass    8 (doubles   4)  field -5.0944  env-pair g +0.3123  band +0.1350  low +0.2262  | one-body/mass -0.55261
+   3-10         mass   28 (doubles  14)  field -1.9487  env-pair g +0.1297  band -0.1185  low +0.7391  | one-body/mass -0.04280
+   10-20        mass   22 (doubles  11)  field -0.5315  env-pair g +0.0273  band -0.0381  low +0.4701  | one-body/mass -0.00329
+   20-50        mass  102 (doubles  51)  field -0.6256  env-pair g +0.0361  band -0.0339  low +0.3877  | one-body/mass -0.00231
+   50-150       mass  400 (doubles 200)  field -0.5426  env-pair g +0.0217  band -0.0474  low +0.1381  | one-body/mass -0.00108
+   150+         mass 3496 (doubles 1748)  field -0.3002  env-pair g +0.0000  band -0.1602  low +0.0102  | one-body/mass -0.00013
+rb64@0.4 P=64: LB +1.6275  V_env -7.7317  chain: 2045 points, mass 4090, one-body -7.8500, bonds+cluster +0.1183
+   0-3          mass    8 (doubles   4)  field -5.0908  env-pair g +0.3204  band +0.1298  low +0.2291  | one-body/mass -0.55144
+   3-10         mass   28 (doubles  14)  field -2.0323  env-pair g +0.1342  band -0.1235  low +0.7474  | one-body/mass -0.04551
+   10-20        mass   38 (doubles  19)  field -0.9213  env-pair g +0.0408  band -0.0563  low +0.7738  | one-body/mass -0.00429
+   20-50        mass  120 (doubles  60)  field -1.0895  env-pair g +0.0543  band -0.0524  low +0.6396  | one-body/mass -0.00373
+   50-150       mass  400 (doubles 200)  field -0.8290  env-pair g +0.0294  band -0.0994  low +0.1649  | one-body/mass -0.00184
+   150+         mass 3496 (doubles 1748)  field -0.5380  env-pair g +0.0000  band -0.3006  low +0.0196  | one-body/mass -0.00023

@@ -1,0 +1,15 @@
+== CandAT7 export
+export exit 0
+       45.95 real        31.63 user        10.78 sys
+          1590611408  peak memory footprint
+export bytes 657842716
+== CandAT7 nanoda
+nanoda exit 0
+      276.04 real       266.32 user         9.52 sys
+          4788457936  peak memory footprint
+== CandAT7 lean replay (full closure)
+parse_ms 15781 constants 74719
+replay_ms 253317 OK
+replayx exit 0
+      269.29 real       266.20 user         2.96 sys
+          3027700376  peak memory footprint

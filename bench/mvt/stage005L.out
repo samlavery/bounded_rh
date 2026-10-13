@@ -1,0 +1,15 @@
+== Cand005L export
+export exit 0
+       37.18 real        25.32 user         9.33 sys
+          1575390744  peak memory footprint
+export bytes 643967835
+== Cand005L nanoda
+nanoda exit 0
+      234.75 real       227.38 user         7.34 sys
+          5073785008  peak memory footprint
+== Cand005L lean replay (full closure)
+parse_ms 14458 constants 74184
+replay_ms 329886 OK
+replayx exit 0
+      344.51 real       342.77 user         1.29 sys
+          1309410792  peak memory footprint

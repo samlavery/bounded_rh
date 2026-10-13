@@ -1,0 +1,74 @@
+{
+ "leaves": 10077,
+ "mleaves": 9732,
+ "orig_bits": 3154179,
+ "A": {
+  "bits": 2928413,
+  "bits_per_leaf": 290.60365188052,
+  "hexKB": 732.10325,
+  "symbols_per_Mleaf": 17.0,
+  "length_iterations_per_Mleaf": 44.801685162351006,
+  "context_reads_per_Mleaf": 17.0,
+  "escapes": 0
+ },
+ "B": {
+  "bits": 2631460,
+  "bits_per_leaf": 261.135258509477,
+  "hexKB": 657.865,
+  "symbols_per_Mleaf": 22.91574188244965,
+  "length_iterations_per_Mleaf": 106.69882860665845,
+  "context_reads_per_Mleaf": 22.91574188244965,
+  "escapes": 0
+ },
+ "C": {
+  "bits": 3084205,
+  "bits_per_leaf": 306.0638086732162,
+  "hexKB": 771.05125,
+  "symbols_per_Mleaf": 6.889745170571311,
+  "length_iterations_per_Mleaf": 61.707357172215374,
+  "context_reads_per_Mleaf": 6.889745170571311,
+  "escapes": 0
+ },
+ "A+B": {
+  "bits": 2405694,
+  "bits_per_leaf": 238.73116999106878,
+  "hexKB": 601.4235,
+  "symbols_per_Mleaf": 39.91574188244965,
+  "length_iterations_per_Mleaf": 151.50051376900944,
+  "context_reads_per_Mleaf": 39.91574188244965,
+  "escapes": 0
+ },
+ "A+B+C": {
+  "bits": 2335720,
+  "bits_per_leaf": 231.78723826535676,
+  "hexKB": 583.93,
+  "symbols_per_Mleaf": 46.80548705302096,
+  "length_iterations_per_Mleaf": 213.20787094122483,
+  "context_reads_per_Mleaf": 46.80548705302096,
+  "escapes": 0
+ },
+ "table_A": {
+  "contexts": 17,
+  "symbols": 286,
+  "literal_bytes": 1041,
+  "dispatch_bytes_est": 1173,
+  "total_bytes": 2214,
+  "max_len": 14
+ },
+ "table_B": {
+  "contexts": 68,
+  "symbols": 3777,
+  "literal_bytes": 11206,
+  "dispatch_bytes_est": 4692,
+  "total_bytes": 15898,
+  "max_len": 13
+ },
+ "table_C": {
+  "contexts": 2,
+  "symbols": 1537,
+  "literal_bytes": 4352,
+  "dispatch_bytes_est": 138,
+  "total_bytes": 4490,
+  "max_len": 14
+ }
+}

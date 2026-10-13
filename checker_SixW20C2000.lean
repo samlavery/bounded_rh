@@ -1,0 +1,1750 @@
+
+/-! ###### integer cell pipeline for the pyramid certificate `SixW20C2000` ###### -/
+
+section SixW20C2000Cells
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+structure CellN where
+  (key : ℕ) (WN : ℕ)
+
+instance : Inhabited CellN := ⟨⟨0, 0⟩⟩
+
+def SC : ℕ := 32768
+def SW : ℕ := 10000000000000
+
+/-- a cell's endpoints are packed into one key `LN * KB + UN` (every coordinate is below `KB`) -/
+def KB : ℕ := 1048576
+def CellN.LN (c : CellN) : ℕ := c.key / KB
+def CellN.UN (c : CellN) : ℕ := c.key % KB
+
+/-- the anchor index `k` (anchor at `k/2`) nearest the cell's midpoint, and the side of that anchor the cell lies on -/
+def CellN.k (c : CellN) : ℕ := (2 * (c.LN + c.UN) + SC) / (2 * SC)
+def CellN.side (c : CellN) : Bool := Nat.ble (c.k * SC) (2 * c.LN)
+
+-- ZDEFS-BEGIN
+/-- the scale of the integer bounds -/
+def DZ : ℕ := 1000000000000000
+def DZ2 : ℕ := 500000000000000
+/-- π·10²⁰, below and above -/
+def PLN : ℕ := 314159265358979323846
+def PUN : ℕ := 314159265358979323847
+/-- γ·10¹⁰, below and above -/
+def GLN : ℕ := 8274992907
+def GUN : ℕ := 8274993018
+/-- the Taylor remainder, rounded up at scale `10¹⁵` -/
+def ERRD : ℕ := 2262000
+
+/-- floor and ceiling of `a / b` for naturals -/
+def ndiv (a b : ℕ) : ℕ := a / b
+def ndivc (a b : ℕ) : ℕ := (a + b - 1) / b
+
+/-- `cos (T / DZ)` by the twelve-term Taylor polynomial: positive and negative parts of the
+numerator over `3628800 · DZ¹⁰`. -/
+def cosP (T : ℕ) : ℕ := 3628800 * DZ^10 + 151200 * T^4 * DZ^6 + 90 * T^8 * DZ^2
+def cosN (T : ℕ) : ℕ := 1814400 * T^2 * DZ^8 + 5040 * T^6 * DZ^4 + T^10
+def sinP (T : ℕ) : ℕ := 39916800 * T * DZ^10 + 332640 * T^5 * DZ^6 + 110 * T^9 * DZ^2
+def sinN (T : ℕ) : ℕ := 6652800 * T^3 * DZ^8 + 7920 * T^7 * DZ^4 + T^11
+/-- lower / upper bounds of the polynomial values at scale `DZ` -/
+def cosLo (T : ℕ) : ℕ := ndiv (cosP T - cosN T) (3628800 * DZ^9)
+def cosHi (T : ℕ) : ℕ := ndivc (cosP T - cosN T) (3628800 * DZ^9)
+def sinLo (T : ℕ) : ℕ := ndiv (sinP T - sinN T) (39916800 * DZ^10)
+def sinHi (T : ℕ) : ℕ := ndivc (sinP T - sinN T) (39916800 * DZ^10)
+
+/-- floor / ceiling division of an integer by `DZ` -/
+def zfdiv (z : ℤ) : ℤ := if 0 ≤ z then ((ndiv z.toNat DZ : ℕ) : ℤ) else -((ndivc (-z).toNat DZ : ℕ) : ℤ)
+def zcdiv (z : ℤ) : ℤ := if 0 ≤ z then ((ndivc z.toNat DZ : ℕ) : ℤ) else -((ndiv (-z).toNat DZ : ℕ) : ℤ)
+
+def imulZZ (e : ℤ) (I : ℤ × ℤ) : ℤ × ℤ := if 0 ≤ e then (e * I.1, e * I.2) else (e * I.2, e * I.1)
+def iaddZ (I J : ℤ × ℤ) : ℤ × ℤ := (I.1 + J.1, I.2 + J.2)
+def isubZ (I J : ℤ × ℤ) : ℤ × ℤ := (I.1 - J.2, I.2 - J.1)
+
+namespace CellN
+/-- lower/upper integer bounds (scale `DZ`) of the cell's endpoints -/
+def LLO (c : CellN) : ℕ := ndiv (c.LN * DZ) SC
+def UHI (c : CellN) : ℕ := ndivc (c.UN * DZ) SC
+def AD (c : CellN) : ℕ := c.k * DZ2
+def RLO (c : CellN) : ℕ := if c.side then c.LLO - c.AD else c.AD - c.UHI
+def RHI (c : CellN) : ℕ := if c.side then c.UHI - c.AD else c.AD - c.LLO
+def TLZ (c : CellN) : ℕ := ndiv (PLN * c.RLO) 100000000000000000000
+def TUZ (c : CellN) : ℕ := ndivc (PUN * c.RHI) 100000000000000000000
+def CLZ (c : CellN) : ℤ := (cosLo c.TUZ : ℤ) - ERRD
+def CUZ (c : CellN) : ℤ := (cosHi c.TLZ : ℤ) + ERRD
+def SLZ (c : CellN) : ℤ := (sinLo c.TLZ : ℤ) - ERRD
+def SUZ (c : CellN) : ℤ := (sinHi c.TUZ : ℤ) + ERRD
+def cAZ (c : CellN) : ℤ := (csA c.k).1
+def sAZ (c : CellN) : ℤ := (csA c.k).2
+def CXZ (c : CellN) : ℤ × ℤ :=
+  if c.side then isubZ (imulZZ c.cAZ (c.CLZ, c.CUZ)) (imulZZ c.sAZ (c.SLZ, c.SUZ))
+  else iaddZ (imulZZ c.cAZ (c.CLZ, c.CUZ)) (imulZZ c.sAZ (c.SLZ, c.SUZ))
+def SXZ (c : CellN) : ℤ × ℤ :=
+  if c.side then iaddZ (imulZZ c.sAZ (c.CLZ, c.CUZ)) (imulZZ c.cAZ (c.SLZ, c.SUZ))
+  else isubZ (imulZZ c.sAZ (c.CLZ, c.CUZ)) (imulZZ c.cAZ (c.SLZ, c.SUZ))
+def BLZ (c : CellN) : ℕ := ndiv (PLN * c.LLO) 100000000000000000000
+def BUZ (c : CellN) : ℕ := ndivc (PUN * c.UHI) 100000000000000000000
+def P2LZ (c : CellN) : ℕ := ndiv (2 * GLN * c.BLZ) 10000000000
+def P2UZ (c : CellN) : ℕ := ndivc (2 * GUN * c.BUZ) 10000000000
+def TLOZ (c : CellN) : ℤ := zfdiv (min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1))
+def THIZ (c : CellN) : ℤ := zcdiv (max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2))
+def NLOZ (c : CellN) : ℤ := max 0 (max (c.CXZ.1 - c.THIZ) (c.TLOZ - c.CXZ.2))
+def DHIZ (c : CellN) : ℤ := ((ndivc (2 * c.BUZ * c.BUZ) DZ : ℕ) : ℤ) - DZ
+/-- the conditions of the integer check that do not involve the claimed bound -/
+def okC (c : CellN) : Bool :=
+  decide (c.LN ≤ c.UN) && decide (c.TUZ ≤ DZ)
+    && (if c.side then decide (c.k * SC ≤ 2 * c.LN) else decide (2 * c.UN ≤ c.k * SC))
+    && decide (cosN c.TUZ ≤ cosP c.TUZ) && decide (cosN c.TLZ ≤ cosP c.TLZ)
+    && decide (sinN c.TLZ ≤ sinP c.TLZ) && decide (sinN c.TUZ ≤ sinP c.TUZ)
+    && decide (DZ * DZ < 2 * c.BLZ * c.BLZ) && decide (0 < c.DHIZ)
+/-- the integer check of a claimed bound `WN` -/
+def okZ (c : CellN) : Bool :=
+  c.okC && decide ((c.WN : ℤ) * c.DHIZ * c.DHIZ ≤ c.NLOZ * c.NLOZ * SW)
+/-- the bound the pipeline certifies for the cell (0 outside its scope) -/
+def WZ (c : CellN) : ℕ :=
+  bif c.okC then ((c.NLOZ * c.NLOZ * SW) / (c.DHIZ * c.DHIZ)).toNat else 0
+end CellN
+-- ZDEFS-END
+
+end Zeta23Ext.Bridge.ThreePoint
+
+end SixW20C2000Cells
+
+noncomputable section
+
+open Real
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+-- ZLEMMAS-BEGIN
+/-! ### rounding lemmas -/
+
+theorem DZ_pos : (0:ℝ) < DZ := by norm_num [DZ]
+theorem DZ_ne : (DZ:ℝ) ≠ 0 := by norm_num [DZ]
+
+theorem ndiv_le (a b : ℕ) (hb : 0 < b) : ((ndiv a b : ℕ) : ℝ) ≤ (a : ℝ) / b := by
+  unfold ndiv
+  rw [le_div_iff₀ (by exact_mod_cast hb)]
+  exact_mod_cast Nat.div_mul_le_self a b
+
+theorem le_ndivc (a b : ℕ) (hb : 0 < b) : (a : ℝ) / b ≤ ((ndivc a b : ℕ) : ℝ) := by
+  unfold ndivc
+  rw [div_le_iff₀ (by exact_mod_cast hb)]
+  have h : a ≤ ((a + b - 1) / b) * b := by
+    have := Nat.lt_div_mul_add (a := a + b - 1) hb
+    omega
+  exact_mod_cast h
+
+theorem zfdiv_le (z : ℤ) : ((zfdiv z : ℤ) : ℝ) ≤ (z : ℝ) / DZ := by
+  unfold zfdiv
+  split_ifs with h
+  · have hz : (((z.toNat : ℕ) : ℤ) : ℝ) = (z : ℝ) := by rw [Int.toNat_of_nonneg h]
+    rw [Int.cast_natCast, ← hz, Int.cast_natCast]
+    exact ndiv_le _ _ (by norm_num [DZ])
+  · push_neg at h
+    have hz : ((((-z).toNat : ℕ) : ℤ) : ℝ) = ((-z : ℤ) : ℝ) := by rw [Int.toNat_of_nonneg (by linarith)]
+    rw [Int.cast_neg, Int.cast_natCast]
+    rw [Int.cast_natCast, Int.cast_neg] at hz
+    rw [show (z : ℝ) = -(((-z).toNat : ℕ) : ℝ) by linarith, neg_div]
+    exact neg_le_neg (le_ndivc _ _ (by norm_num [DZ]))
+
+theorem le_zcdiv (z : ℤ) : (z : ℝ) / DZ ≤ ((zcdiv z : ℤ) : ℝ) := by
+  unfold zcdiv
+  split_ifs with h
+  · have hz : (((z.toNat : ℕ) : ℤ) : ℝ) = (z : ℝ) := by rw [Int.toNat_of_nonneg h]
+    rw [Int.cast_natCast, ← hz, Int.cast_natCast]
+    exact le_ndivc _ _ (by norm_num [DZ])
+  · push_neg at h
+    have hz : ((((-z).toNat : ℕ) : ℤ) : ℝ) = ((-z : ℤ) : ℝ) := by rw [Int.toNat_of_nonneg (by linarith)]
+    rw [Int.cast_neg, Int.cast_natCast]
+    rw [Int.cast_natCast, Int.cast_neg] at hz
+    rw [show (z : ℝ) = -(((-z).toNat : ℕ) : ℝ) by linarith, neg_div]
+    exact neg_le_neg (ndiv_le _ _ (by norm_num [DZ]))
+
+/-! ### the Taylor polynomials at scale `DZ` -/
+
+theorem taylorCos_eq (T : ℕ) (h : cosN T ≤ cosP T) :
+    taylorCos ((T : ℝ) / DZ) = ((cosP T - cosN T : ℕ) : ℝ) / (3628800 * (DZ : ℝ)^10) := by
+  rw [Nat.cast_sub h]
+  unfold taylorCos cosP cosN
+  push_cast
+  have hD := DZ_ne
+  field_simp
+  ring
+
+theorem taylorSin_eq (T : ℕ) (h : sinN T ≤ sinP T) :
+    taylorSin ((T : ℝ) / DZ) = ((sinP T - sinN T : ℕ) : ℝ) / (39916800 * (DZ : ℝ)^11) := by
+  rw [Nat.cast_sub h]
+  unfold taylorSin sinP sinN
+  push_cast
+  have hD := DZ_ne
+  field_simp
+  ring
+
+theorem cosLo_le (T : ℕ) (h : cosN T ≤ cosP T) :
+    ((cosLo T : ℕ) : ℝ) / DZ ≤ taylorCos ((T : ℝ) / DZ) := by
+  rw [taylorCos_eq T h]
+  unfold cosLo
+  have := ndiv_le (cosP T - cosN T) (3628800 * DZ^9) (by norm_num [DZ])
+  rw [div_le_div_iff₀ DZ_pos (by norm_num [DZ])]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((ndiv (cosP T - cosN T) (3628800 * DZ ^ 9) : ℕ) : ℝ) * (3628800 * (DZ:ℝ) ^ 10)
+      = (((ndiv (cosP T - cosN T) (3628800 * DZ ^ 9) : ℕ) : ℝ)) * (3628800 * (DZ:ℝ)^9) * DZ := by ring
+    _ ≤ ((cosP T - cosN T : ℕ) : ℝ) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [le_div_iff₀ (by norm_num [DZ])] at this
+        exact this
+
+theorem le_cosHi (T : ℕ) (h : cosN T ≤ cosP T) :
+    taylorCos ((T : ℝ) / DZ) ≤ ((cosHi T : ℕ) : ℝ) / DZ := by
+  rw [taylorCos_eq T h]
+  unfold cosHi
+  have := le_ndivc (cosP T - cosN T) (3628800 * DZ^9) (by norm_num [DZ])
+  rw [div_le_div_iff₀ (by norm_num [DZ]) DZ_pos]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((cosP T - cosN T : ℕ) : ℝ) * DZ
+      ≤ ((ndivc (cosP T - cosN T) (3628800 * DZ ^ 9) : ℕ) : ℝ) * (3628800 * (DZ:ℝ)^9) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [div_le_iff₀ (by norm_num [DZ])] at this
+        exact this
+    _ = _ := by ring
+
+theorem sinLo_le (T : ℕ) (h : sinN T ≤ sinP T) :
+    ((sinLo T : ℕ) : ℝ) / DZ ≤ taylorSin ((T : ℝ) / DZ) := by
+  rw [taylorSin_eq T h]
+  unfold sinLo
+  have := ndiv_le (sinP T - sinN T) (39916800 * DZ^10) (by norm_num [DZ])
+  rw [div_le_div_iff₀ DZ_pos (by norm_num [DZ])]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((ndiv (sinP T - sinN T) (39916800 * DZ ^ 10) : ℕ) : ℝ) * (39916800 * (DZ:ℝ) ^ 11)
+      = (((ndiv (sinP T - sinN T) (39916800 * DZ ^ 10) : ℕ) : ℝ)) * (39916800 * (DZ:ℝ)^10) * DZ := by ring
+    _ ≤ ((sinP T - sinN T : ℕ) : ℝ) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [le_div_iff₀ (by norm_num [DZ])] at this
+        exact this
+
+theorem le_sinHi (T : ℕ) (h : sinN T ≤ sinP T) :
+    taylorSin ((T : ℝ) / DZ) ≤ ((sinHi T : ℕ) : ℝ) / DZ := by
+  rw [taylorSin_eq T h]
+  unfold sinHi
+  have := le_ndivc (sinP T - sinN T) (39916800 * DZ^10) (by norm_num [DZ])
+  rw [div_le_div_iff₀ (by norm_num [DZ]) DZ_pos]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((sinP T - sinN T : ℕ) : ℝ) * DZ
+      ≤ ((ndivc (sinP T - sinN T) (39916800 * DZ ^ 10) : ℕ) : ℝ) * (39916800 * (DZ:ℝ)^10) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [div_le_iff₀ (by norm_num [DZ])] at this
+        exact this
+    _ = _ := by ring
+
+theorem ERRD_ge : taylorErr ≤ (ERRD : ℝ) / DZ := by norm_num [taylorErr, ERRD, DZ]
+
+/-! ### interval operations at scale `DZ` -/
+
+theorem imulZZ_sound (e : ℤ) (I : ℤ × ℤ) {f : ℝ} (h1 : (I.1 : ℝ) / DZ ≤ f) (h2 : f ≤ (I.2 : ℝ) / DZ) :
+    ((imulZZ e I).1 : ℝ) / DZ ≤ (e : ℝ) * f ∧ (e : ℝ) * f ≤ ((imulZZ e I).2 : ℝ) / DZ := by
+  unfold imulZZ
+  have hD := DZ_pos
+  split_ifs with he
+  · have he' : (0:ℝ) ≤ e := by exact_mod_cast he
+    simp only; push_cast
+    constructor
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_left h1 he'
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_left h2 he'
+  · have he' : (e:ℝ) ≤ 0 := by push_neg at he; exact_mod_cast he.le
+    simp only; push_cast
+    constructor
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonpos_left h2 he'
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonpos_left h1 he'
+
+theorem iaddZ_sound (I J : ℤ × ℤ) {f g : ℝ} (hI : (I.1:ℝ) / DZ ≤ f ∧ f ≤ (I.2:ℝ) / DZ)
+    (hJ : (J.1:ℝ) / DZ ≤ g ∧ g ≤ (J.2:ℝ) / DZ) :
+    ((iaddZ I J).1 : ℝ) / DZ ≤ f + g ∧ f + g ≤ ((iaddZ I J).2 : ℝ) / DZ := by
+  unfold iaddZ; simp only; push_cast; rw [add_div, add_div]
+  constructor <;> linarith [hI.1, hI.2, hJ.1, hJ.2]
+
+theorem isubZ_sound (I J : ℤ × ℤ) {f g : ℝ} (hI : (I.1:ℝ) / DZ ≤ f ∧ f ≤ (I.2:ℝ) / DZ)
+    (hJ : (J.1:ℝ) / DZ ≤ g ∧ g ≤ (J.2:ℝ) / DZ) :
+    ((isubZ I J).1 : ℝ) / DZ ≤ f - g ∧ f - g ≤ ((isubZ I J).2 : ℝ) / DZ := by
+  unfold isubZ; simp only; push_cast; rw [sub_div, sub_div]
+  constructor <;> linarith [hI.1, hI.2, hJ.1, hJ.2]
+
+/-! ### the integer cell check is sound -/
+
+theorem PLN_le : ((PLN : ℕ) : ℝ) / 100000000000000000000 ≤ Real.pi := by
+  have h := pi_lo; norm_num [PLN] at h ⊢; linarith
+theorem PUN_ge : Real.pi ≤ ((PUN : ℕ) : ℝ) / 100000000000000000000 := by
+  have h := pi_hi; norm_num [PUN] at h ⊢; linarith
+theorem GLN_le : ((GLN : ℕ) : ℝ) / 10000000000 ≤ gam := by
+  have h := gam_bounds.1; norm_num [GLN] at h ⊢; linarith
+theorem GUN_ge : gam ≤ ((GUN : ℕ) : ℝ) / 10000000000 := by
+  have h := gam_bounds.2; norm_num [GUN] at h ⊢; linarith
+
+/-- `ndiv a b / DZ ≤ (a / b) / DZ` packaged with a product bound: if `a = p * q` with
+`p / P ≤ A` and `q / DZ ≤ B` (all nonnegative) then `ndiv (p*q) P / DZ ≤ A * B`. -/
+theorem ndiv_prod_le (p q P : ℕ) (hP : 0 < P) {A B : ℝ} (hA : ((p : ℕ) : ℝ) / P ≤ A)
+    (hB : ((q : ℕ) : ℝ) / DZ ≤ B) (hA0 : 0 ≤ ((p : ℕ) : ℝ) / P) (hB0 : 0 ≤ ((q : ℕ) : ℝ) / DZ) :
+    ((ndiv (p * q) P : ℕ) : ℝ) / DZ ≤ A * B := by
+  have h := ndiv_le (p * q) P hP
+  have hD := DZ_pos
+  calc ((ndiv (p * q) P : ℕ) : ℝ) / DZ ≤ (((p * q : ℕ) : ℝ) / P) / DZ :=
+        div_le_div_of_nonneg_right h hD.le
+    _ = (((p : ℕ) : ℝ) / P) * (((q : ℕ) : ℝ) / DZ) := by push_cast; field_simp
+    _ ≤ A * B := mul_le_mul hA hB hB0 (hA0.trans hA)
+
+theorem le_ndivc_prod (p q P : ℕ) (hP : 0 < P) {A B : ℝ} (hA : A ≤ ((p : ℕ) : ℝ) / P)
+    (hB : B ≤ ((q : ℕ) : ℝ) / DZ) (hA0 : 0 ≤ A) (hB0 : 0 ≤ B) :
+    A * B ≤ ((ndivc (p * q) P : ℕ) : ℝ) / DZ := by
+  have h := le_ndivc (p * q) P hP
+  have hD := DZ_pos
+  calc A * B ≤ (((p : ℕ) : ℝ) / P) * (((q : ℕ) : ℝ) / DZ) := mul_le_mul hA hB hB0 (hA0.trans hA)
+    _ = (((p * q : ℕ) : ℝ) / P) / DZ := by push_cast; field_simp
+    _ ≤ ((ndivc (p * q) P : ℕ) : ℝ) / DZ := div_le_div_of_nonneg_right h hD.le
+
+set_option maxHeartbeats 4000000 in
+theorem cellN_soundZ' (c : CellN) (w : ℕ) (hc : c.okC = true)
+    (hW : (w : ℤ) * c.DHIZ * c.DHIZ ≤ c.NLOZ * c.NLOZ * SW) (x : ℝ)
+    (hx1 : (c.LN : ℝ) / SC ≤ x) (hx2 : x ≤ (c.UN : ℝ) / SC) : (w : ℝ) / SW ≤ wfun x := by
+  simp only [CellN.okC, Bool.and_eq_true, decide_eq_true_eq] at hc
+  obtain ⟨⟨⟨⟨⟨⟨⟨⟨hLU, hTU⟩, hside⟩, hcP1⟩, hcP2⟩, hsP1⟩, hsP2⟩, hB⟩, hD⟩ := hc
+  have hsideT : c.side = true → c.k * SC ≤ 2 * c.LN := fun hs => by simpa [hs] using hside
+  have hsideF : c.side = false → 2 * c.UN ≤ c.k * SC := fun hs => by simpa [hs] using hside
+  have hD0 := DZ_pos
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hSW : (0:ℝ) < SW := by norm_num [SW]
+  have nd0 : ∀ a : ℕ, (0:ℝ) ≤ (a : ℝ) / DZ := fun a => div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+  have nP0 : ∀ a : ℕ, (0:ℝ) ≤ (a : ℝ) / 100000000000000000000 :=
+    fun a => div_nonneg (Nat.cast_nonneg _) (by norm_num)
+  have nG0 : ∀ a : ℕ, (0:ℝ) ≤ (a : ℝ) / 10000000000 :=
+    fun a => div_nonneg (Nat.cast_nonneg _) (by norm_num)
+  -- endpoints at scale DZ
+  have hLLO : ((c.LLO : ℕ) : ℝ) / DZ ≤ (c.LN : ℝ) / SC := by
+    have := ndiv_le (c.LN * DZ) SC (by norm_num [SC])
+    unfold CellN.LLO
+    push_cast at this ⊢
+    rw [div_le_iff₀ hD0]
+    calc ((ndiv (c.LN * DZ) SC : ℕ) : ℝ) ≤ (c.LN : ℝ) * DZ / SC := this
+      _ = (c.LN : ℝ) / SC * DZ := by ring
+  have hUHI : (c.UN : ℝ) / SC ≤ ((c.UHI : ℕ) : ℝ) / DZ := by
+    have := le_ndivc (c.UN * DZ) SC (by norm_num [SC])
+    unfold CellN.UHI
+    push_cast at this ⊢
+    rw [le_div_iff₀ hD0]
+    calc (c.UN : ℝ) / SC * DZ = (c.UN : ℝ) * DZ / SC := by ring
+      _ ≤ _ := this
+  have hAD : ((c.AD : ℕ) : ℝ) / DZ = (c.k : ℝ) / 2 := by
+    unfold CellN.AD; simp only [DZ, DZ2]; push_cast; ring
+  have hL0 : (0:ℝ) ≤ (c.LN : ℝ) / SC := div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+  have hx0 : 0 ≤ x := hL0.trans hx1
+  have hLNUN : (c.LN : ℝ) / SC ≤ (c.UN : ℝ) / SC :=
+    div_le_div_of_nonneg_right (by exact_mod_cast hLU) hSC.le
+  have hkF : c.side = false → (c.UN : ℝ) / SC ≤ (c.k : ℝ) / 2 := fun hs => by
+    have : (2 * c.UN : ℝ) ≤ (c.k * SC : ℝ) := by exact_mod_cast hsideF hs
+    rw [div_le_div_iff₀ hSC (by norm_num)]; linarith
+  have hkT : c.side = true → (c.k : ℝ) / 2 ≤ (c.LN : ℝ) / SC := fun hs => by
+    have : (c.k * SC : ℝ) ≤ (2 * c.LN : ℝ) := by exact_mod_cast hsideT hs
+    rw [div_le_div_iff₀ (by norm_num) hSC]; linarith
+  -- the reduced offset r and the integer bounds RLO ≤ r ≤ RHI
+  set r : ℝ := if c.side then x - (c.k : ℝ) / 2 else (c.k : ℝ) / 2 - x with hr
+  have hr0 : 0 ≤ r := by
+    simp only [hr]
+    cases hsd : c.side
+    · simp only [Bool.false_eq_true, if_false]; linarith [hkF hsd]
+    · simp only [if_true]; linarith [hkT hsd]
+  have hRLO : ((c.RLO : ℕ) : ℝ) / DZ ≤ r := by
+    unfold CellN.RLO
+    cases hsd : c.side
+    · simp only [Bool.false_eq_true, if_false]
+      simp only [hr, hsd, Bool.false_eq_true, if_false]
+      rcases le_or_gt c.UHI c.AD with hle | hlt
+      · rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+      · rw [Nat.sub_eq_zero_of_le hlt.le]; simp only [Nat.cast_zero, zero_div]
+        linarith [hkF hsd]
+    · simp only [if_true]
+      simp only [hr, hsd, if_true]
+      rcases le_or_gt c.AD c.LLO with hle | hlt
+      · rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+      · rw [Nat.sub_eq_zero_of_le hlt.le]; simp only [Nat.cast_zero, zero_div]
+        linarith [hkT hsd]
+  have hRHI : r ≤ ((c.RHI : ℕ) : ℝ) / DZ := by
+    unfold CellN.RHI
+    cases hsd : c.side
+    · simp only [Bool.false_eq_true, if_false]
+      simp only [hr, hsd, Bool.false_eq_true, if_false]
+      have hle : c.LLO ≤ c.AD := by
+        have h1 : ((c.LLO : ℕ) : ℝ) / DZ ≤ (c.k : ℝ) / 2 := by linarith [hkF hsd]
+        rw [← hAD] at h1
+        have := (div_le_div_iff_of_pos_right hD0).mp h1
+        exact_mod_cast this
+      rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+    · simp only [if_true]
+      simp only [hr, hsd, if_true]
+      have hle : c.AD ≤ c.UHI := by
+        have h1 : (c.k : ℝ) / 2 ≤ ((c.UHI : ℕ) : ℝ) / DZ := by linarith [hkT hsd]
+        rw [← hAD] at h1
+        have := (div_le_div_iff_of_pos_right hD0).mp h1
+        exact_mod_cast this
+      rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+  -- θ = π r at scale DZ
+  have hTL : ((c.TLZ : ℕ) : ℝ) / DZ ≤ Real.pi * r := by
+    unfold CellN.TLZ
+    exact ndiv_prod_le PLN c.RLO _ (by norm_num) PLN_le hRLO (nP0 _) (nd0 _)
+  have hTUr : Real.pi * r ≤ ((c.TUZ : ℕ) : ℝ) / DZ := by
+    unfold CellN.TUZ
+    exact le_ndivc_prod PUN c.RHI _ (by norm_num) PUN_ge hRHI Real.pi_pos.le hr0
+  have hTU1 : ((c.TUZ : ℕ) : ℝ) / DZ ≤ 1 := by
+    rw [div_le_one hD0]; exact_mod_cast hTU
+  have hTL0 : (0:ℝ) ≤ ((c.TLZ : ℕ) : ℝ) / DZ := nd0 _
+  have hθ0 : (0:ℝ) ≤ Real.pi * r := mul_nonneg Real.pi_pos.le hr0
+  have hθ1 : Real.pi * r ≤ 1 := hTUr.trans hTU1
+  -- Taylor enclosures at the integer endpoints
+  have hc1 : ((c.CLZ : ℤ) : ℝ) / DZ ≤ Real.cos (Real.pi * r) := by
+    have h := cos_lower hθ0 hTUr hTU1
+    have h1 := cosLo_le c.TUZ hcP1
+    have h2 := ERRD_ge
+    unfold CellN.CLZ; push_cast; rw [sub_div]
+    linarith
+  have hc2 : Real.cos (Real.pi * r) ≤ ((c.CUZ : ℤ) : ℝ) / DZ := by
+    have h := cos_upper hTL0 hTL hθ1
+    have h1 := le_cosHi c.TLZ hcP2
+    have h2 := ERRD_ge
+    unfold CellN.CUZ; push_cast; rw [add_div]
+    linarith
+  have hs1 : ((c.SLZ : ℤ) : ℝ) / DZ ≤ Real.sin (Real.pi * r) := by
+    have h := sin_lower hTL0 hTL hθ1
+    have h1 := sinLo_le c.TLZ hsP1
+    have h2 := ERRD_ge
+    unfold CellN.SLZ; push_cast; rw [sub_div]
+    linarith
+  have hs2 : Real.sin (Real.pi * r) ≤ ((c.SUZ : ℤ) : ℝ) / DZ := by
+    have h := sin_upper hθ0 hTUr hTU1
+    have h1 := le_sinHi c.TUZ hsP2
+    have h2 := ERRD_ge
+    unfold CellN.SUZ; push_cast; rw [add_div]
+    linarith
+  -- the shift to the anchor
+  have hcs := cos_sin_half c.k
+  have hCX : ((c.CXZ).1 : ℝ) / DZ ≤ Real.cos (Real.pi * x) ∧ Real.cos (Real.pi * x) ≤ ((c.CXZ).2 : ℝ) / DZ := by
+    cases hsd : c.side
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) - Real.pi * r := by
+        simp only [hr, hsd, Bool.false_eq_true, if_false]; ring
+      rw [ex, Real.cos_sub, hcs.1, hcs.2]
+      simp only [CellN.CXZ, hsd, Bool.false_eq_true, if_false]
+      exact iaddZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) + Real.pi * r := by
+        simp only [hr, hsd, if_true]; ring
+      rw [ex, Real.cos_add, hcs.1, hcs.2]
+      simp only [CellN.CXZ, hsd, if_true]
+      exact isubZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+  have hSX : ((c.SXZ).1 : ℝ) / DZ ≤ Real.sin (Real.pi * x) ∧ Real.sin (Real.pi * x) ≤ ((c.SXZ).2 : ℝ) / DZ := by
+    cases hsd : c.side
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) - Real.pi * r := by
+        simp only [hr, hsd, Bool.false_eq_true, if_false]; ring
+      rw [ex, Real.sin_sub, hcs.1, hcs.2]
+      simp only [CellN.SXZ, hsd, Bool.false_eq_true, if_false]
+      exact isubZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) + Real.pi * r := by
+        simp only [hr, hsd, if_true]; ring
+      rw [ex, Real.sin_add, hcs.1, hcs.2]
+      simp only [CellN.SXZ, hsd, if_true]
+      exact iaddZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+  -- π x and 2 γ π x
+  have hb1 : ((c.BLZ : ℕ) : ℝ) / DZ ≤ Real.pi * x := by
+    unfold CellN.BLZ
+    exact ndiv_prod_le PLN c.LLO _ (by norm_num) PLN_le (hLLO.trans hx1) (nP0 _) (nd0 _)
+  have hb2 : Real.pi * x ≤ ((c.BUZ : ℕ) : ℝ) / DZ := by
+    unfold CellN.BUZ
+    exact le_ndivc_prod PUN c.UHI _ (by norm_num) PUN_ge (hx2.trans hUHI) Real.pi_pos.le hx0
+  have hBL0 : (0:ℝ) ≤ ((c.BLZ : ℕ) : ℝ) / DZ := nd0 _
+  have hπx0 : (0:ℝ) ≤ Real.pi * x := hBL0.trans hb1
+  have hgam0 : (0:ℝ) ≤ gam := (nG0 GLN).trans GLN_le
+  have hp1 : ((c.P2LZ : ℕ) : ℝ) / DZ ≤ 2 * gam * (Real.pi * x) := by
+    unfold CellN.P2LZ
+    exact ndiv_prod_le (2 * GLN) c.BLZ 10000000000 (by norm_num) (A := 2 * gam) (B := Real.pi * x)
+      (by push_cast; have := GLN_le; linarith) hb1 (nG0 _) hBL0
+  have hp2 : 2 * gam * (Real.pi * x) ≤ ((c.P2UZ : ℕ) : ℝ) / DZ := by
+    unfold CellN.P2UZ
+    exact le_ndivc_prod (2 * GUN) c.BUZ 10000000000 (by norm_num) (A := 2 * gam) (B := Real.pi * x)
+      (by push_cast; have := GUN_ge; linarith) hb2 (by linarith) hπx0
+  have hP2L0 : (0:ℝ) ≤ ((c.P2LZ : ℕ) : ℝ) / DZ := nd0 _
+  -- the product 2 γ π x · sin (π x)
+  have hT1 : ((c.TLOZ : ℤ) : ℝ) / DZ ≤ 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) := by
+    have hz := zfdiv_le (min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1))
+    have hmA : ((min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1) : ℤ) : ℝ)
+        ≤ (((c.P2LZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) := by exact_mod_cast min_le_left _ _
+    have hmB : ((min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1) : ℤ) : ℝ)
+        ≤ (((c.P2UZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) := by exact_mod_cast min_le_right _ _
+    have eA : (((c.P2LZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2LZ : ℕ) : ℝ) / DZ * ((((c.SXZ).1 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    have eB : (((c.P2UZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2UZ : ℕ) : ℝ) / DZ * ((((c.SXZ).1 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    unfold CellN.TLOZ
+    refine (div_le_div_of_nonneg_right hz hD0.le).trans (prod_lo hP2L0 hp1 hp2 hSX.1 ?_ ?_)
+    · rw [← eA]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmA hD0.le) hD0.le
+    · rw [← eB]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmB hD0.le) hD0.le
+  have hT2 : 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) ≤ ((c.THIZ : ℤ) : ℝ) / DZ := by
+    have hz := le_zcdiv (max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2))
+    have hmA : (((c.P2LZ : ℤ) * c.SXZ.2 : ℤ) : ℝ)
+        ≤ ((max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2) : ℤ) : ℝ) := by exact_mod_cast le_max_left _ _
+    have hmB : (((c.P2UZ : ℤ) * c.SXZ.2 : ℤ) : ℝ)
+        ≤ ((max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2) : ℤ) : ℝ) := by exact_mod_cast le_max_right _ _
+    have eA : (((c.P2LZ : ℤ) * c.SXZ.2 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2LZ : ℕ) : ℝ) / DZ * ((((c.SXZ).2 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    have eB : (((c.P2UZ : ℤ) * c.SXZ.2 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2UZ : ℕ) : ℝ) / DZ * ((((c.SXZ).2 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    unfold CellN.THIZ
+    refine (prod_hi hP2L0 hp1 hp2 hSX.2 ?_ ?_).trans (div_le_div_of_nonneg_right hz hD0.le)
+    · rw [← eA]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmA hD0.le) hD0.le
+    · rw [← eB]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmB hD0.le) hD0.le
+  -- the numerator and the denominator
+  set N : ℝ := Real.cos (Real.pi * x) - 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) with hNdef
+  have hN : ((c.NLOZ : ℤ) : ℝ) / DZ ≤ |N| := by
+    have hCX1 := (div_le_iff₀ hD0).mp hCX.1
+    have hCX2 := (le_div_iff₀ hD0).mp hCX.2
+    have hT1' := (div_le_iff₀ hD0).mp hT1
+    have hT2' := (le_div_iff₀ hD0).mp hT2
+    have ha1 := mul_le_mul_of_nonneg_right (le_abs_self N) hD0.le
+    have ha2 := mul_le_mul_of_nonneg_right (neg_le_abs N) hD0.le
+    rw [div_le_iff₀ hD0]
+    unfold CellN.NLOZ
+    rw [Int.cast_max, Int.cast_max, Int.cast_zero]
+    refine max_le (mul_nonneg (abs_nonneg _) hD0.le) (max_le ?_ ?_)
+    · push_cast; rw [hNdef] at ha1; linarith
+    · push_cast; rw [hNdef] at ha2; linarith
+  have hNLO0 : (0:ℝ) ≤ ((c.NLOZ : ℤ) : ℝ) / DZ := by
+    unfold CellN.NLOZ; rw [Int.cast_max, Int.cast_zero]
+    exact div_nonneg (le_max_left _ _) hD0.le
+  have hD' : (0:ℝ) < ((c.DHIZ : ℤ) : ℝ) / DZ := by
+    have : (0:ℝ) < ((c.DHIZ : ℤ) : ℝ) := by exact_mod_cast hD
+    exact div_pos this hD0
+  have hD0' : (1:ℝ) < 2 * (Real.pi * x)^2 := by
+    have h1 : ((DZ * DZ : ℕ) : ℝ) < ((2 * c.BLZ * c.BLZ : ℕ) : ℝ) := by exact_mod_cast hB
+    push_cast at h1
+    have h2 : ((c.BLZ : ℕ) : ℝ) / DZ * (((c.BLZ : ℕ) : ℝ) / DZ) ≤ (Real.pi * x) * (Real.pi * x) :=
+      mul_le_mul hb1 hb1 hBL0 hπx0
+    have h3 : (1:ℝ) < 2 * (((c.BLZ : ℕ) : ℝ) / DZ * (((c.BLZ : ℕ) : ℝ) / DZ)) := by
+      rw [div_mul_div_comm, ← mul_div_assoc, lt_div_iff₀ (mul_pos hD0 hD0)]
+      linarith
+    rw [pow_two]; linarith
+  have hDD : 2 * (Real.pi * x)^2 - 1 ≤ ((c.DHIZ : ℤ) : ℝ) / DZ := by
+    have h1 := le_ndivc (2 * c.BUZ * c.BUZ) DZ (by norm_num [DZ])
+    push_cast at h1
+    have h2 : (Real.pi * x) * (Real.pi * x) ≤ ((c.BUZ : ℕ) : ℝ) / DZ * (((c.BUZ : ℕ) : ℝ) / DZ) :=
+      mul_le_mul hb2 hb2 hπx0 (hπx0.trans hb2)
+    have h3 : 2 * (((c.BUZ : ℕ) : ℝ) / DZ * (((c.BUZ : ℕ) : ℝ) / DZ))
+        = 2 * (c.BUZ : ℝ) * (c.BUZ : ℝ) / DZ / DZ := by ring
+    have h4 := div_le_div_of_nonneg_right h1 hD0.le
+    unfold CellN.DHIZ
+    push_cast
+    rw [sub_div, div_self DZ_ne, pow_two]
+    linarith
+  have hfin := wfun_ge x (((c.NLOZ : ℤ) : ℝ) / DZ) (((c.DHIZ : ℤ) : ℝ) / DZ) hNLO0 hD' hD0' hDD hN
+  have hWr : ((w : ℕ) : ℝ) * ((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ)
+      ≤ ((c.NLOZ : ℤ) : ℝ) * ((c.NLOZ : ℤ) : ℝ) * ((SW : ℕ) : ℝ) := by exact_mod_cast hW
+  have hDHpos : (0:ℝ) < ((c.DHIZ : ℤ) : ℝ) := by exact_mod_cast hD
+  have e : (((c.NLOZ : ℤ) : ℝ) / DZ / (((c.DHIZ : ℤ) : ℝ) / DZ))^2
+      = (((c.NLOZ : ℤ) : ℝ) * ((c.NLOZ : ℤ) : ℝ)) / (((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ)) := by
+    rw [div_div_div_cancel_right₀ DZ_ne]; ring
+  have hle : ((w : ℕ) : ℝ) / SW
+      ≤ (((c.NLOZ : ℤ) : ℝ) * ((c.NLOZ : ℤ) : ℝ)) / (((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ)) := by
+    rw [div_le_div_iff₀ hSW (mul_pos hDHpos hDHpos)]
+    calc ((w : ℕ) : ℝ) * (((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ))
+        = ((w : ℕ) : ℝ) * ((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ) := by ring
+      _ ≤ _ := hWr
+  rw [← e] at hle
+  exact hle.trans hfin
+
+/-- a claimed bound that passes the integer check is sound -/
+theorem cellN_soundZ (c : CellN) (h : c.okZ = true) (x : ℝ)
+    (hx1 : (c.LN : ℝ) / SC ≤ x) (hx2 : x ≤ (c.UN : ℝ) / SC) : (c.WN : ℝ) / SW ≤ wfun x := by
+  simp only [CellN.okZ, Bool.and_eq_true, decide_eq_true_eq] at h
+  exact cellN_soundZ' c c.WN h.1 h.2 x hx1 hx2
+
+/-- the computed bound is sound: no claimed value, the pipeline's own quotient -/
+theorem cellN_soundWZ (c : CellN) (x : ℝ)
+    (hx1 : (c.LN : ℝ) / SC ≤ x) (hx2 : x ≤ (c.UN : ℝ) / SC) : (c.WZ : ℝ) / SW ≤ wfun x := by
+  have key : ∀ b : Bool, c.okC = b →
+      ((bif b then ((c.NLOZ * c.NLOZ * SW) / (c.DHIZ * c.DHIZ)).toNat else 0 : ℕ) : ℝ) / SW ≤ wfun x := by
+    intro b hb
+    cases b
+    · simp only [cond_false, Nat.cast_zero, zero_div]; exact wfun_nonneg x
+    · simp only [cond_true]
+      have hD : 0 < c.DHIZ := by
+        simp only [CellN.okC, Bool.and_eq_true, decide_eq_true_eq] at hb; exact hb.2
+      have hN : 0 ≤ c.NLOZ := by unfold CellN.NLOZ; exact le_max_left _ _
+      have hSWz : (0:ℤ) ≤ (SW : ℤ) := by positivity
+      set q : ℤ := (c.NLOZ * c.NLOZ * SW) / (c.DHIZ * c.DHIZ) with hq
+      have hq0 : 0 ≤ q := by
+        rw [hq]; exact Int.ediv_nonneg (mul_nonneg (mul_nonneg hN hN) hSWz) (mul_pos hD hD).le
+      have hqe : ((q.toNat : ℕ) : ℤ) = q := Int.toNat_of_nonneg hq0
+      have h1 : q * (c.DHIZ * c.DHIZ) ≤ c.NLOZ * c.NLOZ * SW := by
+        rw [hq]; exact Int.ediv_mul_le _ (mul_pos hD hD).ne'
+      rw [← hqe] at h1
+      exact cellN_soundZ' c q.toNat hb (by linarith) x hx1 hx2
+  exact key c.okC rfl
+-- ZLEMMAS-END
+
+end Zeta23Ext.Bridge.ThreePoint
+
+end
+
+/-! ###### pyramid lower-bound oracle for `wfun`, kernel-evaluated, and its soundness ######
+
+Pyramid lower-bound table adapted from five-point-pyramid-2 by typh (Apache-2.0).
+
+Cells are absolute and dyadic: the level-`l` cell `i` is `[i 2^l, (i+1) 2^l] / 2^15`.  A table is a natural
+`top` (levels 11..19 in heap order: cell `(l, i)` at field `2^(19-l) + i`) and a block map `bk : ℕ → ℕ`: block
+`j` (the level-10 cell `j`) is `r + 2^5 Y`, `r ≤ 10` its finest stored level and `Y` its sub-pyramid, depth
+`d = 10 - l`, local index `t`, at field `2^d - 1 + t`.  Fields are 32 bits; entries are lower bounds in units of
+`10⁻¹⁰`.  `lb top bk lo hi` covers `[lo, hi]` by blocks of level-`k` cells (`k` from the width, the block size
+from the alignment of the running start) and returns the least entry read.  The verification `topOk`/`blockOk`
+checks the finest cells of every block by the integer cell bound and every coarser entry against its two children.
+Only kernel primitives are used, so the kernel evaluates all of it on numerals. -/
+
+noncomputable section
+
+namespace Zeta23Ext.Bridge.ThreePoint.Pyr
+
+open Zeta23Ext.Bridge.ThreePoint
+
+/-- evaluate a natural number to a numeral before continuing (the kernel is call-by-name) -/
+def forceR (a : ℕ) (k : ℕ → ℕ) : ℕ := Nat.rec (motive := fun _ => ℕ) (k 0) (fun n _ => k (Nat.succ n)) a
+
+/-- field `i` (32 bits) of a packed natural -/
+def fld (X i : ℕ) : ℕ := Nat.land (Nat.shiftRight X (Nat.mul 32 i)) 4294967295
+
+/-- the entry for the level-`l` cell `i` (`l ≤ 10`) from the constant `X` of its block `j`: the entry of its
+ancestor at level `max l r`, `r` the block's finest stored level -/
+def entB (X l i j : ℕ) : ℕ :=
+  let r := Nat.land X 31
+  let kk := Bool.rec (motive := fun _ => ℕ) l r (Nat.ble l r)
+  let d := Nat.sub 10 kk
+  fld (Nat.shiftRight X 5) (Nat.add (Nat.sub (Nat.shiftLeft 1 d) 1) (Nat.sub (Nat.shiftRight i (Nat.sub kk l)) (Nat.shiftLeft j d)))
+
+/-- the entry for the level-`l` cell `i` -/
+def entry (top : ℕ) (bk : ℕ → ℕ) (l i : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ)
+    (forceR (Nat.shiftRight i (Nat.sub 10 l)) fun j => entB (bk j) l i j)
+    (Bool.rec (motive := fun _ => ℕ) (fld top (Nat.add (Nat.shiftLeft 1 (Nat.sub 19 l)) i)) 0 (Nat.ble 20 l))
+    (Nat.ble 11 l)
+
+/-- the size `t` of the next block of cells (`2^t` cells, `t ≤ 4`); any value is sound -/
+def alignK1 (g ib : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) 0 (Bool.rec (motive := fun _ => ℕ) 0 1 (Nat.ble (Nat.add g 2) (Nat.add ib 1))) (Nat.beq (Nat.land g 1) 0)
+def alignK2 (g ib : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) (alignK1 g ib) (Bool.rec (motive := fun _ => ℕ) (alignK1 g ib) 2 (Nat.ble (Nat.add g 4) (Nat.add ib 1))) (Nat.beq (Nat.land g 3) 0)
+def alignK3 (g ib : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) (alignK2 g ib) (Bool.rec (motive := fun _ => ℕ) (alignK2 g ib) 3 (Nat.ble (Nat.add g 8) (Nat.add ib 1))) (Nat.beq (Nat.land g 7) 0)
+def alignK4 (g ib : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) (alignK3 g ib) (Bool.rec (motive := fun _ => ℕ) (alignK3 g ib) 4 (Nat.ble (Nat.add g 16) (Nat.add ib 1))) (Nat.beq (Nat.land g 15) 0)
+
+def nmin (a b : ℕ) : ℕ := Bool.rec (motive := fun _ => ℕ) b a (Nat.ble a b)
+
+/-- min of the entries over a cover of the level-`k` cells from `g` on, by blocks read through their own entries;
+the next block starts where the one just read ends; stops after the block reaching past `ib` -/
+def dcov (top : ℕ) (bk : ℕ → ℕ) (k ib : ℕ) (fuel : ℕ) : ℕ → ℕ :=
+  Nat.rec (motive := fun _ => ℕ → ℕ) (fun _ => 0)
+    (fun _ ih g =>
+      let t := alignK4 g ib
+      let h := Nat.shiftRight g t
+      let v := forceR (Nat.add k t) fun l => forceR h fun h => entry top bk l h
+      let g' := Nat.shiftLeft (Nat.add h 1) t
+      Bool.rec (motive := fun _ => ℕ) v (nmin v (ih g')) (Nat.ble g' ib))
+    fuel
+
+/-- 4-bit bit lengths of `0 .. 255` -/
+def BL8 : ℕ := 0x8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888877777777777777777777777777777777777777777777777777777777777777776666666666666666666666666666666655555555555555554444444433332210
+
+/-- the cover level: the bit length of `x < 2^16` (any value is sound) -/
+def blen (x : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) (Nat.land (Nat.shiftRight BL8 (Nat.mul 4 x)) 15)
+    (Nat.add 8 (Nat.land (Nat.shiftRight BL8 (Nat.mul 4 (Nat.shiftRight x 8))) 15)) (Nat.ble 256 x)
+
+/-- the lower-bound oracle: `lb top bk lo hi / 10¹⁰ ≤ wfun x` on `[lo, hi] / 2^15` (0 when `hi ≤ lo` or `2^19 < hi`) -/
+def lb (top : ℕ) (bk : ℕ → ℕ) (lo hi : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ)
+    (Bool.rec (motive := fun _ => ℕ)
+      (let k := blen (Nat.shiftRight (Nat.sub hi lo) 5)
+       dcov top bk k (Nat.shiftRight (Nat.sub hi 1) k) 14 (Nat.shiftRight lo k))
+      0 (Nat.ble 524289 hi))
+    0 (Nat.ble hi lo)
+
+/-! ### verification of a table -/
+
+/-- `f i` for every `i < n` -/
+def allBelow (n : ℕ) (f : ℕ → Bool) : Bool :=
+  Nat.rec (motive := fun _ => Bool) true (fun k ih => Bool.rec (motive := fun _ => Bool) false (f k) ih) n
+
+/-- `f (a + i)` for every `i < n` -/
+def allFrom (a n : ℕ) (f : ℕ → Bool) : Bool :=
+  Nat.rec (motive := fun _ => Bool) true (fun k ih => Bool.rec (motive := fun _ => Bool) false (f (Nat.add a k)) ih) n
+
+/-- the integer cell of the level-`l` cell `i` (endpoints packed as `LN * KB + UN`) -/
+def cellAt (l i : ℕ) : CellN := ⟨Nat.add (Nat.mul (Nat.shiftLeft i l) KB) (Nat.shiftLeft (Nat.add i 1) l), 0⟩
+
+/-- the integer cell bound `CellN.okC`, and the claim `v / 10¹⁰` below the bound it certifies -/
+def cellOkCore (c : CellN) (v : ℕ) : Bool :=
+  c.okC && decide (((Nat.mul v 1000 : ℕ) : ℤ) * c.DHIZ * c.DHIZ ≤ c.NLOZ * c.NLOZ * SW)
+
+/-- the claim `v` on the level-`l` cell `i` passes the integer cell bound (or is `0`) -/
+def cellOk (l i v : ℕ) : Bool :=
+  Bool.rec (motive := fun _ => Bool)
+    (Bool.rec (motive := fun _ => Bool) false (cellOkCore (cellAt l i) v) (Nat.ble (Nat.add (Nat.shiftLeft (Nat.add i 1) l) 1) KB))
+    true (Nat.beq v 0)
+
+/-- a block constant: its finest cells pass the cell bound, every coarser entry is at most its children -/
+def blockOkX (X j : ℕ) : Bool :=
+  let r := Nat.land X 31
+  let D := Nat.sub 10 r
+  let Y := Nat.shiftRight X 5
+  Nat.ble r 10
+    && allBelow (Nat.shiftLeft 1 D) (fun t => cellOk r (Nat.add (Nat.shiftLeft j D) t) (fld Y (Nat.add (Nat.sub (Nat.shiftLeft 1 D) 1) t)))
+    && allBelow D (fun d => allBelow (Nat.shiftLeft 1 d) (fun t =>
+         Nat.ble (fld Y (Nat.add (Nat.sub (Nat.shiftLeft 1 d) 1) t))
+           (nmin (fld Y (Nat.add (Nat.sub (Nat.shiftLeft 1 (Nat.add d 1)) 1) (Nat.mul 2 t)))
+                 (fld Y (Nat.add (Nat.sub (Nat.shiftLeft 1 (Nat.add d 1)) 1) (Nat.add (Nat.mul 2 t) 1))))))
+
+def blockOk (X j : ℕ) : Bool := Bool.rec (motive := fun _ => Bool) (blockOkX X j) true (Nat.beq X 0)
+
+/-- the entry of the level-`l` cell `i` for `10 ≤ l ≤ 19` as the top levels read it (level 10: the block's own) -/
+def topv (top : ℕ) (bk : ℕ → ℕ) (l i : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) (fld top (Nat.add (Nat.shiftLeft 1 (Nat.sub 19 l)) i)) (fld (Nat.shiftRight (bk i) 5) 0) (Nat.beq l 10)
+
+/-- every top entry (levels 11..19) is at most its two children -/
+def topOk (top : ℕ) (bk : ℕ → ℕ) : Bool :=
+  allFrom 11 9 fun l => allBelow (Nat.shiftLeft 1 (Nat.sub 19 l)) fun i =>
+    Nat.ble (fld top (Nat.add (Nat.shiftLeft 1 (Nat.sub 19 l)) i))
+      (nmin (topv top bk (Nat.sub l 1) (Nat.mul 2 i)) (topv top bk (Nat.sub l 1) (Nat.add (Nat.mul 2 i) 1)))
+
+/-! ### soundness -/
+
+theorem forceR_eq (a : ℕ) (k : ℕ → ℕ) : forceR a k = k a := by cases a <;> rfl
+
+theorem nmin_eq (a b : ℕ) : nmin a b = min a b := by
+  unfold nmin
+  cases h : Nat.ble a b
+  · have : ¬ a ≤ b := by rw [← Nat.ble_eq, h]; decide
+    show b = min a b; omega
+  · have : a ≤ b := by rw [← Nat.ble_eq, h]
+    show a = min a b; omega
+
+theorem allBelow_spec {n : ℕ} {f : ℕ → Bool} (h : allBelow n f = true) : ∀ i < n, f i = true := by
+  induction n with
+  | zero => intro i hi; omega
+  | succ n ih =>
+    have h' : Bool.rec (motive := fun _ => Bool) false (f n) (allBelow n f) = true := h
+    cases hb : allBelow n f
+    · rw [hb] at h'; exact absurd (show (false : Bool) = true from h') (by decide)
+    · rw [hb] at h'
+      intro i hi
+      rcases Nat.lt_succ_iff_lt_or_eq.mp hi with hi | hi
+      · exact ih hb i hi
+      · subst hi; exact h'
+
+theorem allFrom_spec {a n : ℕ} {f : ℕ → Bool} (h : allFrom a n f = true) : ∀ i < n, f (a + i) = true := by
+  induction n with
+  | zero => intro i hi; omega
+  | succ n ih =>
+    have h' : Bool.rec (motive := fun _ => Bool) false (f (Nat.add a n)) (allFrom a n f) = true := h
+    cases hb : allFrom a n f
+    · rw [hb] at h'; exact absurd (show (false : Bool) = true from h') (by decide)
+    · rw [hb] at h'
+      intro i hi
+      rcases Nat.lt_succ_iff_lt_or_eq.mp hi with hi | hi
+      · exact ih hb i hi
+      · subst hi; exact h'
+
+
+theorem allFrom_add {a n m : ℕ} {f : ℕ → Bool} (h1 : allFrom a n f = true) (h2 : allFrom (a + n) m f = true) :
+    allFrom a (n + m) f = true := by
+  induction m with
+  | zero => exact h1
+  | succ m ih =>
+    have h2' : Bool.rec (motive := fun _ => Bool) false (f (Nat.add (a + n) m)) (allFrom (a + n) m f) = true := h2
+    cases hb : allFrom (a + n) m f
+    · rw [hb] at h2'; exact absurd (show (false : Bool) = true from h2') (by decide)
+    · rw [hb] at h2'
+      have h3 := ih hb
+      show Bool.rec (motive := fun _ => Bool) false (f (Nat.add a (n + m))) (allFrom a (n + m) f) = true
+      rw [h3]
+      have e : Nat.add a (n + m) = Nat.add (a + n) m := by simp only [Nat.add_eq]; omega
+      rw [e]; exact h2'
+
+/-- all `512` blocks verified, from a verified run `allFrom 0 512` -/
+theorem blocks_of {bk : ℕ → ℕ} (h : allFrom 0 512 (fun j => blockOk (bk j) j) = true) :
+    ∀ j < 512, blockOk (bk j) j = true := by
+  intro j hj
+  have := allFrom_spec h j hj
+  simpa using this
+
+/-- `v / 10¹⁰` bounds `wfun` below on the level-`l` cell `i`, i.e. on `[i 2^l, (i+1) 2^l] / 2^15` -/
+def CS (l i v : ℕ) : Prop :=
+  ∀ x : ℝ, ((i * 2 ^ l : ℕ) : ℝ) / SC ≤ x → x ≤ (((i + 1) * 2 ^ l : ℕ) : ℝ) / SC → (v : ℝ) / 10000000000 ≤ wfun x
+
+theorem CS_zero (l i : ℕ) : CS l i 0 := by
+  intro x _ _; simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg x
+
+theorem CS_mono {l i v v' : ℕ} (hv : v' ≤ v) (h : CS l i v) : CS l i v' := by
+  intro x h1 h2
+  exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast hv) (by norm_num)) (h x h1 h2)
+
+theorem SC_posR : (0:ℝ) < SC := by norm_num [SC]
+
+theorem castdiv_le {a b : ℕ} (h : a ≤ b) : (a : ℝ) / SC ≤ (b : ℝ) / SC :=
+  div_le_div_of_nonneg_right (by exact_mod_cast h) SC_posR.le
+
+theorem CS_min {l i a b : ℕ} (ha : CS l (2 * i) a) (hb : CS l (2 * i + 1) b) : CS (l + 1) i (min a b) := by
+  intro x h1 h2
+  have e1 : (2 * i) * 2 ^ l = i * 2 ^ (l + 1) := by rw [pow_succ]; ring
+  have e2 : (2 * i + 1 + 1) * 2 ^ l = (i + 1) * 2 ^ (l + 1) := by rw [pow_succ]; ring
+  rcases le_total x ((((2 * i + 1) * 2 ^ l : ℕ) : ℝ) / SC) with hx | hx
+  · have := ha x (by rw [e1]; exact h1) hx
+    exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast min_le_left a b) (by norm_num)) this
+  · have := hb x hx (by rw [e2]; exact h2)
+    exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast min_le_right a b) (by norm_num)) this
+
+theorem CS_anc {l m i v : ℕ} (h : CS (l + m) (i / 2 ^ m) v) : CS l i v := by
+  intro x h1 h2
+  have hp : 0 < 2 ^ m := by positivity
+  apply h x
+  · refine le_trans (castdiv_le ?_) h1
+    calc (i / 2 ^ m) * 2 ^ (l + m) = ((i / 2 ^ m) * 2 ^ m) * 2 ^ l := by rw [pow_add]; ring
+      _ ≤ i * 2 ^ l := Nat.mul_le_mul_right _ (Nat.div_mul_le_self i (2 ^ m))
+  · refine le_trans h2 (castdiv_le ?_)
+    have hq : i + 1 ≤ (i / 2 ^ m + 1) * 2 ^ m := by
+      have h3 := Nat.div_add_mod i (2 ^ m); have h4 := Nat.mod_lt i hp; nlinarith
+    calc (i + 1) * 2 ^ l ≤ ((i / 2 ^ m + 1) * 2 ^ m) * 2 ^ l := Nat.mul_le_mul_right _ hq
+      _ = (i / 2 ^ m + 1) * 2 ^ (l + m) := by rw [pow_add]; ring
+
+/-- a cell claim that passes `cellOk` is sound -/
+theorem cellOk_sound {l i v : ℕ} (h : cellOk l i v = true) : CS l i v := by
+  unfold cellOk at h
+  cases hv : Nat.beq v 0
+  · rw [hv] at h
+    cases hK : Nat.ble (Nat.add (Nat.shiftLeft (Nat.add i 1) l) 1) KB
+    · rw [hK] at h; exact absurd (show (false : Bool) = true from h) (by decide)
+    · rw [hK] at h
+      have h' : cellOkCore (cellAt l i) v = true := h
+      simp only [cellOkCore, Bool.and_eq_true, decide_eq_true_eq] at h'
+      obtain ⟨hc, hW⟩ := h'
+      have hK' : (i + 1) * 2 ^ l < KB := by
+        rw [Nat.ble_eq] at hK
+        simp only [Nat.add_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq] at hK; omega
+      have hLN : (cellAt l i).LN = i * 2 ^ l := by
+        simp only [cellAt, CellN.LN, Nat.add_eq, Nat.mul_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq]
+        rw [Nat.add_comm, Nat.add_mul_div_right _ _ (by norm_num [KB]), Nat.div_eq_of_lt hK', Nat.zero_add]
+      have hUN : (cellAt l i).UN = (i + 1) * 2 ^ l := by
+        simp only [cellAt, CellN.UN, Nat.add_eq, Nat.mul_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq]
+        rw [Nat.add_comm, Nat.add_mul_mod_self_right, Nat.mod_eq_of_lt hK']
+      intro x h1 h2
+      have := cellN_soundZ' (cellAt l i) (Nat.mul v 1000) hc hW x (by rw [hLN]; exact h1) (by rw [hUN]; exact h2)
+      have e : ((Nat.mul v 1000 : ℕ) : ℝ) / SW = (v : ℝ) / 10000000000 := by
+        simp only [Nat.mul_eq]; push_cast; norm_num [SW]; ring
+      rw [e] at this; exact this
+  · have : v = 0 := by rw [← Nat.beq_eq, hv]
+    subst this; exact CS_zero l i
+
+theorem fld_zero (i : ℕ) : fld 0 i = 0 := by
+  simp [fld]
+
+/-- what a verified block constant guarantees: every stored entry bounds its cell -/
+def BlockSound (X j : ℕ) : Prop :=
+  X % 32 ≤ 10 ∧ ∀ d, d ≤ 10 - X % 32 → ∀ t < 2 ^ d, CS (10 - d) (j * 2 ^ d + t) (fld (X / 32) (2 ^ d - 1 + t))
+
+theorem blockOkX_sound {X j : ℕ} (h : blockOkX X j = true) : BlockSound X j := by
+  have hr : Nat.land X 31 = X % 32 := by
+    rw [Nat.land_eq, show (31:ℕ) = 2 ^ 5 - 1 by norm_num, Nat.and_two_pow_sub_one_eq_mod]
+  have hY : Nat.shiftRight X 5 = X / 32 := by rw [Nat.shiftRight_eq', Nat.shiftRight_eq_div_pow]
+  unfold blockOkX at h
+  simp only [hr, hY, Bool.and_eq_true, Nat.ble_eq] at h
+  obtain ⟨⟨h10, hfin⟩, hint⟩ := h
+  refine ⟨h10, ?_⟩
+  set D := Nat.sub 10 (X % 32) with hD
+  have hD' : D = 10 - X % 32 := rfl
+  have hfin' := allBelow_spec hfin
+  have hint' := allBelow_spec hint
+  -- downward induction on the depth
+  suffices key : ∀ e, e ≤ D → ∀ t < 2 ^ (D - e), CS (10 - (D - e)) (j * 2 ^ (D - e) + t) (fld (X / 32) (2 ^ (D - e) - 1 + t)) by
+    intro d hd t ht
+    have := key (D - d) (Nat.sub_le _ _) t (by rw [Nat.sub_sub_self (by omega)]; exact ht)
+    rwa [Nat.sub_sub_self (by omega)] at this
+  intro e
+  induction e with
+  | zero =>
+    intro _ t ht
+    have := hfin' t (by simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul]; simpa using ht)
+    simp only [Nat.sub_zero]
+    have hc := cellOk_sound this
+    simp only [Nat.add_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq] at hc
+    have e10 : 10 - D = X % 32 := by omega
+    rw [e10]; exact hc
+  | succ e ih =>
+    intro he t ht
+    set d := D - (e + 1) with hd
+    have hdD : d < D := by omega
+    have hde : D - e = d + 1 := by omega
+    have hc := hint' d hdD
+    have hct := allBelow_spec hc t (by simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul]; exact ht)
+    simp only [Nat.ble_eq, nmin_eq, Nat.add_eq, Nat.sub_eq, Nat.mul_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul] at hct
+    have h0 := ih (by omega) (2 * t) (by rw [hde, pow_succ]; omega)
+    have h1 := ih (by omega) (2 * t + 1) (by rw [hde, pow_succ]; omega)
+    rw [hde] at h0 h1
+    have e0 : j * 2 ^ (d + 1) + 2 * t = 2 * (j * 2 ^ d + t) := by rw [pow_succ]; ring
+    have e1 : j * 2 ^ (d + 1) + (2 * t + 1) = 2 * (j * 2 ^ d + t) + 1 := by rw [pow_succ]; ring
+    rw [e0] at h0; rw [e1] at h1
+    have hlev : 10 - (d + 1) + 1 = 10 - d := by omega
+    have hm := CS_min h0 h1
+    rw [hlev] at hm
+    refine CS_mono ?_ hm
+    have a0 : 2 ^ (d + 1) - 1 + 2 * t = 2 ^ (d + 1) - 1 + 2 * t := rfl
+    exact hct
+
+theorem blockOk_sound {X j : ℕ} (h : blockOk X j = true) : BlockSound X j := by
+  unfold blockOk at h
+  cases hX : Nat.beq X 0
+  · rw [hX] at h
+    exact blockOkX_sound h
+  · have : X = 0 := by rw [← Nat.beq_eq, hX]
+    subst this
+    refine ⟨by norm_num, fun d _ t _ => ?_⟩
+    simp only [Nat.zero_div, fld_zero]; exact CS_zero _ _
+
+theorem topv_ten (top : ℕ) (bk : ℕ → ℕ) (i : ℕ) : topv top bk 10 i = fld (bk i / 32) 0 := by
+  unfold topv
+  rw [show Nat.beq 10 10 = true from rfl, Nat.shiftRight_eq', Nat.shiftRight_eq_div_pow]
+
+theorem topv_top (top : ℕ) (bk : ℕ → ℕ) {l : ℕ} (hl : l ≠ 10) (i : ℕ) :
+    topv top bk l i = fld top (2 ^ (19 - l) + i) := by
+  unfold topv
+  have : Nat.beq l 10 = false := by
+    cases h : Nat.beq l 10
+    · rfl
+    · exact absurd (by rw [← Nat.beq_eq, h]) hl
+  rw [this]
+  simp only [Nat.add_eq, Nat.sub_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul]
+
+/-- the top levels and the blocks' own entries bound their cells -/
+theorem top_sound {top : ℕ} {bk : ℕ → ℕ} (hb : ∀ j < 512, blockOk (bk j) j = true) (ht : topOk top bk = true) :
+    ∀ e, e ≤ 9 → ∀ i < 2 ^ (9 - e), CS (10 + e) i (topv top bk (10 + e) i) := by
+  have ht' := allFrom_spec ht
+  intro e
+  induction e with
+  | zero =>
+    intro _ i hi
+    rw [Nat.add_zero, topv_ten]
+    have hB := blockOk_sound (hb i (by simpa using hi))
+    have := hB.2 0 (Nat.zero_le _) 0 (by norm_num)
+    simpa using this
+  | succ e ih =>
+    intro he i hi
+    have hl := ht' e (by omega) |> allBelow_spec
+    have hle := hl i (by simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq, Nat.add_eq]; convert hi using 2; omega)
+    simp only [Nat.ble_eq, nmin_eq, Nat.add_eq, Nat.sub_eq, Nat.mul_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul] at hle
+    have e1 : 11 + e - 1 = 10 + e := by omega
+    rw [e1] at hle
+    have h0 := ih (by omega) (2 * i) (by rw [show 9 - e = 9 - (e + 1) + 1 by omega, pow_succ]; omega)
+    have h1 := ih (by omega) (2 * i + 1) (by rw [show 9 - e = 9 - (e + 1) + 1 by omega, pow_succ]; omega)
+    have hm := CS_min h0 h1
+    rw [show 10 + e + 1 = 10 + (e + 1) by omega] at hm
+    rw [topv_top top bk (by omega)]
+    refine CS_mono ?_ hm
+    rw [show 19 - (10 + (e + 1)) = 19 - (11 + e) by omega]
+    exact hle
+
+/-- every entry the oracle reads bounds its cell -/
+theorem entry_sound {top : ℕ} {bk : ℕ → ℕ} (hb : ∀ j < 512, blockOk (bk j) j = true) (ht : topOk top bk = true)
+    (l i : ℕ) (hi : l ≤ 19 → i < 2 ^ (19 - l)) : CS l i (entry top bk l i) := by
+  unfold entry
+  cases h11 : Nat.ble 11 l
+  · -- a block level
+    have hl : l ≤ 10 := by
+      have : ¬ 11 ≤ l := by rw [← Nat.ble_eq, h11]; decide
+      omega
+    show CS l i (forceR (Nat.shiftRight i (Nat.sub 10 l)) fun j => entB (bk j) l i j)
+    rw [forceR_eq]
+    set j := Nat.shiftRight i (Nat.sub 10 l) with hj
+    have hj' : j = i / 2 ^ (10 - l) := by rw [hj, Nat.shiftRight_eq', Nat.shiftRight_eq_div_pow]; rfl
+    have hj512 : j < 512 := by
+      rw [hj']
+      have hi' := hi (by omega)
+      rw [Nat.div_lt_iff_lt_mul (by positivity), show (512:ℕ) = 2 ^ 9 by norm_num, ← pow_add]
+      rwa [show 9 + (10 - l) = 19 - l by omega]
+    have hB := blockOk_sound (hb j hj512)
+    set X := bk j
+    unfold entB
+    have hr : Nat.land X 31 = X % 32 := by
+      rw [Nat.land_eq, show (31:ℕ) = 2 ^ 5 - 1 by norm_num, Nat.and_two_pow_sub_one_eq_mod]
+    simp only [hr]
+    set r := X % 32
+    have hr10 : r ≤ 10 := hB.1
+    -- kk = max l r
+    have hkk : Bool.rec (motive := fun _ => ℕ) l r (Nat.ble l r) = max l r := by
+      cases hc : Nat.ble l r
+      · have : ¬ l ≤ r := by rw [← Nat.ble_eq, hc]; decide
+        show l = max l r; omega
+      · have : l ≤ r := by rw [← Nat.ble_eq, hc]
+        show r = max l r; omega
+    simp only [hkk]
+    set kk := max l r with hkkdef
+    have hkk10 : kk ≤ 10 := by omega
+    have hlkk : l ≤ kk := le_max_left _ _
+    set d := Nat.sub 10 kk with hd
+    have hd' : d = 10 - kk := rfl
+    set q := i / 2 ^ (kk - l) with hq
+    have hqj : q / 2 ^ d = j := by
+      rw [hq, hj', Nat.div_div_eq_div_mul, ← pow_add]
+      congr 2; omega
+    have ht' : q % 2 ^ d < 2 ^ d := Nat.mod_lt _ (by positivity)
+    have hidx : Nat.add (Nat.sub (Nat.shiftLeft 1 d) 1) (Nat.sub (Nat.shiftRight i (Nat.sub kk l)) (Nat.shiftLeft j d))
+        = 2 ^ d - 1 + q % 2 ^ d := by
+      simp only [Nat.add_eq, Nat.sub_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.shiftRight_eq',
+        Nat.shiftRight_eq_div_pow]
+      rw [← hq]
+      have := Nat.div_add_mod' q (2 ^ d)
+      rw [hqj] at this
+      congr 1; omega
+    have hY : Nat.shiftRight X 5 = X / 32 := by rw [Nat.shiftRight_eq', Nat.shiftRight_eq_div_pow]
+    rw [hidx, hY]
+    have hcs := hB.2 d (by omega) (q % 2 ^ d) ht'
+    have e1 : j * 2 ^ d + q % 2 ^ d = q := by
+      have := Nat.div_add_mod' q (2 ^ d); rw [hqj] at this; omega
+    rw [e1, show 10 - d = l + (kk - l) by omega] at hcs
+    exact CS_anc hcs
+  · cases h20 : Nat.ble 20 l
+    · have hl : 11 ≤ l := by rw [← Nat.ble_eq, h11]
+      have hl' : l ≤ 19 := by
+        have : ¬ 20 ≤ l := by rw [← Nat.ble_eq, h20]; decide
+        omega
+      show CS l i (fld top (Nat.add (Nat.shiftLeft 1 (Nat.sub 19 l)) i))
+      have := top_sound hb ht (l - 10) (by omega) i (by rw [show 9 - (l - 10) = 19 - l by omega]; exact hi hl')
+      rw [show 10 + (l - 10) = l by omega, topv_top top bk (by omega)] at this
+      simpa only [Nat.add_eq, Nat.sub_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul] using this
+    · exact CS_zero l i
+
+/-- the cover of the level-`k` cells `g .. ib` reads only cells that hold sound entries -/
+theorem dcov_sound {top : ℕ} {bk : ℕ → ℕ} (hb : ∀ j < 512, blockOk (bk j) j = true) (ht : topOk top bk = true)
+    (k ib : ℕ) (hk : k ≤ 19 → (ib + 1) * 2 ^ k ≤ 2 ^ 19) :
+    ∀ fuel g, g ≤ ib → ∀ x : ℝ, ((g * 2 ^ k : ℕ) : ℝ) / SC ≤ x → x ≤ (((ib + 1) * 2 ^ k : ℕ) : ℝ) / SC →
+      (dcov top bk k ib fuel g : ℝ) / 10000000000 ≤ wfun x := by
+  intro fuel
+  induction fuel with
+  | zero =>
+    intro g _ x _ _
+    show ((0 : ℕ) : ℝ) / 10000000000 ≤ wfun x
+    simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg x
+  | succ fuel ih =>
+    intro g hg x h1 h2
+    show ((let t := alignK4 g ib
+      let h := Nat.shiftRight g t
+      let v := forceR (Nat.add k t) fun l => forceR h fun h => entry top bk l h
+      let g' := Nat.shiftLeft (Nat.add h 1) t
+      Bool.rec (motive := fun _ => ℕ) v (nmin v (dcov top bk k ib fuel g')) (Nat.ble g' ib) : ℕ) : ℝ) / 10000000000 ≤ wfun x
+    simp only [forceR_eq]
+    set t := alignK4 g ib
+    set h := Nat.shiftRight g t with hh
+    have hh' : h = g / 2 ^ t := by rw [hh, Nat.shiftRight_eq', Nat.shiftRight_eq_div_pow]
+    set g' := Nat.shiftLeft (Nat.add h 1) t with hg'
+    have hg'' : g' = (h + 1) * 2 ^ t := by rw [hg', Nat.shiftLeft_eq', Nat.shiftLeft_eq]
+    -- the block read covers [g, g') at level k
+    have hcell : CS (Nat.add k t) h (entry top bk (Nat.add k t) h) := by
+      apply entry_sound hb ht
+      intro hkt
+      have hk' : k ≤ 19 := by simp only [Nat.add_eq] at hkt; omega
+      have hgib : g * 2 ^ k < 2 ^ 19 := by
+        have := hk hk'
+        calc g * 2 ^ k < (ib + 1) * 2 ^ k := Nat.mul_lt_mul_of_pos_right (by omega) (by positivity)
+          _ ≤ 2 ^ 19 := this
+      rw [hh', Nat.div_lt_iff_lt_mul (by positivity)]
+      have e : 2 ^ (19 - Nat.add k t) * 2 ^ t * 2 ^ k = 2 ^ 19 := by
+        rw [← pow_add, ← pow_add]; congr 1; simp only [Nat.add_eq] at hkt ⊢; omega
+      by_contra hcon
+      push_neg at hcon
+      have := Nat.mul_le_mul_right (2 ^ k) hcon
+      rw [e] at this; omega
+    have hcellx : ∀ y : ℝ, ((g * 2 ^ k : ℕ) : ℝ) / SC ≤ y → y ≤ ((g' * 2 ^ k : ℕ) : ℝ) / SC →
+        (entry top bk (Nat.add k t) h : ℝ) / 10000000000 ≤ wfun y := by
+      intro y hy1 hy2
+      apply hcell y
+      · refine le_trans (castdiv_le ?_) hy1
+        rw [hh', Nat.add_eq, pow_add]
+        calc g / 2 ^ t * (2 ^ k * 2 ^ t) = (g / 2 ^ t * 2 ^ t) * 2 ^ k := by ring
+          _ ≤ g * 2 ^ k := Nat.mul_le_mul_right _ (Nat.div_mul_le_self g _)
+      · refine le_trans hy2 (castdiv_le (le_of_eq ?_))
+        rw [hg'', Nat.add_eq, pow_add]; ring
+    cases hc : Nat.ble g' ib
+    · -- the block reaches past ib
+      have hgt : ib + 1 ≤ g' := by
+        have : ¬ g' ≤ ib := by rw [← Nat.ble_eq, hc]; decide
+        omega
+      exact hcellx x h1 (le_trans h2 (castdiv_le (Nat.mul_le_mul_right _ hgt)))
+    · have hle : g' ≤ ib := by rw [← Nat.ble_eq, hc]
+      show ((nmin _ _ : ℕ) : ℝ) / 10000000000 ≤ wfun x
+      rw [nmin_eq]
+      rcases le_total x ((((g' * 2 ^ k : ℕ) : ℝ)) / SC) with hx | hx
+      · exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast min_le_left _ _) (by norm_num)) (hcellx x h1 hx)
+      · exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast min_le_right _ _) (by norm_num)) (ih g' hle x hx h2)
+
+/-- the oracle's soundness: what a verified table certifies -/
+def LBSound (top : ℕ) (bk : ℕ → ℕ) : Prop :=
+  ∀ lo hi : ℕ, ∀ x : ℝ, (lo : ℝ) / SC ≤ x → x ≤ (hi : ℝ) / SC → (lb top bk lo hi : ℝ) / 10000000000 ≤ wfun x
+
+theorem lb_sound {top : ℕ} {bk : ℕ → ℕ} (hb : ∀ j < 512, blockOk (bk j) j = true) (ht : topOk top bk = true) :
+    LBSound top bk := by
+  intro lo hi x h1 h2
+  unfold lb
+  cases hlo : Nat.ble hi lo
+  · cases hhi : Nat.ble 524289 hi
+    · have hlh : lo < hi := by
+        have : ¬ hi ≤ lo := by rw [← Nat.ble_eq, hlo]; decide
+        omega
+      have hhi' : hi ≤ 524288 := by
+        have : ¬ 524289 ≤ hi := by rw [← Nat.ble_eq, hhi]; decide
+        omega
+      show ((dcov top bk (blen (Nat.shiftRight (Nat.sub hi lo) 5)) (Nat.shiftRight (Nat.sub hi 1) (blen (Nat.shiftRight (Nat.sub hi lo) 5))) 14
+        (Nat.shiftRight lo (blen (Nat.shiftRight (Nat.sub hi lo) 5))) : ℕ) : ℝ) / 10000000000 ≤ wfun x
+      set k := blen (Nat.shiftRight (Nat.sub hi lo) 5)
+      simp only [Nat.shiftRight_eq', Nat.shiftRight_eq_div_pow, Nat.sub_eq]
+      have hp : 0 < 2 ^ k := by positivity
+      apply dcov_sound hb ht k ((hi - 1) / 2 ^ k)
+      · intro hk
+        have : (hi - 1) / 2 ^ k < 2 ^ (19 - k) := by
+          rw [Nat.div_lt_iff_lt_mul hp, ← pow_add, show 19 - k + k = 19 by omega]; norm_num; omega
+        calc ((hi - 1) / 2 ^ k + 1) * 2 ^ k ≤ 2 ^ (19 - k) * 2 ^ k := Nat.mul_le_mul_right _ this
+          _ = 2 ^ 19 := by rw [← pow_add]; congr 1; omega
+      · exact Nat.div_le_div_right (by omega)
+      · exact le_trans (castdiv_le (Nat.div_mul_le_self lo _)) h1
+      · refine le_trans h2 (castdiv_le ?_)
+        have h5 := Nat.lt_div_mul_add (a := hi - 1) hp
+        have e : ((hi - 1) / 2 ^ k + 1) * 2 ^ k = (hi - 1) / 2 ^ k * 2 ^ k + 2 ^ k := by ring
+        rw [e]
+        generalize (hi - 1) / 2 ^ k * 2 ^ k = A at h5 ⊢
+        generalize 2 ^ k = P at h5 ⊢
+        omega
+    · simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg x
+  · simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg x
+
+end Zeta23Ext.Bridge.ThreePoint.Pyr
+
+end
+
+
+/-! ###### the 6-point weighted certificate `SixW20C2000` on the pyramid oracle: leaf test, walk, cover ###### -/
+
+noncomputable section
+
+namespace Zeta23Ext.Bridge.ThreePoint.SixW20C2000
+
+open Zeta23Ext.Bridge.ThreePoint Zeta23Ext.Bridge.ThreePoint.Pyr
+
+def SA : ℕ := 100000000
+def cN : ℕ := 351121
+
+/-- the weighted functional on the gaps, in real form -/
+def G (g0 g1 g2 g3 g4 : ℝ) : ℝ :=
+  (24896 / (SA:ℝ)) * g0 + (42034 / (SA:ℝ)) * g1 + (46137 / (SA:ℝ)) * g2 + (42034 / (SA:ℝ)) * g3 + (24896 / (SA:ℝ)) * g4
+    + (25326800 / (SA:ℝ)) * wfun (g0) + (62369200 / (SA:ℝ)) * wfun (g0 + g1) + (40126500 / (SA:ℝ)) * wfun (g0 + g1 + g2) + (99999900 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) + (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) + (48244400 / (SA:ℝ)) * wfun (g1) + (37630700 / (SA:ℝ)) * wfun (g1 + g2) + (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) + (99999900 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) + (52857300 / (SA:ℝ)) * wfun (g2) + (37630700 / (SA:ℝ)) * wfun (g2 + g3) + (40126500 / (SA:ℝ)) * wfun (g2 + g3 + g4) + (48244400 / (SA:ℝ)) * wfun (g3) + (62369200 / (SA:ℝ)) * wfun (g3 + g4) + (25326800 / (SA:ℝ)) * wfun (g4)
+
+/-- early exit: `true` once the running sum `s` reaches `C`, else the rest of the test -/
+def ee (C s : ℕ) (rest : Bool) : Bool := Bool.rec (motive := fun _ => Bool) rest true (Nat.ble C s)
+
+/-- the leaf test `cN·SC·U ≤ U·Σ b_r l_r + SC·Σ a_t lb_t` (U = 10¹⁰), the terms added in a fixed order and the
+running sum tested after each -/
+def leafOK (top : ℕ) (bk : ℕ → ℕ) (l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : Bool :=
+  let s0 := Nat.mul (Nat.add (Nat.add (Nat.add (Nat.add (Nat.mul 24896 l0) (Nat.mul 42034 l1)) (Nat.mul 46137 l2)) (Nat.mul 42034 l3)) (Nat.mul 24896 l4)) 10000000000
+  ee 115055329280000000000 s0 (
+  let s1 := Nat.add s0 (Nat.mul 1580872499200 (lb top bk l1 u1))
+  ee 115055329280000000000 s1 (
+  let s2 := Nat.add s1 (Nat.mul 1580872499200 (lb top bk l3 u3))
+  ee 115055329280000000000 s2 (
+  let s3 := Nat.add s2 (Nat.mul 1732028006400 (lb top bk l2 u2))
+  ee 115055329280000000000 s3 (
+  let s4 := Nat.add s3 (Nat.mul 829908582400 (lb top bk l0 u0))
+  ee 115055329280000000000 s4 (
+  let s5 := Nat.add s4 (Nat.mul 6553600000000 (lb top bk (Nat.add (Nat.add (Nat.add (Nat.add l0 l1) l2) l3) l4) (Nat.add (Nat.add (Nat.add (Nat.add u0 u1) u2) u3) u4)))
+  ee 115055329280000000000 s5 (
+  let s6 := Nat.add s5 (Nat.mul 829908582400 (lb top bk l4 u4))
+  ee 115055329280000000000 s6 (
+  let s7 := Nat.add s6 (Nat.mul 3276796723200 (lb top bk (Nat.add (Nat.add (Nat.add l0 l1) l2) l3) (Nat.add (Nat.add (Nat.add u0 u1) u2) u3)))
+  ee 115055329280000000000 s7 (
+  let s8 := Nat.add s7 (Nat.mul 3923863142400 (lb top bk (Nat.add (Nat.add l1 l2) l3) (Nat.add (Nat.add u1 u2) u3)))
+  ee 115055329280000000000 s8 (
+  let s9 := Nat.add s8 (Nat.mul 1314865152000 (lb top bk (Nat.add (Nat.add l0 l1) l2) (Nat.add (Nat.add u0 u1) u2)))
+  ee 115055329280000000000 s9 (
+  let s10 := Nat.add s9 (Nat.mul 3276796723200 (lb top bk (Nat.add (Nat.add (Nat.add l1 l2) l3) l4) (Nat.add (Nat.add (Nat.add u1 u2) u3) u4)))
+  ee 115055329280000000000 s10 (
+  let s11 := Nat.add s10 (Nat.mul 1314865152000 (lb top bk (Nat.add (Nat.add l2 l3) l4) (Nat.add (Nat.add u2 u3) u4)))
+  ee 115055329280000000000 s11 (
+  let s12 := Nat.add s11 (Nat.mul 2043713945600 (lb top bk (Nat.add l0 l1) (Nat.add u0 u1)))
+  ee 115055329280000000000 s12 (
+  let s13 := Nat.add s12 (Nat.mul 1233082777600 (lb top bk (Nat.add l2 l3) (Nat.add u2 u3)))
+  ee 115055329280000000000 s13 (
+  let s14 := Nat.add s13 (Nat.mul 2043713945600 (lb top bk (Nat.add l3 l4) (Nat.add u3 u4)))
+  ee 115055329280000000000 s14 (
+  let s15 := Nat.add s14 (Nat.mul 1233082777600 (lb top bk (Nat.add l1 l2) (Nat.add u1 u2)))
+  Nat.ble 115055329280000000000 s15)))))))))))))))
+
+/-- the type of a walk continuation: position and the ten coordinates to the end position (`0` = failure) -/
+abbrev WF : Type := ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ
+
+/-- a split on gap 0: the lower half (`u0 := q`) from `pos + 4`, then the upper half from where it ends -/
+def split0 (ih : WF) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : ℕ :=
+  forceR (Nat.shiftRight (Nat.add l0 u0) 1) fun q =>
+  let p := ih (Nat.add pos 4) l0 q l1 u1 l2 u2 l3 u3 l4 u4
+  Bool.rec (motive := fun _ => ℕ) (ih p q u0 l1 u1 l2 u2 l3 u3 l4 u4) (0) (Nat.beq p 0)
+
+/-- a split on gap 1: the lower half (`u1 := q`) from `pos + 4`, then the upper half from where it ends -/
+def split1 (ih : WF) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : ℕ :=
+  forceR (Nat.shiftRight (Nat.add l1 u1) 1) fun q =>
+  let p := ih (Nat.add pos 4) l0 u0 l1 q l2 u2 l3 u3 l4 u4
+  Bool.rec (motive := fun _ => ℕ) (ih p l0 u0 q u1 l2 u2 l3 u3 l4 u4) (0) (Nat.beq p 0)
+
+/-- a split on gap 2: the lower half (`u2 := q`) from `pos + 4`, then the upper half from where it ends -/
+def split2 (ih : WF) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : ℕ :=
+  forceR (Nat.shiftRight (Nat.add l2 u2) 1) fun q =>
+  let p := ih (Nat.add pos 4) l0 u0 l1 u1 l2 q l3 u3 l4 u4
+  Bool.rec (motive := fun _ => ℕ) (ih p l0 u0 l1 u1 q u2 l3 u3 l4 u4) (0) (Nat.beq p 0)
+
+/-- a split on gap 3: the lower half (`u3 := q`) from `pos + 4`, then the upper half from where it ends -/
+def split3 (ih : WF) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : ℕ :=
+  forceR (Nat.shiftRight (Nat.add l3 u3) 1) fun q =>
+  let p := ih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 q l4 u4
+  Bool.rec (motive := fun _ => ℕ) (ih p l0 u0 l1 u1 l2 u2 q u3 l4 u4) (0) (Nat.beq p 0)
+
+/-- a split on gap 4: the lower half (`u4 := q`) from `pos + 4`, then the upper half from where it ends -/
+def split4 (ih : WF) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : ℕ :=
+  forceR (Nat.shiftRight (Nat.add l4 u4) 1) fun q =>
+  let p := ih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 u3 l4 q
+  Bool.rec (motive := fun _ => ℕ) (ih p l0 u0 l1 u1 l2 u2 l3 u3 q u4) (0) (Nat.beq p 0)
+
+/-- a split node: the axis selects the gap -/
+def splitAx (ih : WF) (pos ax l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) (Bool.rec (motive := fun _ => ℕ) (Bool.rec (motive := fun _ => ℕ) (Bool.rec (motive := fun _ => ℕ) (split4 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4) (split3 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4) (Nat.beq ax 3)) (split2 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4) (Nat.beq ax 2)) (split1 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4) (Nat.beq ax 1)) (split0 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4) (Nat.beq ax 0)
+
+/-- a leaf: in the reflected half-space, or the leaf test -/
+def leafStep (top : ℕ) (bk : ℕ → ℕ) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : ℕ :=
+  Bool.rec (motive := fun _ => ℕ) (Bool.rec (motive := fun _ => ℕ) (0) (Nat.add pos 1) (leafOK top bk l0 u0 l1 u1 l2 u2 l3 u3 l4 u4)) (Nat.add pos 1) (Nat.ble (Nat.add u4 1) l0)
+
+/-- the bisection walk over the ten box coordinates (`Nat.rec` on the fuel): the node code is
+`(bits >>> pos) &&& 15` (bit 0 split, bits 1..3 axis); the position after the subtree, `0` on failure -/
+def walk (top : ℕ) (bk : ℕ → ℕ) (bits : ℕ) (fuel : ℕ) : WF :=
+  Nat.rec (motive := fun _ => WF) (fun _ _ _ _ _ _ _ _ _ _ _ => 0)
+    (fun _ ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 =>
+      let w := Nat.land (Nat.shiftRight bits pos) 15
+      Bool.rec (motive := fun _ => ℕ) (leafStep top bk pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4) (splitAx ih pos (Nat.shiftRight w 1) l0 u0 l1 u1 l2 u2 l3 u3 l4 u4) (Nat.beq (Nat.land w 1) 1))
+    fuel
+
+/-- the box `[l_r, u_r] / SC` satisfies the certificate inequality (or lies in the reflected half-space) -/
+def Covered (l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) : Prop :=
+  ∀ g0 g1 g2 g3 g4 : ℝ, (l0 : ℝ) / SC ≤ g0 → g0 ≤ (u0 : ℝ) / SC → (l1 : ℝ) / SC ≤ g1 → g1 ≤ (u1 : ℝ) / SC → (l2 : ℝ) / SC ≤ g2 → g2 ≤ (u2 : ℝ) / SC → (l3 : ℝ) / SC ≤ g3 → g3 ≤ (u3 : ℝ) / SC → (l4 : ℝ) / SC ≤ g4 → g4 ≤ (u4 : ℝ) / SC → (cN : ℝ) / SA ≤ G g0 g1 g2 g3 g4 ∨ g4 < g0
+
+theorem ee_or {C s : ℕ} {rest : Bool} (h : ee C s rest = true) : C ≤ s ∨ rest = true := by
+  unfold ee at h
+  cases hc : Nat.ble C s
+  · rw [hc] at h; exact Or.inr h
+  · exact Or.inl (by rw [← Nat.ble_eq, hc])
+
+theorem leafOK_le (top : ℕ) (bk : ℕ → ℕ) (l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : leafOK top bk l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 = true) :
+    115055329280000000000 ≤ 10000000000 * (24896 * l0 + 42034 * l1 + 46137 * l2 + 42034 * l3 + 24896 * l4) + 32768 * (25326800 * lb top bk (l0) (u0) + 62369200 * lb top bk (l0 + l1) (u0 + u1) + 40126500 * lb top bk (l0 + l1 + l2) (u0 + u1 + u2) + 99999900 * lb top bk (l0 + l1 + l2 + l3) (u0 + u1 + u2 + u3) + 200000000 * lb top bk (l0 + l1 + l2 + l3 + l4) (u0 + u1 + u2 + u3 + u4) + 48244400 * lb top bk (l1) (u1) + 37630700 * lb top bk (l1 + l2) (u1 + u2) + 119746800 * lb top bk (l1 + l2 + l3) (u1 + u2 + u3) + 99999900 * lb top bk (l1 + l2 + l3 + l4) (u1 + u2 + u3 + u4) + 52857300 * lb top bk (l2) (u2) + 37630700 * lb top bk (l2 + l3) (u2 + u3) + 40126500 * lb top bk (l2 + l3 + l4) (u2 + u3 + u4) + 48244400 * lb top bk (l3) (u3) + 62369200 * lb top bk (l3 + l4) (u3 + u4) + 25326800 * lb top bk (l4) (u4)) := by
+  unfold leafOK at h
+  dsimp only at h
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  rcases ee_or h with h | h
+  · simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+  simp only [Nat.add_eq, Nat.mul_eq, Nat.ble_eq] at h ⊢; omega
+
+set_option maxHeartbeats 4000000 in
+theorem leaf_sound {top : ℕ} {bk : ℕ → ℕ} (hlb : LBSound top bk) (l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : leafOK top bk l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 = true) :
+    ∀ g0 g1 g2 g3 g4 : ℝ, (l0 : ℝ) / SC ≤ g0 → g0 ≤ (u0 : ℝ) / SC → (l1 : ℝ) / SC ≤ g1 → g1 ≤ (u1 : ℝ) / SC → (l2 : ℝ) / SC ≤ g2 → g2 ≤ (u2 : ℝ) / SC → (l3 : ℝ) / SC ≤ g3 → g3 ≤ (u3 : ℝ) / SC → (l4 : ℝ) / SC ≤ g4 → g4 ≤ (u4 : ℝ) / SC → (cN : ℝ) / SA ≤ G g0 g1 g2 g3 g4 := by
+  intro g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42
+  have hq0 := leafOK_le top bk l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h
+  have w0 := hlb (l0) (u0) (g0) (by push_cast; (try simp only [add_div]); linarith [h01]) (by push_cast; (try simp only [add_div]); linarith [h02])
+  have w1 := hlb (l0 + l1) (u0 + u1) (g0 + g1) (by push_cast; (try simp only [add_div]); linarith [h01, h11]) (by push_cast; (try simp only [add_div]); linarith [h02, h12])
+  have w2 := hlb (l0 + l1 + l2) (u0 + u1 + u2) (g0 + g1 + g2) (by push_cast; (try simp only [add_div]); linarith [h01, h11, h21]) (by push_cast; (try simp only [add_div]); linarith [h02, h12, h22])
+  have w3 := hlb (l0 + l1 + l2 + l3) (u0 + u1 + u2 + u3) (g0 + g1 + g2 + g3) (by push_cast; (try simp only [add_div]); linarith [h01, h11, h21, h31]) (by push_cast; (try simp only [add_div]); linarith [h02, h12, h22, h32])
+  have w4 := hlb (l0 + l1 + l2 + l3 + l4) (u0 + u1 + u2 + u3 + u4) (g0 + g1 + g2 + g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h01, h11, h21, h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h02, h12, h22, h32, h42])
+  have w5 := hlb (l1) (u1) (g1) (by push_cast; (try simp only [add_div]); linarith [h11]) (by push_cast; (try simp only [add_div]); linarith [h12])
+  have w6 := hlb (l1 + l2) (u1 + u2) (g1 + g2) (by push_cast; (try simp only [add_div]); linarith [h11, h21]) (by push_cast; (try simp only [add_div]); linarith [h12, h22])
+  have w7 := hlb (l1 + l2 + l3) (u1 + u2 + u3) (g1 + g2 + g3) (by push_cast; (try simp only [add_div]); linarith [h11, h21, h31]) (by push_cast; (try simp only [add_div]); linarith [h12, h22, h32])
+  have w8 := hlb (l1 + l2 + l3 + l4) (u1 + u2 + u3 + u4) (g1 + g2 + g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h11, h21, h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h12, h22, h32, h42])
+  have w9 := hlb (l2) (u2) (g2) (by push_cast; (try simp only [add_div]); linarith [h21]) (by push_cast; (try simp only [add_div]); linarith [h22])
+  have w10 := hlb (l2 + l3) (u2 + u3) (g2 + g3) (by push_cast; (try simp only [add_div]); linarith [h21, h31]) (by push_cast; (try simp only [add_div]); linarith [h22, h32])
+  have w11 := hlb (l2 + l3 + l4) (u2 + u3 + u4) (g2 + g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h21, h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h22, h32, h42])
+  have w12 := hlb (l3) (u3) (g3) (by push_cast; (try simp only [add_div]); linarith [h31]) (by push_cast; (try simp only [add_div]); linarith [h32])
+  have w13 := hlb (l3 + l4) (u3 + u4) (g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h32, h42])
+  have w14 := hlb (l4) (u4) (g4) (by push_cast; (try simp only [add_div]); linarith [h41]) (by push_cast; (try simp only [add_div]); linarith [h42])
+  have hq := (Nat.cast_le (α := ℝ)).mpr hq0
+  push_cast at hq
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hU : (0:ℝ) < 10000000000 := by norm_num
+  have hSA : (0:ℝ) < SA := by norm_num [SA]
+  set L : ℝ := 24896 * ((l0 : ℝ) / SC) + 42034 * ((l1 : ℝ) / SC) + 46137 * ((l2 : ℝ) / SC) + 42034 * ((l3 : ℝ) / SC) + 24896 * ((l4 : ℝ) / SC) with hL
+  set Wt : ℝ := 25326800 * ((lb top bk (l0) (u0) : ℝ) / 10000000000) + 62369200 * ((lb top bk (l0 + l1) (u0 + u1) : ℝ) / 10000000000) + 40126500 * ((lb top bk (l0 + l1 + l2) (u0 + u1 + u2) : ℝ) / 10000000000) + 99999900 * ((lb top bk (l0 + l1 + l2 + l3) (u0 + u1 + u2 + u3) : ℝ) / 10000000000) + 200000000 * ((lb top bk (l0 + l1 + l2 + l3 + l4) (u0 + u1 + u2 + u3 + u4) : ℝ) / 10000000000) + 48244400 * ((lb top bk (l1) (u1) : ℝ) / 10000000000) + 37630700 * ((lb top bk (l1 + l2) (u1 + u2) : ℝ) / 10000000000) + 119746800 * ((lb top bk (l1 + l2 + l3) (u1 + u2 + u3) : ℝ) / 10000000000) + 99999900 * ((lb top bk (l1 + l2 + l3 + l4) (u1 + u2 + u3 + u4) : ℝ) / 10000000000) + 52857300 * ((lb top bk (l2) (u2) : ℝ) / 10000000000) + 37630700 * ((lb top bk (l2 + l3) (u2 + u3) : ℝ) / 10000000000) + 40126500 * ((lb top bk (l2 + l3 + l4) (u2 + u3 + u4) : ℝ) / 10000000000) + 48244400 * ((lb top bk (l3) (u3) : ℝ) / 10000000000) + 62369200 * ((lb top bk (l3 + l4) (u3 + u4) : ℝ) / 10000000000) + 25326800 * ((lb top bk (l4) (u4) : ℝ) / 10000000000) with hWt
+  have e : (L + Wt) * (SC * 10000000000) = 10000000000 * (24896 * (l0 : ℝ) + 42034 * (l1 : ℝ) + 46137 * (l2 : ℝ) + 42034 * (l3 : ℝ) + 24896 * (l4 : ℝ)) + 32768 * (25326800 * (lb top bk (l0) (u0) : ℝ) + 62369200 * (lb top bk (l0 + l1) (u0 + u1) : ℝ) + 40126500 * (lb top bk (l0 + l1 + l2) (u0 + u1 + u2) : ℝ) + 99999900 * (lb top bk (l0 + l1 + l2 + l3) (u0 + u1 + u2 + u3) : ℝ) + 200000000 * (lb top bk (l0 + l1 + l2 + l3 + l4) (u0 + u1 + u2 + u3 + u4) : ℝ) + 48244400 * (lb top bk (l1) (u1) : ℝ) + 37630700 * (lb top bk (l1 + l2) (u1 + u2) : ℝ) + 119746800 * (lb top bk (l1 + l2 + l3) (u1 + u2 + u3) : ℝ) + 99999900 * (lb top bk (l1 + l2 + l3 + l4) (u1 + u2 + u3 + u4) : ℝ) + 52857300 * (lb top bk (l2) (u2) : ℝ) + 37630700 * (lb top bk (l2 + l3) (u2 + u3) : ℝ) + 40126500 * (lb top bk (l2 + l3 + l4) (u2 + u3 + u4) : ℝ) + 48244400 * (lb top bk (l3) (u3) : ℝ) + 62369200 * (lb top bk (l3 + l4) (u3 + u4) : ℝ) + 25326800 * (lb top bk (l4) (u4) : ℝ)) := by
+    rw [hL, hWt]; field_simp; norm_num [SC]; try ring
+  have hq' : (cN : ℝ) ≤ L + Wt := by
+    refine le_of_mul_le_mul_right ?_ (by positivity : (0:ℝ) < SC * 10000000000)
+    rw [e]
+    calc (cN : ℝ) * (SC * 10000000000) = 115055329280000000000 := by norm_num [cN, SC]
+      _ ≤ _ := hq
+  unfold G
+  rw [div_le_iff₀ hSA]
+  have eG : ((24896 / (SA:ℝ)) * g0 + (42034 / (SA:ℝ)) * g1 + (46137 / (SA:ℝ)) * g2 + (42034 / (SA:ℝ)) * g3 + (24896 / (SA:ℝ)) * g4
+      + (25326800 / (SA:ℝ)) * wfun (g0) + (62369200 / (SA:ℝ)) * wfun (g0 + g1) + (40126500 / (SA:ℝ)) * wfun (g0 + g1 + g2) + (99999900 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) + (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) + (48244400 / (SA:ℝ)) * wfun (g1) + (37630700 / (SA:ℝ)) * wfun (g1 + g2) + (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) + (99999900 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) + (52857300 / (SA:ℝ)) * wfun (g2) + (37630700 / (SA:ℝ)) * wfun (g2 + g3) + (40126500 / (SA:ℝ)) * wfun (g2 + g3 + g4) + (48244400 / (SA:ℝ)) * wfun (g3) + (62369200 / (SA:ℝ)) * wfun (g3 + g4) + (25326800 / (SA:ℝ)) * wfun (g4)) * SA
+      = 24896 * g0 + 42034 * g1 + 46137 * g2 + 42034 * g3 + 24896 * g4 + 25326800 * wfun (g0) + 62369200 * wfun (g0 + g1) + 40126500 * wfun (g0 + g1 + g2) + 99999900 * wfun (g0 + g1 + g2 + g3) + 200000000 * wfun (g0 + g1 + g2 + g3 + g4) + 48244400 * wfun (g1) + 37630700 * wfun (g1 + g2) + 119746800 * wfun (g1 + g2 + g3) + 99999900 * wfun (g1 + g2 + g3 + g4) + 52857300 * wfun (g2) + 37630700 * wfun (g2 + g3) + 40126500 * wfun (g2 + g3 + g4) + 48244400 * wfun (g3) + 62369200 * wfun (g3 + g4) + 25326800 * wfun (g4) := by
+    field_simp; try ring
+  rw [eG]
+  rw [hL, hWt] at hq'
+  linarith [hq', mul_le_mul_of_nonneg_left h01 (by positivity : (0:ℝ) ≤ 24896), mul_le_mul_of_nonneg_left h11 (by positivity : (0:ℝ) ≤ 42034), mul_le_mul_of_nonneg_left h21 (by positivity : (0:ℝ) ≤ 46137), mul_le_mul_of_nonneg_left h31 (by positivity : (0:ℝ) ≤ 42034), mul_le_mul_of_nonneg_left h41 (by positivity : (0:ℝ) ≤ 24896), mul_le_mul_of_nonneg_left w0 (by positivity : (0:ℝ) ≤ 25326800), mul_le_mul_of_nonneg_left w1 (by positivity : (0:ℝ) ≤ 62369200), mul_le_mul_of_nonneg_left w2 (by positivity : (0:ℝ) ≤ 40126500), mul_le_mul_of_nonneg_left w3 (by positivity : (0:ℝ) ≤ 99999900), mul_le_mul_of_nonneg_left w4 (by positivity : (0:ℝ) ≤ 200000000), mul_le_mul_of_nonneg_left w5 (by positivity : (0:ℝ) ≤ 48244400), mul_le_mul_of_nonneg_left w6 (by positivity : (0:ℝ) ≤ 37630700), mul_le_mul_of_nonneg_left w7 (by positivity : (0:ℝ) ≤ 119746800), mul_le_mul_of_nonneg_left w8 (by positivity : (0:ℝ) ≤ 99999900), mul_le_mul_of_nonneg_left w9 (by positivity : (0:ℝ) ≤ 52857300), mul_le_mul_of_nonneg_left w10 (by positivity : (0:ℝ) ≤ 37630700), mul_le_mul_of_nonneg_left w11 (by positivity : (0:ℝ) ≤ 40126500), mul_le_mul_of_nonneg_left w12 (by positivity : (0:ℝ) ≤ 48244400), mul_le_mul_of_nonneg_left w13 (by positivity : (0:ℝ) ≤ 62369200), mul_le_mul_of_nonneg_left w14 (by positivity : (0:ℝ) ≤ 25326800)]
+
+
+/-- a box split on gap 0 at `q` is covered when both halves are -/
+theorem covered_split0 {l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ} (q : ℕ) (hA : Covered l0 q l1 u1 l2 u2 l3 u3 l4 u4) (hB : Covered q u0 l1 u1 l2 u2 l3 u3 l4 u4) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  intro g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42
+  rcases le_total g0 ((q : ℝ) / SC) with hq | hq
+  · exact hA g0 g1 g2 g3 g4 h01 hq h11 h12 h21 h22 h31 h32 h41 h42
+  · exact hB g0 g1 g2 g3 g4 hq h02 h11 h12 h21 h22 h31 h32 h41 h42
+
+/-- a box split on gap 1 at `q` is covered when both halves are -/
+theorem covered_split1 {l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ} (q : ℕ) (hA : Covered l0 u0 l1 q l2 u2 l3 u3 l4 u4) (hB : Covered l0 u0 q u1 l2 u2 l3 u3 l4 u4) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  intro g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42
+  rcases le_total g1 ((q : ℝ) / SC) with hq | hq
+  · exact hA g0 g1 g2 g3 g4 h01 h02 h11 hq h21 h22 h31 h32 h41 h42
+  · exact hB g0 g1 g2 g3 g4 h01 h02 hq h12 h21 h22 h31 h32 h41 h42
+
+/-- a box split on gap 2 at `q` is covered when both halves are -/
+theorem covered_split2 {l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ} (q : ℕ) (hA : Covered l0 u0 l1 u1 l2 q l3 u3 l4 u4) (hB : Covered l0 u0 l1 u1 q u2 l3 u3 l4 u4) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  intro g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42
+  rcases le_total g2 ((q : ℝ) / SC) with hq | hq
+  · exact hA g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 hq h31 h32 h41 h42
+  · exact hB g0 g1 g2 g3 g4 h01 h02 h11 h12 hq h22 h31 h32 h41 h42
+
+/-- a box split on gap 3 at `q` is covered when both halves are -/
+theorem covered_split3 {l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ} (q : ℕ) (hA : Covered l0 u0 l1 u1 l2 u2 l3 q l4 u4) (hB : Covered l0 u0 l1 u1 l2 u2 q u3 l4 u4) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  intro g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42
+  rcases le_total g3 ((q : ℝ) / SC) with hq | hq
+  · exact hA g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 hq h41 h42
+  · exact hB g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 hq h32 h41 h42
+
+/-- a box split on gap 4 at `q` is covered when both halves are -/
+theorem covered_split4 {l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ} (q : ℕ) (hA : Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 q) (hB : Covered l0 u0 l1 u1 l2 u2 l3 u3 q u4) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  intro g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42
+  rcases le_total g4 ((q : ℝ) / SC) with hq | hq
+  · exact hA g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 hq
+  · exact hB g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 hq h42
+
+/-- a continuation that only returns nonzero on covered boxes -/
+def WalkOK (f : WF) : Prop := ∀ pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ, f pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0 → Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4
+
+theorem split0_sound {ih : WF} (hih : WalkOK ih) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : split0 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  unfold split0 at h
+  rw [forceR_eq] at h
+  cases hp : Nat.beq (ih (Nat.add pos 4) l0 (Nat.shiftRight (Nat.add l0 u0) 1) l1 u1 l2 u2 l3 u3 l4 u4) 0
+  · have h' : ih (ih (Nat.add pos 4) l0 (Nat.shiftRight (Nat.add l0 u0) 1) l1 u1 l2 u2 l3 u3 l4 u4) (Nat.shiftRight (Nat.add l0 u0) 1) u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0 := by
+      intro h0; apply h; simp only [hp]; exact h0
+    have hA := hih (Nat.add pos 4) l0 (Nat.shiftRight (Nat.add l0 u0) 1) l1 u1 l2 u2 l3 u3 l4 u4 (by intro h0; rw [h0] at hp; exact absurd hp (by decide))
+    exact covered_split0 _ hA (hih _ (Nat.shiftRight (Nat.add l0 u0) 1) u0 l1 u1 l2 u2 l3 u3 l4 u4 h')
+  · exact absurd (by simp only [hp]) h
+
+theorem split1_sound {ih : WF} (hih : WalkOK ih) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : split1 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  unfold split1 at h
+  rw [forceR_eq] at h
+  cases hp : Nat.beq (ih (Nat.add pos 4) l0 u0 l1 (Nat.shiftRight (Nat.add l1 u1) 1) l2 u2 l3 u3 l4 u4) 0
+  · have h' : ih (ih (Nat.add pos 4) l0 u0 l1 (Nat.shiftRight (Nat.add l1 u1) 1) l2 u2 l3 u3 l4 u4) l0 u0 (Nat.shiftRight (Nat.add l1 u1) 1) u1 l2 u2 l3 u3 l4 u4 ≠ 0 := by
+      intro h0; apply h; simp only [hp]; exact h0
+    have hA := hih (Nat.add pos 4) l0 u0 l1 (Nat.shiftRight (Nat.add l1 u1) 1) l2 u2 l3 u3 l4 u4 (by intro h0; rw [h0] at hp; exact absurd hp (by decide))
+    exact covered_split1 _ hA (hih _ l0 u0 (Nat.shiftRight (Nat.add l1 u1) 1) u1 l2 u2 l3 u3 l4 u4 h')
+  · exact absurd (by simp only [hp]) h
+
+theorem split2_sound {ih : WF} (hih : WalkOK ih) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : split2 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  unfold split2 at h
+  rw [forceR_eq] at h
+  cases hp : Nat.beq (ih (Nat.add pos 4) l0 u0 l1 u1 l2 (Nat.shiftRight (Nat.add l2 u2) 1) l3 u3 l4 u4) 0
+  · have h' : ih (ih (Nat.add pos 4) l0 u0 l1 u1 l2 (Nat.shiftRight (Nat.add l2 u2) 1) l3 u3 l4 u4) l0 u0 l1 u1 (Nat.shiftRight (Nat.add l2 u2) 1) u2 l3 u3 l4 u4 ≠ 0 := by
+      intro h0; apply h; simp only [hp]; exact h0
+    have hA := hih (Nat.add pos 4) l0 u0 l1 u1 l2 (Nat.shiftRight (Nat.add l2 u2) 1) l3 u3 l4 u4 (by intro h0; rw [h0] at hp; exact absurd hp (by decide))
+    exact covered_split2 _ hA (hih _ l0 u0 l1 u1 (Nat.shiftRight (Nat.add l2 u2) 1) u2 l3 u3 l4 u4 h')
+  · exact absurd (by simp only [hp]) h
+
+theorem split3_sound {ih : WF} (hih : WalkOK ih) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : split3 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  unfold split3 at h
+  rw [forceR_eq] at h
+  cases hp : Nat.beq (ih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 (Nat.shiftRight (Nat.add l3 u3) 1) l4 u4) 0
+  · have h' : ih (ih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 (Nat.shiftRight (Nat.add l3 u3) 1) l4 u4) l0 u0 l1 u1 l2 u2 (Nat.shiftRight (Nat.add l3 u3) 1) u3 l4 u4 ≠ 0 := by
+      intro h0; apply h; simp only [hp]; exact h0
+    have hA := hih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 (Nat.shiftRight (Nat.add l3 u3) 1) l4 u4 (by intro h0; rw [h0] at hp; exact absurd hp (by decide))
+    exact covered_split3 _ hA (hih _ l0 u0 l1 u1 l2 u2 (Nat.shiftRight (Nat.add l3 u3) 1) u3 l4 u4 h')
+  · exact absurd (by simp only [hp]) h
+
+theorem split4_sound {ih : WF} (hih : WalkOK ih) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : split4 ih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  unfold split4 at h
+  rw [forceR_eq] at h
+  cases hp : Nat.beq (ih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 u3 l4 (Nat.shiftRight (Nat.add l4 u4) 1)) 0
+  · have h' : ih (ih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 u3 l4 (Nat.shiftRight (Nat.add l4 u4) 1)) l0 u0 l1 u1 l2 u2 l3 u3 (Nat.shiftRight (Nat.add l4 u4) 1) u4 ≠ 0 := by
+      intro h0; apply h; simp only [hp]; exact h0
+    have hA := hih (Nat.add pos 4) l0 u0 l1 u1 l2 u2 l3 u3 l4 (Nat.shiftRight (Nat.add l4 u4) 1) (by intro h0; rw [h0] at hp; exact absurd hp (by decide))
+    exact covered_split4 _ hA (hih _ l0 u0 l1 u1 l2 u2 l3 u3 (Nat.shiftRight (Nat.add l4 u4) 1) u4 h')
+  · exact absurd (by simp only [hp]) h
+
+theorem splitAx_sound {ih : WF} (hih : WalkOK ih) (pos ax l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : splitAx ih pos ax l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  unfold splitAx at h
+  cases ha0 : Nat.beq ax 0
+  · rw [ha0] at h
+    cases ha1 : Nat.beq ax 1
+    · rw [ha1] at h
+      cases ha2 : Nat.beq ax 2
+      · rw [ha2] at h
+        cases ha3 : Nat.beq ax 3
+        · rw [ha3] at h
+          exact split4_sound hih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h
+        · rw [ha3] at h; exact split3_sound hih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h
+      · rw [ha2] at h; exact split2_sound hih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h
+    · rw [ha1] at h; exact split1_sound hih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h
+  · rw [ha0] at h; exact split0_sound hih pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h
+
+theorem leafStep_sound {top : ℕ} {bk : ℕ → ℕ} (hlb : LBSound top bk) (pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ) (h : leafStep top bk pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 ≠ 0) :
+    Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 := by
+  unfold leafStep at h
+  intro g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42
+  cases hs : Nat.ble (Nat.add u4 1) l0
+  · rw [hs] at h
+    cases hl : leafOK top bk l0 u0 l1 u1 l2 u2 l3 u3 l4 u4
+    · rw [hl] at h; exact absurd rfl h
+    · exact Or.inl (leaf_sound hlb l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 hl g0 g1 g2 g3 g4 h01 h02 h11 h12 h21 h22 h31 h32 h41 h42)
+  · right
+    have hsk : u4 < l0 := by rw [Nat.ble_eq] at hs; simp only [Nat.add_eq] at hs; omega
+    have : (u4 : ℝ) / SC < (l0 : ℝ) / SC := div_lt_div_of_pos_right (by exact_mod_cast hsk) (by norm_num [SC])
+    linarith
+
+theorem walk_sound {top : ℕ} {bk : ℕ → ℕ} (hlb : LBSound top bk) (bits : ℕ) : ∀ fuel, WalkOK (walk top bk bits fuel) := by
+  intro fuel
+  induction fuel with
+  | zero => intro pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h; exact absurd rfl h
+  | succ fuel ih =>
+    intro pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h
+    have h' : Bool.rec (motive := fun _ => ℕ) (leafStep top bk pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4)
+        (splitAx (walk top bk bits fuel) pos (Nat.shiftRight (Nat.land (Nat.shiftRight bits pos) 15) 1) l0 u0 l1 u1 l2 u2 l3 u3 l4 u4)
+        (Nat.beq (Nat.land (Nat.land (Nat.shiftRight bits pos) 15) 1) 1) ≠ 0 := h
+    cases hb : Nat.beq (Nat.land (Nat.land (Nat.shiftRight bits pos) 15) 1) 1
+    · rw [hb] at h'; exact leafStep_sound hlb pos l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h'
+    · rw [hb] at h'; exact splitAx_sound ih pos _ l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 h'
+
+theorem covered_of_walk {top : ℕ} {bk : ℕ → ℕ} (hlb : LBSound top bk) (bits fuel l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 e : ℕ)
+    (h : walk top bk bits fuel 1 l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 = e) (he : e ≠ 0) : Covered l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 :=
+  walk_sound hlb bits fuel 1 l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 (h ▸ he)
+
+/-- per-gap one-dimensional cover: segments `(a, b, clear)` in scaled coordinates; a clear segment's own integer
+cell bound must satisfy `aAdj · W ≥ c`, i.e. `aAdjN * WZ ≥ cN * SW` -/
+def coverCheck (aAdjN : ℕ) : ℕ → ℕ → List (ℕ × ℕ × Bool) → Bool
+  | pos, S, [] => decide (S ≤ pos)
+  | pos, S, (a, b, cl) :: rest =>
+      decide (a = pos) && decide (a ≤ b) && decide (b < KB)
+        && (!cl || Nat.ble (cN * SW) (aAdjN * CellN.WZ ⟨a * KB + b, 0⟩))
+        && coverCheck aAdjN b S rest
+
+def badOf (cover : List (ℕ × ℕ × Bool)) : List (ℕ × ℕ) :=
+  cover.filterMap fun s => if s.2.2 then none else some (s.1, s.2.1)
+
+theorem cover_sound (aAdjN : ℕ) :
+    ∀ (cover : List (ℕ × ℕ × Bool)) (pos S : ℕ), coverCheck aAdjN pos S cover = true →
+      ∀ v : ℝ, (pos : ℝ) / SC ≤ v → v < (S : ℝ) / SC →
+        (cN : ℝ) / SA ≤ ((aAdjN : ℝ) / SA) * wfun v ∨
+          ∃ s ∈ cover, s.2.2 = false ∧ (s.1 : ℝ) / SC ≤ v ∧ v ≤ (s.2.1 : ℝ) / SC := by
+  intro cover
+  induction cover with
+  | nil =>
+    intro pos S h v hv1 hv2
+    simp only [coverCheck, decide_eq_true_eq] at h
+    have : (S : ℝ) / SC ≤ (pos : ℝ) / SC := div_le_div_of_nonneg_right (by exact_mod_cast h) (by norm_num [SC])
+    exact absurd (lt_of_le_of_lt (this.trans hv1) hv2) (lt_irrefl _)
+  | cons s rest ih =>
+    intro pos S h v hv1 hv2
+    obtain ⟨a, b, cl⟩ := s
+    simp only [coverCheck, Bool.and_eq_true, decide_eq_true_eq, Bool.or_eq_true, Bool.not_eq_eq_eq_not,
+      Bool.not_true] at h
+    obtain ⟨⟨⟨⟨hpos, hab⟩, hbK⟩, hcl⟩, hrest⟩ := h
+    rcases le_total v ((b : ℝ) / SC) with hvb | hvb
+    · rcases hcl with hcl | hcl
+      · right
+        exact ⟨(a, b, cl), List.mem_cons_self .., hcl, by rw [hpos]; exact hv1, hvb⟩
+      · left
+        rw [Nat.ble_eq] at hcl
+        have hLN : (⟨a * KB + b, 0⟩ : CellN).LN = a := by
+          simp only [CellN.LN]; rw [Nat.add_comm, Nat.add_mul_div_right _ _ (by norm_num [KB]), Nat.div_eq_of_lt hbK, Nat.zero_add]
+        have hUN : (⟨a * KB + b, 0⟩ : CellN).UN = b := by
+          simp only [CellN.UN]; rw [Nat.add_comm, Nat.add_mul_mod_self_right, Nat.mod_eq_of_lt hbK]
+        have hW := cellN_soundWZ ⟨a * KB + b, 0⟩ v (by rw [hLN, hpos]; exact hv1) (by rw [hUN]; exact hvb)
+        have hq := (Nat.cast_le (α := ℝ)).mpr hcl
+        push_cast at hq
+        have hSA : (0:ℝ) < SA := by norm_num [SA]
+        have hSW : (0:ℝ) < SW := by norm_num [SW]
+        rw [div_le_iff₀ hSA]
+        have hm2 : (aAdjN : ℝ) * (((⟨a * KB + b, 0⟩ : CellN).WZ : ℝ) / SW) ≤ (aAdjN : ℝ) * wfun v :=
+          mul_le_mul_of_nonneg_left hW (by positivity)
+        have e : (aAdjN : ℝ) / SA * wfun v * SA = (aAdjN : ℝ) * wfun v := by field_simp
+        rw [e]
+        calc (cN : ℝ) = (cN : ℝ) * SW / SW := by field_simp
+          _ ≤ (aAdjN : ℝ) * ((⟨a * KB + b, 0⟩ : CellN).WZ : ℝ) / SW := by apply div_le_div_of_nonneg_right _ hSW.le; linarith
+          _ = (aAdjN : ℝ) * (((⟨a * KB + b, 0⟩ : CellN).WZ : ℝ) / SW) := by ring
+          _ ≤ _ := hm2
+    · rcases ih b S hrest v hvb hv2 with h | ⟨s', hs', he, h1, h2⟩
+      · left; exact h
+      · right; exact ⟨s', List.mem_cons_of_mem _ hs', he, h1, h2⟩
+
+theorem badOf_mem {cover : List (ℕ × ℕ × Bool)} {s : ℕ × ℕ × Bool} (hs : s ∈ cover)
+    (he : s.2.2 = false) : (s.1, s.2.1) ∈ badOf cover := by
+  simp only [badOf, List.mem_filterMap]
+  exact ⟨s, hs, by simp [he]⟩
+
+set_option maxHeartbeats 4000000 in
+theorem of_check (cover0 cover1 cover2 cover3 cover4 : List (ℕ × ℕ × Bool)) (S0 S1 S2 S3 S4 : ℕ)
+    (hS0 : cN * SC ≤ 24896 * S0) (hS1 : cN * SC ≤ 42034 * S1) (hS2 : cN * SC ≤ 46137 * S2) (hS3 : cN * SC ≤ 42034 * S3) (hS4 : cN * SC ≤ 24896 * S4)
+    (hcov0 : coverCheck 25326800 (SC / 2) S0 cover0 = true) (hcov1 : coverCheck 48244400 (SC / 2) S1 cover1 = true) (hcov2 : coverCheck 52857300 (SC / 2) S2 cover2 = true) (hcov3 : coverCheck 48244400 (SC / 2) S3 cover3 = true) (hcov4 : coverCheck 25326800 (SC / 2) S4 cover4 = true)
+    (hwin : cN * 100 ≤ 19 * 25326800)
+    (hrun : ∀ i0 i1 i2 i3 i4, i0 < (badOf cover0).length → i1 < (badOf cover1).length → i2 < (badOf cover2).length → i3 < (badOf cover3).length → i4 < (badOf cover4).length →
+      Covered ((badOf cover0).getD i0 (0, 0)).1 ((badOf cover0).getD i0 (0, 0)).2 ((badOf cover1).getD i1 (0, 0)).1 ((badOf cover1).getD i1 (0, 0)).2 ((badOf cover2).getD i2 (0, 0)).1 ((badOf cover2).getD i2 (0, 0)).2 ((badOf cover3).getD i3 (0, 0)).1 ((badOf cover3).getD i3 (0, 0)).2 ((badOf cover4).getD i4 (0, 0)).1 ((badOf cover4).getD i4 (0, 0)).2) :
+    ∀ g0 g1 g2 g3 g4 : ℝ, 0 ≤ g0 → 0 ≤ g1 → 0 ≤ g2 → 0 ≤ g3 → 0 ≤ g4 → (cN : ℝ) / SA ≤ G g0 g1 g2 g3 g4 ∨ g4 < g0 := by
+  intro g0 g1 g2 g3 g4 hg0 hg1 hg2 hg3 hg4
+  have hw := fun v : ℝ => wfun_nonneg v
+  have hSA : (0:ℝ) < SA := by norm_num [SA]
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hhalf : ((SC / 2 : ℕ) : ℝ) / SC = 1/2 := by norm_num [SC]
+  set Lin : ℝ := (24896 / (SA:ℝ)) * g0 + (42034 / (SA:ℝ)) * g1 + (46137 / (SA:ℝ)) * g2 + (42034 / (SA:ℝ)) * g3 + (24896 / (SA:ℝ)) * g4 with hLin
+  set Wt : ℝ := (25326800 / (SA:ℝ)) * wfun (g0) + (62369200 / (SA:ℝ)) * wfun (g0 + g1) + (40126500 / (SA:ℝ)) * wfun (g0 + g1 + g2) + (99999900 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) + (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) + (48244400 / (SA:ℝ)) * wfun (g1) + (37630700 / (SA:ℝ)) * wfun (g1 + g2) + (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) + (99999900 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) + (52857300 / (SA:ℝ)) * wfun (g2) + (37630700 / (SA:ℝ)) * wfun (g2 + g3) + (40126500 / (SA:ℝ)) * wfun (g2 + g3 + g4) + (48244400 / (SA:ℝ)) * wfun (g3) + (62369200 / (SA:ℝ)) * wfun (g3 + g4) + (25326800 / (SA:ℝ)) * wfun (g4) with hWt
+  have hG : G g0 g1 g2 g3 g4 = Lin + Wt := by unfold G; rw [hLin, hWt]; ring
+  have hb00 : (0:ℝ) ≤ (24896 / (SA:ℝ)) * g0 := mul_nonneg (by positivity) hg0
+  have hb10 : (0:ℝ) ≤ (42034 / (SA:ℝ)) * g1 := mul_nonneg (by positivity) hg1
+  have hb20 : (0:ℝ) ≤ (46137 / (SA:ℝ)) * g2 := mul_nonneg (by positivity) hg2
+  have hb30 : (0:ℝ) ≤ (42034 / (SA:ℝ)) * g3 := mul_nonneg (by positivity) hg3
+  have hb40 : (0:ℝ) ≤ (24896 / (SA:ℝ)) * g4 := mul_nonneg (by positivity) hg4
+  have ha00 : (0:ℝ) ≤ (25326800 / (SA:ℝ)) * wfun (g0) := mul_nonneg (by positivity) (hw _)
+  have ha10 : (0:ℝ) ≤ (62369200 / (SA:ℝ)) * wfun (g0 + g1) := mul_nonneg (by positivity) (hw _)
+  have ha20 : (0:ℝ) ≤ (40126500 / (SA:ℝ)) * wfun (g0 + g1 + g2) := mul_nonneg (by positivity) (hw _)
+  have ha30 : (0:ℝ) ≤ (99999900 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) := mul_nonneg (by positivity) (hw _)
+  have ha40 : (0:ℝ) ≤ (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha50 : (0:ℝ) ≤ (48244400 / (SA:ℝ)) * wfun (g1) := mul_nonneg (by positivity) (hw _)
+  have ha60 : (0:ℝ) ≤ (37630700 / (SA:ℝ)) * wfun (g1 + g2) := mul_nonneg (by positivity) (hw _)
+  have ha70 : (0:ℝ) ≤ (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) := mul_nonneg (by positivity) (hw _)
+  have ha80 : (0:ℝ) ≤ (99999900 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha90 : (0:ℝ) ≤ (52857300 / (SA:ℝ)) * wfun (g2) := mul_nonneg (by positivity) (hw _)
+  have ha100 : (0:ℝ) ≤ (37630700 / (SA:ℝ)) * wfun (g2 + g3) := mul_nonneg (by positivity) (hw _)
+  have ha110 : (0:ℝ) ≤ (40126500 / (SA:ℝ)) * wfun (g2 + g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha120 : (0:ℝ) ≤ (48244400 / (SA:ℝ)) * wfun (g3) := mul_nonneg (by positivity) (hw _)
+  have ha130 : (0:ℝ) ≤ (62369200 / (SA:ℝ)) * wfun (g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha140 : (0:ℝ) ≤ (25326800 / (SA:ℝ)) * wfun (g4) := mul_nonneg (by positivity) (hw _)
+  have hLin0 : 0 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb20, hb30, hb40]
+  have hWt0 : 0 ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have hbL0 : (24896 / (SA:ℝ)) * g0 ≤ Lin := by rw [hLin]; linarith [hb10, hb20, hb30, hb40]
+  have hbL1 : (42034 / (SA:ℝ)) * g1 ≤ Lin := by rw [hLin]; linarith [hb00, hb20, hb30, hb40]
+  have hbL2 : (46137 / (SA:ℝ)) * g2 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb30, hb40]
+  have hbL3 : (42034 / (SA:ℝ)) * g3 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb20, hb40]
+  have hbL4 : (24896 / (SA:ℝ)) * g4 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb20, hb30]
+  have haW0 : (25326800 / (SA:ℝ)) * wfun (g0) ≤ Wt := by rw [hWt]; linarith [ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW1 : (62369200 / (SA:ℝ)) * wfun (g0 + g1) ≤ Wt := by rw [hWt]; linarith [ha00, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW2 : (40126500 / (SA:ℝ)) * wfun (g0 + g1 + g2) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW3 : (99999900 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW4 : (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW5 : (48244400 / (SA:ℝ)) * wfun (g1) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW6 : (37630700 / (SA:ℝ)) * wfun (g1 + g2) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW7 : (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW8 : (99999900 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW9 : (52857300 / (SA:ℝ)) * wfun (g2) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha100, ha110, ha120, ha130, ha140]
+  have haW10 : (37630700 / (SA:ℝ)) * wfun (g2 + g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha110, ha120, ha130, ha140]
+  have haW11 : (40126500 / (SA:ℝ)) * wfun (g2 + g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha120, ha130, ha140]
+  have haW12 : (48244400 / (SA:ℝ)) * wfun (g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha130, ha140]
+  have haW13 : (62369200 / (SA:ℝ)) * wfun (g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha140]
+  have haW14 : (25326800 / (SA:ℝ)) * wfun (g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130]
+  -- gap 0: beyond the cutoff the pressure alone pays
+  by_cases hcut0 : (S0 : ℝ) / SC ≤ g0
+  · have h1 : (cN : ℝ) / SA ≤ (24896 / (SA:ℝ)) * g0 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS0; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (24896 / (SA:ℝ)) * g0 * SA = 24896 * g0 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 24896 * S0 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 24896 * ((S0 : ℝ) / SC) := by ring
+        _ ≤ 24896 * g0 := mul_le_mul_of_nonneg_left hcut0 (by norm_num)
+    left; rw [hG]; linarith [h1, hbL0, hWt0]
+  push_neg at hcut0
+  rcases le_total g0 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin0 | hwin0
+  · have hw19 := wfun_window g0 hg0 (by rw [hhalf] at hwin0; exact hwin0)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (25326800 / (SA:ℝ)) * wfun g0 := by
+      rw [div_le_iff₀ hSA]
+      have e : (25326800 / (SA:ℝ)) * wfun g0 * SA = 25326800 * wfun g0 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 25326800)
+      linarith [hq, hm]
+    left; rw [hG]; linarith [h1, haW0, hLin0]
+  rcases cover_sound _ cover0 (SC / 2) S0 hcov0 g0 hwin0 hcut0 with hclear0 | ⟨s0, hs0, he0, hb01, hb02⟩
+  · left; rw [hG]; linarith [hclear0, haW0, hLin0]
+  obtain ⟨i0, hi0, hsi0⟩ := List.mem_iff_getElem.mp (badOf_mem hs0 he0)
+  have hb01' : (((badOf cover0).getD i0 (0, 0)).1 : ℝ) / SC ≤ g0 := by
+    rw [List.getD_eq_getElem _ _ hi0, hsi0]; exact hb01
+  have hb02' : g0 ≤ (((badOf cover0).getD i0 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi0, hsi0]; exact hb02
+  -- gap 1: beyond the cutoff the pressure alone pays
+  by_cases hcut1 : (S1 : ℝ) / SC ≤ g1
+  · have h1 : (cN : ℝ) / SA ≤ (42034 / (SA:ℝ)) * g1 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS1; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (42034 / (SA:ℝ)) * g1 * SA = 42034 * g1 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 42034 * S1 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 42034 * ((S1 : ℝ) / SC) := by ring
+        _ ≤ 42034 * g1 := mul_le_mul_of_nonneg_left hcut1 (by norm_num)
+    left; rw [hG]; linarith [h1, hbL1, hWt0]
+  push_neg at hcut1
+  rcases le_total g1 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin1 | hwin1
+  · have hw19 := wfun_window g1 hg1 (by rw [hhalf] at hwin1; exact hwin1)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (48244400 / (SA:ℝ)) * wfun g1 := by
+      rw [div_le_iff₀ hSA]
+      have e : (48244400 / (SA:ℝ)) * wfun g1 * SA = 48244400 * wfun g1 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 48244400)
+      linarith [hq, hm]
+    left; rw [hG]; linarith [h1, haW5, hLin0]
+  rcases cover_sound _ cover1 (SC / 2) S1 hcov1 g1 hwin1 hcut1 with hclear1 | ⟨s1, hs1, he1, hb11, hb12⟩
+  · left; rw [hG]; linarith [hclear1, haW5, hLin0]
+  obtain ⟨i1, hi1, hsi1⟩ := List.mem_iff_getElem.mp (badOf_mem hs1 he1)
+  have hb11' : (((badOf cover1).getD i1 (0, 0)).1 : ℝ) / SC ≤ g1 := by
+    rw [List.getD_eq_getElem _ _ hi1, hsi1]; exact hb11
+  have hb12' : g1 ≤ (((badOf cover1).getD i1 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi1, hsi1]; exact hb12
+  -- gap 2: beyond the cutoff the pressure alone pays
+  by_cases hcut2 : (S2 : ℝ) / SC ≤ g2
+  · have h1 : (cN : ℝ) / SA ≤ (46137 / (SA:ℝ)) * g2 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS2; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (46137 / (SA:ℝ)) * g2 * SA = 46137 * g2 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 46137 * S2 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 46137 * ((S2 : ℝ) / SC) := by ring
+        _ ≤ 46137 * g2 := mul_le_mul_of_nonneg_left hcut2 (by norm_num)
+    left; rw [hG]; linarith [h1, hbL2, hWt0]
+  push_neg at hcut2
+  rcases le_total g2 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin2 | hwin2
+  · have hw19 := wfun_window g2 hg2 (by rw [hhalf] at hwin2; exact hwin2)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (52857300 / (SA:ℝ)) * wfun g2 := by
+      rw [div_le_iff₀ hSA]
+      have e : (52857300 / (SA:ℝ)) * wfun g2 * SA = 52857300 * wfun g2 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 52857300)
+      linarith [hq, hm]
+    left; rw [hG]; linarith [h1, haW9, hLin0]
+  rcases cover_sound _ cover2 (SC / 2) S2 hcov2 g2 hwin2 hcut2 with hclear2 | ⟨s2, hs2, he2, hb21, hb22⟩
+  · left; rw [hG]; linarith [hclear2, haW9, hLin0]
+  obtain ⟨i2, hi2, hsi2⟩ := List.mem_iff_getElem.mp (badOf_mem hs2 he2)
+  have hb21' : (((badOf cover2).getD i2 (0, 0)).1 : ℝ) / SC ≤ g2 := by
+    rw [List.getD_eq_getElem _ _ hi2, hsi2]; exact hb21
+  have hb22' : g2 ≤ (((badOf cover2).getD i2 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi2, hsi2]; exact hb22
+  -- gap 3: beyond the cutoff the pressure alone pays
+  by_cases hcut3 : (S3 : ℝ) / SC ≤ g3
+  · have h1 : (cN : ℝ) / SA ≤ (42034 / (SA:ℝ)) * g3 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS3; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (42034 / (SA:ℝ)) * g3 * SA = 42034 * g3 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 42034 * S3 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 42034 * ((S3 : ℝ) / SC) := by ring
+        _ ≤ 42034 * g3 := mul_le_mul_of_nonneg_left hcut3 (by norm_num)
+    left; rw [hG]; linarith [h1, hbL3, hWt0]
+  push_neg at hcut3
+  rcases le_total g3 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin3 | hwin3
+  · have hw19 := wfun_window g3 hg3 (by rw [hhalf] at hwin3; exact hwin3)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (48244400 / (SA:ℝ)) * wfun g3 := by
+      rw [div_le_iff₀ hSA]
+      have e : (48244400 / (SA:ℝ)) * wfun g3 * SA = 48244400 * wfun g3 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 48244400)
+      linarith [hq, hm]
+    left; rw [hG]; linarith [h1, haW12, hLin0]
+  rcases cover_sound _ cover3 (SC / 2) S3 hcov3 g3 hwin3 hcut3 with hclear3 | ⟨s3, hs3, he3, hb31, hb32⟩
+  · left; rw [hG]; linarith [hclear3, haW12, hLin0]
+  obtain ⟨i3, hi3, hsi3⟩ := List.mem_iff_getElem.mp (badOf_mem hs3 he3)
+  have hb31' : (((badOf cover3).getD i3 (0, 0)).1 : ℝ) / SC ≤ g3 := by
+    rw [List.getD_eq_getElem _ _ hi3, hsi3]; exact hb31
+  have hb32' : g3 ≤ (((badOf cover3).getD i3 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi3, hsi3]; exact hb32
+  -- gap 4: beyond the cutoff the pressure alone pays
+  by_cases hcut4 : (S4 : ℝ) / SC ≤ g4
+  · have h1 : (cN : ℝ) / SA ≤ (24896 / (SA:ℝ)) * g4 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS4; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (24896 / (SA:ℝ)) * g4 * SA = 24896 * g4 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 24896 * S4 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 24896 * ((S4 : ℝ) / SC) := by ring
+        _ ≤ 24896 * g4 := mul_le_mul_of_nonneg_left hcut4 (by norm_num)
+    left; rw [hG]; linarith [h1, hbL4, hWt0]
+  push_neg at hcut4
+  rcases le_total g4 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin4 | hwin4
+  · have hw19 := wfun_window g4 hg4 (by rw [hhalf] at hwin4; exact hwin4)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (25326800 / (SA:ℝ)) * wfun g4 := by
+      rw [div_le_iff₀ hSA]
+      have e : (25326800 / (SA:ℝ)) * wfun g4 * SA = 25326800 * wfun g4 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 25326800)
+      linarith [hq, hm]
+    left; rw [hG]; linarith [h1, haW14, hLin0]
+  rcases cover_sound _ cover4 (SC / 2) S4 hcov4 g4 hwin4 hcut4 with hclear4 | ⟨s4, hs4, he4, hb41, hb42⟩
+  · left; rw [hG]; linarith [hclear4, haW14, hLin0]
+  obtain ⟨i4, hi4, hsi4⟩ := List.mem_iff_getElem.mp (badOf_mem hs4 he4)
+  have hb41' : (((badOf cover4).getD i4 (0, 0)).1 : ℝ) / SC ≤ g4 := by
+    rw [List.getD_eq_getElem _ _ hi4, hsi4]; exact hb41
+  have hb42' : g4 ≤ (((badOf cover4).getD i4 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi4, hsi4]; exact hb42
+  exact hrun i0 i1 i2 i3 i4 hi0 hi1 hi2 hi3 hi4 g0 g1 g2 g3 g4 hb01' hb02' hb11' hb12' hb21' hb22' hb31' hb32' hb41' hb42'
+
+end Zeta23Ext.Bridge.ThreePoint.SixW20C2000
+
+end

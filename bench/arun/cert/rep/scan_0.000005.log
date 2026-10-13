@@ -1,0 +1,32 @@
+== S sizing delta=0.000005 Sat Oct 10 10:31:32 PDT 2026
+delta=5e-06 cN=805160 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0): 126 leaves (20s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 51 leaves (29s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 139 leaves (52s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 92 leaves (67s)
+  ... 5000 leaves (Z 0, M 4570, empty 0, refl 430) nodes 5053 LP 22639 (212s)
+  ... 10000 leaves (Z 0, M 9328, empty 0, refl 672) nodes 10055 LP 44264 (341s)
+  ... 15000 leaves (Z 0, M 14153, empty 0, refl 847) nodes 15055 LP 66657 (459s)
+  ... 20000 leaves (Z 0, M 18797, empty 0, refl 1203) nodes 20056 LP 87412 (569s)
+  ... 25000 leaves (Z 0, M 23347, empty 0, refl 1653) nodes 25056 LP 109312 (708s)
+  ... 30000 leaves (Z 0, M 27986, empty 0, refl 2014) nodes 30055 LP 132471 (848s)
+time: command terminated abnormally
+      894.96 real       887.22 user         3.28 sys
+          1642381312  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              237608  page reclaims
+                  77  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 239  voluntary context switches
+              209366  involuntary context switches
+      12268686619895  instructions retired
+       2907345691445  cycles elapsed
+          1852245816  peak memory footprint
+./rep_pc8c5bf.sh: line 27: 40404 Terminated: 15          SAVE=$R/dump_$TAG.pkl /usr/bin/time -l nice -n 5 python3 $A8/run8pz.py $B/window/rwin8.json $D 2>&1

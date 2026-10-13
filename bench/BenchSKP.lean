@@ -1,0 +1,134 @@
+import BenchCore
+import BenchSKPDefs
+
+set_option Elab.async false
+set_option profiler true
+set_option profiler.threshold 1
+
+namespace Zeta23Ext.Bridge.ThreePoint.PyrSKP
+
+set_option maxRecDepth 100000
+
+theorem wk43 : walk TOP BK wk43_seg 27 1 30720 33152 59904 75264 31744 38400 59904 75264 30720 40448 = 1572 := by decide +kernel
+
+theorem wk44 : walk TOP BK wk44_seg 21 1 33152 35584 59904 63744 31744 38400 59904 75264 30720 40448 = 372 := by decide +kernel
+
+theorem wk45 : walk TOP BK wk45_seg 20 1 33152 35584 63744 67584 31744 38400 59904 75264 30720 33152 = 772 := by decide +kernel
+
+theorem wk46 : walk TOP BK wk46_seg 17 1 33152 35584 63744 67584 31744 38400 59904 63744 33152 35584 = 297 := by decide +kernel
+
+theorem wk47 : walk TOP BK wk47_seg 16 1 33152 35584 63744 67584 31744 33408 63744 67584 33152 35584 = 372 := by decide +kernel
+
+theorem wk48 : walk TOP BK wk48_seg 21 1 33152 35584 63744 64224 33408 35072 63744 67584 33152 35584 = 3927 := by decide +kernel
+
+theorem wk49 : walk TOP BK wk49_seg 23 1 33152 35584 64224 64704 33408 35072 63744 64704 33152 35584 = 5977 := by decide +kernel
+
+theorem wk50 : walk TOP BK wk50_seg 22 1 33152 35584 64224 64704 33408 34240 64704 65184 33152 35584 = 12477 := by decide +kernel
+
+theorem wk51 : walk TOP BK wk51_seg 22 1 33152 35584 64224 64704 34240 35072 64704 65184 33152 35584 = 17397 := by decide +kernel
+
+theorem wk52 : walk TOP BK wk52_seg 23 1 33152 35584 64224 64704 33408 35072 65184 65664 33152 35584 = 16377 := by decide +kernel
+
+theorem wk53 : walk TOP BK wk53_seg 20 1 33152 35584 64224 64704 33408 35072 65664 67584 33152 35584 = 2917 := by decide +kernel
+
+theorem wk54 : walk TOP BK wk54_seg 18 1 33152 35584 64704 65184 33408 35072 63744 64224 33152 35584 = 1477 := by decide +kernel
+
+theorem wk55 : walk TOP BK wk55_seg 22 1 33152 35584 64704 65184 33408 34240 64224 64704 33152 35584 = 14302 := by decide +kernel
+
+theorem wk56 : walk TOP BK wk56_seg 21 1 33152 34368 64704 65184 34240 35072 64224 64704 33152 35584 = 19442 := by decide +kernel
+
+theorem wk57 : walk TOP BK wk57_seg 18 1 34368 35584 64704 65184 34240 35072 64224 64704 33152 35584 = 992 := by decide +kernel
+
+theorem wk58 : walk TOP BK wk58_seg 17 1 33152 35584 64704 65184 33408 33824 64704 65184 33152 35584 = 1502 := by decide +kernel
+
+theorem wk59 : walk TOP BK wk59_seg 18 1 33152 33760 64704 65184 33824 34240 64704 65184 33152 35584 = 6892 := by decide +kernel
+
+theorem wk60 : walk TOP BK wk60_seg 15 1 33760 34368 64704 65184 33824 34240 64704 65184 33152 33760 = 687 := by decide +kernel
+
+theorem wk61 : walk TOP BK wk61_seg 16 1 33760 34368 64704 65184 33824 34032 64704 65184 33760 34368 = 9852 := by decide +kernel
+
+theorem wk62 : walk TOP BK wk62_seg 16 1 33760 34368 64704 64944 34032 34240 64704 64944 33760 34368 = 8967 := by decide +kernel
+
+theorem wk63 : walk TOP BK wk63_seg 16 1 33760 34368 64704 64944 34032 34240 64944 65184 33760 34368 = 11507 := by decide +kernel
+
+theorem wk64 : walk TOP BK wk64_seg 16 1 33760 34368 64944 65184 34032 34240 64704 64944 33760 34368 = 12642 := by decide +kernel
+
+theorem wk65 : walk TOP BK wk65_seg 16 1 33760 34368 64944 65184 34032 34240 64944 65184 33760 34368 = 12447 := by decide +kernel
+
+theorem wk66 : walk TOP BK wk66_seg 17 1 33760 34368 64704 65184 33824 34240 64704 65184 34368 35584 = 6052 := by decide +kernel
+
+theorem wk67 : walk TOP BK wk67_seg 18 1 34368 35584 64704 65184 33824 34240 64704 65184 33152 35584 = 2072 := by decide +kernel
+
+theorem wk68 : walk TOP BK wk68_seg 19 1 33152 33760 64704 65184 34240 35072 64704 65184 33152 35584 = 7707 := by decide +kernel
+
+theorem wk69 : walk TOP BK wk69_seg 16 1 33760 34368 64704 65184 34240 35072 64704 65184 33152 33760 = 832 := by decide +kernel
+
+theorem wk70 : walk TOP BK wk70_seg 17 1 33760 34368 64704 64944 34240 34656 64704 64944 33760 34368 = 12467 := by decide +kernel
+
+theorem wk71 : walk TOP BK wk71_seg 17 1 33760 34368 64704 64944 34240 34656 64944 65184 33760 34368 = 10952 := by decide +kernel
+
+theorem wk72 : walk TOP BK wk72_seg 17 1 33760 34064 64944 65184 34240 34656 64704 65184 33760 34368 = 14572 := by decide +kernel
+
+theorem wk73 : walk TOP BK wk73_seg 17 1 34064 34368 64944 65184 34240 34656 64704 65184 33760 34368 = 6062 := by decide +kernel
+
+theorem wk74 : walk TOP BK wk74_seg 12 1 33760 34368 64704 65184 34656 35072 64704 65184 33760 34368 = 732 := by decide +kernel
+
+theorem wk75 : walk TOP BK wk75_seg 18 1 33760 34368 64704 65184 34240 35072 64704 65184 34368 35584 = 3897 := by decide +kernel
+
+theorem wk76 : walk TOP BK wk76_seg 19 1 34368 35584 64704 65184 34240 35072 64704 65184 33152 35584 = 1227 := by decide +kernel
+
+theorem wk77 : walk TOP BK wk77_seg 16 1 33152 35584 64704 65184 33408 33824 65184 65664 33152 35584 = 1537 := by decide +kernel
+
+theorem wk78 : walk TOP BK wk78_seg 17 1 33152 35584 64704 65184 33824 34240 65184 65664 33152 33760 = 1492 := by decide +kernel
+
+theorem wk79 : walk TOP BK wk79_seg 16 1 33152 33760 64704 65184 33824 34240 65184 65664 33760 34368 = 3402 := by decide +kernel
+
+theorem wk80 : walk TOP BK wk80_seg 18 1 33760 34368 64704 65184 33824 34240 65184 65664 33760 34368 = 18277 := by decide +kernel
+
+theorem wk81 : walk TOP BK wk81_seg 13 1 34368 35584 64704 65184 33824 34240 65184 65664 33760 34368 = 492 := by decide +kernel
+
+theorem wk82 : walk TOP BK wk82_seg 17 1 33152 35584 64704 65184 33824 34240 65184 65664 34368 35584 = 1822 := by decide +kernel
+
+theorem wk83 : walk TOP BK wk83_seg 22 1 33152 35584 64704 65184 34240 35072 65184 65664 33152 35584 = 13242 := by decide +kernel
+
+theorem wk84 : walk TOP BK wk84_seg 20 1 33152 35584 64704 65184 33408 35072 65664 67584 33152 35584 = 4287 := by decide +kernel
+
+theorem wk85 : walk TOP BK wk85_seg 17 1 33152 35584 65184 65664 33408 35072 63744 64224 33152 35584 = 1847 := by decide +kernel
+
+theorem wk86 : walk TOP BK wk86_seg 22 1 33152 35584 65184 65664 33408 34240 64224 64704 33152 35584 = 11902 := by decide +kernel
+
+theorem wk87 : walk TOP BK wk87_seg 22 1 33152 35584 65184 65664 34240 35072 64224 64704 33152 35584 = 9592 := by decide +kernel
+
+theorem wk88 : walk TOP BK wk88_seg 17 1 33152 35584 65184 65664 33408 33824 64704 65664 33152 35584 = 3037 := by decide +kernel
+
+theorem wk89 : walk TOP BK wk89_seg 19 1 33152 33760 65184 65664 33824 34240 64704 65664 33152 35584 = 9762 := by decide +kernel
+
+theorem wk90 : walk TOP BK wk90_seg 16 1 33760 34368 65184 65664 33824 34240 64704 65664 33152 33760 = 1132 := by decide +kernel
+
+theorem wk91 : walk TOP BK wk91_seg 15 1 33760 34368 65184 65664 33824 34032 64704 65184 33760 34368 = 5847 := by decide +kernel
+
+theorem wk92 : walk TOP BK wk92_seg 17 1 33760 34368 65184 65664 34032 34240 64704 65184 33760 34368 = 14582 := by decide +kernel
+
+theorem wk93 : walk TOP BK wk93_seg 16 1 33760 34368 65184 65664 33824 34240 65184 65664 33760 34368 = 5487 := by decide +kernel
+
+theorem wk94 : walk TOP BK wk94_seg 17 1 33760 34368 65184 65664 33824 34240 64704 65664 34368 35584 = 2607 := by decide +kernel
+
+theorem wk95 : walk TOP BK wk95_seg 17 1 34368 35584 65184 65664 33824 34240 64704 65664 33152 35584 = 922 := by decide +kernel
+
+theorem wk96 : walk TOP BK wk96_seg 23 1 33152 35584 65184 65664 34240 35072 64704 65664 33152 35584 = 19207 := by decide +kernel
+
+theorem wk97 : walk TOP BK wk97_seg 18 1 33152 35584 65184 65664 33408 35072 65664 67584 33152 35584 = 2242 := by decide +kernel
+
+theorem wk98 : walk TOP BK wk98_seg 23 1 33152 35584 65664 67584 33408 35072 63744 67584 33152 35584 = 12922 := by decide +kernel
+
+theorem wk99 : walk TOP BK wk99_seg 18 1 33152 35584 63744 67584 35072 38400 63744 67584 33152 35584 = 1132 := by decide +kernel
+
+theorem wk100 : walk TOP BK wk100_seg 12 1 33152 35584 63744 67584 31744 38400 67584 75264 33152 35584 = 57 := by decide +kernel
+
+theorem wk101 : walk TOP BK wk101_seg 19 1 33152 35584 63744 67584 31744 38400 59904 75264 35584 40448 = 407 := by decide +kernel
+
+theorem wk102 : walk TOP BK wk102_seg 16 1 33152 35584 67584 75264 31744 38400 59904 75264 30720 40448 = 97 := by decide +kernel
+
+theorem wk103 : walk TOP BK wk103_seg 21 1 35584 40448 59904 75264 31744 38400 59904 75264 30720 40448 = 567 := by decide +kernel
+
+end Zeta23Ext.Bridge.ThreePoint.PyrSKP

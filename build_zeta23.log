@@ -1,0 +1,229 @@
+✔ [3580/3590] Built Zeta23.LinAlg.PosIndex (9.2s)
+✔ [3581/3590] Built Zeta23.Defs (10s)
+✔ [3583/3590] Built Zeta23.Defs.Counting (3.2s)
+✔ [3584/3591] Built Zeta23.LinAlg.HermitianPosPart (3.4s)
+✔ [3585/3592] Built Zeta23.Hypotheses (3.5s)
+✔ [3587/3592] Built Zeta23.LinAlg.Sylvester (3.7s)
+✔ [3589/3612] Built Zeta23.LinAlg.Inertia (3.3s)
+⚠ [3602/3613] Built Zeta23.Statement (4.2s)
+warning: Zeta23/Statement.lean:148:30: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [3604/3615] Built Zeta23.LinAlg.Weyl (3.3s)
+✔ [3606/3616] Built Zeta23.PrimeSideTemp (3.1s)
+✔ [3608/3616] Built Zeta23.TracesBoundsE (3.1s)
+⚠ [3609/3616] Built Zeta23.Statement.Seam (5.1s)
+warning: Zeta23/Statement/Seam.lean:59:13: `ENat.toNat_coe` has been deprecated: Use `ENat.toNat_natCast` instead
+✔ [3610/3616] Built Zeta23.LinAlg.VonNeumann (3.5s)
+✔ [3611/3620] Built Zeta23.Hypotheses.GzGp (3.2s)
+✔ [3613/3620] Built Zeta23.LinAlg.RankTrace (3.9s)
+✔ [3614/3622] Built Zeta23.Defs.Profile (3.2s)
+✔ [3615/3622] Built Zeta23.LinAlg (3.0s)
+⚠ [3616/3622] Built Zeta23.ZetaReflect (3.8s)
+warning: Zeta23/ZetaReflect.lean:91:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [3617/3622] Built Zeta23.Poisson.PaperFT (3.4s)
+✔ [3618/3622] Built Zeta23.Assembly.Inputs (3.4s)
+✔ [3619/3623] Built Zeta23.Taper.Basic (3.3s)
+✔ [3620/3650] Built Zeta23.Statement.SeamClosed (3.0s)
+✔ [8717/8722] Built Zeta23.Taper.Strip (3.6s)
+⚠ [8719/8724] Built Zeta23.Assembly (12s)
+warning: Zeta23/Assembly.lean:885:47: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/Assembly.lean:958:34: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/Assembly.lean:962:90: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8720/8727] Built Zeta23.Tail.Basic (2.5s)
+✔ [8721/8727] Built Zeta23.Tail.Count (4.5s)
+✔ [8722/8727] Built Zeta23.Tail.Grid (3.2s)
+✔ [8723/8728] Built Zeta23.Tail.RankOne (3.6s)
+⚠ [8724/8732] Built Zeta23.Tail (4.7s)
+warning: Zeta23/Tail.lean:290:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/Tail.lean:399:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8725/8733] Built Zeta23.Taper.Norms (25s)
+⚠ [8726/8733] Built Zeta23.ZeroSide (4.7s)
+warning: Zeta23/ZeroSide.lean:701:4: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ZeroSide.lean:706:66: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ZeroSide.lean:712:52: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ZeroSide.lean:755:53: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8727/8733] Built Zeta23.Taper.Fourier (14s)
+✔ [8728/8735] Built Zeta23.Taper.Decay (13s)
+✔ [8729/8735] Built Zeta23.Taper.Params (11s)
+✔ [8730/8735] Built Zeta23.ExplicitFormula (4.8s)
+✔ [8731/8735] Built Zeta23.Poisson (12s)
+✔ [8732/8739] Built Zeta23.ExplicitFormula.Bridge (4.7s)
+✔ [8733/8739] Built Zeta23.Taper (12s)
+✔ [8734/8740] Built Zeta23.FromPNTPlus.EulerMaclaurin (2.3s)
+✔ [8735/8740] Built Zeta23.FromPNTPlus.Mertens (4.0s)
+✔ [8736/8740] Built Zeta23.Tail.Package (12s)
+✔ [8737/8743] Built Zeta23.PrimeSideB (7.4s)
+✔ [8738/8745] Built Zeta23.Chebyshev (8.6s)
+✔ [8739/8747] Built Zeta23.PrimeSideA.Defs (12s)
+✔ [8740/8747] Built Zeta23.Main (12s)
+✔ [8741/8747] Built Zeta23.PrimeSideB.PPKernel (13s)
+✔ [8742/8747] Built Zeta23.PrimeSideA.Basic (17s)
+✔ [8743/8749] Built Zeta23.PrimeSideA.CrossMuPCore (14s)
+✔ [8744/8751] Built Zeta23.PrimeSideB.Concrete (12s)
+✔ [8745/8751] Built Zeta23.PrimeSideA.MuMu (16s)
+✔ [8746/8751] Built Zeta23.PiFacts (12s)
+✔ [8747/8751] Built Zeta23.PrimeSideA.CrossMuP (14s)
+✔ [8748/8761] Built Zeta23.Defs.LeafIntegrals (5.3s)
+✔ [8749/8762] Built Zeta23.PrimeSideA.EndsCore (14s)
+✔ [8750/8762] Built Zeta23.PrimeSideB.PPOffDiag (13s)
+✔ [8751/8762] Built Zeta23.PrimeSideA.Bridge (12s)
+✔ [8752/8762] Built Zeta23.PrimeSideA.EndsWeighted (13s)
+✔ [8753/8762] Built Zeta23.MV (3.7s)
+⚠ [8754/8762] Built Zeta23.PrimeSideA.EndsE1 (21s)
+warning: Zeta23/PrimeSideA/EndsE1.lean:326:41: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8755/8766] Built Zeta23.PrimeSideB.PP (17s)
+⚠ [8756/8768] Built Zeta23.MV.Spacing (14s)
+warning: Zeta23/MV/Spacing.lean:58:0: automatically included section variable(s) unused in theorem `Zeta23.MV.Adm.itv_disjoint`:
+  [Fintype ι]
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype ι] [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Zeta23/MV/Spacing.lean:153:8: automatically included section variable(s) unused in theorem `_private.Zeta23.MV.Spacing.0.Zeta23.MV.Adm.mem_window`:
+  [Fintype ι]
+  [DecidableEq ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype ι] [DecidableEq ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [8757/8768] Built Zeta23.PrimeSideA.EndsNu (16s)
+✔ [8758/8768] Built Zeta23.MV.EigenIdentity (4.2s)
+✔ [8759/8768] Built Zeta23.MV.Quadratic (15s)
+✔ [8760/8769] Built Zeta23.MV.Duality (13s)
+✔ [8761/8769] Built Zeta23.MV.Eigen (12s)
+✔ [8762/8769] Built Zeta23.PrimeSideA.EndsE2 (15s)
+✔ [8763/8772] Built Zeta23.GammaFacts (3.7s)
+✔ [8764/8773] Built Zeta23.MV.Final (12s)
+✔ [8765/8775] Built Zeta23.PrimeSideA.Ends (13s)
+✔ [8766/8775] Built Zeta23.GammaFacts.Series (4.4s)
+✔ [8767/8775] Built Zeta23.Analytic.Stirling (5.0s)
+ℹ [8768/8776] Built Zeta23.GammaFacts.Mu (6.1s)
+info: Zeta23/GammaFacts/Mu.lean:137:2: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+ℹ [8769/8776] Built Zeta23.GammaFacts.StirlingVert (5.4s)
+info: Zeta23/GammaFacts/StirlingVert.lean:452:6: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+ℹ [8770/8776] Built Zeta23.PrimeSideA (41s)
+info: Zeta23/PrimeSideA.lean:372:0: lem_ends : ∀ (cϱ lam : ℝ),
+  GammaFacts →
+    ChebyshevMertens →
+      0 < lam ∧ lam ≤ 1 →
+        ∃ C, EventuallyAtCore cϱ lam fun p F ↦ |trGt2A p F - MtotalA p F| ≤ C * (p.L * p.l * log p.l * (p.l ^ 2 + p.X))
+info: Zeta23/PrimeSideA.lean:398:0: prop_mumu : ∀ (cϱ lam : ℝ),
+  GammaFacts →
+    ChebyshevMertens →
+      0 < lam ∧ lam ≤ 1 →
+        ∃ C,
+          EventuallyAtCore cϱ lam fun p F ↦
+            |Mform F.Phi p.T mu mu - 2 * π * F.b * p.L * ∫ (τ : ℝ) in p.T..2 * p.T, mu τ ^ 2| ≤ C * (p.l ^ 2 * log p.L)
+info: Zeta23/PrimeSideA.lean:404:0: prop_cross_muP : ∀ (cϱ lam : ℝ),
+  GammaFacts →
+    ChebyshevMertens →
+      0 < lam ∧ lam ≤ 1 → ∃ C, EventuallyAtCore cϱ lam fun p F ↦ |Mform F.Phi p.T mu (PX p.X)| ≤ C * (p.l * √p.X)
+✔ [8771/8777] Built Zeta23.RvM.Defs (4.3s)
+✔ [8772/8778] Built Zeta23.PrimeSideB.Traces (13s)
+✔ [8773/8778] Built Zeta23.GammaFacts.IntMu (42s)
+✔ [8774/8778] Built Zeta23.Prelude.InstancePriorities (2.2s)
+✔ [8775/8778] Built Zeta23.GammaFacts.Complete (3.4s)
+⚠ [8776/8779] Built Zeta23.FromPNTPlus.StrongPNTPrefix (4.6s)
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:61:71: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:202:9: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:343:10: `Set.notMem_setOf_iff` has been deprecated: Use `Set.notMem_ofPred_iff` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:368:48: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:390:10: `Set.notMem_setOf_iff` has been deprecated: Use `Set.notMem_ofPred_iff` instead
+warning: Zeta23/FromPNTPlus/StrongPNTPrefix.lean:432:48: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8777/8782] Built Zeta23.FromPNTPlus.Auxiliary (3.0s)
+✔ [8778/8782] Built Zeta23.PrimeSideB.Final (12s)
+✔ [8779/8787] Built Zeta23.FromPNTPlus.Mathlib.Analysis.SpecialFunctions.Log.Basic (2.6s)
+✔ [8780/8789] Built Zeta23.FromPNTPlus.Sobolev (5.7s)
+✔ [8781/8789] Built Zeta23.FromPNTPlus.Rectangle (3.2s)
+✔ [8782/8790] Built Zeta23.FromPNTPlus.Tactic.AdditiveCombination (1.9s)
+✔ [8783/8790] Built Zeta23.FromPNTPlus.Fourier (4.1s)
+⚠ [8784/8791] Built Zeta23.RvM.Halving (3.7s)
+warning: Zeta23/RvM/Halving.lean:52:55: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/RvM/Halving.lean:62:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/RvM/Halving.lean:70:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8785/8792] Built Zeta23.WeilEF.XiLogDeriv (3.0s)
+✔ [8786/8792] Built Zeta23.FromPNTPlus.ResidueCalcOnRectangles (6.1s)
+✔ [8787/8795] Built Zeta23.Analytic.RectangleLogDeriv (4.1s)
+✔ [8788/8795] Built Zeta23.RvM.GammaSide (6.1s)
+✔ [8789/8798] Built Zeta23.RvM.BacklundDefs (3.8s)
+✔ [8790/8801] Built Zeta23.RvM.CountByIntegral (4.7s)
+⚠ [8791/8801] Built Zeta23.FromPNTPlus.ZetaBounds (12s)
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:859:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:952:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1092:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1099:32: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1105:56: `Set.preimage_setOf_eq` has been deprecated: Use `Set.preimage_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1115:56: `Set.preimage_setOf_eq` has been deprecated: Use `Set.preimage_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1119:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1135:54: `Set.preimage_setOf_eq` has been deprecated: Use `Set.preimage_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1157:22: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1169:15: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1169:59: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1185:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1835:19: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1837:45: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1840:28: `Set.setOf_subset_setOf` has been deprecated: Use `Set.ofPred_subset_ofPred` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1844:28: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1900:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:1906:20: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:2091:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:2884:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/FromPNTPlus/ZetaBounds.lean:2940:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8792/8801] Built Zeta23.FromPNTPlus.ZetaConj (3.9s)
+⚠ [8793/8802] Built Zeta23.RvM.NcountWindow (4.2s)
+warning: Zeta23/RvM/NcountWindow.lean:23:22: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8794/8802] Built Zeta23.RvM.ZetaGrowth (5.0s)
+✔ [8795/8804] Built Zeta23.RvM.Fold (4.6s)
+✔ [8796/8808] Built Zeta23.WeilEF.GammaRBracket (3.8s)
+✔ [8797/8809] Built Zeta23.RvM.LocalCount (9.7s)
+✔ [8798/8813] Built Zeta23.WeilEF.VerticalLine (7.5s)
+⚠ [8799/8813] Built Zeta23.WeilEF.Landau (9.9s)
+warning: Zeta23/WeilEF/Landau.lean:341:13: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/WeilEF/Landau.lean:437:64: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8800/8813] Built Zeta23.WeilEF.ZeroSummability (5.3s)
+warning: Zeta23/WeilEF/ZeroSummability.lean:189:4: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8801/8815] Built Zeta23.RvM.ReZeroCount (16s)
+warning: Zeta23/RvM/ReZeroCount.lean:272:15: `ENat.toNat_coe` has been deprecated: Use `ENat.toNat_natCast` instead
+✔ [8802/8815] Built Zeta23.RvM.Backlund (5.5s)
+✔ [8804/8815] Built Zeta23.WeilEF.GoodHeights (10s)
+⚠ [8806/8816] Built Zeta23.WeilEF.Contour (5.1s)
+warning: Zeta23/WeilEF/Contour.lean:69:15: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8807/8818] Built Zeta23.WeilEF.ZeroSumLimit (4.6s)
+✔ [8808/8822] Built Zeta23.RvM.MainTerm (12s)
+⚠ [8809/8822] Replayed Zeta23.ThmD.WindowCore
+warning: Zeta23/ThmD/WindowCore.lean:388:22: Variable name `u` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [8812/8830] Built Zeta23.RvM.Statement (4.3s)
+⚠ [8814/8830] Replayed Zeta23.ThmD.Window
+warning: Zeta23/ThmD/Window.lean:132:17: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+⚠ [8818/8830] Replayed Zeta23.ThmD.PP
+warning: Zeta23/ThmD/PP.lean:270:29: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: Zeta23/ThmD/PP.lean:276:29: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+✔ [8822/8830] Built Zeta23.WeilEF.FullLine (7.9s)
+✔ [8824/8830] Built Zeta23.WeilEF.Horizontal (7.0s)
+✔ [8825/8830] Built ChallengeDeps (12s)
+✔ [8827/8830] Built Zeta23.WeilEF.FullLineAssembly (4.7s)
+ℹ [8828/8830] Built Zeta23.WeilEF.Main (5.1s)
+info: Zeta23/WeilEF/Main.lean:38:2: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+✔ [8829/8830] Built Zeta23.Final (12s)
+✔ [8830/8830] Built Zeta23.ThmD.Final (11s)
+Build completed successfully (8830 jobs).

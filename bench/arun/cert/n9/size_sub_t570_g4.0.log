@@ -1,0 +1,90 @@
+== full9 tag=sub_t570_g4.0 wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/sub_t570_g4.0.json delta=0 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9so.py LSC=1024 YFRAC=16 EXACTV=1 LPACCEPT= Sat Oct 10 19:48:46 PDT 2026
+delta=0.0 cN=747862 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0): 7 leaves (8s)
+  root 1 (0, 0, 0, 0, 0, 0, 1): 22 leaves (26s)
+  root 2 (0, 0, 0, 0, 0, 1, 0): 16 leaves (38s)
+  root 3 (0, 0, 0, 0, 0, 1, 1): 22 leaves (50s)
+  root 4 (0, 0, 0, 0, 1, 0, 0): 44 leaves (73s)
+  root 5 (0, 0, 0, 0, 1, 0, 1): 32 leaves (87s)
+  root 6 (0, 0, 0, 0, 1, 1, 0): 38 leaves (104s)
+  root 7 (0, 0, 0, 0, 1, 1, 1): 27 leaves (119s)
+  root 8 (0, 0, 0, 1, 0, 0, 0): 44 leaves (131s)
+  root 9 (0, 0, 0, 1, 0, 0, 1): 38 leaves (145s)
+  root 10 (0, 0, 0, 1, 0, 1, 0): 59 leaves (177s)
+  root 11 (0, 0, 0, 1, 0, 1, 1): 24 leaves (196s)
+  root 12 (0, 0, 0, 1, 1, 0, 0): 47 leaves (238s)
+  root 13 (0, 0, 0, 1, 1, 0, 1): 15 leaves (249s)
+  root 14 (0, 0, 0, 1, 1, 1, 0): 26 leaves (271s)
+  root 15 (0, 0, 0, 1, 1, 1, 1): 22 leaves (284s)
+  root 16 (0, 0, 1, 0, 0, 0, 0): 22 leaves (294s)
+  root 17 (0, 0, 1, 0, 0, 0, 1): 29 leaves (309s)
+  root 18 (0, 0, 1, 0, 0, 1, 0): 51 leaves (332s)
+  root 19 (0, 0, 1, 0, 0, 1, 1): 30 leaves (344s)
+  root 20 (0, 0, 1, 0, 1, 0, 0): 53 leaves (364s)
+  root 21 (0, 0, 1, 0, 1, 0, 1): 21 leaves (378s)
+  root 22 (0, 0, 1, 0, 1, 1, 0): 36 leaves (392s)
+  root 23 (0, 0, 1, 0, 1, 1, 1): 29 leaves (405s)
+  root 24 (0, 0, 1, 1, 0, 0, 0): 35 leaves (417s)
+  root 25 (0, 0, 1, 1, 0, 0, 1): 28 leaves (425s)
+  root 26 (0, 0, 1, 1, 0, 1, 0): 33 leaves (436s)
+  root 27 (0, 0, 1, 1, 0, 1, 1): 26 leaves (452s)
+  root 28 (0, 0, 1, 1, 1, 0, 0): 22 leaves (460s)
+  root 29 (0, 0, 1, 1, 1, 0, 1): 60 leaves (492s)
+  root 30 (0, 0, 1, 1, 1, 1, 0): 15 leaves (499s)
+  root 31 (0, 0, 1, 1, 1, 1, 1): 4 leaves (501s)
+  root 32 (0, 1, 0, 0, 0, 0, 0): 31 leaves (525s)
+  root 33 (0, 1, 0, 0, 0, 0, 1): 17 leaves (532s)
+  root 34 (0, 1, 0, 0, 0, 1, 0): 32 leaves (543s)
+  root 35 (0, 1, 0, 0, 0, 1, 1): 19 leaves (549s)
+  root 36 (0, 1, 0, 0, 1, 0, 0): 40 leaves (562s)
+  root 37 (0, 1, 0, 0, 1, 0, 1): 36 leaves (574s)
+  root 38 (0, 1, 0, 0, 1, 1, 0): 25 leaves (581s)
+  root 39 (0, 1, 0, 0, 1, 1, 1): 19 leaves (587s)
+  root 40 (0, 1, 0, 1, 0, 0, 0): 33 leaves (598s)
+  root 41 (0, 1, 0, 1, 0, 0, 1): 33 leaves (607s)
+  root 42 (0, 1, 0, 1, 0, 1, 0): 28 leaves (616s)
+  root 43 (0, 1, 0, 1, 0, 1, 1): 29 leaves (627s)
+  root 44 (0, 1, 0, 1, 1, 0, 0): 18 leaves (637s)
+  root 45 (0, 1, 0, 1, 1, 0, 1): 27 leaves (648s)
+  root 46 (0, 1, 0, 1, 1, 1, 0): 35 leaves (668s)
+  root 47 (0, 1, 0, 1, 1, 1, 1): 5 leaves (670s)
+  root 48 (0, 1, 1, 0, 0, 0, 0): 14 leaves (675s)
+  root 49 (0, 1, 1, 0, 0, 0, 1): 21 leaves (682s)
+  root 50 (0, 1, 1, 0, 0, 1, 0): 30 leaves (693s)
+  root 51 (0, 1, 1, 0, 0, 1, 1): 57 leaves (720s)
+  root 52 (0, 1, 1, 0, 1, 0, 0): 23 leaves (726s)
+  root 53 (0, 1, 1, 0, 1, 0, 1): 29 leaves (736s)
+  root 54 (0, 1, 1, 0, 1, 1, 0): 26 leaves (744s)
+  root 55 (0, 1, 1, 0, 1, 1, 1): 4 leaves (746s)
+  root 56 (0, 1, 1, 1, 0, 0, 0): 27 leaves (762s)
+  root 57 (0, 1, 1, 1, 0, 0, 1): 25 leaves (769s)
+  root 58 (0, 1, 1, 1, 0, 1, 0): 27 leaves (783s)
+  root 59 (0, 1, 1, 1, 0, 1, 1): 9 leaves (787s)
+  root 60 (0, 1, 1, 1, 1, 0, 0): 23 leaves (799s)
+  root 61 (0, 1, 1, 1, 1, 0, 1): 5 leaves (802s)
+  root 62 (0, 1, 1, 1, 1, 1, 0): 4 leaves (804s)
+  root 63 (0, 1, 1, 1, 1, 1, 1): 2 leaves (805s)
+  bisection: 1730 leaves (Z 0, M 1730, empty 0), 1666 splits, 924 at region boundaries (805s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 0 cells, 1079 points (9826 point cells); failing 0 (807s)
+leaves 1730 kinds {6: 1730} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 1666 (pair 1320); walk bits 434468 (251.1 per leaf; multipliers 998 x 13 bits); M nonzero multipliers [(0, 799), (1, 865), (2, 65), (3, 1)]; constraints per M cell [(21, 1730)]; w 1984 d 0 pts 1079 ptc 9826 bad 0 MSTAT lp 6133 (807s)
+nodes visited 3396 (leaves 1730 + splits 1666); explicit constraints per node: mean 21.00, dist [(21, 3396)]
+walk: 434468 bits = 0.109 MB hex, 0.072 MB base64 (roots run); x8.73: 0.95 MB hex, 0.63 MB base64
+      827.73 real       576.22 user        14.36 sys
+          1874771968  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              710266  page reclaims
+                  62  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                1976  voluntary context switches
+              869152  involuntary context switches
+       6138023111527  instructions retired
+       1867300837369  cycles elapsed
+          2058799072  peak memory footprint
+== done Sat Oct 10 20:02:34 PDT 2026

@@ -1,0 +1,539 @@
+import AMW.PCellIV
+import AMW.PCBias
+import AMW.PCellCloseB
+import AMW.PCDZ
+
+/-! ###### polytope cells for Q = 8: the instance layer with the exact closure and Z
+(instance layer: bridge-port, amg/genpcell4.py; the closure splits, the closure walk and its chunk lemmas: mvt-engine,
+eight/am8/genpcellC.py, TZ.md §5)
+
+Kernel functions unrolled on the curried state (16 gap and 56 pair bounds, the mask); every proof is a link to
+the generic layer `AMW.PCellGen` through `toCl : St → Cl`.  The walk is mvt-engine's fixed-width DATA layout (emit8pz.py).
+Engine, tables and per-term minorants: mvt-engine's MinCore on the AM
+engine (pyramid oracle adapted from five-point-pyramid-2 by typh, Apache-2.0). ###### -/
+
+set_option maxRecDepth 100000
+set_option maxHeartbeats 4000000
+
+noncomputable section
+
+namespace AMW.Cert.PC9HQ3
+
+open AMW.Cert AMW.Cert.Pyr AMW.Cert.PyrD AMW.Cert.PCell
+
+def cN : ℕ := 856382
+/-- the multiplier quantum: `Y = SIG · Yq`, `Yq < 2^13` (`2^-16` per unit g) -/
+def SIG : ℕ := 1562500000000000
+
+/-- the non-adjacent pairs, in pair order -/
+def PR : List (ℕ × ℕ) := [(0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (3, 5), (3, 6), (3, 7), (3, 8), (4, 6), (4, 7), (4, 8), (5, 7), (5, 8), (6, 8)]
+theorem hPR : PRok 8 PR := by decide
+/-- the gap weights and the terms `(i, j, a, k)` of the functional `Fg` (units 1/SA) -/
+def BS : List ℕ := [27130, 50593, 66037, 74577, 74577, 66037, 50593, 27130]
+def TS : List Term := [(0, 1, 11540560, 0), (0, 3, 8686366, 1), (0, 4, 34265560, 2), (0, 5, 40853477, 3), (0, 6, 58252863, 4), (0, 7, 100000000, 5), (0, 8, 200000000, 6), (1, 2, 23367038, 0), (1, 3, 27290752, 7), (1, 4, 39869581, 8), (1, 5, 35315115, 9), (1, 6, 59146522, 10), (1, 7, 83494272, 11), (1, 8, 100000000, 12), (2, 3, 30853002, 0), (2, 4, 42637189, 13), (2, 5, 51444051, 14), (2, 6, 60838648, 15), (2, 7, 59146522, 16), (2, 8, 58252863, 17), (3, 4, 34239398, 0), (3, 5, 60144115, 18), (3, 6, 51444051, 19), (3, 7, 35315115, 20), (3, 8, 40853477, 21), (4, 5, 34239398, 0), (4, 6, 42637189, 22), (4, 7, 39869581, 23), (4, 8, 34265560, 24), (5, 6, 30853002, 0), (5, 7, 27290752, 25), (5, 8, 8686366, 26), (6, 7, 23367038, 0), (7, 8, 11540560, 0)]
+theorem hTS : TSok 8 PR TS := by decide
+
+/-- the slot of the pair `(a, b)`, `a < b`, at `a · 9 + b`: gap `a` when `b = a + 1`, else `8` + the pair's rank -/
+def SL : List ℕ := [0, 0, 8, 9, 10, 11, 12, 13, 14, 0, 0, 1, 15, 16, 17, 18, 19, 20, 0, 0, 0, 2, 21, 22, 23, 24, 25, 0, 0, 0, 0, 3, 26, 27, 28, 29, 0, 0, 0, 0, 0, 4, 30, 31, 32, 0, 0, 0, 0, 0, 0, 5, 33, 34, 0, 0, 0, 0, 0, 0, 0, 6, 35, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+theorem hSL : SLok 8 PR SL := by decide
+/-- the convex-region boundaries, sorted (a mode-1 split cuts at the one nearest the midpoint, ≥ 64 inside; mvt-engine) -/
+def BND : List ℕ := [16384, 40384, 56768, 73664, 89920, 106176, 122304, 138560, 155136, 171456, 187712, 203840, 220224, 236480, 253120, 269440, 285760, 302080, 318720, 335168, 351872, 368384, 384896, 401280, 417728, 434048, 450496, 466816, 483264, 499584, 516032, 524288]
+
+def SA : ℕ := 100000000
+
+/-- the weighted functional on the gaps, in real form (pair weights `a_ij` and pressures `b_r` over `SA`) -/
+def G (g0 g1 g2 g3 g4 g5 g6 g7 : ℝ) : ℝ :=
+  (27130 / (SA:ℝ)) * g0 + (50593 / (SA:ℝ)) * g1 + (66037 / (SA:ℝ)) * g2 + (74577 / (SA:ℝ)) * g3 + (74577 / (SA:ℝ)) * g4 + (66037 / (SA:ℝ)) * g5 + (50593 / (SA:ℝ)) * g6 + (27130 / (SA:ℝ)) * g7
+    + (11540560 / (SA:ℝ)) * wfun (g0) + (0 / (SA:ℝ)) * wfun (g0 + g1) + (8686366 / (SA:ℝ)) * wfun (g0 + g1 + g2) + (34265560 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) + (40853477 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) + (58252863 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4 + g5) + (100000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4 + g5 + g6) + (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4 + g5 + g6 + g7) + (23367038 / (SA:ℝ)) * wfun (g1) + (27290752 / (SA:ℝ)) * wfun (g1 + g2) + (39869581 / (SA:ℝ)) * wfun (g1 + g2 + g3) + (35315115 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) + (59146522 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4 + g5) + (83494272 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4 + g5 + g6) + (100000000 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4 + g5 + g6 + g7) + (30853002 / (SA:ℝ)) * wfun (g2) + (42637189 / (SA:ℝ)) * wfun (g2 + g3) + (51444051 / (SA:ℝ)) * wfun (g2 + g3 + g4) + (60838648 / (SA:ℝ)) * wfun (g2 + g3 + g4 + g5) + (59146522 / (SA:ℝ)) * wfun (g2 + g3 + g4 + g5 + g6) + (58252863 / (SA:ℝ)) * wfun (g2 + g3 + g4 + g5 + g6 + g7) + (34239398 / (SA:ℝ)) * wfun (g3) + (60144115 / (SA:ℝ)) * wfun (g3 + g4) + (51444051 / (SA:ℝ)) * wfun (g3 + g4 + g5) + (35315115 / (SA:ℝ)) * wfun (g3 + g4 + g5 + g6) + (40853477 / (SA:ℝ)) * wfun (g3 + g4 + g5 + g6 + g7) + (34239398 / (SA:ℝ)) * wfun (g4) + (42637189 / (SA:ℝ)) * wfun (g4 + g5) + (39869581 / (SA:ℝ)) * wfun (g4 + g5 + g6) + (34265560 / (SA:ℝ)) * wfun (g4 + g5 + g6 + g7) + (30853002 / (SA:ℝ)) * wfun (g5) + (27290752 / (SA:ℝ)) * wfun (g5 + g6) + (8686366 / (SA:ℝ)) * wfun (g5 + g6 + g7) + (23367038 / (SA:ℝ)) * wfun (g6) + (0 / (SA:ℝ)) * wfun (g6 + g7) + (11540560 / (SA:ℝ)) * wfun (g7)
+
+/-- the integer functional `Fg` on a tuple of gaps is `SA · G` -/
+theorem Fg_G (x0 x1 x2 x3 x4 x5 x6 x7 : ℝ) : Fg 8 BS TS (fun r => [x0, x1, x2, x3, x4, x5, x6, x7].getD r 0) = (SA : ℝ) * G x0 x1 x2 x3 x4 x5 x6 x7 := by
+  simp [Fg, BS, TS, tA, tI, tJ, gsum_range, G, SA, Finset.sum_range_succ]
+  ring
+
+/-- the canonical tables (HUFF.md §3): per table the count of each code length from 0, and the symbols in table order
+(16-bit fields); a term's symbol is `κ · 2^14 + j1 · 2^7 + j2`, the axis `0 … 7` a gap, `8 …` a pair (pair order),
+the multiplier's `c` the pair's rank -/
+-- (fixed-width fields: no tables)
+
+abbrev Covered : Cl → Prop := CovBy 8 PR (Pg cN 8 BS TS)
+
+/-- the kernel state -/
+structure St where
+  (l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 l5 u5 l6 u6 l7 u7 A02 B02 A03 B03 A04 B04 A05 B05 A06 B06 A07 B07 A08 B08 A13 B13 A14 B14 A15 B15 A16 B16 A17 B17 A18 B18 A24 B24 A25 B25 A26 B26 A27 B27 A28 B28 A35 B35 A36 B36 A37 B37 A38 B38 A46 B46 A47 B47 A48 B48 A57 B57 A58 B58 A68 B68 M : ℕ)
+
+def toCl (s : St) : Cl :=
+  ⟨[s.l0, s.l1, s.l2, s.l3, s.l4, s.l5, s.l6, s.l7], [s.u0, s.u1, s.u2, s.u3, s.u4, s.u5, s.u6, s.u7],
+   [s.A02, s.A03, s.A04, s.A05, s.A06, s.A07, s.A08, s.A13, s.A14, s.A15, s.A16, s.A17, s.A18, s.A24, s.A25, s.A26, s.A27, s.A28, s.A35, s.A36, s.A37, s.A38, s.A46, s.A47, s.A48, s.A57, s.A58, s.A68], [s.B02, s.B03, s.B04, s.B05, s.B06, s.B07, s.B08, s.B13, s.B14, s.B15, s.B16, s.B17, s.B18, s.B24, s.B25, s.B26, s.B27, s.B28, s.B35, s.B36, s.B37, s.B38, s.B46, s.B47, s.B48, s.B57, s.B58, s.B68]⟩
+def ofCl (c : Cl) (m : ℕ) : St :=
+  ⟨c.L.getD 0 0, c.U.getD 0 0, c.L.getD 1 0, c.U.getD 1 0, c.L.getD 2 0, c.U.getD 2 0, c.L.getD 3 0, c.U.getD 3 0, c.L.getD 4 0, c.U.getD 4 0, c.L.getD 5 0, c.U.getD 5 0, c.L.getD 6 0, c.U.getD 6 0, c.L.getD 7 0, c.U.getD 7 0, c.A.getD 0 0, c.B.getD 0 0, c.A.getD 1 0, c.B.getD 1 0, c.A.getD 2 0, c.B.getD 2 0, c.A.getD 3 0, c.B.getD 3 0, c.A.getD 4 0, c.B.getD 4 0, c.A.getD 5 0, c.B.getD 5 0, c.A.getD 6 0, c.B.getD 6 0, c.A.getD 7 0, c.B.getD 7 0, c.A.getD 8 0, c.B.getD 8 0, c.A.getD 9 0, c.B.getD 9 0, c.A.getD 10 0, c.B.getD 10 0, c.A.getD 11 0, c.B.getD 11 0, c.A.getD 12 0, c.B.getD 12 0, c.A.getD 13 0, c.B.getD 13 0, c.A.getD 14 0, c.B.getD 14 0, c.A.getD 15 0, c.B.getD 15 0, c.A.getD 16 0, c.B.getD 16 0, c.A.getD 17 0, c.B.getD 17 0, c.A.getD 18 0, c.B.getD 18 0, c.A.getD 19 0, c.B.getD 19 0, c.A.getD 20 0, c.B.getD 20 0, c.A.getD 21 0, c.B.getD 21 0, c.A.getD 22 0, c.B.getD 22 0, c.A.getD 23 0, c.B.getD 23 0, c.A.getD 24 0, c.B.getD 24 0, c.A.getD 25 0, c.B.getD 25 0, c.A.getD 26 0, c.B.getD 26 0, c.A.getD 27 0, c.B.getD 27 0, m⟩
+
+theorem toCl_ofCl (c : Cl) (m : ℕ) (h1 : c.L.length = 8) (h2 : c.U.length = 8) (h3 : c.A.length = 28) (h4 : c.B.length = 28) :
+    toCl (ofCl c m) = c := by
+  obtain ⟨L, U, A, B⟩ := c
+  show Cl.mk _ _ _ _ = _
+  congr 1
+  exacts [list_of_getD L _ h1, list_of_getD U _ h2, list_of_getD A _ h3, list_of_getD B _ h4]
+
+abbrev ST : Type := ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ → ℕ
+/-- a continuation applied to a state -/
+def U (k : ST) (s : St) : ℕ := k s.l0 s.u0 s.l1 s.u1 s.l2 s.u2 s.l3 s.u3 s.l4 s.u4 s.l5 s.u5 s.l6 s.u6 s.l7 s.u7 s.A02 s.B02 s.A03 s.B03 s.A04 s.B04 s.A05 s.B05 s.A06 s.B06 s.A07 s.B07 s.A08 s.B08 s.A13 s.B13 s.A14 s.B14 s.A15 s.B15 s.A16 s.B16 s.A17 s.B17 s.A18 s.B18 s.A24 s.B24 s.A25 s.B25 s.A26 s.B26 s.A27 s.B27 s.A28 s.B28 s.A35 s.B35 s.A36 s.B36 s.A37 s.B37 s.A38 s.B38 s.A46 s.B46 s.A47 s.B47 s.A48 s.B48 s.A57 s.B57 s.A58 s.B58 s.A68 s.B68 s.M
+def CovK (k : ST) : Prop := ∀ s, U k s ≠ 0 → Covered (toCl s)
+abbrev WF : Type := ℕ → ST
+def WalkOK (f : WF) : Prop := ∀ pos, CovK (f pos)
+def zK : ST := fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ => 0
+theorem zK_ok : CovK zK := fun _ h => absurd rfl h
+
+theorem ofCl_ok {k : ST} (hk : CovK k) {c : Cl} {m : ℕ} (h1 : c.L.length = 8) (h2 : c.U.length = 8) (h3 : c.A.length = 28)
+    (h4 : c.B.length = 28) (h : U k (ofCl c m) ≠ 0) : Covered c :=
+  toCl_ofCl c m h1 h2 h3 h4 ▸ hk _ h
+
+/-- a split node's two children (`cA` from `pos`, the bit after the axis code, then `cB`) cover the cell when the split lemma does -/
+theorem sp_ok {ih : WF} (hih : WalkOK ih) {s : St} {cA cB : Cl} {pos mA mB : ℕ}
+    (hc : Covered cA → Covered cB → Covered (toCl s))
+    (h : Bool.rec (motive := fun _ => ℕ) (U (ih (U (ih pos) (ofCl cA mA))) (ofCl cB mB)) 0
+      (Nat.beq (U (ih pos) (ofCl cA mA)) 0) ≠ 0)
+    (hA : cA.L.length = 8 ∧ cA.U.length = 8 ∧ cA.A.length = 28 ∧ cA.B.length = 28)
+    (hB : cB.L.length = 8 ∧ cB.U.length = 8 ∧ cB.A.length = 28 ∧ cB.B.length = 28) : Covered (toCl s) := by
+  cases hp : Nat.beq (U (ih pos) (ofCl cA mA)) 0
+  · rw [hp] at h
+    exact hc (ofCl_ok (hih _) hA.1 hA.2.1 hA.2.2.1 hA.2.2.2 fun h0 => by rw [h0] at hp; exact absurd hp (by decide))
+      (ofCl_ok (hih _) hB.1 hB.2.1 hB.2.2.1 hB.2.2.2 h)
+  · rw [hp] at h; exact absurd rfl h
+
+
+-- (2) split nodes: gap r at the midpoint of [l_r, u_r]; pair t at the midpoint of its (persisted) bounds
+
+/-- the closure through the point `s` of a split's edge: `x` the column `BB + D(·, s)`, `y` the row
+`BB + D(s, t) + D(t, ·)` (`PCBias.cuB`, `BB = 2^42`) -/
+def cuH (k : ST) (x0 x1 x2 x3 x4 x5 x6 x7 x8 y0 y1 y2 y3 y4 y5 y6 y7 y8 a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  k (nmax a (Nat.sub 8796093022208 (Nat.add x1 y0)))
+    (nmin b (Nat.sub (Nat.add x0 y1) 8796093022208))
+    (nmax c (Nat.sub 8796093022208 (Nat.add x2 y1)))
+    (nmin d (Nat.sub (Nat.add x1 y2) 8796093022208))
+    (nmax e (Nat.sub 8796093022208 (Nat.add x3 y2)))
+    (nmin f (Nat.sub (Nat.add x2 y3) 8796093022208))
+    (nmax g (Nat.sub 8796093022208 (Nat.add x4 y3)))
+    (nmin h (Nat.sub (Nat.add x3 y4) 8796093022208))
+    (nmax i (Nat.sub 8796093022208 (Nat.add x5 y4)))
+    (nmin j (Nat.sub (Nat.add x4 y5) 8796093022208))
+    (nmax l (Nat.sub 8796093022208 (Nat.add x6 y5)))
+    (nmin m (Nat.sub (Nat.add x5 y6) 8796093022208))
+    (nmax n (Nat.sub 8796093022208 (Nat.add x7 y6)))
+    (nmin o (Nat.sub (Nat.add x6 y7) 8796093022208))
+    (nmax r (Nat.sub 8796093022208 (Nat.add x8 y7)))
+    (nmin s (Nat.sub (Nat.add x7 y8) 8796093022208))
+    (nmax t (Nat.sub 8796093022208 (Nat.add x2 y0)))
+    (nmin u (Nat.sub (Nat.add x0 y2) 8796093022208))
+    (nmax v (Nat.sub 8796093022208 (Nat.add x3 y0)))
+    (nmin w (Nat.sub (Nat.add x0 y3) 8796093022208))
+    (nmax x (Nat.sub 8796093022208 (Nat.add x4 y0)))
+    (nmin y (Nat.sub (Nat.add x0 y4) 8796093022208))
+    (nmax z (Nat.sub 8796093022208 (Nat.add x5 y0)))
+    (nmin A (Nat.sub (Nat.add x0 y5) 8796093022208))
+    (nmax B (Nat.sub 8796093022208 (Nat.add x6 y0)))
+    (nmin C (Nat.sub (Nat.add x0 y6) 8796093022208))
+    (nmax D (Nat.sub 8796093022208 (Nat.add x7 y0)))
+    (nmin E (Nat.sub (Nat.add x0 y7) 8796093022208))
+    (nmax F (Nat.sub 8796093022208 (Nat.add x8 y0)))
+    (nmin G (Nat.sub (Nat.add x0 y8) 8796093022208))
+    (nmax H (Nat.sub 8796093022208 (Nat.add x3 y1)))
+    (nmin I (Nat.sub (Nat.add x1 y3) 8796093022208))
+    (nmax J (Nat.sub 8796093022208 (Nat.add x4 y1)))
+    (nmin K (Nat.sub (Nat.add x1 y4) 8796093022208))
+    (nmax L (Nat.sub 8796093022208 (Nat.add x5 y1)))
+    (nmin M (Nat.sub (Nat.add x1 y5) 8796093022208))
+    (nmax N (Nat.sub 8796093022208 (Nat.add x6 y1)))
+    (nmin O (Nat.sub (Nat.add x1 y6) 8796093022208))
+    (nmax P (Nat.sub 8796093022208 (Nat.add x7 y1)))
+    (nmin Q (Nat.sub (Nat.add x1 y7) 8796093022208))
+    (nmax R (Nat.sub 8796093022208 (Nat.add x8 y1)))
+    (nmin S (Nat.sub (Nat.add x1 y8) 8796093022208))
+    (nmax T (Nat.sub 8796093022208 (Nat.add x4 y2)))
+    (nmin U (Nat.sub (Nat.add x2 y4) 8796093022208))
+    (nmax V (Nat.sub 8796093022208 (Nat.add x5 y2)))
+    (nmin W (Nat.sub (Nat.add x2 y5) 8796093022208))
+    (nmax X (Nat.sub 8796093022208 (Nat.add x6 y2)))
+    (nmin Y (Nat.sub (Nat.add x2 y6) 8796093022208))
+    (nmax Z (Nat.sub 8796093022208 (Nat.add x7 y2)))
+    (nmin aa (Nat.sub (Nat.add x2 y7) 8796093022208))
+    (nmax ab (Nat.sub 8796093022208 (Nat.add x8 y2)))
+    (nmin ac (Nat.sub (Nat.add x2 y8) 8796093022208))
+    (nmax ad (Nat.sub 8796093022208 (Nat.add x5 y3)))
+    (nmin ae (Nat.sub (Nat.add x3 y5) 8796093022208))
+    (nmax af (Nat.sub 8796093022208 (Nat.add x6 y3)))
+    (nmin ag (Nat.sub (Nat.add x3 y6) 8796093022208))
+    (nmax ah (Nat.sub 8796093022208 (Nat.add x7 y3)))
+    (nmin ai (Nat.sub (Nat.add x3 y7) 8796093022208))
+    (nmax aj (Nat.sub 8796093022208 (Nat.add x8 y3)))
+    (nmin al (Nat.sub (Nat.add x3 y8) 8796093022208))
+    (nmax am (Nat.sub 8796093022208 (Nat.add x6 y4)))
+    (nmin an (Nat.sub (Nat.add x4 y6) 8796093022208))
+    (nmax ao (Nat.sub 8796093022208 (Nat.add x7 y4)))
+    (nmin ar (Nat.sub (Nat.add x4 y7) 8796093022208))
+    (nmax au (Nat.sub 8796093022208 (Nat.add x8 y4)))
+    (nmin av (Nat.sub (Nat.add x4 y8) 8796093022208))
+    (nmax aw (Nat.sub 8796093022208 (Nat.add x7 y5)))
+    (nmin ax (Nat.sub (Nat.add x5 y7) 8796093022208))
+    (nmax ay (Nat.sub 8796093022208 (Nat.add x8 y5)))
+    (nmin az (Nat.sub (Nat.add x5 y8) 8796093022208))
+    (nmax ba (Nat.sub 8796093022208 (Nat.add x8 y6)))
+    (nmin bb (Nat.sub (Nat.add x6 y8) 8796093022208))
+    bc
+
+/-- `cuH` on a column and a row given as lists, and a state -/
+def cuL (k : ST) (X Y : List ℕ) (s : St) : ℕ :=
+  cuH k (X.getD 0 0) (X.getD 1 0) (X.getD 2 0) (X.getD 3 0) (X.getD 4 0) (X.getD 5 0) (X.getD 6 0) (X.getD 7 0) (X.getD 8 0) (Y.getD 0 0) (Y.getD 1 0) (Y.getD 2 0) (Y.getD 3 0) (Y.getD 4 0) (Y.getD 5 0) (Y.getD 6 0) (Y.getD 7 0) (Y.getD 8 0)
+    s.l0 s.u0 s.l1 s.u1 s.l2 s.u2 s.l3 s.u3 s.l4 s.u4 s.l5 s.u5 s.l6 s.u6 s.l7 s.u7 s.A02 s.B02 s.A03 s.B03 s.A04 s.B04 s.A05 s.B05 s.A06 s.B06 s.A07 s.B07 s.A08 s.B08 s.A13 s.B13 s.A14 s.B14 s.A15 s.B15 s.A16 s.B16 s.A17 s.B17 s.A18 s.B18 s.A24 s.B24 s.A25 s.B25 s.A26 s.B26 s.A27 s.B27 s.A28 s.B28 s.A35 s.B35 s.A36 s.B36 s.A37 s.B37 s.A38 s.B38 s.A46 s.B46 s.A47 s.B47 s.A48 s.B48 s.A57 s.B57 s.A58 s.B58 s.A68 s.B68 s.M
+
+def gsplit0 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add a b) 1) (bcutL BND 64 a b) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe a) qe (Nat.add qe d) (Nat.add qe I) (Nat.add qe K) (Nat.add qe M) (Nat.add qe O) (Nat.add qe Q) (Nat.add qe S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def gsplit1 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add c d) 1) (bcutL BND 64 c d) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) (Nat.sub qe t) (Nat.sub qe c) qe (Nat.add qe f) (Nat.add qe U) (Nat.add qe W) (Nat.add qe Y) (Nat.add qe aa) (Nat.add qe ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) (Nat.sub qf a) qf (Nat.add qf d) (Nat.add qf I) (Nat.add qf K) (Nat.add qf M) (Nat.add qf O) (Nat.add qf Q) (Nat.add qf S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def gsplit2 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add e f) 1) (bcutL BND 64 e f) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) (Nat.sub qe v) (Nat.sub qe H) (Nat.sub qe e) qe (Nat.add qe h) (Nat.add qe ae) (Nat.add qe ag) (Nat.add qe ai) (Nat.add qe al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) (Nat.sub qf t) (Nat.sub qf c) qf (Nat.add qf f) (Nat.add qf U) (Nat.add qf W) (Nat.add qf Y) (Nat.add qf aa) (Nat.add qf ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def gsplit3 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add g h) 1) (bcutL BND 64 g h) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) (Nat.sub qe x) (Nat.sub qe J) (Nat.sub qe T) (Nat.sub qe g) qe (Nat.add qe j) (Nat.add qe an) (Nat.add qe ar) (Nat.add qe av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) (Nat.sub qf v) (Nat.sub qf H) (Nat.sub qf e) qf (Nat.add qf h) (Nat.add qf ae) (Nat.add qf ag) (Nat.add qf ai) (Nat.add qf al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def gsplit4 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add i j) 1) (bcutL BND 64 i j) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) (Nat.sub qe z) (Nat.sub qe L) (Nat.sub qe V) (Nat.sub qe ad) (Nat.sub qe i) qe (Nat.add qe m) (Nat.add qe ax) (Nat.add qe az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) (Nat.sub qf x) (Nat.sub qf J) (Nat.sub qf T) (Nat.sub qf g) qf (Nat.add qf j) (Nat.add qf an) (Nat.add qf ar) (Nat.add qf av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def gsplit5 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add l m) 1) (bcutL BND 64 l m) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) (Nat.sub qe B) (Nat.sub qe N) (Nat.sub qe X) (Nat.sub qe af) (Nat.sub qe am) (Nat.sub qe l) qe (Nat.add qe o) (Nat.add qe bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) (Nat.sub qf z) (Nat.sub qf L) (Nat.sub qf V) (Nat.sub qf ad) (Nat.sub qf i) qf (Nat.add qf m) (Nat.add qf ax) (Nat.add qf az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def gsplit6 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add n o) 1) (bcutL BND 64 n o) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) (Nat.sub qe D) (Nat.sub qe P) (Nat.sub qe Z) (Nat.sub qe ah) (Nat.sub qe ao) (Nat.sub qe aw) (Nat.sub qe n) qe (Nat.add qe s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) (Nat.sub qf B) (Nat.sub qf N) (Nat.sub qf X) (Nat.sub qf af) (Nat.sub qf am) (Nat.sub qf l) qf (Nat.add qf o) (Nat.add qf bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def gsplit7 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add r s) 1) (bcutL BND 64 r s) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb (Nat.sub qf D) (Nat.sub qf P) (Nat.sub qf Z) (Nat.sub qf ah) (Nat.sub qf ao) (Nat.sub qf aw) (Nat.sub qf n) qf (Nat.add qf s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit02 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add t u) 1) (bcutL BND 64 t u) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe t) (Nat.sub qe c) qe (Nat.add qe f) (Nat.add qe U) (Nat.add qe W) (Nat.add qe Y) (Nat.add qe aa) (Nat.add qe ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit03 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add v w) 1) (bcutL BND 64 v w) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe v) (Nat.sub qe H) (Nat.sub qe e) qe (Nat.add qe h) (Nat.add qe ae) (Nat.add qe ag) (Nat.add qe ai) (Nat.add qe al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit04 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add x y) 1) (bcutL BND 64 x y) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe x) (Nat.sub qe J) (Nat.sub qe T) (Nat.sub qe g) qe (Nat.add qe j) (Nat.add qe an) (Nat.add qe ar) (Nat.add qe av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit05 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add z A) 1) (bcutL BND 64 z A) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe z) (Nat.sub qe L) (Nat.sub qe V) (Nat.sub qe ad) (Nat.sub qe i) qe (Nat.add qe m) (Nat.add qe ax) (Nat.add qe az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit06 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add B C) 1) (bcutL BND 64 B C) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe B) (Nat.sub qe N) (Nat.sub qe X) (Nat.sub qe af) (Nat.sub qe am) (Nat.sub qe l) qe (Nat.add qe o) (Nat.add qe bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit07 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add D E) 1) (bcutL BND 64 D E) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe D) (Nat.sub qe P) (Nat.sub qe Z) (Nat.sub qe ah) (Nat.sub qe ao) (Nat.sub qe aw) (Nat.sub qe n) qe (Nat.add qe s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit08 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add F G) 1) (bcutL BND 64 F G) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) qb (Nat.sub qb a) (Nat.sub qb t) (Nat.sub qb v) (Nat.sub qb x) (Nat.sub qb z) (Nat.sub qb B) (Nat.sub qb D) (Nat.sub qb F) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb qf (Nat.add qf b) (Nat.add qf u) (Nat.add qf w) (Nat.add qf y) (Nat.add qf A) (Nat.add qf C) (Nat.add qf E) (Nat.add qf G) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit13 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add H I) 1) (bcutL BND 64 H I) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) (Nat.sub qe v) (Nat.sub qe H) (Nat.sub qe e) qe (Nat.add qe h) (Nat.add qe ae) (Nat.add qe ag) (Nat.add qe ai) (Nat.add qe al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) (Nat.sub qf a) qf (Nat.add qf d) (Nat.add qf I) (Nat.add qf K) (Nat.add qf M) (Nat.add qf O) (Nat.add qf Q) (Nat.add qf S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit14 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add J K) 1) (bcutL BND 64 J K) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) (Nat.sub qe x) (Nat.sub qe J) (Nat.sub qe T) (Nat.sub qe g) qe (Nat.add qe j) (Nat.add qe an) (Nat.add qe ar) (Nat.add qe av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) (Nat.sub qf a) qf (Nat.add qf d) (Nat.add qf I) (Nat.add qf K) (Nat.add qf M) (Nat.add qf O) (Nat.add qf Q) (Nat.add qf S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit15 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add L M) 1) (bcutL BND 64 L M) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) (Nat.sub qe z) (Nat.sub qe L) (Nat.sub qe V) (Nat.sub qe ad) (Nat.sub qe i) qe (Nat.add qe m) (Nat.add qe ax) (Nat.add qe az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) (Nat.sub qf a) qf (Nat.add qf d) (Nat.add qf I) (Nat.add qf K) (Nat.add qf M) (Nat.add qf O) (Nat.add qf Q) (Nat.add qf S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit16 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add N O) 1) (bcutL BND 64 N O) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) (Nat.sub qe B) (Nat.sub qe N) (Nat.sub qe X) (Nat.sub qe af) (Nat.sub qe am) (Nat.sub qe l) qe (Nat.add qe o) (Nat.add qe bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) (Nat.sub qf a) qf (Nat.add qf d) (Nat.add qf I) (Nat.add qf K) (Nat.add qf M) (Nat.add qf O) (Nat.add qf Q) (Nat.add qf S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit17 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add P Q) 1) (bcutL BND 64 P Q) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) (Nat.sub qe D) (Nat.sub qe P) (Nat.sub qe Z) (Nat.sub qe ah) (Nat.sub qe ao) (Nat.sub qe aw) (Nat.sub qe n) qe (Nat.add qe s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) (Nat.sub qf a) qf (Nat.add qf d) (Nat.add qf I) (Nat.add qf K) (Nat.add qf M) (Nat.add qf O) (Nat.add qf Q) (Nat.add qf S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit18 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add R S) 1) (bcutL BND 64 R S) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb b) qb (Nat.sub qb c) (Nat.sub qb H) (Nat.sub qb J) (Nat.sub qb L) (Nat.sub qb N) (Nat.sub qb P) (Nat.sub qb R) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb (Nat.sub qf a) qf (Nat.add qf d) (Nat.add qf I) (Nat.add qf K) (Nat.add qf M) (Nat.add qf O) (Nat.add qf Q) (Nat.add qf S) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit24 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add T U) 1) (bcutL BND 64 T U) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) (Nat.sub qe x) (Nat.sub qe J) (Nat.sub qe T) (Nat.sub qe g) qe (Nat.add qe j) (Nat.add qe an) (Nat.add qe ar) (Nat.add qe av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) (Nat.sub qf t) (Nat.sub qf c) qf (Nat.add qf f) (Nat.add qf U) (Nat.add qf W) (Nat.add qf Y) (Nat.add qf aa) (Nat.add qf ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit25 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add V W) 1) (bcutL BND 64 V W) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) (Nat.sub qe z) (Nat.sub qe L) (Nat.sub qe V) (Nat.sub qe ad) (Nat.sub qe i) qe (Nat.add qe m) (Nat.add qe ax) (Nat.add qe az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) (Nat.sub qf t) (Nat.sub qf c) qf (Nat.add qf f) (Nat.add qf U) (Nat.add qf W) (Nat.add qf Y) (Nat.add qf aa) (Nat.add qf ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit26 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add X Y) 1) (bcutL BND 64 X Y) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) (Nat.sub qe B) (Nat.sub qe N) (Nat.sub qe X) (Nat.sub qe af) (Nat.sub qe am) (Nat.sub qe l) qe (Nat.add qe o) (Nat.add qe bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) (Nat.sub qf t) (Nat.sub qf c) qf (Nat.add qf f) (Nat.add qf U) (Nat.add qf W) (Nat.add qf Y) (Nat.add qf aa) (Nat.add qf ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit27 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add Z aa) 1) (bcutL BND 64 Z aa) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) (Nat.sub qe D) (Nat.sub qe P) (Nat.sub qe Z) (Nat.sub qe ah) (Nat.sub qe ao) (Nat.sub qe aw) (Nat.sub qe n) qe (Nat.add qe s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) (Nat.sub qf t) (Nat.sub qf c) qf (Nat.add qf f) (Nat.add qf U) (Nat.add qf W) (Nat.add qf Y) (Nat.add qf aa) (Nat.add qf ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit28 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add ab ac) 1) (bcutL BND 64 ab ac) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb u) (Nat.add qb d) qb (Nat.sub qb e) (Nat.sub qb T) (Nat.sub qb V) (Nat.sub qb X) (Nat.sub qb Z) (Nat.sub qb ab) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb (Nat.sub qf t) (Nat.sub qf c) qf (Nat.add qf f) (Nat.add qf U) (Nat.add qf W) (Nat.add qf Y) (Nat.add qf aa) (Nat.add qf ac) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit35 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add ad ae) 1) (bcutL BND 64 ad ae) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) (Nat.sub qe z) (Nat.sub qe L) (Nat.sub qe V) (Nat.sub qe ad) (Nat.sub qe i) qe (Nat.add qe m) (Nat.add qe ax) (Nat.add qe az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) (Nat.sub qf v) (Nat.sub qf H) (Nat.sub qf e) qf (Nat.add qf h) (Nat.add qf ae) (Nat.add qf ag) (Nat.add qf ai) (Nat.add qf al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit36 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add af ag) 1) (bcutL BND 64 af ag) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) (Nat.sub qe B) (Nat.sub qe N) (Nat.sub qe X) (Nat.sub qe af) (Nat.sub qe am) (Nat.sub qe l) qe (Nat.add qe o) (Nat.add qe bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) (Nat.sub qf v) (Nat.sub qf H) (Nat.sub qf e) qf (Nat.add qf h) (Nat.add qf ae) (Nat.add qf ag) (Nat.add qf ai) (Nat.add qf al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit37 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add ah ai) 1) (bcutL BND 64 ah ai) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) (Nat.sub qe D) (Nat.sub qe P) (Nat.sub qe Z) (Nat.sub qe ah) (Nat.sub qe ao) (Nat.sub qe aw) (Nat.sub qe n) qe (Nat.add qe s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) (Nat.sub qf v) (Nat.sub qf H) (Nat.sub qf e) qf (Nat.add qf h) (Nat.add qf ae) (Nat.add qf ag) (Nat.add qf ai) (Nat.add qf al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit38 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add aj al) 1) (bcutL BND 64 aj al) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb w) (Nat.add qb I) (Nat.add qb f) qb (Nat.sub qb g) (Nat.sub qb ad) (Nat.sub qb af) (Nat.sub qb ah) (Nat.sub qb aj) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb (Nat.sub qf v) (Nat.sub qf H) (Nat.sub qf e) qf (Nat.add qf h) (Nat.add qf ae) (Nat.add qf ag) (Nat.add qf ai) (Nat.add qf al) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit46 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add am an) 1) (bcutL BND 64 am an) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) (Nat.sub qe B) (Nat.sub qe N) (Nat.sub qe X) (Nat.sub qe af) (Nat.sub qe am) (Nat.sub qe l) qe (Nat.add qe o) (Nat.add qe bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) (Nat.sub qf x) (Nat.sub qf J) (Nat.sub qf T) (Nat.sub qf g) qf (Nat.add qf j) (Nat.add qf an) (Nat.add qf ar) (Nat.add qf av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit47 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add ao ar) 1) (bcutL BND 64 ao ar) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) (Nat.sub qe D) (Nat.sub qe P) (Nat.sub qe Z) (Nat.sub qe ah) (Nat.sub qe ao) (Nat.sub qe aw) (Nat.sub qe n) qe (Nat.add qe s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) (Nat.sub qf x) (Nat.sub qf J) (Nat.sub qf T) (Nat.sub qf g) qf (Nat.add qf j) (Nat.add qf an) (Nat.add qf ar) (Nat.add qf av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit48 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add au av) 1) (bcutL BND 64 au av) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb y) (Nat.add qb K) (Nat.add qb U) (Nat.add qb h) qb (Nat.sub qb i) (Nat.sub qb am) (Nat.sub qb ao) (Nat.sub qb au) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb (Nat.sub qf x) (Nat.sub qf J) (Nat.sub qf T) (Nat.sub qf g) qf (Nat.add qf j) (Nat.add qf an) (Nat.add qf ar) (Nat.add qf av) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit57 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add aw ax) 1) (bcutL BND 64 aw ax) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) (Nat.sub qe D) (Nat.sub qe P) (Nat.sub qe Z) (Nat.sub qe ah) (Nat.sub qe ao) (Nat.sub qe aw) (Nat.sub qe n) qe (Nat.add qe s) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb E) (Nat.add qb Q) (Nat.add qb aa) (Nat.add qb ai) (Nat.add qb ar) (Nat.add qb ax) (Nat.add qb o) qb (Nat.sub qb r) (Nat.sub qf z) (Nat.sub qf L) (Nat.sub qf V) (Nat.sub qf ad) (Nat.sub qf i) qf (Nat.add qf m) (Nat.add qf ax) (Nat.add qf az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit58 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add ay az) 1) (bcutL BND 64 ay az) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb A) (Nat.add qb M) (Nat.add qb W) (Nat.add qb ae) (Nat.add qb j) qb (Nat.sub qb l) (Nat.sub qb aw) (Nat.sub qb ay) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb (Nat.sub qf z) (Nat.sub qf L) (Nat.sub qf V) (Nat.sub qf ad) (Nat.sub qf i) qf (Nat.add qf m) (Nat.add qf ax) (Nat.add qf az) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+def ssplit68 (ih : WF) (md pos a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  let q := Bool.rec (motive := fun _ => ℕ) (Nat.shiftRight (Nat.add ba bb) 1) (bcutL BND 64 ba bb) (Nat.beq md 1); let qb := 4398046511104; let qe := Nat.add qb q; let qf := Nat.sub qb q;
+  let p := cuH (ih pos) (Nat.add qb C) (Nat.add qb O) (Nat.add qb Y) (Nat.add qb ag) (Nat.add qb an) (Nat.add qb m) qb (Nat.sub qb n) (Nat.sub qb ba) (Nat.sub qe F) (Nat.sub qe R) (Nat.sub qe ab) (Nat.sub qe aj) (Nat.sub qe au) (Nat.sub qe ay) (Nat.sub qe ba) (Nat.sub qe r) qe a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc
+  Bool.rec (motive := fun _ => ℕ) (cuH (ih p) (Nat.add qb G) (Nat.add qb S) (Nat.add qb ac) (Nat.add qb al) (Nat.add qb av) (Nat.add qb az) (Nat.add qb bb) (Nat.add qb s) qb (Nat.sub qf B) (Nat.sub qf N) (Nat.sub qf X) (Nat.sub qf af) (Nat.sub qf am) (Nat.sub qf l) qf (Nat.add qf o) (Nat.add qf bb) a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc) 0 (Nat.beq p 0)
+
+/-- a split node: axis `0 … 7` a gap, `8 … 35` a pair (pair order) -/
+def splitAx (ih : WF) (md pos ax : ℕ) : ST :=
+  Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (Bool.rec (motive := fun _ => ST) (zK) (ssplit68 ih md pos) (Nat.beq ax 35)) (ssplit58 ih md pos) (Nat.beq ax 34)) (ssplit57 ih md pos) (Nat.beq ax 33)) (ssplit48 ih md pos) (Nat.beq ax 32)) (ssplit47 ih md pos) (Nat.beq ax 31)) (ssplit46 ih md pos) (Nat.beq ax 30)) (ssplit38 ih md pos) (Nat.beq ax 29)) (ssplit37 ih md pos) (Nat.beq ax 28)) (ssplit36 ih md pos) (Nat.beq ax 27)) (ssplit35 ih md pos) (Nat.beq ax 26)) (ssplit28 ih md pos) (Nat.beq ax 25)) (ssplit27 ih md pos) (Nat.beq ax 24)) (ssplit26 ih md pos) (Nat.beq ax 23)) (ssplit25 ih md pos) (Nat.beq ax 22)) (ssplit24 ih md pos) (Nat.beq ax 21)) (ssplit18 ih md pos) (Nat.beq ax 20)) (ssplit17 ih md pos) (Nat.beq ax 19)) (ssplit16 ih md pos) (Nat.beq ax 18)) (ssplit15 ih md pos) (Nat.beq ax 17)) (ssplit14 ih md pos) (Nat.beq ax 16)) (ssplit13 ih md pos) (Nat.beq ax 15)) (ssplit08 ih md pos) (Nat.beq ax 14)) (ssplit07 ih md pos) (Nat.beq ax 13)) (ssplit06 ih md pos) (Nat.beq ax 12)) (ssplit05 ih md pos) (Nat.beq ax 11)) (ssplit04 ih md pos) (Nat.beq ax 10)) (ssplit03 ih md pos) (Nat.beq ax 9)) (ssplit02 ih md pos) (Nat.beq ax 8)) (gsplit7 ih md pos) (Nat.beq ax 7)) (gsplit6 ih md pos) (Nat.beq ax 6)) (gsplit5 ih md pos) (Nat.beq ax 5)) (gsplit4 ih md pos) (Nat.beq ax 4)) (gsplit3 ih md pos) (Nat.beq ax 3)) (gsplit2 ih md pos) (Nat.beq ax 2)) (gsplit1 ih md pos) (Nat.beq ax 1)) (gsplit0 ih md pos) (Nat.beq ax 0)
+
+-- (5) the root: the box sums written into the pair bounds (`matC`), once, which closes the root box (TZ.md §5)
+
+def tm (k : ST) (a b c d e f g h i j l m n o r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z aa ab ac ad ae af ag ah ai aj al am an ao ar au av aw ax ay az ba bb bc : ℕ) : ℕ :=
+  forceR (nmax t (Nat.add a c)) fun t' => forceR (nmin u (Nat.add b d)) fun u' =>
+  forceR (nmax v (Nat.add (Nat.add a c) e)) fun v' => forceR (nmin w (Nat.add (Nat.add b d) f)) fun w' =>
+  forceR (nmax x (Nat.add (Nat.add (Nat.add a c) e) g)) fun x' => forceR (nmin y (Nat.add (Nat.add (Nat.add b d) f) h)) fun y' =>
+  forceR (nmax z (Nat.add (Nat.add (Nat.add (Nat.add a c) e) g) i)) fun z' => forceR (nmin A (Nat.add (Nat.add (Nat.add (Nat.add b d) f) h) j)) fun A' =>
+  forceR (nmax B (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add a c) e) g) i) l)) fun B' => forceR (nmin C (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add b d) f) h) j) m)) fun C' =>
+  forceR (nmax D (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add a c) e) g) i) l) n)) fun D' => forceR (nmin E (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add b d) f) h) j) m) o)) fun E' =>
+  forceR (nmax F (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add a c) e) g) i) l) n) r)) fun F' => forceR (nmin G (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add b d) f) h) j) m) o) s)) fun G' =>
+  forceR (nmax H (Nat.add c e)) fun H' => forceR (nmin I (Nat.add d f)) fun I' =>
+  forceR (nmax J (Nat.add (Nat.add c e) g)) fun J' => forceR (nmin K (Nat.add (Nat.add d f) h)) fun K' =>
+  forceR (nmax L (Nat.add (Nat.add (Nat.add c e) g) i)) fun L' => forceR (nmin M (Nat.add (Nat.add (Nat.add d f) h) j)) fun M' =>
+  forceR (nmax N (Nat.add (Nat.add (Nat.add (Nat.add c e) g) i) l)) fun N' => forceR (nmin O (Nat.add (Nat.add (Nat.add (Nat.add d f) h) j) m)) fun O' =>
+  forceR (nmax P (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add c e) g) i) l) n)) fun P' => forceR (nmin Q (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add d f) h) j) m) o)) fun Q' =>
+  forceR (nmax R (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add c e) g) i) l) n) r)) fun R' => forceR (nmin S (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add d f) h) j) m) o) s)) fun S' =>
+  forceR (nmax T (Nat.add e g)) fun T' => forceR (nmin U (Nat.add f h)) fun U' =>
+  forceR (nmax V (Nat.add (Nat.add e g) i)) fun V' => forceR (nmin W (Nat.add (Nat.add f h) j)) fun W' =>
+  forceR (nmax X (Nat.add (Nat.add (Nat.add e g) i) l)) fun X' => forceR (nmin Y (Nat.add (Nat.add (Nat.add f h) j) m)) fun Y' =>
+  forceR (nmax Z (Nat.add (Nat.add (Nat.add (Nat.add e g) i) l) n)) fun Z' => forceR (nmin aa (Nat.add (Nat.add (Nat.add (Nat.add f h) j) m) o)) fun aa' =>
+  forceR (nmax ab (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add e g) i) l) n) r)) fun ab' => forceR (nmin ac (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add f h) j) m) o) s)) fun ac' =>
+  forceR (nmax ad (Nat.add g i)) fun ad' => forceR (nmin ae (Nat.add h j)) fun ae' =>
+  forceR (nmax af (Nat.add (Nat.add g i) l)) fun af' => forceR (nmin ag (Nat.add (Nat.add h j) m)) fun ag' =>
+  forceR (nmax ah (Nat.add (Nat.add (Nat.add g i) l) n)) fun ah' => forceR (nmin ai (Nat.add (Nat.add (Nat.add h j) m) o)) fun ai' =>
+  forceR (nmax aj (Nat.add (Nat.add (Nat.add (Nat.add g i) l) n) r)) fun aj' => forceR (nmin al (Nat.add (Nat.add (Nat.add (Nat.add h j) m) o) s)) fun al' =>
+  forceR (nmax am (Nat.add i l)) fun am' => forceR (nmin an (Nat.add j m)) fun an' =>
+  forceR (nmax ao (Nat.add (Nat.add i l) n)) fun ao' => forceR (nmin ar (Nat.add (Nat.add j m) o)) fun ar' =>
+  forceR (nmax au (Nat.add (Nat.add (Nat.add i l) n) r)) fun au' => forceR (nmin av (Nat.add (Nat.add (Nat.add j m) o) s)) fun av' =>
+  forceR (nmax aw (Nat.add l n)) fun aw' => forceR (nmin ax (Nat.add m o)) fun ax' =>
+  forceR (nmax ay (Nat.add (Nat.add l n) r)) fun ay' => forceR (nmin az (Nat.add (Nat.add m o) s)) fun az' =>
+  forceR (nmax ba (Nat.add n r)) fun ba' => forceR (nmin bb (Nat.add o s)) fun bb' =>
+  k a b c d e f g h i j l m n o r s t' u' v' w' x' y' z' A' B' C' D' E' F' G' H' I' J' K' L' M' N' O' P' Q' R' S' T' U' V' W' X' Y' Z' aa' ab' ac' ad' ae' af' ag' ah' ai' aj' al' am' an' ao' ar' au' av' aw' ax' ay' az' ba' bb' bc
+
+-- (3) multipliers (HUFF.md §5.2): entries `[1][c code][side][Yq: qb bits]`, closed by `[0]`
+structure YA where
+  (o P0 P1 P2 P3 P4 P5 P6 P7 S0 S1 S2 S3 S4 S5 S6 S7 Cp Cm : ℕ)
+
+def MulOK (s : St) (y : YA) : Prop :=
+  MulOKg 8 PR (toCl s) [y.P0, y.P1, y.P2, y.P3, y.P4, y.P5, y.P6, y.P7] [y.S0, y.S1, y.S2, y.S3, y.S4, y.S5, y.S6, y.S7] y.Cp y.Cm
+
+def ystep (Ls As Bs : List ℕ) (qb w : ℕ) (ih : YA → YA) (y : YA) : YA :=
+  forceT y.o fun o => Bool.rec (motive := fun _ => YA) ⟨(Nat.add o 1), y.P0, y.P1, y.P2, y.P3, y.P4, y.P5, y.P6, y.P7, y.S0, y.S1, y.S2, y.S3, y.S4, y.S5, y.S6, y.S7, y.Cp, y.Cm⟩
+    (forceT (Nat.land (Nat.shiftRight w (Nat.add o 1)) 31) fun c => forceT (Nat.add o 6) fun o1 =>
+     Bool.rec (motive := fun _ => YA) ⟨(Nat.add o1 (Nat.add qb 1)), y.P0, y.P1, y.P2, y.P3, y.P4, y.P5, y.P6, y.P7, y.S0, y.S1, y.S2, y.S3, y.S4, y.S5, y.S6, y.S7, y.Cp, y.Cm⟩
+      (forceT (Nat.mul SIG (Nat.land (Nat.shiftRight w (Nat.add o1 1)) (Nat.sub (Nat.shiftLeft 1 qb) 1))) fun Y =>
+       forceT (Nat.land (Nat.shiftRight w o1) 1) fun sd =>
+       forceT (Bool.rec (motive := fun _ => ℕ) Y 0 (Nat.beq sd 1)) fun Ylo => forceT (Bool.rec (motive := fun _ => ℕ) 0 Y (Nat.beq sd 1)) fun Yhi =>
+       forceT (pI PR c) fun i => forceT (pJ PR c) fun j => forceT (sumR Ls i (Nat.sub j i)) fun sl =>
+       ih ⟨(Nat.add o1 (Nat.add qb 1)), (Nat.add y.P0 (Nat.mul Ylo (ind (inr 0 i j)))), (Nat.add y.P1 (Nat.mul Ylo (ind (inr 1 i j)))), (Nat.add y.P2 (Nat.mul Ylo (ind (inr 2 i j)))), (Nat.add y.P3 (Nat.mul Ylo (ind (inr 3 i j)))), (Nat.add y.P4 (Nat.mul Ylo (ind (inr 4 i j)))), (Nat.add y.P5 (Nat.mul Ylo (ind (inr 5 i j)))), (Nat.add y.P6 (Nat.mul Ylo (ind (inr 6 i j)))), (Nat.add y.P7 (Nat.mul Ylo (ind (inr 7 i j)))), (Nat.add y.S0 (Nat.mul Yhi (ind (inr 0 i j)))), (Nat.add y.S1 (Nat.mul Yhi (ind (inr 1 i j)))), (Nat.add y.S2 (Nat.mul Yhi (ind (inr 2 i j)))), (Nat.add y.S3 (Nat.mul Yhi (ind (inr 3 i j)))), (Nat.add y.S4 (Nat.mul Yhi (ind (inr 4 i j)))), (Nat.add y.S5 (Nat.mul Yhi (ind (inr 5 i j)))), (Nat.add y.S6 (Nat.mul Yhi (ind (inr 6 i j)))), (Nat.add y.S7 (Nat.mul Yhi (ind (inr 7 i j)))), (Nat.add (Nat.add y.Cp (Nat.mul Ylo (Nat.sub sl (As.getD c 0)))) (Nat.mul Yhi (Nat.sub (Bs.getD c 0) sl))), (Nat.add (Nat.add y.Cm (Nat.mul Ylo (Nat.sub (As.getD c 0) sl))) (Nat.mul Yhi (Nat.sub sl (Bs.getD c 0))))⟩)
+      (Nat.blt c 28))
+    (Nat.beq (Nat.land (Nat.shiftRight w o) 1) 1)
+
+def ydec (Ls As Bs : List ℕ) (qb w fuel : ℕ) : YA → YA :=
+  Nat.rec (motive := fun _ => YA → YA) (fun y => y) (fun _ ih => ystep Ls As Bs qb w ih) fuel
+
+/-- (3) the minorant leaf on the polytope cell (`mcheckG` unrolled): per term its kind, weight and points on its
+effective range; the accumulated multipliers `P, S, Cp, Cm` -/
+def mcheckP (top : ℕ) (bk : ℕ → ℕ) (tD : ℕ) (bD : ℕ → ℕ) (f : ℕ → ℕ) (R : ℕ × ℕ × List (List ℕ)) (s : St)
+    (k01 m01 p01 r01 k03 m03 p03 r03 k04 m04 p04 r04 k05 m05 p05 r05 k06 m06 p06 r06 k07 m07 p07 r07 k08 m08 p08 r08 k12 m12 p12 r12 k13 m13 p13 r13 k14 m14 p14 r14 k15 m15 p15 r15 k16 m16 p16 r16 k17 m17 p17 r17 k18 m18 p18 r18 k23 m23 p23 r23 k24 m24 p24 r24 k25 m25 p25 r25 k26 m26 p26 r26 k27 m27 p27 r27 k28 m28 p28 r28 k34 m34 p34 r34 k35 m35 p35 r35 k36 m36 p36 r36 k37 m37 p37 r37 k38 m38 p38 r38 k45 m45 p45 r45 k46 m46 p46 r46 k47 m47 p47 r47 k48 m48 p48 r48 k56 m56 p56 r56 k57 m57 p57 r57 k58 m58 p58 r58 k67 m67 p67 r67 k78 m78 p78 r78 : ℕ) (P0 P1 P2 P3 P4 P5 P6 P7 S0 S1 S2 S3 S4 S5 S6 S7 Cp Cm : ℕ) : Bool :=
+  true
+
+def mleafP (top : ℕ) (bk : ℕ → ℕ) (tD : ℕ) (bD : ℕ → ℕ) (pb : ℕ → ℕ) (R : ℕ × ℕ × List (List ℕ)) (w : ℕ) (s : St) : ℕ :=
+  forceR (nmax s.A02 (Nat.add s.l0 s.l1)) fun L02 => forceR (nmin s.B02 (Nat.add s.u0 s.u1)) fun U02 =>
+  forceR (nmax s.A03 (Nat.add (Nat.add s.l0 s.l1) s.l2)) fun L03 => forceR (nmin s.B03 (Nat.add (Nat.add s.u0 s.u1) s.u2)) fun U03 =>
+  forceR (nmax s.A04 (Nat.add (Nat.add (Nat.add s.l0 s.l1) s.l2) s.l3)) fun L04 => forceR (nmin s.B04 (Nat.add (Nat.add (Nat.add s.u0 s.u1) s.u2) s.u3)) fun U04 =>
+  forceR (nmax s.A05 (Nat.add (Nat.add (Nat.add (Nat.add s.l0 s.l1) s.l2) s.l3) s.l4)) fun L05 => forceR (nmin s.B05 (Nat.add (Nat.add (Nat.add (Nat.add s.u0 s.u1) s.u2) s.u3) s.u4)) fun U05 =>
+  forceR (nmax s.A06 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.l0 s.l1) s.l2) s.l3) s.l4) s.l5)) fun L06 => forceR (nmin s.B06 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.u0 s.u1) s.u2) s.u3) s.u4) s.u5)) fun U06 =>
+  forceR (nmax s.A07 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.l0 s.l1) s.l2) s.l3) s.l4) s.l5) s.l6)) fun L07 => forceR (nmin s.B07 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.u0 s.u1) s.u2) s.u3) s.u4) s.u5) s.u6)) fun U07 =>
+  forceR (nmax s.A08 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.l0 s.l1) s.l2) s.l3) s.l4) s.l5) s.l6) s.l7)) fun L08 => forceR (nmin s.B08 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.u0 s.u1) s.u2) s.u3) s.u4) s.u5) s.u6) s.u7)) fun U08 =>
+  forceR (nmax s.A13 (Nat.add s.l1 s.l2)) fun L13 => forceR (nmin s.B13 (Nat.add s.u1 s.u2)) fun U13 =>
+  forceR (nmax s.A14 (Nat.add (Nat.add s.l1 s.l2) s.l3)) fun L14 => forceR (nmin s.B14 (Nat.add (Nat.add s.u1 s.u2) s.u3)) fun U14 =>
+  forceR (nmax s.A15 (Nat.add (Nat.add (Nat.add s.l1 s.l2) s.l3) s.l4)) fun L15 => forceR (nmin s.B15 (Nat.add (Nat.add (Nat.add s.u1 s.u2) s.u3) s.u4)) fun U15 =>
+  forceR (nmax s.A16 (Nat.add (Nat.add (Nat.add (Nat.add s.l1 s.l2) s.l3) s.l4) s.l5)) fun L16 => forceR (nmin s.B16 (Nat.add (Nat.add (Nat.add (Nat.add s.u1 s.u2) s.u3) s.u4) s.u5)) fun U16 =>
+  forceR (nmax s.A17 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.l1 s.l2) s.l3) s.l4) s.l5) s.l6)) fun L17 => forceR (nmin s.B17 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.u1 s.u2) s.u3) s.u4) s.u5) s.u6)) fun U17 =>
+  forceR (nmax s.A18 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.l1 s.l2) s.l3) s.l4) s.l5) s.l6) s.l7)) fun L18 => forceR (nmin s.B18 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.u1 s.u2) s.u3) s.u4) s.u5) s.u6) s.u7)) fun U18 =>
+  forceR (nmax s.A24 (Nat.add s.l2 s.l3)) fun L24 => forceR (nmin s.B24 (Nat.add s.u2 s.u3)) fun U24 =>
+  forceR (nmax s.A25 (Nat.add (Nat.add s.l2 s.l3) s.l4)) fun L25 => forceR (nmin s.B25 (Nat.add (Nat.add s.u2 s.u3) s.u4)) fun U25 =>
+  forceR (nmax s.A26 (Nat.add (Nat.add (Nat.add s.l2 s.l3) s.l4) s.l5)) fun L26 => forceR (nmin s.B26 (Nat.add (Nat.add (Nat.add s.u2 s.u3) s.u4) s.u5)) fun U26 =>
+  forceR (nmax s.A27 (Nat.add (Nat.add (Nat.add (Nat.add s.l2 s.l3) s.l4) s.l5) s.l6)) fun L27 => forceR (nmin s.B27 (Nat.add (Nat.add (Nat.add (Nat.add s.u2 s.u3) s.u4) s.u5) s.u6)) fun U27 =>
+  forceR (nmax s.A28 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.l2 s.l3) s.l4) s.l5) s.l6) s.l7)) fun L28 => forceR (nmin s.B28 (Nat.add (Nat.add (Nat.add (Nat.add (Nat.add s.u2 s.u3) s.u4) s.u5) s.u6) s.u7)) fun U28 =>
+  forceR (nmax s.A35 (Nat.add s.l3 s.l4)) fun L35 => forceR (nmin s.B35 (Nat.add s.u3 s.u4)) fun U35 =>
+  forceR (nmax s.A36 (Nat.add (Nat.add s.l3 s.l4) s.l5)) fun L36 => forceR (nmin s.B36 (Nat.add (Nat.add s.u3 s.u4) s.u5)) fun U36 =>
+  forceR (nmax s.A37 (Nat.add (Nat.add (Nat.add s.l3 s.l4) s.l5) s.l6)) fun L37 => forceR (nmin s.B37 (Nat.add (Nat.add (Nat.add s.u3 s.u4) s.u5) s.u6)) fun U37 =>
+  forceR (nmax s.A38 (Nat.add (Nat.add (Nat.add (Nat.add s.l3 s.l4) s.l5) s.l6) s.l7)) fun L38 => forceR (nmin s.B38 (Nat.add (Nat.add (Nat.add (Nat.add s.u3 s.u4) s.u5) s.u6) s.u7)) fun U38 =>
+  forceR (nmax s.A46 (Nat.add s.l4 s.l5)) fun L46 => forceR (nmin s.B46 (Nat.add s.u4 s.u5)) fun U46 =>
+  forceR (nmax s.A47 (Nat.add (Nat.add s.l4 s.l5) s.l6)) fun L47 => forceR (nmin s.B47 (Nat.add (Nat.add s.u4 s.u5) s.u6)) fun U47 =>
+  forceR (nmax s.A48 (Nat.add (Nat.add (Nat.add s.l4 s.l5) s.l6) s.l7)) fun L48 => forceR (nmin s.B48 (Nat.add (Nat.add (Nat.add s.u4 s.u5) s.u6) s.u7)) fun U48 =>
+  forceR (nmax s.A57 (Nat.add s.l5 s.l6)) fun L57 => forceR (nmin s.B57 (Nat.add s.u5 s.u6)) fun U57 =>
+  forceR (nmax s.A58 (Nat.add (Nat.add s.l5 s.l6) s.l7)) fun L58 => forceR (nmin s.B58 (Nat.add (Nat.add s.u5 s.u6) s.u7)) fun U58 =>
+  forceR (nmax s.A68 (Nat.add s.l6 s.l7)) fun L68 => forceR (nmin s.B68 (Nat.add s.u6 s.u7)) fun U68 =>
+  forceR 0 fun o0 =>
+  dec4F 10 w o0 s.l0 s.u0 fun k01 m01 p01 r01 o1 =>
+  dec4F 10 w o1 L03 U03 fun k03 m03 p03 r03 o2 =>
+  dec4F 10 w o2 L04 U04 fun k04 m04 p04 r04 o3 =>
+  dec4F 10 w o3 L05 U05 fun k05 m05 p05 r05 o4 =>
+  dec4F 10 w o4 L06 U06 fun k06 m06 p06 r06 o5 =>
+  dec4F 10 w o5 L07 U07 fun k07 m07 p07 r07 o6 =>
+  dec4F 10 w o6 L08 U08 fun k08 m08 p08 r08 o7 =>
+  dec4F 10 w o7 s.l1 s.u1 fun k12 m12 p12 r12 o8 =>
+  dec4F 10 w o8 L13 U13 fun k13 m13 p13 r13 o9 =>
+  dec4F 10 w o9 L14 U14 fun k14 m14 p14 r14 o10 =>
+  dec4F 10 w o10 L15 U15 fun k15 m15 p15 r15 o11 =>
+  dec4F 10 w o11 L16 U16 fun k16 m16 p16 r16 o12 =>
+  dec4F 10 w o12 L17 U17 fun k17 m17 p17 r17 o13 =>
+  dec4F 10 w o13 L18 U18 fun k18 m18 p18 r18 o14 =>
+  dec4F 10 w o14 s.l2 s.u2 fun k23 m23 p23 r23 o15 =>
+  dec4F 10 w o15 L24 U24 fun k24 m24 p24 r24 o16 =>
+  dec4F 10 w o16 L25 U25 fun k25 m25 p25 r25 o17 =>
+  dec4F 10 w o17 L26 U26 fun k26 m26 p26 r26 o18 =>
+  dec4F 10 w o18 L27 U27 fun k27 m27 p27 r27 o19 =>
+  dec4F 10 w o19 L28 U28 fun k28 m28 p28 r28 o20 =>
+  dec4F 10 w o20 s.l3 s.u3 fun k34 m34 p34 r34 o21 =>
+  dec4F 10 w o21 L35 U35 fun k35 m35 p35 r35 o22 =>
+  dec4F 10 w o22 L36 U36 fun k36 m36 p36 r36 o23 =>
+  dec4F 10 w o23 L37 U37 fun k37 m37 p37 r37 o24 =>
+  dec4F 10 w o24 L38 U38 fun k38 m38 p38 r38 o25 =>
+  dec4F 10 w o25 s.l4 s.u4 fun k45 m45 p45 r45 o26 =>
+  dec4F 10 w o26 L46 U46 fun k46 m46 p46 r46 o27 =>
+  dec4F 10 w o27 L47 U47 fun k47 m47 p47 r47 o28 =>
+  dec4F 10 w o28 L48 U48 fun k48 m48 p48 r48 o29 =>
+  dec4F 10 w o29 s.l5 s.u5 fun k56 m56 p56 r56 o30 =>
+  dec4F 10 w o30 L57 U57 fun k57 m57 p57 r57 o31 =>
+  dec4F 10 w o31 L58 U58 fun k58 m58 p58 r58 o32 =>
+  dec4F 10 w o32 s.l6 s.u6 fun k67 m67 p67 r67 o33 =>
+  dec4F 10 w o33 s.l7 s.u7 fun k78 m78 p78 r78 o34 =>
+  (fun y : YA => Bool.rec (motive := fun _ => ℕ) 0 y.o (mcheckP top bk tD bD pb R s k01 m01 p01 r01 k03 m03 p03 r03 k04 m04 p04 r04 k05 m05 p05 r05 k06 m06 p06 r06 k07 m07 p07 r07 k08 m08 p08 r08 k12 m12 p12 r12 k13 m13 p13 r13 k14 m14 p14 r14 k15 m15 p15 r15 k16 m16 p16 r16 k17 m17 p17 r17 k18 m18 p18 r18 k23 m23 p23 r23 k24 m24 p24 r24 k25 m25 p25 r25 k26 m26 p26 r26 k27 m27 p27 r27 k28 m28 p28 r28 k34 m34 p34 r34 k35 m35 p35 r35 k36 m36 p36 r36 k37 m37 p37 r37 k38 m38 p38 r38 k45 m45 p45 r45 k46 m46 p46 r46 k47 m47 p47 r47 k48 m48 p48 r48 k56 m56 p56 r56 k57 m57 p57 r57 k58 m58 p58 r58 k67 m67 p67 r67 k78 m78 p78 r78 y.P0 y.P1 y.P2 y.P3 y.P4 y.P5 y.P6 y.P7 y.S0 y.S1 y.S2 y.S3 y.S4 y.S5 y.S6 y.S7 y.Cp y.Cm))
+  (ydec (toCl s).L (toCl s).A (toCl s).B 13 w 42 ⟨o34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0⟩)
+
+/-- (kind 8) the Farkas leaf (HUFF.md §6): the multiplier list only (`Yq` in 13 bits), accepted when the multiplier form
+is negative on the whole box -/
+def fleaf (w : ℕ) (s : St) : ℕ :=
+  (fun y : YA => Bool.rec (motive := fun _ => ℕ) 0 y.o
+    (Nat.blt (Nat.add y.Cp (fsum (toCl s) [y.P0, y.P1, y.P2, y.P3, y.P4, y.P5, y.P6, y.P7] [y.S0, y.S1, y.S2, y.S3, y.S4, y.S5, y.S6, y.S7] 8)) y.Cm))
+  (ydec (toCl s).L (toCl s).A (toCl s).B 13 w 42 ⟨0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0⟩)
+
+/-- a leaf (bit 0 clear): the reflected half-space (`u7 < l0`, no further bits), else bit 1 the kind (minorant leaf, or
+Farkas leaf) with its payload from bit 2 -/
+def leafStep (top : ℕ) (bk : ℕ → ℕ) (tD : ℕ) (bD : ℕ → ℕ) (pb : ℕ → ℕ) (R : ℕ × ℕ × List (List ℕ)) (pos w : ℕ) : ST :=
+  fun l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 l5 u5 l6 u6 l7 u7 A02 B02 A03 B03 A04 B04 A05 B05 A06 B06 A07 B07 A08 B08 A13 B13 A14 B14 A15 B15 A16 B16 A17 B17 A18 B18 A24 B24 A25 B25 A26 B26 A27 B27 A28 B28 A35 B35 A36 B36 A37 B37 A38 B38 A46 B46 A47 B47 A48 B48 A57 B57 A58 B58 A68 B68 M => Bool.rec (motive := fun _ => ℕ)
+    (forceR (Bool.rec (motive := fun _ => ℕ) (mleafP top bk tD bD pb R (Nat.shiftRight w 2) ⟨l0, u0, l1, u1, l2, u2, l3, u3, l4, u4, l5, u5, l6, u6, l7, u7, A02, B02, A03, B03, A04, B04, A05, B05, A06, B06, A07, B07, A08, B08, A13, B13, A14, B14, A15, B15, A16, B16, A17, B17, A18, B18, A24, B24, A25, B25, A26, B26, A27, B27, A28, B28, A35, B35, A36, B36, A37, B37, A38, B38, A46, B46, A47, B47, A48, B48, A57, B57, A58, B58, A68, B68, M⟩)
+        (fleaf (Nat.shiftRight w 2) ⟨l0, u0, l1, u1, l2, u2, l3, u3, l4, u4, l5, u5, l6, u6, l7, u7, A02, B02, A03, B03, A04, B04, A05, B05, A06, B06, A07, B07, A08, B08, A13, B13, A14, B14, A15, B15, A16, B16, A17, B17, A18, B18, A24, B24, A25, B25, A26, B26, A27, B27, A28, B28, A35, B35, A36, B36, A37, B37, A38, B38, A46, B46, A47, B47, A48, B48, A57, B57, A58, B58, A68, B68, M⟩) (Nat.beq (Nat.land (Nat.shiftRight w 1) 1) 1)) fun n =>
+      Bool.rec (motive := fun _ => ℕ) (Nat.add pos (Nat.add 2 n)) 0 (Nat.beq n 0))
+    (Nat.add pos 1) (Nat.blt u7 l0)
+
+/-- the leaf's window: a leaf word is at most 480 bits, so its fields are read from a 480-bit slice -/
+def WMASK : ℕ := 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+/-- (limb-table walks) the WIN-bit window at `pos` of a walk stored as overlapping limbs (`f k` holds bits
+`[k·32768, k·32768 + 33248)`) -/
+def rdw (f : ℕ → ℕ) (pos : ℕ) : ℕ := Nat.land (Nat.shiftRight (f (Nat.div pos 32768)) (Nat.mod pos 32768)) WMASK
+
+/-- a node: bit `pos` selects split (`[1]`, then the axis codeword; the children from the bit after it) or leaf (`[0]`) -/
+def node (top : ℕ) (bk : ℕ → ℕ) (tD : ℕ) (bD : ℕ → ℕ) (pb : ℕ → ℕ) (R : ℕ × ℕ × List (List ℕ)) (bits : ℕ → ℕ) (ih : WF) (pos : ℕ) : ST :=
+  Bool.rec (motive := fun _ => ST) (leafStep top bk tD bD pb R pos (bits pos))
+    (splitAx ih (Nat.land (Nat.shiftRight (bits pos) 7) 1) (Nat.add pos 8) (Nat.land (Nat.shiftRight (bits pos) 1) 63))
+    (Nat.beq (Nat.land (bits pos) 1) 1)
+
+/-- the walk on closed cells: no node tightening, the splits close their children (TZ.md §5) -/
+def walkC (top : ℕ) (bk : ℕ → ℕ) (tD : ℕ) (bD : ℕ → ℕ) (pb : ℕ → ℕ) (R : ℕ × ℕ × List (List ℕ)) (bits : ℕ → ℕ) (fuel : ℕ) : WF :=
+  Nat.rec (motive := fun _ => WF) (fun _ => zK) (fun _ ih pos => node top bk tD bD pb R bits ih pos) fuel
+
+/-- the walk from a root box: the box sums close it (`tm`, once), then `walkC` -/
+def walk (top : ℕ) (bk : ℕ → ℕ) (tD : ℕ) (bD : ℕ → ℕ) (pb : ℕ → ℕ) (R : ℕ × ℕ × List (List ℕ)) (bits : ℕ → ℕ) (fuel : ℕ) : WF :=
+  fun pos => tm (walkC top bk tD bD pb R bits fuel pos)
+
+
+end AMW.Cert.PC9HQ3

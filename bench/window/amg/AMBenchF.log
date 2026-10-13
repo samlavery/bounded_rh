@@ -1,0 +1,92 @@
+parsing took 2.53ms
+
+Stack overflow detected. Aborting.
+tacticAnalysis took 5.09ms
+linting took 26.4ms
+tacticAnalysis took 5.59ms
+linting took 25ms
+elaboration took 1.15ms
+overlappingInstancesLinter took 3.75ms
+tacticAnalysis took 3.19ms
+linting took 25.1ms
+overlappingInstancesLinter took 2.65ms
+tacticAnalysis took 2.99ms
+linting took 25.6ms
+elaboration took 1.59ms
+overlappingInstancesLinter took 3.69ms
+tacticAnalysis took 2.79ms
+linting took 23.7ms
+elaboration took 1.82ms
+overlappingInstancesLinter took 2.36ms
+tacticAnalysis took 1.37ms
+linting took 24.6ms
+elaboration took 2.34ms
+overlappingInstancesLinter took 2.15ms
+tacticAnalysis took 1.3ms
+linting took 23.4ms
+elaboration took 2.16ms
+linting took 23.2ms
+elaboration took 5.23ms
+linting took 14.6ms
+elaboration took 3.1ms
+linting took 5.18ms
+elaboration took 6.96ms
+tacticAnalysis took 1.06ms
+linting took 3.68ms
+process pre-definitions took 1.31ms
+elaboration took 4.42ms
+linting took 2.07ms
+elaboration took 5.68ms
+compilation (LCNF base) took 1.67ms
+compilation (LCNF mono) took 1.28ms
+tacticAnalysis took 1.13ms
+linting took 3.47ms
+linting took 1.55ms
+elaboration took 1.33ms
+linting took 3.11ms
+elaboration took 2.1ms
+tacticAnalysis took 1.31ms
+linting took 4.41ms
+elaboration took 5.47ms
+compilation (LCNF base) took 1.44ms
+tacticAnalysis took 1.86ms
+linting took 5.24ms
+linting took 1.83ms
+type checking took 5.83ms
+linting took 1.49ms
+elaboration took 1.31ms
+type checking took 53.3ms
+linting took 1.91ms
+elaboration took 1.31ms
+type checking took 76.2ms
+linting took 1.92ms
+elaboration took 1.26ms
+type checking took 124ms
+linting took 1.73ms
+elaboration took 1.08ms
+type checking took 148ms
+linting took 1.83ms
+interpretation of _private.AMBenchF.0._eval took 1.54ms
+{ pl := 65100303565568014595, ph := 65100303565572676071, nl := 21891393655194786014625, nh := 21891393655197435343819 }
+elaboration took 148ms
+linting took 1.66ms
+time: command terminated abnormally
+       32.48 real        21.90 user        10.76 sys
+          7969882112  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              563879  page reclaims
+                   5  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   1  signals received
+                   1  voluntary context switches
+               13355  involuntary context switches
+        137636924554  instructions retired
+        106818073346  cycles elapsed
+          3091145976  peak memory footprint
+../../pyr/withlock.sh: line 9: 34995 Abort trap: 6           "$@"

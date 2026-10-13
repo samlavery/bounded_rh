@@ -1,0 +1,13 @@
+a=0.6 P=5: direct=-145.834156  endpot=-145.834156  max|Poisson|=7.11e-14
+a=0.6 P=9: direct=55.254459  endpot=55.254459  max|Poisson|=2.84e-14
+a=0.6 P=16: direct=174.625542  endpot=174.625542  max|Poisson|=7.11e-14
+a=0.76 P=5: direct=54.845796  endpot=54.845796  max|Poisson|=2.13e-14
+a=0.76 P=9: direct=139.871805  endpot=139.871805  max|Poisson|=4.26e-14
+a=0.76 P=16: direct=93.120065  endpot=93.120065  max|Poisson|=4.97e-14
+a=0.9 P=5: direct=94.182836  endpot=94.182836  max|Poisson|=1.42e-14
+a=0.9 P=9: direct=35.867408  endpot=35.867408  max|Poisson|=3.55e-14
+a=0.9 P=16: direct=20.585441  endpot=20.585441  max|Poisson|=4.26e-14
+--- one-body end potentials U_p(y) = -4[Lam_y(p+1)+Lam_y(P-p)], generic q, P=200 (half-chain view)
+a=0.6: p0:6.3@y0.80  p1:-1.62e+05@y3.00  p2:0.124@y0.80  p3:-9.39e+04@y3.00  p4:0.162@y0.80  p5:-3.14e+04@y3.00  p6:0.0911@y0.80  p7:-61.1@y2.35   sum(min, p<8)=-2.875e+05
+a=0.76: p0:6.3@y0.80  p1:-2.71e+04@y3.00  p2:-1.01e+05@y3.00  p3:0.176@y0.80  p4:-174@y2.40  p5:-4.59e+04@y3.00  p6:0.0544@y0.80  p7:0.0134@y0.80   sum(min, p<8)=-1.746e+05
+a=0.9: p0:6.3@y0.80  p1:-0.473@y0.95  p2:-1.79e+04@y3.00  p3:-1.07e+05@y3.00  p4:-6.65e+04@y3.00  p5:-5.09e+03@y3.00  p6:0.0601@y0.80  p7:0.0301@y0.80   sum(min, p<8)=-1.961e+05

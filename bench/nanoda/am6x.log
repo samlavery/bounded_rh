@@ -1,0 +1,34 @@
+[private_check] waiting 17:52:45
+[private_check] waiting 17:53:15
+[private_check] waiting 17:53:45
+[private_check] waiting 17:54:15
+[private_check] waiting 17:54:45
+[private_check] waiting 17:55:15
+[private_check] waiting 17:55:45
+[private_check] waiting 17:56:15
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      383.28 real       370.93 user        14.15 sys
+          4083963600  peak memory footprint
+BUILD EXIT 0
+module constants: 4397; imports: 18
+kernel replay of 4397 constants: 144622 ms
+      162.20 real       144.74 user        15.07 sys
+          3139515800  peak memory footprint
+REPLAY EXIT 0
+== CandAM6x export
+export exit 0
+       39.37 real        26.04 user        12.09 sys
+          1593052720  peak memory footprint
+export bytes 660219452
+== CandAM6x nanoda
+nanoda exit 0
+      154.26 real       148.07 user         5.90 sys
+          2790427072  peak memory footprint
+== CandAM6x lean replay (full closure)
+parse_ms 15908 constants 74812
+replay_ms 227627 OK
+replayx exit 0
+      243.72 real       241.01 user         1.85 sys
+          1382090264  peak memory footprint

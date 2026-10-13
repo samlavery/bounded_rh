@@ -1,0 +1,42 @@
+1883659 bytes -> window/tauint/AT7T.lean
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      453.96 real       433.47 user        18.98 sys
+          5639936728  peak memory footprint
+BUILD EXIT 0
+module constants: 4388; imports: 18
+kernel replay of 4388 constants: 240478 ms
+      260.31 real       237.14 user        19.72 sys
+          5056412496  peak memory footprint
+REPLAY EXIT 0
+constants in module: 4388, live: 3855
+window/tauint/AT7T.lean: 1883659 B -> window/tauint/AT7TS.lean: 1754764 B  (dead declarations -58557, comments/blank -60141, indentation -10197; total -128895)
+[private_check] waiting 15:28:09
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      477.60 real       456.15 user        19.03 sys
+          5571762904  peak memory footprint
+BUILD EXIT 0
+module constants: 4259; imports: 18
+kernel replay of 4259 constants: 233969 ms
+      255.34 real       231.76 user        19.16 sys
+          5083560760  peak memory footprint
+REPLAY EXIT 0
+== stage
+== CandAT7TS export
+export exit 0
+       44.72 real        32.07 user        10.59 sys
+          1592921648  peak memory footprint
+export bytes 661753716
+== CandAT7TS nanoda
+nanoda exit 0
+      326.84 real       316.40 user         9.23 sys
+          5236036504  peak memory footprint
+== CandAT7TS lean replay (full closure)
+parse_ms 16632 constants 75119
+replay_ms 312233 OK
+replayx exit 0
+      329.07 real       324.46 user         4.06 sys
+          3030780544  peak memory footprint

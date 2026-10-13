@@ -1,0 +1,3 @@
+(2) F(argmin) mine 0.008593488739838 | window-scope c_true 0.008593488739838 | diff +0.00e+00
+(3) local re-minimisation over 16 basins: min 0.008593488739618 (c_true - min = +2.19e-13)
+wrote rwin9_lp9.json; cN at delta 2e-4 / 5e-4 / 1e-3: [859177, 858919, 858489] caps [199999996, 199999998, 199999996, 199999998, 199999998, 199999998, 200000000, 200000000]

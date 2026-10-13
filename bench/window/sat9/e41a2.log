@@ -1,0 +1,2 @@
+(a) P=  256: Q_pp   +946.731018 | ||grad|| 7.15e-07 (ratio 5.1e-10) | min Hess eig +3.93e+02 | Newton its 4 | T_g 4.4566 | (1')   +951.18758 | (1') - tau P   +946.26453 | depths max 1.641 | 222s
+(a) P=  512: Q_pp  +1145.186760 | ||grad|| 5.54e+00 (ratio 3.2e-02) | min Hess eig -4.44e+00 | Newton its 300 | T_g 9.3733 | (1')  +1154.56005 | (1') - tau P  +1144.71395 | depths max 1.339 | 688s

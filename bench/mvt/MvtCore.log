@@ -1,0 +1,52 @@
+MvtCore.lean:387:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+MvtCore.lean:421:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+MvtCore.lean:342:49: warning: '(try ring)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtCore.lean:609:90: warning: '(try rfl)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtCore.lean:860:94: warning: This simp argument is unused:
+  Nat.add_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtCore.lean:977:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+       15.59 real        17.71 user         9.87 sys
+          6566871040  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              484517  page reclaims
+                2716  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   1  voluntary context switches
+               77159  involuntary context switches
+        173525958722  instructions retired
+         92133471869  cycles elapsed
+          1537855816  peak memory footprint

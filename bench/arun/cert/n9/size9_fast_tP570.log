@@ -1,0 +1,30 @@
+== size9 delta=0.00005 tag=fast_tP570 rootsel=2,5,9 Sat Oct 10 15:33:36 PDT 2026
+window json /Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_tP570.json
+delta=5e-05 cN=848997 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=2,5,9
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 1133 leaves (255s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 1556 leaves (608s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1225 leaves (873s)
+  bisection: 3914 leaves (Z 0, M 3763, empty 0), 3911 splits, 1985 at region boundaries (873s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2456 points (16043 point cells); failing 0 (878s)
+leaves 3914 kinds {6: 3763, 0: 151} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 3911 (pair 2938); walk bits 1233180 (315.1 per leaf; multipliers 3166 x 10 bits); M nonzero multipliers [(0, 1165), (1, 2060), (2, 508), (3, 30)]; constraints per M cell [(28, 3763)]; w 1984 d 2240 pts 2456 ptc 16043 bad 0 MSTAT lp 13183 (878s)
+nodes visited 7825 (leaves 3914 + splits 3911); explicit constraints per node: mean 28.00, dist [(28, 7825)]
+walk: 1233180 bits = 0.308 MB hex, 0.206 MB base64 (roots run); x8.73: 2.69 MB hex, 1.79 MB base64
+      889.55 real       877.64 user         9.36 sys
+          1638563840  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              611573  page reclaims
+                  76  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 306  voluntary context switches
+              437249  involuntary context switches
+      12441671465182  instructions retired
+       2931357687695  cycles elapsed
+          1858963232  peak memory footprint
+== done Sat Oct 10 15:48:26 PDT 2026

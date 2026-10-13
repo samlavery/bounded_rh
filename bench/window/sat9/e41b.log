@@ -1,0 +1,51 @@
+(b) P=128 N= 512: LP  +1303.395973 (fresh-Model check +1303.395973) | ||grad|| 3.02e-07 (ratio 1.7e-05 to 1.74e-02) | min Hess eig +1.37e+00 | Newton its 1 | depths max 1.125 | 0s
+(b) P=256 N=1024: LP   +871.228542 (fresh-Model check +871.228542) | ||grad|| 1.25e-04 (ratio 9.9e-05 to 1.27e+00) | min Hess eig +6.02e-01 | Newton its 2 | depths max 1.679 | 0s
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:54: RuntimeWarning: overflow encountered in cosh
+  Ex = np.exp(1j * np.outer(kap, x)); ch = 2 * np.cosh(np.outer(kap, y)); sh = 2 * np.sinh(np.outer(kap, y))
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:54: RuntimeWarning: overflow encountered in multiply
+  Ex = np.exp(1j * np.outer(kap, x)); ch = 2 * np.cosh(np.outer(kap, y)); sh = 2 * np.sinh(np.outer(kap, y))
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:54: RuntimeWarning: overflow encountered in sinh
+  Ex = np.exp(1j * np.outer(kap, x)); ch = 2 * np.cosh(np.outer(kap, y)); sh = 2 * np.sinh(np.outer(kap, y))
+/opt/homebrew/lib/python3.14/site-packages/numpy/_core/_methods.py:51: RuntimeWarning: invalid value encountered in reduce
+  return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:55: RuntimeWarning: overflow encountered in square
+  S = Ex.sum(1) + (ch * Es).sum(1); f = float(w @ np.abs(S) ** 2) - M.const
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:56: RuntimeWarning: overflow encountered in multiply
+  dx = 1j * kap[:, None] * Ex; dy = kap[:, None] * sh * Es; du = dy * (2 * u)[None, :]
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:56: RuntimeWarning: invalid value encountered in multiply
+  dx = 1j * kap[:, None] * Ex; dy = kap[:, None] * sh * Es; du = dy * (2 * u)[None, :]
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:58: RuntimeWarning: overflow encountered in multiply
+  d2 = np.concatenate([-(kap ** 2)[:, None] * Ex, (kap[:, None] ** 2 * ch * Es) * (2 * u)[None, :] ** 2 + dy * 2.0], 1)
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:58: RuntimeWarning: invalid value encountered in multiply
+  d2 = np.concatenate([-(kap ** 2)[:, None] * Ex, (kap[:, None] ** 2 * ch * Es) * (2 * u)[None, :] ** 2 + dy * 2.0], 1)
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:59: RuntimeWarning: invalid value encountered in multiply
+  g = 2 * np.real(np.conj(J).T @ (w * S))
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:60: RuntimeWarning: invalid value encountered in multiply
+  H = 2 * np.real(np.conj(J).T @ (w[:, None] * J)) + np.diag(2 * np.real((np.conj(S) * w) @ d2))
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py:60: RuntimeWarning: overflow encountered in multiply
+  H = 2 * np.real(np.conj(J).T @ (w[:, None] * J)) + np.diag(2 * np.real((np.conj(S) * w) @ d2))
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py", line 63, in <module>
+    x, f, gn, gref, lam, nit = newton(fgh, v0)
+                               ~~~~~~^^^^^^^^^
+  File "/Users/samuellavery/work/riemann-submission/bench/window/sat9/e41_decisive_fixed.py", line 18, in newton
+    r = minimize(lambda v: fgh(v)[:2], v0, jac=True, hess=lambda v: fgh(v)[2], method='trust-exact',
+                 options={'maxiter': maxit, 'gtol': 1e-6 * gref})
+  File "/opt/homebrew/lib/python3.14/site-packages/scipy/optimize/_minimize.py", line 812, in minimize
+    res = _minimize_trustregion_exact(fun, x0, args, jac, hess,
+                                      callback=callback, **options)
+  File "/opt/homebrew/lib/python3.14/site-packages/scipy/optimize/_trustregion_exact.py", line 43, in _minimize_trustregion_exact
+    return _minimize_trust_region(fun, x0, args=args, jac=jac, hess=hess,
+                                  subproblem=IterativeSubproblem,
+                                  **trust_region_options)
+  File "/opt/homebrew/lib/python3.14/site-packages/scipy/optimize/_trustregion.py", line 260, in _minimize_trust_region
+    m_proposed = subproblem(x_proposed, fun, jac, hess, hessp, **subproblem_init_kw)
+  File "/opt/homebrew/lib/python3.14/site-packages/scipy/optimize/_trustregion_exact.py", line 265, in __init__
+    self.hess_inf = norm(self.hess, np.inf)
+                    ~~~~^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/lib/python3.14/site-packages/scipy/linalg/_misc.py", line 146, in norm
+    a = np.asarray_chkfinite(a)
+  File "/opt/homebrew/lib/python3.14/site-packages/numpy/lib/_function_base_impl.py", line 665, in asarray_chkfinite
+    raise ValueError(
+        "array must not contain infs or NaNs")
+ValueError: array must not contain infs or NaNs

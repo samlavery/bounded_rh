@@ -1,0 +1,3 @@
+window winopt_smoothfit_single_N24.json: K(0) = F(0)^2 = 1.00000000, qf(0) = 1.023971; lattice check sum_n K(n) = 1.02397147 (= qf(0))
+band-limited global certificate (A = 1, closed form): delta' = inf qf/(1-a) / 2 = 0.270524 at a = 0.9596  -> 55.84% of delta_true 0.484424
+  exact LP A=4.00 Dk=1/32: g(0) 0.925325 -> delta' 0.462663 = 95.51% of delta_true  (min T -1.4e-07, max(g^-qf) +0.0e+00, 29 refinements)

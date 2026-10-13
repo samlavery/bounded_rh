@@ -1,0 +1,44 @@
+(a) regime A transplant: w(P=48) built from w*(P=24) with end radius r
+  a=0.60: w*(P=48) end entries [-0.002, 0.016, 0.113, 0.32, -0.424, -0.21] ... interior mean 0.0285 std 0.0020 | w*(P=24) end [-0.008, -0.012, 0.06, 0.267, -0.448, -0.202]
+     r= 2: D_hard(transplant) -5123960.521 vs optimum  +123.271 (loss 5124083.793)
+     r= 4: D_hard(transplant) -3447487.507 vs optimum  +123.271 (loss 3447610.778)
+     r= 6: D_hard(transplant) -1433523.040 vs optimum  +123.271 (loss 1433646.311)
+     r= 8: D_hard(transplant) -205756.917 vs optimum  +123.271 (loss 205880.188)
+     r=12: D_hard(transplant) -8698.973 vs optimum  +123.271 (loss 8822.244)
+  a=0.70: w*(P=48) end entries [0.009, 0.058, 0.182, 0.384, -0.386, -0.194] ... interior mean 0.0219 std 0.0019 | w*(P=24) end [0.003, 0.04, 0.154, 0.358, -0.395, -0.183]
+     r= 2: D_hard(transplant) -4766032.842 vs optimum   +76.704 (loss 4766109.546)
+     r= 4: D_hard(transplant) -2879696.016 vs optimum   +76.704 (loss 2879772.720)
+     r= 6: D_hard(transplant) -1003684.730 vs optimum   +76.704 (loss 1003761.434)
+     r= 8: D_hard(transplant) -166465.002 vs optimum   +76.704 (loss 166541.707)
+     r=12: D_hard(transplant) -3061.617 vs optimum   +76.704 (loss 3138.321)
+  a=0.76: w*(P=48) end entries [0.018, 0.078, 0.204, 0.391, -0.4, -0.217] ... interior mean 0.0214 std 0.0014 | w*(P=24) end [0.011, 0.061, 0.176, 0.361, -0.419, -0.219]
+     r= 2: D_hard(transplant) -5113495.321 vs optimum   +56.304 (loss 5113551.624)
+     r= 4: D_hard(transplant) -3148666.854 vs optimum   +56.304 (loss 3148723.158)
+     r= 6: D_hard(transplant) -1520197.446 vs optimum   +56.304 (loss 1520253.750)
+     r= 8: D_hard(transplant) -272420.201 vs optimum   +56.304 (loss 272476.504)
+     r=12: D_hard(transplant) -11196.538 vs optimum   +56.304 (loss 11252.841)
+  a=0.80: w*(P=48) end entries [0.025, 0.081, 0.193, 0.352, -0.458, -0.275] ... interior mean 0.0215 std 0.0097 | w*(P=24) end [0.027, 0.089, 0.213, 0.386, -0.416, -0.233]
+     r= 2: D_hard(transplant) -5556286.890 vs optimum   +41.553 (loss 5556328.442)
+     r= 4: D_hard(transplant) -3290648.949 vs optimum   +41.553 (loss 3290690.502)
+     r= 6: D_hard(transplant) -1736746.375 vs optimum   +41.553 (loss 1736787.928)
+     r= 8: D_hard(transplant) -246520.328 vs optimum   +41.553 (loss 246561.881)
+     r=12: D_hard(transplant) -13153.528 vs optimum   +41.553 (loss 13195.081)
+(b) regime B sensitivity (K = 2 class reduction, e23 P = 32)
+  flip pair 16: D +86.666 -> +67188.703 | max|dw_n| by distance: d<1:1.14e+03 d<2:1.15e+03 d<4:1.13e+03 d<8:1.04e+03 d<16:9.44e+02 d<32:0.00e+00
+     truncated update radius  1: D_hard -754543490.653 (optimum +67188.703, loss 754610679.356)
+     truncated update radius  2: D_hard -1112403358.596 (optimum +67188.703, loss 1112470547.299)
+     truncated update radius  4: D_hard -664674590.344 (optimum +67188.703, loss 664741779.047)
+     truncated update radius  8: D_hard -11766909650.795 (optimum +67188.703, loss 11766976839.498)
+     truncated update radius 16: D_hard +67188.703 (optimum +67188.703, loss 0.000)
+  flip pair 4: D +86.666 -> +595806.167 | max|dw_n| by distance: d<1:1.22e+03 d<2:7.51e+02 d<4:1.17e+03 d<8:1.33e+03 d<16:1.34e+03 d<32:7.36e+02
+     truncated update radius  1: D_hard -186468267.311 (optimum +595806.167, loss 187064073.477)
+     truncated update radius  2: D_hard -287259406.636 (optimum +595806.167, loss 287855212.802)
+     truncated update radius  4: D_hard -415584235.795 (optimum +595806.167, loss 416180041.962)
+     truncated update radius  8: D_hard -28232400076.614 (optimum +595806.167, loss 28232995882.781)
+     truncated update radius 16: D_hard -65003379.744 (optimum +595806.167, loss 65599185.911)
+  move pair 16: D +86.666 -> +86.733 | max|dw_n| by distance: d<1:7.86e-01 d<2:4.24e-01 d<4:3.67e-01 d<8:5.81e-01 d<16:7.81e-01 d<32:0.00e+00
+     truncated update radius  1: D_hard -233611.466 (optimum +86.733, loss 233698.199)
+     truncated update radius  2: D_hard -71128.142 (optimum +86.733, loss 71214.875)
+     truncated update radius  4: D_hard -169650.222 (optimum +86.733, loss 169736.955)
+     truncated update radius  8: D_hard -179342.050 (optimum +86.733, loss 179428.784)
+     truncated update radius 16: D_hard +86.733 (optimum +86.733, loss 0.000)

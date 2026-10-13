@@ -1,0 +1,3 @@
+lattice a=0.60 P=6       truth    +44.069 | conv (any W)    +61.770 [lower -1058673.075] | D (F)    +44.003 [certified lower -19324.102; max-min W* -9201.749] | loss: convexify -17.701, projection 17.767 | UNDECIDED | mixture depth ends 0.80/0.80 mid 0.80
+lattice a=0.60 P=12      truth    +53.806 | conv (any W)   +117.072 [lower -765308.910] | D (F)    +65.057 [certified lower -68227.631; max-min W* -304757.875] | loss: convexify -63.266, projection 52.015 | UNDECIDED | mixture depth ends 0.80/0.80 mid 0.80
+lattice a=0.60 P=24      truth    +86.544 | conv (any W)   +158.558 [lower -1100482.662] | D (F)   +101.910 [certified lower -440849.160; max-min W* -318174.537] | loss: convexify -72.014, projection 56.648 | UNDECIDED | mixture depth ends 0.80/0.80 mid 0.80

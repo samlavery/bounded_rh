@@ -1,0 +1,368 @@
+MvtT.lean:183:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:185:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:187:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:189:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:191:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:193:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:195:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:197:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:199:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:201:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:203:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:205:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:207:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:209:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:211:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+MvtT.lean:219:36: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:219:47: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:219:94: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:219:105: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:224:36: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:224:47: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:224:94: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:224:105: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:228:36: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:228:47: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:228:94: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:228:105: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:231:37: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:231:48: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:231:95: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:231:106: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:233:37: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:233:48: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:233:95: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:233:106: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:289:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:289:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:290:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:290:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:291:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:291:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:292:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:292:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:294:55: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:294:77: warning: '(try ring)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:329:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:329:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:330:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:330:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:331:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:331:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:332:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:332:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:334:55: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:334:77: warning: '(try ring)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:361:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:361:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:362:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:362:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:363:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:363:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:364:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:364:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:366:55: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:366:77: warning: '(try ring)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:385:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:385:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:386:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:386:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:387:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:387:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:388:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:388:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:390:55: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:390:77: warning: '(try ring)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:401:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:401:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:402:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:402:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:403:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:403:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:404:8: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:404:30: warning: '(try simp only [add_div])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:406:55: warning: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:406:77: warning: '(try ring)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+MvtT.lean:773:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+MvtT.lean:803:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+MvtT.lean:833:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+MvtT.lean:863:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+MvtT.lean:893:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+       52.19 real        92.71 user         9.48 sys
+          6826934272  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              499986  page reclaims
+                 139  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+               27444  involuntary context switches
+        940587155592  instructions retired
+        340352811494  cycles elapsed
+          1929581064  peak memory footprint

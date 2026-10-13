@@ -1,0 +1,4 @@
+a=0.95 P=  256: seed    +126.4353 -> refined (1')    +124.7274 | Q_pp    +102.0613 T_g   22.6661 | proj-grad 1.09e+05 | its 1500 | depths ends 0.800 mid 2.244 max 2.360 | n_gl 4000 | 49s
+a=0.95 P=  512: seed +20728130.2800 -> refined (1')   +2341.9693 | Q_pp   +2295.9457 T_g   46.0236 | proj-grad 1.37e+06 | its 1500 | depths ends 0.800 mid 2.238 max 2.361 | n_gl 4000 | 85s
+a=0.95 P= 1024: seed +342352.7152 -> refined (1')  +10545.5566 | Q_pp  +10452.7211 T_g   92.8355 | proj-grad 1.06e+07 | its 1000 | depths ends 0.800 mid 2.238 max 2.360 | n_gl 4918 | 147s
+a=0.95 P= 2048: seed +332892.3500 -> refined (1')   +6720.2674 | Q_pp   +6533.7113 T_g  186.5561 | proj-grad 4.49e+06 | its 600 | depths ends 0.800 mid 2.238 max 2.360 | n_gl 7836 | 324s

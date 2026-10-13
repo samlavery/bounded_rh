@@ -1,0 +1,42 @@
+type checking took 800ms
+type checking took 871ms
+type checking took 323ms
+type checking took 3.81s
+type checking took 57ms
+type checking took 170ms
+type checking took 1.48s
+type checking took 395ms
+type checking took 139ms
+type checking took 874ms
+cumulative profiling times:
+	attribute application 0.0498ms
+	elaboration 6.99ms
+	fix level params 0.0453ms
+	instantiate metavars 0.0559ms
+	let-to-have transformation 0.0298ms
+	linting 1.08ms
+	module linting 0.000375ms
+	parsing 1.14ms
+	process pre-definitions 0.618ms
+	share common exprs 0.121ms
+	tactic execution 1.83ms
+	type checking 8.92s
+	typeclass inference 4.95ms
+        9.14 real         8.87 user         0.26 sys
+          1266450432  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               78727  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                 686  involuntary context switches
+         66228986054  instructions retired
+         30406461327  cycles elapsed
+           937744024  peak memory footprint

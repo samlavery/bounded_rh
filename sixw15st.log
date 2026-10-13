@@ -1,0 +1,118 @@
+comparator/Solution/Cand15ST.lean:5211:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:5521:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Cand15ST.lean:5800:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:5813:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:5914:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:6546:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:6576:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:6606:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:6636:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:6666:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15ST.lean:6698:22: error: Unknown identifier `CTN.node` at quotation precheck
+
+Note: You can use `set_option quotPrecheck false` to disable this check.
+comparator/Solution/Cand15ST.lean:6699:22: error: Unknown identifier `CTN.nil` at quotation precheck
+
+Note: You can use `set_option quotPrecheck false` to disable this check.
+comparator/Solution/Cand15ST.lean:7716:2: error: Type mismatch
+  of_check bits 64 cover0 cover1 cover2 cover3 cover4 401408 237568 221184 237568 401408 ?m.39 ?m.40 ?m.41 ?m.42 ?m.43
+    cover0_ok cover1_ok cover2_ok cover3_ok cover4_ok ?m.44 run_ok
+has type
+  ∀ (g0 g1 g2 g3 g4 : ℝ), 0 ≤ g0 → 0 ≤ g1 → 0 ≤ g2 → 0 ≤ g3 → 0 ≤ g4 → ↑cN / ↑SA ≤ G g0 g1 g2 g3 g4 ∨ g4 < g0
+but is expected to have type
+  ∀ (g0 g1 g2 g3 g4 : ℝ), 0 ≤ g0 → 0 ≤ g1 → 0 ≤ g2 → 0 ≤ g3 → 0 ≤ g4 → ↑cN / ↑SA ≤ G g0 g1 g2 g3 g4
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Cand15ST.lean:7942:9: error(lean.unknownIdentifier): Unknown identifier `lt_or_le`
+comparator/Solution/Cand15ST.lean:7942:29: error: Tactic `rcases` failed: `x✝ : ?m.48` is not an inductive datatype
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+      928.18 real       728.25 user       166.31 sys
+          8265859072  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+            28586922  page reclaims
+                3277  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               12955  voluntary context switches
+             2672799  involuntary context switches
+       4490699634059  instructions retired
+       2952468019339  cycles elapsed
+          9676220288  peak memory footprint

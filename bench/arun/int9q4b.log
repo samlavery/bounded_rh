@@ -1,0 +1,44 @@
+== 1 private check INT9Q4 Sun Oct 11 16:19:10 PDT 2026
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      484.03 real       467.43 user        17.65 sys
+          5672360712  peak memory footprint
+BUILD EXIT 0
+module constants: 4812; imports: 26
+kernel replay of 4812 constants: 237904 ms
+      259.39 real       236.12 user        17.83 sys
+          4795988672  peak memory footprint
+REPLAY EXIT 0
+== 2 reachability Sun Oct 11 16:31:57 PDT 2026
+reachable 73916; unreachable module decls 905
+== 3 strip Sun Oct 11 16:32:16 PDT 2026
+removed 372 declarations (3457 lines); kept attributed/instance 3, by name 94, shared-with-reachable 70; bytes 2177497 -> 1976603 (200894 removed)
+== 4 private check INT9Q4S Sun Oct 11 16:32:16 PDT 2026
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      431.75 real       414.71 user        18.82 sys
+          5460515544  peak memory footprint
+BUILD EXIT 0
+module constants: 4286; imports: 26
+kernel replay of 4286 constants: 228188 ms
+      247.26 real       225.70 user        18.54 sys
+          4781374096  peak memory footprint
+REPLAY EXIT 0
+== CandINT9Q4S export
+export exit 0
+       45.24 real        28.95 user        13.27 sys
+          1602276936  peak memory footprint
+export bytes 672735765
+== CandINT9Q4S nanoda
+nanoda exit 0
+      231.98 real       223.51 user         8.30 sys
+          6956193288  peak memory footprint
+== CandINT9Q4S lean replay (full closure)
+parse_ms 16203 constants 74720
+replay_ms 275162 OK
+replayx exit 0
+      291.56 real       284.78 user         6.31 sys
+          3046247088  peak memory footprint
+== int9q4b done Sun Oct 11 16:53:18 PDT 2026

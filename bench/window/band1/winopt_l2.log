@@ -1,0 +1,6 @@
+R8 N=32: d_min(k)/(k Delta_1): k2:1.00004 k3:1.00000 k4:1.00006 | kappa_D,N single 0.6777384, with delta_true 0.6777373
+R8 N=48: d_min(k)/(k Delta_1): k2:1.00002 k3:1.00004 k4:1.00006 | kappa_D,N single 0.6775812, with delta_true 0.6775812
+family N=32: d_min(k)/(k Delta_1): k2:1.00014 k3:1.00033 k4:1.00046 | kappa_D,N single 0.6810466, with delta_true 0.6810466
+family N=48: d_min(k)/(k Delta_1): k2:0.99995 k3:1.00015 k4:1.00019 | kappa_D,N single 0.6808827, with delta_true 0.6808662
+general N=32: d_min(k)/(k Delta_1): k2:0.99104 k3:1.00039 k4:1.00089 | kappa_D,N single 0.6817217, with delta_true 0.6788428
+general N=48: d_min(k)/(k Delta_1): k2:0.99315 k3:0.99107 k4:0.99743 | kappa_D,N single 0.6815673, with delta_true 0.6786983

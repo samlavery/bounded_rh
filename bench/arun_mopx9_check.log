@@ -1,0 +1,26 @@
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      370.52 real       357.70 user        13.91 sys
+          4531181528  peak memory footprint
+BUILD EXIT 0
+module constants: 6102; imports: 26
+kernel replay of 6102 constants: 171565 ms
+      191.94 real       149.86 user        17.39 sys
+          3804690416  peak memory footprint
+REPLAY EXIT 0
+== CandMOPX9 export
+export exit 0
+       62.35 real        28.47 user        14.43 sys
+          1596018200  peak memory footprint
+export bytes 663736221
+== CandMOPX9 nanoda
+nanoda exit 0
+      172.81 real       165.35 user         5.97 sys
+          4682354576  peak memory footprint
+== CandMOPX9 lean replay (full closure)
+parse_ms 16276 constants 76318
+replay_ms 216320 OK
+replayx exit 0
+      232.80 real       229.54 user         2.02 sys
+          2013988880  peak memory footprint

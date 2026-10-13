@@ -1,0 +1,291 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:21:22)
+overlappingInstancesLinter took 1.09ms
+tacticAnalysis took 5.88ms
+linting took 25.8ms
+overlappingInstancesLinter took 2.06ms
+tacticAnalysis took 5.75ms
+linting took 24.9ms
+tacticAnalysis took 5.45ms
+linting took 26.5ms
+elaboration took 1.02ms
+overlappingInstancesLinter took 3.78ms
+tacticAnalysis took 5.03ms
+linting took 21.9ms
+overlappingInstancesLinter took 3.38ms
+tacticAnalysis took 5.3ms
+linting took 21ms
+overlappingInstancesLinter took 2.01ms
+tacticAnalysis took 3.74ms
+linting took 23.7ms
+overlappingInstancesLinter took 1.22ms
+tacticAnalysis took 4.95ms
+linting took 22.1ms
+overlappingInstancesLinter took 2.05ms
+tacticAnalysis took 1.23ms
+linting took 24.1ms
+overlappingInstancesLinter took 2.09ms
+linting took 24ms
+elaboration took 1.42ms
+elaboration took 1.75ms
+linting took 1.08ms
+elaboration took 4.36ms
+linting took 1.23ms
+elaboration took 4.83ms
+linting took 1.4ms
+elaboration took 2.36ms
+linting took 1.56ms
+elaboration took 2.07ms
+linting took 1.3ms
+elaboration took 2.11ms
+linting took 1.22ms
+elaboration took 1.9ms
+linting took 1.35ms
+elaboration took 1.64ms
+linting took 1.15ms
+elaboration took 1.64ms
+linting took 1.32ms
+elaboration took 2ms
+linting took 1.28ms
+elaboration took 2.05ms
+linting took 1.36ms
+elaboration took 3ms
+linting took 1.78ms
+linting took 1.24ms
+linting took 1.22ms
+linting took 1.17ms
+linting took 1.21ms
+linting took 1.15ms
+elaboration took 1.42ms
+linting took 1.13ms
+linting took 1.16ms
+linting took 1.25ms
+linting took 1.13ms
+linting took 1.17ms
+elaboration took 1.58ms
+linting took 1.5ms
+elaboration took 1.37ms
+linting took 1.68ms
+linting took 1.17ms
+type checking took 1.15ms
+elaboration took 2.41ms
+linting took 1.18ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.05ms
+linting took 1.14ms
+elaboration took 1.32ms
+linting took 2.5ms
+linting took 1.38ms
+elaboration took 1.17ms
+tacticAnalysis took 1.52ms
+linting took 6.51ms
+tacticAnalysis took 2.05ms
+linting took 5.21ms
+tacticAnalysis took 1.7ms
+linting took 7.49ms
+tacticAnalysis took 2.49ms
+linting took 11.1ms
+tacticAnalysis took 1.24ms
+linting took 3.83ms
+tacticAnalysis took 2.94ms
+linting took 10.9ms
+tacticAnalysis took 1.24ms
+linting took 12.6ms
+tacticAnalysis took 2.66ms
+linting took 9.32ms
+tacticAnalysis took 2.5ms
+linting took 10.5ms
+tacticAnalysis took 3.3ms
+linting took 9.41ms
+tacticAnalysis took 1.63ms
+linting took 10.5ms
+overlappingInstancesLinter took 1.05ms
+linting took 9.61ms
+linting took 8.77ms
+linting took 8.24ms
+elaboration took 4.61ms
+linting took 3.8ms
+elaboration took 7.79ms
+compilation (LCNF base) took 1.38ms
+linting took 2.69ms
+type checking took 3.94ms
+elaboration took 2.83ms
+linting took 1.13ms
+elaboration took 2.09ms
+linting took 2.02ms
+linting took 1.69ms
+linting took 1.33ms
+elaboration took 2.88ms
+compilation (LCNF base) took 1.25ms
+tacticAnalysis took 1.02ms
+linting took 3.61ms
+process pre-definitions took 1.42ms
+elaboration took 2.97ms
+linting took 1.9ms
+process pre-definitions took 1.02ms
+elaboration took 3.07ms
+compilation (LCNF base) took 1.01ms
+linting took 2.44ms
+type checking took 2.15ms
+elaboration took 2.14ms
+linting took 1.07ms
+linting took 1.18ms
+linting took 1.16ms
+linting took 1.12ms
+linting took 1.2ms
+linting took 1.02ms
+linting took 1.01ms
+linting took 1.07ms
+linting took 1.04ms
+linting took 1.08ms
+elaboration took 2.13ms
+linting took 1.77ms
+elaboration took 1.99ms
+linting took 1.88ms
+elaboration took 2.1ms
+linting took 1.47ms
+elaboration took 2.09ms
+linting took 1.93ms
+linting took 2.1ms
+linting took 3.45ms
+linting took 3.6ms
+linting took 3.48ms
+linting took 3.18ms
+linting took 2.37ms
+linting took 1.4ms
+linting took 1.01ms
+elaboration took 2.22ms
+compilation (LCNF base) took 1.69ms
+linting took 2.93ms
+linting took 1.41ms
+elaboration took 1.16ms
+linting took 1.65ms
+linting took 1.24ms
+elaboration took 2.08ms
+linting took 1.67ms
+elaboration took 1.99ms
+linting took 1.8ms
+elaboration took 2.17ms
+linting took 2.21ms
+linting took 1.79ms
+elaboration took 1.18ms
+linting took 1.55ms
+elaboration took 1.24ms
+linting took 1.66ms
+linting took 1.52ms
+elaboration took 1.06ms
+linting took 1.5ms
+linting took 1.06ms
+elaboration took 1.53ms
+linting took 2.51ms
+linting took 2.08ms
+linting took 1.99ms
+elaboration took 2ms
+tacticAnalysis took 1.5ms
+linting took 8.49ms
+linting took 7.76ms
+linting took 6.64ms
+linting took 7.34ms
+tacticAnalysis took 1.68ms
+linting took 5.43ms
+linting took 7.07ms
+linting took 7.7ms
+linting took 6.02ms
+elaboration took 1.57ms
+linting took 4.51ms
+elaboration took 2.91ms
+linting took 1.4ms
+typeclass inference of MonadEvalT took 4.27ms
+typeclass inference of MonadEvalT took 3.32ms
+typeclass inference of MonadEvalT took 2.8ms
+typeclass inference of MonadEvalT took 2.33ms
+typeclass inference of MonadEvalT took 1.37ms
+interpretation of _private.AMBenchN.0._eval took 6.96ms
+[(true, (59140171037188, 60101088321525), (-988984434119739, -978986817647747), 1696059012430105, 1755686333052707),
+  (true, (39346632566404, 40272305052996), (-952713978099214, -942980437756378), 1768775678881773, 1826567871048263),
+  (true, (20309594577390, 21198644239123), (-915021350547743, -905568819172508), 1835765780371041, 1891651978471894)]
+elaboration took 23.3ms
+compilation (LCNF base) took 11ms
+compilation (LCNF mono) took 1.56ms
+compilation (LCNF mono) took 1.79ms
+compilation (LCNF impure) took 1.21ms
+linting took 1.62ms
+typeclass inference of MonadEvalT took 3.86ms
+typeclass inference of MonadEvalT took 3.12ms
+typeclass inference of MonadEvalT took 3.4ms
+typeclass inference of MonadEvalT took 2.51ms
+typeclass inference of MonadEvalT took 1.4ms
+interpretation of _private.AMBenchN.0._eval took 3.83ms
+[(true, (-67822633311085, -67725495957058), (19668816900931, 20578520195140), 692044544291430, 696183791738336),
+  (true, (-67272473374044, -67160204924240), (33755697540669, 34686496559455), 678130509692591, 682429338545270),
+  (true, (-66436037585055, -66309163156706), (47528914246948, 48487141269651), 661598314733434, 666058753020536)]
+elaboration took 20.3ms
+compilation (LCNF base) took 10.4ms
+compilation (LCNF mono) took 1.4ms
+compilation (LCNF mono) took 1.87ms
+compilation (LCNF impure) took 1.28ms
+linting took 1.6ms
+linting took 1.69ms
+type checking took 414ms
+linting took 2.12ms
+type checking took 1.39s
+linting took 2.18ms
+type checking took 3.01s
+linting took 2.01ms
+type checking took 3.06s
+linting took 1.6ms
+type checking took 3.11s
+linting took 1.61ms
+type checking took 3.48s
+linting took 1.64ms
+type checking took 4.36s
+linting took 2.16ms
+type checking took 5.85s
+linting took 1.98ms
+type checking took 5.89s
+linting took 1.76ms
+type checking took 5.95s
+tactic execution of Lean.Parser.Tactic.decide took 1.04ms
+linting took 1.75ms
+linting took 1.16ms
+cumulative profiling times:
+	attribute application 0.318ms
+	compilation (IR) 2.57ms
+	compilation (LCNF base) 53.7ms
+	compilation (LCNF impure) 14.1ms
+	compilation (LCNF mono) 24.3ms
+	congr simp thm 0.061ms
+	elaboration 190ms
+	fix level params 0.367ms
+	instantiate metavars 0.635ms
+	interpretation 11ms
+	let-to-have transformation 0.435ms
+	linting 588ms
+	module linting 0.000625ms
+	overlappingInstancesLinter 38.6ms
+	parsing 15.3ms
+	process pre-definitions 13.7ms
+	share common exprs 2.09ms
+	simp 0.45ms
+	tactic execution 3.02ms
+	tacticAnalysis 110ms
+	type checking 36.5s
+	typeclass inference 169ms
+       18.44 real         8.57 user        10.54 sys
+          6466093056  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              472182  page reclaims
+                  24  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+               20767  involuntary context switches
+        101544155113  instructions retired
+         62197385076  cycles elapsed
+          1581158944  peak memory footprint

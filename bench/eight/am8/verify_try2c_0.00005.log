@@ -1,0 +1,2 @@
+replayed 32 walks: {'split': 5839, 'empty': 0, 'refl': 255, 'M': 5616, 'fail': 0, 'anchor': 0, 'inc': 11678}; every walk ends at its bit count
+VERIFIED: 0 failures

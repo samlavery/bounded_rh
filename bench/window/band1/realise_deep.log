@@ -1,0 +1,6 @@
+N=16 target 40.7624 | marks {1,2} on-line: min p 0.67864633  support [(0.7146, (2, 0)), (0.2854, (4, 0))] | certificate c0 0.99979780 lam -7.878620e-03  (5s)
+  largest drop type (1, 2): depths [0.]
+re-solved, pairs y in [0,3.00] + triples: min p 0.67864633  support [(0.7146, (2, 0)), (0.2854, (4, 0))], depths in support [[np.float64(0.0), np.float64(0.0)], [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0)]] | largest d_min drop vs y=0 2.80e-02 at (1, 2) | (A) certificate worst slack -0.0000000 at k=2 t=0  (11s)
+N=24 target 91.8938 | marks {1,2} on-line: min p 0.67801927  support [(0.2841, (1, 0)), (0.7159, (5, 0))] | certificate c0 0.99997896 lam -3.503605e-03  (14s)
+  largest drop type (3, 1): depths [0. 0. 0.]
+re-solved, pairs y in [0,3.00] + triples: min p 0.67801693  support [(0.3787, (2, 0)), (0.6213, (5, 0))], depths in support [[np.float64(0.0), np.float64(0.0)], [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0)]] | largest d_min drop vs y=0 6.36e-02 at (3, 1) | (A) certificate worst slack -0.0000062 at k=2 t=0  (29s)

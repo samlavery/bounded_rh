@@ -1,0 +1,6 @@
+delta=0.006 CRAD=0.25 basins=34
+  ... 20000 leaves (Z 8987, S 10454, B 0, 2nd 3) faces 0 (224s)
+  ... 40000 leaves (Z 20247, S 18553, B 0, 2nd 3) faces 0 (441s)
+  ... 60000 leaves (Z 29769, S 28258, B 2, 2nd 5) faces 0 (684s)
+  ... 80000 leaves (Z 39414, S 37878, B 2, 2nd 17) faces 0 (931s)
+  ... 100000 leaves (Z 48279, S 48257, B 9, 2nd 20) faces 0 (1184s)

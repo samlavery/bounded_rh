@@ -1,0 +1,72 @@
+== PC9QB4Inst Sun Oct 11 15:24:49 PDT 2026
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:24:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:25:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:25:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:26:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:26:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:27:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:27:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:28:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:28:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:29:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:29:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:30:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:30:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:31:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:31:49)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:32:19)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:32:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:33:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:33:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:34:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:34:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:35:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:35:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:36:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:36:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:37:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:37:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:38:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:38:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:39:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:39:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:40:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:40:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:41:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:41:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:42:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:42:50)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:43:20)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       47.29 real        32.34 user        11.91 sys
+          6690275328  maximum resident set size
+        409537493651  instructions retired
+          1675151168  peak memory footprint
+== PC9QB4Data Sun Oct 11 15:44:37 PDT 2026
+      213.32 real       196.95 user        16.19 sys
+          8696692736  maximum resident set size
+       1454324526216  instructions retired
+          3674262752  peak memory footprint
+== PC9QB4Ax Sun Oct 11 15:48:10 PDT 2026
+'AMW.Cert.PC9QB4_cert_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+       13.16 real         1.88 user        11.18 sys
+          5714165760  maximum resident set size
+         53745159540  instructions retired
+           872121648  peak memory footprint

@@ -1,0 +1,3 @@
+delta=0.003 CRAD=0.25 basins=0
+  bisection: 18409 leaves (Z 4592, S 0, basin 0); face nodes 0 (collapses 0) (193s)
+dumped 18409 {'nleaves': 18409, 'nZ': 4592, 'nS': 0, 'nB': 0, 'n2': 0, 'nM': 12716, 'nface': 0} (194s)

@@ -1,0 +1,23 @@
+Q=5 c=0.00343956: OK leaves=80882 tuples=108 bad-sizes=[2, 3, 3, 3, 2] (181s)
+[SixW4FS] cells=9880 leaves=80882 bits=403978 walk_thms=700 bytes=2356207
+params: 5 100000000 25326800,62369200,40126500,99999900,200000000,48244400,37630700,119746800,99999900,52857300,37630700,40126500,48244400,62369200,25326800 24896,42034,46137,42034,24896 343956 SixW4FS 96 3 256
+
+      378.15 real       376.39 user         0.86 sys
+           175259648  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               11766  page reclaims
+                  45  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  42  voluntary context switches
+               34740  involuntary context switches
+       6010120161485  instructions retired
+       1252855265247  cycles elapsed
+           164233744  peak memory footprint
+exit=0

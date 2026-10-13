@@ -1,0 +1,10 @@
+delta=0.001 cN=855860 env GSH=5 TWOGRID=1 JSH=3 WMIN=7 MINR=64 QB=12 SPLIT=err PFK=None ROOTSEL=4
+  stuck ((64591, 64877), (33808, 34080), (33927, 33928), (64019, 64176), (33778, 33935), (33814, 33814), (64100, 64591)) {6: (328565, 331962), 11: (193652, 204206), 12: (263730, 269708), 5: (264524, 269638), 16: (163960, 169960), 10: (163960, 169960), 17: (229196, 231281), 4: (230498, 239290), 19: (97912, None), 23: (None, 68015), 9: (130798, None), 14: (95275, 98825), 15: (131882, None)}
+   LP rel -0.009931855922524952 zlow rel -0.08642919575562404
+   err 6.075e-05 axis 2 term (2, 3) range (33927, 33928) width 1 cands 1 inreg True w(s*) 0.000692 z* 0.000525
+   err 4.703e-05 axis 5 term (5, 6) range (33814, 33814) width 0 cands 2 inreg True w(s*) 0.000870 z* 0.000702
+   err 6.863e-08 axis 4 term (4, 5) range (33778, 33935) width 157 cands 7 inreg True w(s*) 0.000680 z* 0.000680
+   err 6.695e-08 axis 24 term (2, 7) range (229638, 230444) width 806 cands 14 inreg True w(s*) 0.000036 z* 0.000036
+   err 4.989e-08 axis 15 term (1, 3) range (67735, 68008) width 273 cands 10 inreg True w(s*) 0.000064 z* 0.000064
+   err 3.812e-08 axis 16 term (1, 4) range (131754, 132184) width 430 cands 11 inreg True w(s*) 0.000037 z* 0.000037
+  root 4 (0, 0, 0, 1, 0, 0, 0): 2548 leaves (15s)

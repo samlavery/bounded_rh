@@ -1,0 +1,21 @@
+parsed 32 walks: 10077 leaves (9732 M), original layout re-encodes bit-exactly
+parsed 32 walks: 10077 leaves (9732 M), original layout re-encodes bit-exactly
+DATA_PC9QB4.json (10077 leaves; modal tables from DATA_PC9QB4.json):
+  K1  modal-kind flag per position, else 1+2 raw           5.72 bits/leaf saved =   14.4 KB hex; walk state: none
+  K2  ranked flags per position: lengths 1/2/3/3          15.41 bits/leaf saved =   38.8 KB hex; walk state: none
+  K3  same kind as previous leaf flag, else 1+2           13.57 bits/leaf saved =   34.2 KB hex; walk state: 34 kinds (68 bits)
+  K4  modal pair flag per position pair, else 1+4 raw      8.67 bits/leaf saved =   21.8 KB hex; walk state: none
+  K5  modal pair flag, else 1 + K1 per term                2.42 bits/leaf saved =    6.1 KB hex; walk state: none
+  J1  modal jj flag per (term, slot), else 1+7            -1.66 bits/leaf saved =   -4.2 KB hex; walk state: none
+  J2  same jj as previous leaf flag, else 1+7             30.65 bits/leaf saved =   77.2 KB hex; walk state: 68 jj (476 bits)
+  L1  modal lambda flag per kappa, else 1+10              -5.32 bits/leaf saved =  -13.4 KB hex; walk state: none
+parsed 16 walks: 11078 leaves (10735 M), original layout re-encodes bit-exactly
+DATA_PC9Q.json (11078 leaves; modal tables from DATA_PC9QB4.json):
+  K1  modal-kind flag per position, else 1+2 raw           4.48 bits/leaf saved =   12.4 KB hex; walk state: none
+  K2  ranked flags per position: lengths 1/2/3/3          14.53 bits/leaf saved =   40.2 KB hex; walk state: none
+  K3  same kind as previous leaf flag, else 1+2           12.59 bits/leaf saved =   34.9 KB hex; walk state: 34 kinds (68 bits)
+  K4  modal pair flag per position pair, else 1+4 raw      7.38 bits/leaf saved =   20.4 KB hex; walk state: none
+  K5  modal pair flag, else 1 + K1 per term                0.50 bits/leaf saved =    1.4 KB hex; walk state: none
+  J1  modal jj flag per (term, slot), else 1+7            -4.31 bits/leaf saved =  -11.9 KB hex; walk state: none
+  J2  same jj as previous leaf flag, else 1+7             27.16 bits/leaf saved =   75.2 KB hex; walk state: 68 jj (476 bits)
+  L1  modal lambda flag per kappa, else 1+10              -5.73 bits/leaf saved =  -15.9 KB hex; walk state: none

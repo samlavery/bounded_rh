@@ -1,0 +1,9 @@
+PC8SF: R0 = 1.167299 kappa 0.6734832; 1974 candidate configurations
+delta 0.25%: R_2L 1.168733  kappa_2L 0.6734896  gain +6.40e-06   binding: ab d+0.0146
+delta 0.50%: R_2L 1.170165  kappa_2L 0.6734960  gain +1.28e-05   binding: ab d+0.0236
+delta 1.00%: R_2L 1.172915  kappa_2L 0.6735083  gain +2.51e-05   binding: babab d+0.0236
+delta 1.50%: R_2L 1.172686  kappa_2L 0.6735073  gain +2.41e-05   binding: babab d+0.0146
+delta 2.00%: R_2L 1.173839  kappa_2L 0.6735124  gain +2.92e-05   binding: babab d+0.0146
+delta 2.50%: R_2L 1.173784  kappa_2L 0.6735122  gain +2.90e-05   binding: defect babab d+0.0090 j12 s-0.015
+delta 3.00%: R_2L 1.174261  kappa_2L 0.6735143  gain +3.11e-05   binding: defect babab d+0.0090 j12 s-0.015
+delta 4.00%: R_2L 1.172780  kappa_2L 0.6735077  gain +2.45e-05   binding: abb d+0.0000

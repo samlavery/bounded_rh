@@ -1,0 +1,6 @@
+import AMW.BrSqrtLM
+#print axioms Zeta23Ext.BridgeW.band_profile_sq
+#print axioms Zeta23Ext.BridgeW.block_bound_w'_sq
+#print axioms Zeta23Ext.BridgeW.Phi_sq_ge_sqrt
+#print axioms Zeta23Ext.BridgeW.Phi_sq_ge_lin
+#print axioms AMW.am_dyadic_n_sq

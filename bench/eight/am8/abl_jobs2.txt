@@ -1,0 +1,2 @@
+R9 AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin8_B440000.json TWOGRID=1 DLO=7 DHI=8 WMIN=8 ROOTSEL=4,17 MAXD=200 GSH=5 PLO=1 MINR=0 MINPW=256 PFK=8 JSH=5 NR=2 SPLIT=pf YFRAC=14 TRIPLE=1
+R10 AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin8_B440000.json TWOGRID=1 DLO=7 DHI=8 WMIN=8 ROOTSEL=4,17 MAXD=200 GSH=5 PLO=1 MINR=0 MINPW=256 PFK=8 JSH=5 NR=2 SPLIT=pf YFRAC=14 TRIPLE=2

@@ -1,0 +1,5 @@
+delta=0.001 CRAD=0.0 basins=0
+  ... 20000 leaves (Z 3953, S 0, B 0, 2nd 0, M 14869) mtests [34861, 14944, 14869] (216s)
+  bisection: 20559 leaves (Z 4174, S 0, basin 0); face nodes 0 (collapses 0) (221s)
+  fix-up: 0 re-decided; tables: w 992 cells, d 832 cells, 1025 points (1444 point cells); failing 0 (225s)
+leaves 20559 Z 4174 S 0 (centre 0) B 0 w 992 d 832 pts 1025 ptc 1444 bad 0 (225s)

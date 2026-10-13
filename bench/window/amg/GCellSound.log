@@ -1,0 +1,24 @@
+AMW/GCellSound.lean:268:35: warning: Variable name `hE2` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hE2
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+       19.72 real        11.94 user        11.00 sys
+          6592987136  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              482737  page reclaims
+                4054  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+               34088  involuntary context switches
+        119020003798  instructions retired
+         72794351061  cycles elapsed
+          1595901664  peak memory footprint

@@ -1,0 +1,34 @@
+(i) B_{y'}/B_y nondecreasing in alpha on the grid for tested pairs: True
+positions-only witnesses:
+  e34 a=0.60 P=6                 P=  6 | pairs with interior min (dip > grid err):   2 | worst dip 0.06249 | max grid err 2.25 | sign changes of g_p: min 4 median 6 max 8
+  e34 a=0.60 P=12                P= 12 | pairs with interior min (dip > grid err):   4 | worst dip 0.08745 | max grid err 0.673 | sign changes of g_p: min 11 median 14 max 19
+  e34 a=0.60 P=24                P= 24 | pairs with interior min (dip > grid err):   8 | worst dip 0.02498 | max grid err 0.532 | sign changes of g_p: min 18 median 25 max 33
+  e34 a=0.60 P=48                P= 48 | pairs with interior min (dip > grid err):  20 | worst dip 0.01694 | max grid err 0.348 | sign changes of g_p: min 32 median 46 max 61
+  e34 a=0.70 P=6                 P=  6 | pairs with interior min (dip > grid err):   0 | worst dip 0 | max grid err 3.75 | sign changes of g_p: min 7 median 8 max 9
+  e34 a=0.70 P=12                P= 12 | pairs with interior min (dip > grid err):   2 | worst dip 0.01945 | max grid err 0.975 | sign changes of g_p: min 13 median 17 max 22
+  e34 a=0.70 P=24                P= 24 | pairs with interior min (dip > grid err):   2 | worst dip 0.002634 | max grid err 0.641 | sign changes of g_p: min 20 median 28 max 38
+  e34 a=0.70 P=48                P= 48 | pairs with interior min (dip > grid err):  16 | worst dip 0.02318 | max grid err 0.205 | sign changes of g_p: min 38 median 54 max 72
+  e34 a=0.76 P=6                 P=  6 | pairs with interior min (dip > grid err):   0 | worst dip 0 | max grid err 5.04 | sign changes of g_p: min 9 median 10 max 12
+  e34 a=0.76 P=12                P= 12 | pairs with interior min (dip > grid err):   0 | worst dip 0 | max grid err 0.338 | sign changes of g_p: min 14 median 18 max 23
+  e34 a=0.76 P=24                P= 24 | pairs with interior min (dip > grid err):   6 | worst dip 0.01585 | max grid err 0.648 | sign changes of g_p: min 23 median 32 max 41
+  e34 a=0.76 P=48                P= 48 | pairs with interior min (dip > grid err):  14 | worst dip 0.0155 | max grid err 0.237 | sign changes of g_p: min 43 median 60 max 80
+  e34 a=0.80 P=6                 P=  6 | pairs with interior min (dip > grid err):   0 | worst dip 0 | max grid err 13.1 | sign changes of g_p: min 10 median 11 max 13
+  e34 a=0.80 P=12                P= 12 | pairs with interior min (dip > grid err):   0 | worst dip 0 | max grid err 8.74 | sign changes of g_p: min 14 median 19 max 24
+  e34 a=0.80 P=24                P= 24 | pairs with interior min (dip > grid err):   6 | worst dip 0.002398 | max grid err 0.34 | sign changes of g_p: min 26 median 35 max 45
+  e34 a=0.80 P=48                P= 48 | pairs with interior min (dip > grid err):  18 | worst dip 0.09059 | max grid err 0.264 | sign changes of g_p: min 45 median 64 max 84
+  e36 a=0.60 P=64                P= 64 | pairs with interior min (dip > grid err):  24 | worst dip 0.02567 | max grid err 0.369 | sign changes of g_p: min 42 median 60 max 81
+  e36 a=0.60 P=128               P=128 | pairs with interior min (dip > grid err):  55 | worst dip 0.06132 | max grid err 0.27 | sign changes of g_p: min 80 median 114 max 157
+  e36 a=0.70 P=64                P= 64 | pairs with interior min (dip > grid err):  27 | worst dip 0.0187 | max grid err 0.0899 | sign changes of g_p: min 51 median 72 max 96
+  e36 a=0.70 P=128               P=128 | pairs with interior min (dip > grid err):  64 | worst dip 0.01931 | max grid err 0.14 | sign changes of g_p: min 96 median 140 max 184
+  e36 a=0.76 P=64                P= 64 | pairs with interior min (dip > grid err):  18 | worst dip 0.04136 | max grid err 0.111 | sign changes of g_p: min 55 median 78 max 104
+  e36 a=0.76 P=128               P=128 | pairs with interior min (dip > grid err):  50 | worst dip 0.03093 | max grid err 0.0917 | sign changes of g_p: min 104 median 151 max 202
+  e36 a=0.80 P=64                P= 64 | pairs with interior min (dip > grid err):  24 | worst dip 0.05238 | max grid err 0.239 | sign changes of g_p: min 58 median 82 max 109
+  e36 a=0.80 P=128               P=128 | pairs with interior min (dip > grid err):  57 | worst dip 0.1426 | max grid err 0.0871 | sign changes of g_p: min 110 median 159 max 213
+D_K witnesses (K = 2, class-restricted min):
+  D_K lattice a=0.90 P=12        P= 12 | pairs with interior min (dip > grid err):   0 | worst dip 0 | max grid err 112 | sign changes of g_p: min 10 median 14 max 19
+  D_K lattice a=0.90 P=48        P= 48 | pairs with interior min (dip > grid err):  13 | worst dip 0.4912 | max grid err 7.84 | sign changes of g_p: min 44 median 63 max 88
+  D_K e23 minimiser P=12         P= 12 | pairs with interior min (dip > grid err):   3 | worst dip 0.1021 | max grid err 0.936 | sign changes of g_p: min 12 median 15 max 19
+  D_K e23 minimiser P=16         P= 16 | pairs with interior min (dip > grid err):   4 | worst dip 0.536 | max grid err 1.45 | sign changes of g_p: min 12 median 16 max 23
+  D_K e23 minimiser P=24         P= 24 | pairs with interior min (dip > grid err):   3 | worst dip 0.4513 | max grid err 1.7 | sign changes of g_p: min 13 median 20 max 33
+  D_K e23 minimiser P=32         P= 32 | pairs with interior min (dip > grid err):   0 | worst dip 0 | max grid err 2.18 | sign changes of g_p: min 19 median 27 max 41
+TOTAL pairs with interior minima beyond grid error: 440; worst dip 0.536 -> REFUTES

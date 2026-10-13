@@ -1,0 +1,50 @@
+final6 PC8: SA 100000000 cN 805003 B 404350 m 148 Phi 0.6734812767 kappa 6734812/10000000 = 0.6734812
+window/tauint/PC8bT.lean: 1883277 bytes (layer 1863687, mt block 0); modules ['Window', 'Kernel', 'Moments', 'Swap', 'Constant', 'Floor', 'Params', 'Trig', 'Adm', 'Profile', 'PV', 'ZeroSide', 'Concrete', 'BHalf', 'BrA', 'BrB', 'BrC', 'AMTail', 'BrTau', 'BrProf', 'GIv', 'GCell', 'GSinc', 'GMT', 'GTaylor', 'GBase', 'GConst', 'GFar', 'GNear', 'GAsm1', 'GAsm2', 'GCellSound', 'CFacade', 'CEngine', 'CMin', 'CMinX', 'CWindow', 'PCellCore', 'PCellGen', 'PCellLeaf', 'PCellRoot', 'PCellTZ', 'PCellZ', 'PCellLeafZ', 'PCellT1', 'PC8Inst', 'PC8Data']; dropped ['AMS02Data', 'AMS02Inst', 'AMS02Line', 'AMS02Min', 'AMT8Data', 'AMT8Inst', 'AMX002Data', 'AMX002Inst', 'AMX003Data', 'AMX003Inst', 'AMX005Data', 'AMX005Inst', 'AMX01Data', 'AMX01Inst', 'AMX05Data', 'AMX05Inst', 'BrProfAx', 'CMLeaf', 'GBench', 'GChk', 'GChk2', 'GChk3', 'GChk4', 'GXchk', 'LeverAM', 'LeverOracle', 'LeverTable', 'LineMode', 'MemT_D', 'MemT_N', 'MemT_P', 'MemT_W', 'MinMode', 'Minorant', 'PC8Ax', 'PC8B_D', 'PC8B_DW', 'PC8B_F', 'PC8B_ND', 'PC8B_NZ', 'PC8B_P', 'PC8B_W', 'PC8CAx', 'PC8CInst', 'PC8CLData', 'PC8CLInst', 'PC8DCB', 'PC8DCInst', 'PC8DCLB', 'PC8DCLInst', 'PC8DTB', 'PC8DTInst', 'PC8VDInst', 'PC8VDWInst', 'PC8VNDInst', 'PC8VNZInst', 'PC8VWInst', 'PC8ZB', 'PCellClose', 'PCellCloseBT', 'PCellCloseG', 'PCellHuff', 'PSDBasin', 'TanChord']; imports 16
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      580.30 real       566.68 user        15.34 sys
+          4957378832  peak memory footprint
+BUILD EXIT 0
+module constants: 6946; imports: 18
+kernel replay of 6946 constants: 314610 ms
+      331.43 real       312.80 user        16.10 sys
+          3739826064  peak memory footprint
+REPLAY EXIT 0
+constants in module: 6946, live: 6163
+window/tauint/PC8bT.lean: 1883277 B -> window/tauint/PC8bTS.lean: 1720289 B  (dead declarations -75738, comments/blank -75655, indentation -11595; total -162988)
+SIZE PC8bTS.lean 1720289 B (watch 1900000, cap 2000000)
+[private_check] waiting 19:53:07
+[private_check] waiting 19:53:37
+[private_check] waiting 19:54:07
+[private_check] waiting 19:54:37
+[private_check] waiting 19:55:07
+[private_check] waiting 19:55:37
+[private_check] waiting 19:56:07
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      568.15 real       556.03 user        13.88 sys
+          4846131376  peak memory footprint
+BUILD EXIT 0
+module constants: 6770; imports: 18
+kernel replay of 6770 constants: 323367 ms
+      341.38 real       320.40 user        16.53 sys
+          3733632792  peak memory footprint
+REPLAY EXIT 0
+== stage
+== CandPC8bTS export
+export exit 0
+       39.74 real        27.03 user        10.80 sys
+          1596460520  peak memory footprint
+export bytes 665129569
+== CandPC8bTS nanoda
+nanoda exit 0
+      333.74 real       320.61 user        12.36 sys
+          4923838496  peak memory footprint
+== CandPC8bTS lean replay (full closure)
+parse_ms 15299 constants 77447
+replay_ms 394568 OK
+replayx exit 0
+      410.06 real       404.77 user         4.79 sys
+          1982826464  peak memory footprint

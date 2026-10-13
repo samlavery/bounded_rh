@@ -1,0 +1,17 @@
+N= 64 P= 2: min LP    +95.4312 (per pair +47.7156) from seed [chain flat a=0.90] | pair depths 0.80-0.80 | pair span 0.61 | 1s
+N= 64 P= 4: min LP    +30.9075 (per pair +7.7269) from seed [chain a=0.60] | pair depths 0.80-0.97 | pair span 1.96 | 3s
+N= 64 P= 8: min LP    +21.4498 (per pair +2.6812) from seed [chain a=0.60] | pair depths 0.80-1.28 | pair span 5.10 | 17s
+N= 64 P=16: min LP    +25.8368 (per pair +1.6148) from seed [chain flat a=0.90] | pair depths 0.80-1.46 | pair span 12.30 | 18s
+N= 64 P=32: min LP    +30.4004 (per pair +0.9500) from seed [chain a=0.95] | pair depths 0.80-1.39 | pair span 27.94 | 18s
+N=128 P= 2: min LP    +83.2356 (per pair +41.6178) from seed [random] | pair depths 0.80-0.80 | pair span 0.61 | 3s
+N=128 P= 4: min LP    +30.9352 (per pair +7.7338) from seed [chain a=0.60] | pair depths 0.80-0.97 | pair span 1.96 | 15s
+N=128 P= 8: min LP    +22.1437 (per pair +2.7680) from seed [arch-e23] | pair depths 0.80-1.26 | pair span 5.12 | 43s
+N=128 P=16: min LP    +28.1028 (per pair +1.7564) from seed [chain flat a=0.95] | pair depths 0.80-1.47 | pair span 12.21 | 53s
+N=128 P=32: min LP    +28.9965 (per pair +0.9061) from seed [chain flat a=0.95] | pair depths 0.80-1.31 | pair span 28.14 | 55s
+N=256 P= 2: min LP    +95.9435 (per pair +47.9717) from seed [chain flat a=0.76] | pair depths 0.80-0.80 | pair span 0.61 | 20s
+N=256 P= 4: min LP    +31.0944 (per pair +7.7736) from seed [chain a=0.60] | pair depths 0.80-0.97 | pair span 1.96 | 86s
+N=256 P= 8: min LP    +24.0320 (per pair +3.0040) from seed [chain a=0.76] | pair depths 0.80-1.28 | pair span 5.09 | 155s
+N=256 P=16: min LP    +29.6364 (per pair +1.8523) from seed [chain a=0.76] | pair depths 0.80-1.60 | pair span 11.90 | 180s
+N=256 P=32: min LP    +34.9003 (per pair +1.0906) from seed [chain flat a=0.95] | pair depths 0.80-1.36 | pair span 28.01 | 186s
+candidates with LP < 1 (double): 0
+VERDICT: SUPPORTS on this search

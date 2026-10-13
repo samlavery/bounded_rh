@@ -1,0 +1,21 @@
+== PC8RInst Sat Oct 10 16:20:34 PDT 2026
+
+
+
+
+
+
+
+
+       62.81 real        77.44 user        16.49 sys
+          6595231744  maximum resident set size
+             1327368  peak memory footprint
+== PC8RData Sat Oct 10 16:21:37 PDT 2026
+      141.84 real       139.70 user        71.19 sys
+         10116284416  maximum resident set size
+             1327368  peak memory footprint
+== PC8RAx Sat Oct 10 16:23:59 PDT 2026
+'AMW.Cert.PC8R_cert_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+       14.74 real         1.90 user        12.48 sys
+          5716148224  maximum resident set size
+             1327368  peak memory footprint

@@ -1,0 +1,19 @@
+constants in module: 4343, live: 3841
+       11.71 real         2.63 user         8.96 sys
+          5845237760  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              431223  page reclaims
+                2727  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  53  voluntary context switches
+                2658  involuntary context switches
+         62489302394  instructions retired
+         41143844816  cycles elapsed
+           916786712  peak memory footprint

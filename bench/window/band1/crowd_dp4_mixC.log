@@ -1,0 +1,8 @@
+allocation: L=8 WINC=0.8 CW=0.1 DEL=0.5 D0=16: sup sum cluster weights 0.9352, sup sum non-cluster weights 1.0000 (both <= 1)
+Voronoi-allocated chain DP (class (i), D0 = 16): cap 32, y in [0.7375, 0.8000] in 5 intervals
+  y in [0.7375, 0.7500]: S0 363.779 T_X -0.4665 V -126.0001 -> LP_p/y^2 >= +111.7789  [7s]
+  y in [0.7500, 0.7625]: S0 397.335 T_X -0.4968 V -139.2079 -> LP_p/y^2 >= +118.9194  [7s]
+  y in [0.7625, 0.7750]: S0 434.437 T_X -0.5309 V -154.2360 -> LP_p/y^2 >= +125.9652  [7s]
+  y in [0.7750, 0.7875]: S0 475.486 T_X -0.5693 V -170.7375 -> LP_p/y^2 >= +134.0107  [7s]
+  y in [0.7875, 0.8000]: S0 520.929 T_X -0.6125 V -189.7515 -> LP_p/y^2 >= +141.4259  [7s]
+CERTIFIED (allocated slack) on [0.7375, 0.8000]: LP_p/y^2 >= +111.7789 (binding (np.float64(0.7375), np.float64(0.75)))  total 37s

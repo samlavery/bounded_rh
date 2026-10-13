@@ -1,0 +1,14 @@
+window R8: K(0) = F(0)^2 = 1.00000000, qf(0) = 1.008264; lattice check sum_n K(n) = 1.00826378 (= qf(0))
+band-limited global certificate (A = 1, closed form): delta' = inf qf/(1-a) / 2 = 0.343977 at a = 0.9999  -> 69.44% of delta_true 0.495338
+  hat-basis LP A=1.00 Dk=1/32: g(0) 0.706353 -> delta' 0.353176 = 71.30% of delta_true  (max(g^-qf) +1.9e-05, int g_- 8.7e-10, 50 far neg pts)
+  hat-basis LP A=1.00 Dk=1/64: g(0) 0.706758 -> delta' 0.353379 = 71.34% of delta_true  (max(g^-qf) +9.2e-06, int g_- 6.4e-09, 450 far neg pts)
+  hat-basis LP A=1.25 Dk=1/32: g(0) 0.852094 -> delta' 0.426047 = 86.01% of delta_true  (max(g^-qf) +6.6e-06, int g_- 1.1e-08, 2420 far neg pts)
+  hat-basis LP A=1.25 Dk=1/64: g(0) 0.853595 -> delta' 0.426798 = 86.16% of delta_true  (max(g^-qf) +1.2e-06, int g_- 4.3e-08, 4625 far neg pts)
+  hat-basis LP A=1.50 Dk=1/32: g(0) 0.970376 -> delta' 0.485188 = 97.95% of delta_true  (max(g^-qf) +2.4e-05, int g_- 1.6e-09, 1034 far neg pts)
+  hat-basis LP A=1.50 Dk=1/64: g(0) 0.970437 -> delta' 0.485219 = 97.96% of delta_true  (max(g^-qf) +2.9e-06, int g_- 1.9e-08, 4147 far neg pts)
+  hat-basis LP A=2.00 Dk=1/32: g(0) 0.970389 -> delta' 0.485195 = 97.95% of delta_true  (max(g^-qf) +4.3e-05, int g_- 1.1e-08, 3281 far neg pts)
+  hat-basis LP A=2.00 Dk=1/64: g(0) 0.970451 -> delta' 0.485226 = 97.96% of delta_true  (max(g^-qf) +9.5e-06, int g_- 5.3e-08, 6004 far neg pts)
+  hat-basis LP A=3.00 Dk=1/32: g(0) 0.981753 -> delta' 0.490876 = 99.10% of delta_true  (max(g^-qf) +1.2e-05, int g_- 4.0e-08, 6289 far neg pts)
+  hat-basis LP A=3.00 Dk=1/64: g(0) -0.000000 -> delta' -0.000000 = -0.00% of delta_true  (max(g^-qf) +0.0e+00, int g_- -0.0e+00, 0 far neg pts)
+best g^ (knot values at a = 0, 0.25, 0.5, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5): 0.9818 0.7859 0.4965 0.2130 0.0713 -0.0000 -0.0091 -0.0020 -0.0000
+qf at the same a: 1.0083 0.7859 0.4968 0.2132 0.0714 0.0000 0.0000 0.0000 0.0000

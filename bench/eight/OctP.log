@@ -1,0 +1,596 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:51:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:52:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:52:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:53:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:53:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:54:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:54:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:55:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:55:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:56:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:56:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:57:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:57:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:58:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:58:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:59:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:59:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:00:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:00:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:01:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:01:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:02:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:02:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:03:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:03:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:04:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:04:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:05:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:05:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:06:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:06:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:07:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:07:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:08:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:08:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:09:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:09:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:10:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:10:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:11:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:11:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:12:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:12:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:13:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:13:57)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:14:27)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (21:14:57)
+linting took 157ms
+compilation (LCNF base) took 115ms
+linting took 136ms
+OctP.lean:381:97: warning: Variable name `C` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _C
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+type checking took 323ms
+type checking took 144ms
+type checking took 301ms
+type checking took 346ms
+type checking took 297ms
+type checking took 318ms
+type checking took 326ms
+type checking took 303ms
+type checking took 278ms
+type checking took 280ms
+type checking took 314ms
+type checking took 274ms
+type checking took 278ms
+type checking took 315ms
+type checking took 292ms
+type checking took 290ms
+type checking took 286ms
+type checking took 320ms
+type checking took 294ms
+type checking took 253ms
+type checking took 292ms
+type checking took 264ms
+type checking took 250ms
+type checking took 253ms
+type checking took 234ms
+type checking took 276ms
+type checking took 248ms
+type checking took 226ms
+type checking took 227ms
+type checking took 269ms
+OctP.lean:502:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:504:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:506:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:508:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:510:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:512:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:514:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:516:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:518:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:520:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:522:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:524:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:526:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:528:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:530:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:532:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:534:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:536:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:538:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:540:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:542:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:544:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:546:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:548:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:550:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:552:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:554:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+OctP.lean:556:39: warning: This simp argument is unused:
+  Nat.ble_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.add_eq, Nat.mul_eq] at h ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 870ms
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 1.55s
+ring took 181ms
+tactic execution of Mathlib.Tactic.linarith took 3.08s
+type checking took 126ms
+linting took 148ms
+elaboration took 147ms
+simp took 538ms
+type checking took 205ms
+tactic execution of Lean.Parser.Tactic.obtain took 352ms
+tactic execution of Lean.Parser.Tactic.rewriteSeq took 2.7s
+tactic execution of Mathlib.Tactic.linarith took 1.58s
+tactic execution of Mathlib.Tactic.linarith took 1.48s
+tactic execution of Mathlib.Tactic.linarith took 1.23s
+tactic execution of Mathlib.Tactic.linarith took 1.2s
+tactic execution of Mathlib.Tactic.linarith took 1.51s
+tactic execution of Mathlib.Tactic.linarith took 1.51s
+tactic execution of Mathlib.Tactic.linarith took 1.3s
+tactic execution of Mathlib.Tactic.linarith took 1.29s
+tactic execution of Lean.Parser.Tactic.refine took 117ms
+tactic execution of Mathlib.Tactic.linarith took 1.72s
+tactic execution of Mathlib.Tactic.linarith took 1.67s
+tactic execution of Mathlib.Tactic.linarith took 1.39s
+tactic execution of Mathlib.Tactic.linarith took 1.41s
+tactic execution of Lean.Parser.Tactic.refine took 196ms
+tactic execution of Mathlib.Tactic.linarith took 1.89s
+tactic execution of Mathlib.Tactic.linarith took 1.78s
+tactic execution of Mathlib.Tactic.linarith took 1.57s
+tactic execution of Mathlib.Tactic.linarith took 1.5s
+tactic execution of Lean.Parser.Tactic.refine took 307ms
+tactic execution of Mathlib.Tactic.linarith took 1.92s
+tactic execution of Mathlib.Tactic.linarith took 1.94s
+tactic execution of Mathlib.Tactic.linarith took 1.59s
+tactic execution of Mathlib.Tactic.linarith took 1.67s
+tactic execution of Lean.Parser.Tactic.refine took 486ms
+tactic execution of Mathlib.Tactic.linarith took 2.17s
+tactic execution of Mathlib.Tactic.linarith took 2.05s
+tactic execution of Mathlib.Tactic.linarith took 1.72s
+tactic execution of Mathlib.Tactic.linarith took 1.67s
+tactic execution of Lean.Parser.Tactic.refine took 524ms
+tactic execution of Mathlib.Tactic.linarith took 1.96s
+tactic execution of Mathlib.Tactic.linarith took 1.97s
+tactic execution of Mathlib.Tactic.linarith took 1.71s
+tactic execution of Mathlib.Tactic.linarith took 1.64s
+tactic execution of Lean.Parser.Tactic.refine took 603ms
+simp took 149ms
+tactic execution of Mathlib.Tactic.normNum took 185ms
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 1.59s
+ring took 698ms
+tactic execution of Mathlib.Tactic.linarith took 15.8s
+instantiate metavars took 391ms
+share common exprs took 537ms
+process pre-definitions took 290ms
+elaboration took 164ms
+type checking took 114ms
+type checking took 133ms
+type checking took 106ms
+type checking took 561ms
+OctP.lean:634:2: warning: 'push_cast at hb0' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:655:2: warning: 'push_cast at hb7' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:673:2: warning: 'push_cast at hb13' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:688:2: warning: 'push_cast at hb18' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:700:2: warning: 'push_cast at hb22' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:709:2: warning: 'push_cast at hb25' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:715:2: warning: 'push_cast at hb27' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+tacticAnalysis took 239ms
+linting took 788ms
+tactic execution of Lean.Parser.Tactic.obtain took 601ms
+tactic execution of Lean.Parser.Tactic.rewriteSeq took 1.18s
+tactic execution of Mathlib.Tactic.linarith took 1.5s
+tactic execution of Mathlib.Tactic.linarith took 1.33s
+tactic execution of Mathlib.Tactic.linarith took 1.26s
+tactic execution of Mathlib.Tactic.linarith took 1.47s
+tactic execution of Mathlib.Tactic.linarith took 1.18s
+tactic execution of Mathlib.Tactic.linarith took 1.13s
+tactic execution of Mathlib.Tactic.linarith took 1.45s
+tactic execution of Mathlib.Tactic.linarith took 1.2s
+tactic execution of Mathlib.Tactic.linarith took 1.15s
+ring took 102ms
+tactic execution of Mathlib.Tactic.linarith took 1.55s
+tactic execution of Mathlib.Tactic.linarith took 1.29s
+tactic execution of Mathlib.Tactic.linarith took 1.22s
+tactic execution of Mathlib.Tactic.linarith took 1.56s
+tactic execution of Mathlib.Tactic.linarith took 1.32s
+tactic execution of Mathlib.Tactic.linarith took 1.28s
+tactic execution of Lean.Parser.Tactic.refine took 128ms
+tactic execution of Mathlib.Tactic.linarith took 1.66s
+tactic execution of Mathlib.Tactic.linarith took 1.39s
+tactic execution of Mathlib.Tactic.linarith took 1.37s
+tactic execution of Lean.Parser.Tactic.refine took 151ms
+tactic execution of Mathlib.Tactic.linarith took 1.55s
+tactic execution of Mathlib.Tactic.linarith took 1.46s
+tactic execution of Mathlib.Tactic.linarith took 1.39s
+tactic execution of Lean.Parser.Tactic.refine took 159ms
+simp took 151ms
+tactic execution of Mathlib.Tactic.normNum took 113ms
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 1.28s
+ring took 762ms
+tactic execution of Mathlib.Tactic.linarith took 10.5s
+instantiate metavars took 328ms
+share common exprs took 446ms
+process pre-definitions took 215ms
+elaboration took 123ms
+type checking took 475ms
+OctP.lean:854:2: warning: 'push_cast at hb0' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:872:2: warning: 'push_cast at hb7' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:890:2: warning: 'push_cast at hb13' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:905:2: warning: 'push_cast at hb18' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:917:2: warning: 'push_cast at hb22' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:923:2: warning: 'push_cast at hb25' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+OctP.lean:929:2: warning: 'push_cast at hb27' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+tacticAnalysis took 104ms
+linting took 392ms
+simp took 1.16s
+type checking took 360ms
+OctP.lean:1389:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctP.lean:1419:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctP.lean:1449:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctP.lean:1479:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctP.lean:1509:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctP.lean:1539:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+OctP.lean:1569:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+tactic execution of Mathlib.Tactic.linarith took 457ms
+ring took 102ms
+tactic execution of Mathlib.Tactic.linarith took 605ms
+tactic execution of Mathlib.Tactic.linarith took 490ms
+tactic execution of Mathlib.Tactic.linarith took 525ms
+tactic execution of Mathlib.Tactic.linarith took 469ms
+tactic execution of Mathlib.Tactic.linarith took 504ms
+tactic execution of Mathlib.Tactic.linarith took 480ms
+tactic execution of Mathlib.Tactic.linarith took 474ms
+tactic execution of Mathlib.Tactic.linarith took 487ms
+tactic execution of Mathlib.Tactic.linarith took 587ms
+tactic execution of Mathlib.Tactic.linarith took 587ms
+tactic execution of Mathlib.Tactic.linarith took 611ms
+tactic execution of Mathlib.Tactic.linarith took 634ms
+tactic execution of Mathlib.Tactic.linarith took 675ms
+tactic execution of Mathlib.Tactic.linarith took 712ms
+tactic execution of Mathlib.Tactic.linarith took 749ms
+tactic execution of Mathlib.Tactic.linarith took 652ms
+tactic execution of Lean.calcTactic took 680ms
+tactic execution of Mathlib.Tactic.linarith took 794ms
+tactic execution of Lean.Parser.Tactic.refine took 164ms
+tactic execution of Lean.Parser.Tactic.refine took 163ms
+tactic execution of Mathlib.Tactic.linarith took 731ms
+tactic execution of Mathlib.Tactic.linarith took 811ms
+tactic execution of Mathlib.Tactic.linarith took 810ms
+tactic execution of Mathlib.Tactic.linarith took 669ms
+tactic execution of Lean.calcTactic took 668ms
+tactic execution of Mathlib.Tactic.linarith took 790ms
+tactic execution of Lean.Parser.Tactic.refine took 168ms
+tactic execution of Lean.Parser.Tactic.refine took 153ms
+tactic execution of Mathlib.Tactic.linarith took 681ms
+tactic execution of Mathlib.Tactic.linarith took 795ms
+tactic execution of Mathlib.Tactic.linarith took 793ms
+tactic execution of Mathlib.Tactic.linarith took 678ms
+tactic execution of Lean.calcTactic took 703ms
+tactic execution of Mathlib.Tactic.linarith took 814ms
+tactic execution of Lean.Parser.Tactic.refine took 164ms
+tactic execution of Lean.Parser.Tactic.refine took 151ms
+tactic execution of Mathlib.Tactic.linarith took 760ms
+tactic execution of Mathlib.Tactic.linarith took 828ms
+tactic execution of Mathlib.Tactic.linarith took 815ms
+tactic execution of Mathlib.Tactic.linarith took 684ms
+tactic execution of Lean.calcTactic took 687ms
+tactic execution of Mathlib.Tactic.linarith took 859ms
+tactic execution of Lean.Parser.Tactic.refine took 154ms
+tactic execution of Lean.Parser.Tactic.refine took 155ms
+tactic execution of Mathlib.Tactic.linarith took 730ms
+tactic execution of Mathlib.Tactic.linarith took 844ms
+tactic execution of Mathlib.Tactic.linarith took 864ms
+tactic execution of Mathlib.Tactic.linarith took 728ms
+tactic execution of Lean.calcTactic took 755ms
+tactic execution of Mathlib.Tactic.linarith took 899ms
+tactic execution of Lean.Parser.Tactic.refine took 189ms
+tactic execution of Lean.Parser.Tactic.refine took 186ms
+tactic execution of Mathlib.Tactic.linarith took 773ms
+tactic execution of Mathlib.Tactic.linarith took 953ms
+tactic execution of Mathlib.Tactic.linarith took 953ms
+tactic execution of Mathlib.Tactic.linarith took 736ms
+tactic execution of Lean.calcTactic took 675ms
+tactic execution of Mathlib.Tactic.linarith took 945ms
+tactic execution of Lean.Parser.Tactic.refine took 158ms
+tactic execution of Lean.Parser.Tactic.refine took 162ms
+tactic execution of Mathlib.Tactic.linarith took 783ms
+tactic execution of Mathlib.Tactic.linarith took 887ms
+tactic execution of Mathlib.Tactic.linarith took 874ms
+tactic execution of Mathlib.Tactic.linarith took 721ms
+tactic execution of Lean.calcTactic took 661ms
+tactic execution of Mathlib.Tactic.linarith took 904ms
+tactic execution of Lean.Parser.Tactic.refine took 147ms
+tactic execution of Lean.Parser.Tactic.refine took 155ms
+tactic execution of Mathlib.Tactic.linarith took 740ms
+tactic execution of Mathlib.Tactic.linarith took 912ms
+tactic execution of Mathlib.Tactic.linarith took 893ms
+share common exprs took 732ms
+process pre-definitions took 340ms
+elaboration took 198ms
+type checking took 326ms
+linting took 181ms
+cumulative profiling times:
+	attribute application 0.32ms
+	compilation (IR) 23.3ms
+	compilation (LCNF base) 247ms
+	compilation (LCNF impure) 168ms
+	compilation (LCNF mono) 131ms
+	congr simp thm 301ms
+	dsimp 7.12ms
+	elaboration 1.38s
+	fix level params 45.9ms
+	instantiate metavars 802ms
+	interpretation 1.33ms
+	let-to-have transformation 2.9ms
+	linting 2.6s
+	module linting 0.00075ms
+	norm_num 45s
+	overlappingInstancesLinter 51.7ms
+	parsing 291ms
+	process pre-definitions 1.01s
+	ring 5.63s
+	share common exprs 1.83s
+	simp 6.59s
+	tactic execution 173s
+	tacticAnalysis 800ms
+	type checking 13.2s
+	typeclass inference 16.2s
+      112.41 real       267.68 user        11.17 sys
+          8421818368  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              597457  page reclaims
+                   3  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  12  voluntary context switches
+              129429  involuntary context switches
+       2594280982552  instructions retired
+        915974147612  cycles elapsed
+          3504477904  peak memory footprint

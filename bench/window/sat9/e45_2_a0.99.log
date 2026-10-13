@@ -1,0 +1,28 @@
+(2) a=0.99 L= 50 (end depth free): min E_end -0.043874 | ||g|| 1.26e-09 | min eig +3.875e-02 | CONVERGED | y_0 0.0100 y_1 0.0100 y_inf 0.3125 | its 2 | 99s
+(2) a=0.99 L=100 (end depth free): min E_end -0.079173 | ||g|| 1.18e-09 | min eig +2.208e-02 | CONVERGED | y_0 0.0100 y_1 0.0100 y_inf 0.5520 | its 2 | 213s
+(2) a=0.99 L=200 (end depth free): min E_end -0.127340 | ||g|| 1.71e-09 | min eig +1.409e-02 | CONVERGED | y_0 0.0100 y_1 0.0100 y_inf 1.0322 | its 16 | 941s
+(2) a=0.99 L=400 (end depth free): min E_end -0.176701 | ||g|| 1.09e+00 | min eig -1.325e-02 | not converged | y_0 0.0100 y_1 0.0100 y_inf 1.6771 | its 299 | 2461s
+   finite chain a=0.99 L=50 m=0 P=100: (1') = Q_pp + T_g = +1.422771 (T_g 1.5308)
+   finite chain a=0.99 L=50 m=25 P=125: (1') = Q_pp + T_g = +1.887363 (T_g 1.9890)
+   finite chain a=0.99 L=50 m=50 P=150: (1') = Q_pp + T_g = +2.384195 (T_g 2.4525)
+   finite chain a=0.99 L=50 m=100 P=200: (1') = Q_pp + T_g = +3.295820 (T_g 3.3950)
+   finite chain a=0.99 L=50 m=200 P=300: (1') = Q_pp + T_g = +5.205114 (T_g 5.2975)
+   finite chain a=0.99 L=50 m=400 P=500: (1') = Q_pp + T_g = +9.052565 (T_g 9.1418)
+   finite chain a=0.99 L=100 m=0 P=200: (1') = Q_pp + T_g = +3.242829 (T_g 3.3950)
+   finite chain a=0.99 L=100 m=25 P=225: (1') = Q_pp + T_g = +3.718773 (T_g 3.8679)
+   finite chain a=0.99 L=100 m=50 P=250: (1') = Q_pp + T_g = +4.176529 (T_g 4.3424)
+   finite chain a=0.99 L=100 m=100 P=300: (1') = Q_pp + T_g = +5.148956 (T_g 5.2975)
+   finite chain a=0.99 L=100 m=200 P=400: (1') = Q_pp + T_g = +7.063459 (T_g 7.2154)
+   finite chain a=0.99 L=100 m=400 P=600: (1') = Q_pp + T_g = +10.917425 (T_g 11.0734)
+   finite chain a=0.99 L=200 m=0 P=400: (1') = Q_pp + T_g = +6.963553 (T_g 7.2154)
+   finite chain a=0.99 L=200 m=25 P=425: (1') = Q_pp + T_g = +7.447009 (T_g 7.6962)
+   finite chain a=0.99 L=200 m=50 P=450: (1') = Q_pp + T_g = +7.918544 (T_g 8.1774)
+   finite chain a=0.99 L=200 m=100 P=500: (1') = Q_pp + T_g = +8.887852 (T_g 9.1418)
+   finite chain a=0.99 L=200 m=200 P=600: (1') = Q_pp + T_g = +10.821411 (T_g 11.0734)
+   finite chain a=0.99 L=200 m=400 P=800: (1') = Q_pp + T_g = +14.696324 (T_g 14.9465)
+   finite chain a=0.99 L=400 m=0 P=800: (1') = Q_pp + T_g = +14.592357 (T_g 14.9465)
+   finite chain a=0.99 L=400 m=25 P=825: (1') = Q_pp + T_g = +15.076230 (T_g 15.4313)
+   finite chain a=0.99 L=400 m=50 P=850: (1') = Q_pp + T_g = +15.563818 (T_g 15.9162)
+   finite chain a=0.99 L=400 m=100 P=900: (1') = Q_pp + T_g = +16.532690 (T_g 16.8865)
+   finite chain a=0.99 L=400 m=200 P=1000: (1') = Q_pp + T_g = +18.473482 (T_g 18.8280)
+   finite chain a=0.99 L=400 m=400 P=1200: (1') = Q_pp + T_g = +22.361288 (T_g 22.7148)

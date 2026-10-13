@@ -1,0 +1,8 @@
+[buildonly] waiting 10:03:53
+65564079527487fde93b43bb83dd840a768acf9fb8db1f1f015d38c4faf3b7d4  /Users/samuellavery/work/riemann-submission/bench/window/AT7c.lean
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      361.88 real       345.84 user        15.95 sys
+          5670918848  peak memory footprint
+BUILD EXIT 0

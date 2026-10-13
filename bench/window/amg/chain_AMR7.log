@@ -1,0 +1,16 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:31:05)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:31:35)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:32:05)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:32:35)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:33:05)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:33:35)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:34:05)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:34:35)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:35:05)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:35:35)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:36:05)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:36:36)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:37:06)
+== rootR7/AMW/AMR7Inst exit=0 wall=214.29s peak=2337MB
+== rootR7/AMW/AMR7Data exit=0 wall=211.92s peak=2795MB
+EXIT 0

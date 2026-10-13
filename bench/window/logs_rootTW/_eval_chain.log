@@ -1,0 +1,26 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:26:52)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:27:22)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:27:52)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:28:22)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:28:52)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:29:22)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:29:52)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (09:30:22)
+GIv OK 13s
+GCell OK 12s
+GSinc OK 12s
+GMT OK 12s
+GTaylor OK 13s
+GBase OK 15s
+GConst OK 13s
+GFar OK 15s
+GNear OK 12s
+GAsm1 OK 12s
+GAsm2 OK 13s
+GCellSound OK 12s
+CFacade OK 12s
+CEngine OK 19s
+CWindow OK 13s
+CMin OK 16s
+CMLeaf OK 12s
+CMinX OK 12s

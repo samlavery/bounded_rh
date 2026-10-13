@@ -1,0 +1,46 @@
+AMW/GAsm1.lean:59:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/GAsm1.lean:70:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true, show (2 : ℕ) ≠ 0 by norm_num, show (2 : ℕ) ≠ 1 by norm_num]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/GAsm1.lean:87:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/GAsm1.lean:96:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true, show (2 : ℕ) ≠ 0 by norm_num, show (2 : ℕ) ≠ 1 by norm_num]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+       21.48 real         3.84 user        17.43 sys
+          5889818624  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              440023  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   3  voluntary context switches
+                3291  involuntary context switches
+         62390573279  instructions retired
+         67698683151  cycles elapsed
+           905692080  peak memory footprint

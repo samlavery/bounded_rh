@@ -1,0 +1,12 @@
+e23_arch_3.json    P= 3 target   11.95 | B-spline lobe best    9.19 at half-width delta=0.275 [(i) 5.19 (ii) +2.75] ratio 0.770 FAIL
+e23_arch_4.json    P= 4 target   15.95 | B-spline lobe best   13.33 at half-width delta=0.235 [(i) 8.86 (ii) +3.33] ratio 0.836 FAIL
+e23_arch_6.json    P= 6 target   24.00 | B-spline lobe best   21.67 at half-width delta=0.180 [(i) 16.93 (ii) +3.86] ratio 0.903 FAIL
+e23_arch_8.json    P= 8 target   32.10 | B-spline lobe best   29.80 at half-width delta=0.150 [(i) 25.07 (ii) +4.03] ratio 0.928 FAIL
+e23_arch_12.json   P=12 target   48.11 | B-spline lobe best   46.05 at half-width delta=0.115 [(i) 41.46 (ii) +4.10] ratio 0.957 FAIL
+e23_arch_16.json   P=16 target   64.75 | B-spline lobe best   66.49 at half-width delta=0.105 [(i) 63.36 (ii) +2.95] ratio 1.027 PASS
+e23_arch_24.json   P=24 target   99.20 | B-spline lobe best  111.14 at half-width delta=0.085 [(i) 108.64 (ii) +2.39] ratio 1.120 PASS
+e23_arch_32.json   P=32 target  133.89 | B-spline lobe best  160.97 at half-width delta=0.080 [(i) 158.71 (ii) +2.21] ratio 1.202 PASS
+e9_cfg_16.json     P=16 target   65.51 | B-spline lobe best  112.33 at half-width delta=0.140 [(i) 98.20 (ii) +12.18] ratio 1.715 PASS
+e9_cfg_24.json     P=24 target   99.78 | B-spline lobe best  189.45 at half-width delta=0.115 [(i) 178.06 (ii) +10.77] ratio 1.899 PASS
+e9_cfg_32.json     P=32 target  135.20 | B-spline lobe best  300.31 at half-width delta=0.105 [(i) 287.51 (ii) +12.34] ratio 2.221 PASS
+e9_cfg_48.json     P=48 target  201.55 | B-spline lobe best  445.47 at half-width delta=0.085 [(i) 434.99 (ii) +10.16] ratio 2.210 PASS

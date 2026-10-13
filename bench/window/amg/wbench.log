@@ -1,0 +1,6 @@
+rootT exit=0       242.08 real       208.42 user        18.76 sys
+rootR7 exit=0       262.65 real       226.28 user        20.17 sys
+./wbench.sh: line 6: cd: /Users/samuellavery/work/riemann-submission/bench/window/rootT: No such file or directory
+rootT exit=1       242.08 real       208.42 user        18.76 sys
+rootR7 exit=0       262.89 real       226.36 user        19.95 sys
+EXIT 0

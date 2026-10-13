@@ -1,0 +1,24 @@
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e31_lattice_ends.py:19: RuntimeWarning: invalid value encountered in divide
+  B = 2 * np.cosh(2 * np.pi * al * y) - 2; with_ = np.where(al > 0, (B ** 2 + 4 * B) / np.sin(np.pi * a * al) ** 2, 16 * y ** 2 / a ** 2)
+Equal-depth lattice: C_end(a,y) [exact limit of Q_pp as P->inf], tau(a) = bulk T_g per pair, end deficit 8 sum k g(ka)
+  a=0.50  tau 3.9712  end-def 7.1290 | C_end y=0.8:  235.333 y=1.0: 1613.362 y=1.5:333747.045 y=2.0:95711949.505 y=3.0:11774531250053.688
+  a=0.60  tau 2.6494  end-def 4.4066 | C_end y=0.8:  208.864 y=1.0: 1497.609 y=1.5:328331.007 y=2.0:96848354.509 y=3.0:12258807031777.307
+  a=0.70  tau 1.6630  end-def 2.8672 | C_end y=0.8:  214.705 y=1.0: 1627.026 y=1.5:383913.924 y=2.0:117566574.836 y=3.0:15479610897792.709
+  a=0.76  tau 1.2572  end-def 2.4879 | C_end y=0.8:  237.225 y=1.0: 1870.044 y=1.5:465835.354 y=2.0:146856512.261 y=3.0:19960976780894.453
+  a=0.80  tau 0.9960  end-def 2.1357 | C_end y=0.8:  265.064 y=1.0: 2152.648 y=1.5:559284.750 y=2.0:180495442.619 y=3.0:25191532531962.559
+  a=0.90  tau 0.3035  end-def 1.1083 | C_end y=0.8:  447.733 y=1.0: 3996.653 y=1.5:1196747.349 y=2.0:420436658.713 y=3.0:64998567453200.844
+  a=0.95  tau 0.0913  end-def 0.7094 | C_end y=0.8:  768.987 y=1.0: 7369.322 y=1.5:2478350.712 y=2.0:939598037.743 y=3.0:160543169402757.375
+Finite P check (a=0.76, y=0.8): Q_pp(P), C_end, T_g(P), P tau + C_end - enddef, Q_pp+T_g
+  P=  4 Q_pp  245.043 (C_end 237.225) T_g    3.281 | P tau + C_end - enddef =  239.766 | Q_pp + T_g =  248.324
+  P=  8 Q_pp  243.209 (C_end 237.225) T_g    8.160 | P tau + C_end - enddef =  244.795 | Q_pp + T_g =  251.368
+  P= 16 Q_pp  238.265 (C_end 237.225) T_g   18.117 | P tau + C_end - enddef =  254.852 | Q_pp + T_g =  256.382
+  P= 32 Q_pp  236.376 (C_end 237.225) T_g   38.096 | P tau + C_end - enddef =  274.967 | Q_pp + T_g =  274.472
+  P= 64 Q_pp  237.019 (C_end 237.225) T_g   78.187 | P tau + C_end - enddef =  315.196 | Q_pp + T_g =  315.206
+  P=128 Q_pp  237.204 (C_end 237.225) T_g  158.529 | P tau + C_end - enddef =  395.655 | Q_pp + T_g =  395.733
+Irregular minimisers (e23 = refined e19, depths in [0.8, 3]) vs lattice forms
+  P= 6 mean gap 0.676 (gaps 0.670-0.683), depths 0.80-1.16 | actual Q_pp  +24.041 T_g   8.840 total  +32.881 | same depths on lattice: Q_pp  +27.279 total  +36.121 | equal-depth lattice y_min: total +227.935, y_mean: +1667.968 | P tau(a) = 11.368
+  P= 8 mean gap 0.707 (gaps 0.704-0.714), depths 0.80-1.31 | actual Q_pp  +19.325 T_g  10.745 total  +30.070 | same depths on lattice: Q_pp  +20.747 total  +31.497 | equal-depth lattice y_min: total +229.209, y_mean: +5425.480 | P tau(a) = 12.841
+  P=12 mean gap 0.748 (gaps 0.746-0.754), depths 0.80-1.58 | actual Q_pp  +15.099 T_g  13.962 total  +29.061 | same depths on lattice: Q_pp  +18.656 total  +32.625 | equal-depth lattice y_min: total +253.827, y_mean: +54215.907 | P tau(a) = 16.029
+  P=16 mean gap 0.699 (gaps 0.477-0.841), depths 0.80-1.31 | actual Q_pp  +16.038 T_g  26.977 total  +43.014 | same depths on lattice: Q_pp +9217.958 total +9242.358 | equal-depth lattice y_min: total +238.939, y_mean: +4902.638 | P tau(a) = 26.690
+  P=24 mean gap 0.665 (gaps 0.000-0.946), depths 0.80-1.34 | actual Q_pp   +8.481 T_g  53.280 total  +61.762 | same depths on lattice: Q_pp +22173.791 total +22218.780 | equal-depth lattice y_min: total +256.006, y_mean: +2620.888 | P tau(a) = 47.978
+  P=32 mean gap 0.625 (gaps 0.000-0.983), depths 0.80-1.17 | actual Q_pp   +4.923 T_g  85.348 total  +90.271 | same depths on lattice: Q_pp +4384.025 total +4456.825 | equal-depth lattice y_min: total +281.259, y_mean: +1260.922 | P tau(a) = 76.274

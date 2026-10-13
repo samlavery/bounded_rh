@@ -1,0 +1,7 @@
+delta=0.001 cN=803824 regions=16 env AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin8_try1.json GSH=5 TWOGRID=1 WMIN=9 DLO=8 DHI=9
+  MDIAG 50 LP-pass/meval-fail: LP margin med 2.21e-04; rounded float margin >=0 in 0.00 (med -2.50e-04); unrounded-weight margin >=0 in 1.00 (med 2.21e-04); terms with >=3 duals: mean 0.00
+  MDIAG 100 LP-pass/meval-fail: LP margin med 3.42e-03; rounded float margin >=0 in 0.00 (med -3.40e-04); unrounded-weight margin >=0 in 1.00 (med 3.42e-03); terms with >=3 duals: mean 0.00
+  root 4 (0, 0, 0, 1, 0, 0, 0): 11212 leaves
+  bisection: 11212 leaves (Z 1974, S 0, basin 0); face nodes 0 (collapses 0) (151s)
+  fix-up: 0 re-decided; tables: w 992 cells, d 958 cells, 1336 points (3029 point cells); failing 0 (154s)
+leaves 11212 Z 1974 M 8849 reflected 389 w 992 d 958 pts 1336 ptc 3029 bad 0 (154s)

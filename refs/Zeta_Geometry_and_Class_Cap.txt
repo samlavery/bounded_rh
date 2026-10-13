@@ -1,0 +1,1117 @@
+              Compatible triples and a periodic-mixture obstruction
+                        for a critical-line zero certificate
+                                               Jonas J. Gebendorfer∗
+
+                             7 September 2026          Consolidated research draft
+
+
+
+                                                      Abstract
+             We develop two complementary results for a method using a 25-term analytic window, clipped
+          Gram traces and position pressures to count simple zeros on the critical line. A three-window
+          compatibility inequality improves our preceding computer-assisted lower bound to
+
+                            Nsc (T )           54923339574680150762799
+                       lim inf       ≥ rnew :=                         > 0.6734765075.
+                       T →∞ N (T )             81551975398437500000000
+         The coefficients of the analytic window and the nine original local functionals are unchanged.
+         Separately, a density-balanced mixture of two periodic point configurations proves that every
+         certificate in an explicitly defined 25-mode affine-pressure clipped-Gram class lies below 0.674034,
+         irrespective of block size or the local proof used to establish its block inequality. This is an upper
+         bound on that proof interface, not on the actual proportion of zeta zeros, and is not asserted to
+         be its sharp supremum. Both finite computational obligations have exact or outward interval
+         certificates. The full inherited analytic argument is appended, with its nine local computations
+         replayed in this work.
+
+
+1        Statements and the three distinct quantities
+N (T ) counts all nontrivial zeta zeros with 0 < γ ≤ T , with multiplicity. Nsc (T ) counts simple zeros
+on ℜs = 1/2, once each. Thus a lower bound for Nsc (T )/N (T ) also bounds from below the fraction
+on the critical line when multiplicity is retained in the numerator. The line itself remains ℜs = 1/2;
+the quantity being improved is a proportion, not the position of that line.
+
+Theorem 1.1 (Computer-assisted lower bound). Using the unconditional fixed-test-function formula
+of Lamzouri [1], the analytic argument in the appended baseline, and the computational obligations
+recorded here,
+                                              Nsc (T )
+                                      lim inf          ≥ rnew .                                 (1)
+                                       T →∞ N (T )
+
+No RH, SP, complexity, or additional number-theoretic conjecture is a premise.
+
+        The preceding two-window result in our program was
+                                        439384643712702518567409
+                                 r2 =                            > 0.6734762099.
+                                        652413013550000000000000
+    ∗
+   Prepared with substantial assistance from OpenAI ChatGPT/Codex (Astra), including mathematical derivation,
+numerical discovery, implementation, and internal verification. Independent mathematical review and novelty assessment
+remain open.
+
+
+                                                           1
+The exact improvement is
+                                       10132248006707583835199007633
+                      rnew − r2 =                                       > 0.
+                                    34051564819616045655250000000000000
+It is approximately 2.97556 · 10−7 in the fraction. The safe displayed percentage increases from
+67.34762099% to 67.34765075%. These are internally verified research bounds, not an assertion of
+independently accepted priority or an exhaustive worldwide record search.
+
+Theorem 1.2 (Upper bound for the defined certificate class). Let the analytic window range over
+the normalized, real, even, nonnegative 25-mode family in Section 2. Fix any integer m ≥ 2, any
+pi ≥ 0, and 0 < R < m. If
+                                            m−1
+                                            X
+                           tr Φ(Gm (g)) +           p i gi ≥ R   (g ∈ [0, ∞)m−1 )                     (2)
+                                              i=1
+
+is a universal block inequality, then its shifted-block certificate value
+
+                                                mH(f ) − P                X
+                             κ(f, m, p, R) :=              ,        P =       pi ,                    (3)
+                                                 m−R                      i
+
+satisfies
+                                                          337017
+                               κ(f, m, p, R) < r :=              = 0.674034.
+                                                          500000
+Here H(f ) = 2 − C(f ), Gm is the point Gram matrix of fb, and Φ is the clipped function defined
+below. Replacing H(f ) by a certified smaller value cannot increase κ.
+
+    In particular, if κ∗ is the supremum of this class, our results give
+
+                                0.6734765075 < rnew ≤ κ∗ ≤ 0.674034.
+
+We do not identify κ∗ or prove equality at the upper endpoint. The gap between the endpoints is a
+statement about remaining method room, not about zeros off the line. The cap includes arbitrary
+block sizes and arbitrary derivations of (2); it is not restricted to the present six-band lower estimate
+or to three windows.
+
+
+2     The analytic window and the inherited local functions
+           √
+Set a0 = 1/ 2, A = sin(a0 )/a0 , and extend by zero outside I = [−1/2, 1/2] the function
+                                                                         
+                                                     24
+                                       1     √      X
+                               fc (t) = cos( 2t) +     cj cos(2πjt) .                               (4)
+                                       A            j=1
+
+Its integral is one. For the lower bound, the rational vector c is exactly the one in the appended
+baseline and in baseline/candidates/base.json. For the class cap, c ranges over all real vectors
+for which fc ≥ 0. Write K = fbc with Fourier phase e−2πixt and W = K 2 . The kernel is real, positive
+definite and normalized by K(0) = 1. For any ordered points xi , Gik = K(xi − xk ) is positive
+semidefinite with unit diagonal.
+    Define                          Z           ZZ
+                            C(f ) = f (t)2 dt +     |t − u|f (t)f (u) dt du.
+
+
+                                                         2
+The exact identity
+                                                                 3                              1 − 1/(2j 2 π 2 )
+                      H(fc ) = H0 − ct Dc,             H0 =        − a0 cot a0 ,       Djj =                        (5)
+                                                                 2                                   2A2
+                                  R
+follows by applying I + I |t − u| · du to the cosine basis. The base cosine maps to a constant; each
+integer cosine maps to its displayed eigenvalue times itself plus a constant. The latter cosines have
+zero integral and are mutually orthogonal with norm squared 1/2. Thus no cross terms remain. For
+the frozen lower-bound window,
+                                                     210042647916503
+                          H(fc ) > Hlow :=                           = 0.6721364733328096.
+                                                     312500000000000
+The analytic-window positivity and this strict inequality are enclosed by the retained Arb window
+certificate.
+    The nine inherited six-gap local functions have the form
+                                             5
+                                             X                   X
+                                  Fj (g) =         bj,i gi +             aj,ik W (gi + · · · + gk−1 ),              (6)
+                                             i=0               0≤i<k≤6
+                                        P
+where bj,i > 0, aj,ik ≥ 0, and k−i=ℓ aj,ik = 2 for 1 ≤ ℓ ≤ 6. Their exact coefficients and lower
+bounds Fj ≥ ϵj are listed in the appended baseline. We use F = FJ for the base case and
+                           15729481                                              X               1970462189
+                    ϵ=               = 0.0078647405,                       B=          bJ,i =                .
+                          2000000000                                               i
+                                                                                                500000000000
+
+All nine coefficient files are unchanged. Their original discovery labels are historical input metadata;
+certification is established by separate hash-bound proof and replay records.
+
+
+3     Three compatible windows
+For g = (g0 , . . . , g7 ), let
+                                    1
+                           F 3 (g) = {F (g0 , . . . , g5 ) + F (g1 , . . . , g6 ) + F (g2 , . . . , g7 )}.
+                                    3
+The same gap variables occur in every overlapping position.
+Lemma 3.1 (Finite sublevel compatibility gate). Suppose F ≥ ϵ on [0, ∞)r . Fix L ≥ 2 and η > ϵ,
+and put t = Lη − (L − 1)ϵ. Let a finite union of closed boxes contain {F < t}. For each ordered
+L-tuple of boxes, form the exact compatible set of r + L − 1 gaps whose consecutive r-gap windows lie
+in those boxes. If the average of the L values of F is at least η on every such nonempty compatible
+set, then it is at least η universally. Any outward enlargement of these sets is sufficient for the
+verification.
+Proof. If one of the L values is at least t, the sum is at least t + (L − 1)ϵ = Lη. Otherwise all L
+windows belong to the covered strict sublevel. Choosing their boxes gives a compatible L-tuple
+containing the actual common realization, where the assumed inequality applies. This argument
+includes equality at the threshold.
+
+Proposition 3.2 (Executed three-window target). For all g ∈ [0, ∞)8 ,
+                                                                  78681
+                                        F 3 (g) ≥ η3 :=                  = 0.0078681.                               (7)
+                                                                10000000
+
+                                                                     3
+Computer-assisted proof and its exact composition. Use Lemma 3.1 with
+                                                7874819
+                             t = 3η3 − 2ϵ =              = 0.007874819.
+                                              1000000000
+The inequality 25 mini bJ,i > t is an exact rational check, so the positive pressure excludes any gap
+outside [0, 25] from the strict sublevel. The exhaustive six-gap cover uses the baseline outward
+W, W ′ , W ′′ tables, with grid 1/4000, and the same lower and Loewner-Hessian pruning rules. Boxes
+not yet removed are retained once their largest inclusive cell width is at most 64. The run visits
+7,638,774 nodes and retains 37,328 closed boxes.
+    Next round every retained lower grid endpoint down to a multiple of 256 and every upper
+endpoint up to a multiple of 256. Deduplication leaves 776 boxes. Removing boxes contained in
+other retained boxes leaves 71 maximal boxes. Each operation preserves an outer cover; the integer
+coverage check is performed directly as well. Their 305 compatible ordered pairs extend to 1,707
+compatible ordered triples, whose deduplicated exact intersections give 281 eight-gap boxes. A
+zero-width coordinate is enlarged by one grid cell only after all three intersections have been formed.
+An independent all-pairs/all-thirds implementation agrees exactly with the production bitset join,
+including the resulting bytes.
+    The rational coefficients of F 3 are generated by summing three shifted copies of (6) and dividing
+by three. There are 33 nonzero pair weights, eight positive position pressures, capacity 2 on spans
+1 through 6, and capacity zero on spans 7 and 8. Both the complete coefficient identity and the
+C++ headers are checked exactly. The restricted eight-gap checker verifies (7) on all 281 boxes
+with outward lower bounds and the same convex minorants as in the baseline, now anchored at
+rational points close to the candidate minimum rather than necessarily at the box center. Its claim
+is expressly restricted to these boxes; no full eight-gap domain initialization or tail claim is needed.
+Unresolved terminal cells or a node limit return failure. The complete six-gap cover and Lemma 3.1
+supply the universal conclusion. Detailed run counts and fresh-replay status appear in Section 8.
+
+   For clarity, the anchor change uses only the following standard convex fact. If ∇2 F ⪰ M ≻ 0
+                               Q
+throughout a convex box B = i [ℓi , ui ] and a ∈ B is any point, then Taylor’s formula along the
+segment from a to x ∈ B gives
+
+                        F (x) ≥ F (a) + ∇F (a)t (x − a) + 12 (x − a)t M (x − a).
+
+Consequently both
+                                                       X
+        F (a) − 12 ∇F (a)t M −1 ∇F (a),      F (a) +        min{∂i F (a)(ℓi − ai ), ∂i F (a)(ui − ai )}
+                                                        i
+
+are lower bounds on B. The second follows from the convex tangent inequality alone. Our anchors
+                       1
+have coordinates in 8000  Z, are checked to lie in their root boxes, and are clamped into every
+descendant box. All point and derivative evaluations therefore use the same exact half-grid Arb
+tables. Stationarity, optimality, and the numerical optimizer are not assumptions in either lower
+bound.
+    The proof is not an exchange of a minimum with a sum. In fact a separate rational eight-gap
+point gives the outward upper witness
+
+                                          inf F 3 < 0.007868598.
+
+Its value is enclosed around 0.0078685977584491256; it brackets the local optimization with (7), and
+is not used to establish a lower bound. Numerical searches at lengths 4, 6, 8 and 12 are retained as
+discovery data only.
+
+                                                    4
+4    From the local gain to the zero fraction
+Take m = 526 points and n = m − 6 = 520 consecutive six-gap windows. Partition the window
+indices into 173 triples and one singleton. Proposition 3.2 and F ≥ ϵ give
+               519
+               X                                                       519η3 + ϵ     8182817281
+                     F (gi , . . . , gi+5 ) ≥ 519η3 + ϵ,    ϵagg
+                                                             J =                 =               .            (8)
+               i=0
+                                                                          520      1040000000000
+
+The singleton is accounted for explicitly; 520 is not divisible by 3.
+                P
+    Let E = 2 1≤k−i≤6 W (xk − xi ) for the block and e = E/n. The local span capacities imply
+that the summed pair terms are at most E. Classify each block gap by k = 0, . . . , 5, according to
+                                                                      P                   P
+its distance from the closer boundary, capped at 5. Set uk = (B/n) type k gi and djk = kr=0 bj,r .
+Symmetry of the inherited position pressures gives the same nine-row polyhedron as in the baseline:
+                                          5
+                                          X
+                                    e+        (djk /B)uk ≥ ϵagg
+                                                            j ,             e, u ≥ 0.                         (9)
+                                          k=0
+
+Only the base right-hand side changes to (8); the other eight retain their single-window values. All
+constraints refer to the same block. Pressure vectors are not identified by their total.
+   For positive semidefinite unit-diagonal Gram matrices put
+                                                   (
+                                                       (t − 1)2 ,    0 ≤ t ≤ 2,
+                                          Φ(t) =
+                                                       2t − 3,       t ≥ 2.
+
+The finite spectral estimate proved in the appended baseline is
+                                                        
+                                                        
+                                                        E,                             E ≤ τ,
+                                                                       p
+           tr Φ(Gm ) ≥ Gm (E),             Gm (E) =       E + m(2 E/τ − 1)                       τ = 7/6.    (10)
+                                                        
+                                                                          ,            E > τ,
+                                                               1 + m/τ
+
+It is concave and nondecreasing. Use the nonnegative rational prices
+
+      tk = 10−10 (1055101397, 2870000884, 4963151645, 7195751376, 9028060242, 9926303280)k
+                                                                                                     P       
+and reward R = 81347149/20000000 = 4.06735745. The exact enumeration tests all 7k=1 k7 k9 =
+11,439 active systems over Q, of which 6,960 are singular and 4,338 infeasible. It obtains 141 distinct
+vertices, all satisfying
+                                                             5
+                                                             X
+                                             Gm (ne) + n            tk uk ≥ R.                               (11)
+                                                             k=0
+
+Every coordinate, choice of branch, and rational margin is retained. For the square-root branch,
+the required inequality reduces either to a nonpositive rational threshold or to E/τ − Q2 ≥ 0 with
+                       P
+Q = ((1 + m/τ )(R − n tk uk ) − E + m)/(2m). The recession cone of (9) is the nonnegative orthant.
+Concavity and coordinate monotonicity extend the vertex checks to the whole polyhedron, exactly
+as proved in the appended baseline.
+    Consequently (2) holds with pi = Bttype(i) and total pressure
+
+                                    4
+                                                             !
+                                    X                                317876827360138237201
+                       P =B 2             tk + (m − 11)t5        =                         .
+                                    k=0
+                                                                     156250000000000000000
+
+
+                                                             5
+Using all m starting offsets of the block partition, convex pinching and nonnegative pressures imply
+for s ordered points in length L
+                                                   R    P
+                                    tr Φ(Gs ) ≥      s − L − 2R.                                   (12)
+                                                   m    m
+Each internal position sees any fixed gap at most once across the offsets, and each offset discards at
+most two incomplete blocks.
+   The unconditional fixed-function analytic identity and clipped Schur estimate in the appended
+proof give, for the simple critical-line coordinates,
+
+              s ≥ H(f )N (T ) + tr Φ(Gs ) + of (N (T )),   s = Nsc (T ),   L/N (T ) −→ 1.
+
+For the nonsmooth endpoint window one first uses smooth positive approximants with support
+strictly inside I, fixes the approximant while taking T → ∞, and then lets it approach fc . For fixed
+m, L1 convergence controls every Gram entry uniformly; the Lipschitz constant 2 of Φ controls the
+block trace, and C(f ) converges by L2 approximation. Thus the limiting bound is
+
+                             mHlow − P   54923339574680150762799
+                                       =                         .
+                              m−R        81551975398437500000000
+This proves Theorem 1.1 with the stated computational trust base. The appended proof supplies
+the full off-line-zero and multiplicity argument; no RH is inserted at this step.
+
+
+5    A density-balanced periodic obstruction
+We now prove Theorem 1.2. This part optimizes over the whole window coefficient space, rather
+than the one frozen lower-bound coefficient vector.
+   For a periodic positive gap word with q points in period length L, choose representatives
+0 = x0 < x1 < · · · < xq−1 < L. Its mean gap is d = L/q. Define the full pair energy per point by
+
+                                           1 X X
+                                             q−1
+                                Ef + 1 =               W (xj − xi + kL).                           (13)
+                                           q i,j=0 k∈Z
+
+The diagonal contributes one. The series is absolutely convergent: our finite cosine window is
+piecewise smooth, so K(x) = O((1 + |x|)−1 ).
+
+Lemma 5.1 (Mixture obstruction). Let a finite mixture of periodic gap configurations have mean
+gap d = 1/r and mean full pair energy Ef , with r > 0. If (2) holds and its value satisfies κ ≥ r, then
+
+                                        H(f ) − r(1 − Ef ) ≥ 0.                                    (14)
+
+Proof. For t ≥ 0, Φ(t) ≤ (t − 1)2 . Average the universal block inequality over all cyclic starting
+phases of one periodic word. The pressure average is P d; the finite block Frobenius sum is at most
+mEf , since W ≥ 0 and omitted pair distances have nonnegative contribution. Taking the mixture
+gives R ≤ mEf + P/r. On the other hand, m − R > 0 and κ ≥ r imply m(H(f ) − r) + rR − P ≥ 0.
+Combining the two inequalities yields m(H(f ) − r + rEf ) ≥ 0, as required. The mixture is an
+averaging device for inequalities valid on every configuration; it need not represent the actual zeta
+zero process.
+
+
+
+                                                    6
+                                           R
+    For 0 ≤ h ≤ 1 set qf (h) = f (t)f (t + h) dt. Poisson summation, or equivalently the Fourier
+series of the absolutely convergent periodic sum of W , gives
+                                                                                                 
+                                                                                       2
+                                       1  2                      X      q−1
+                                                                         X
+                                                                 e2πijxi /L qf (j/L) .
+                                                                                    
+                          Ef + 1 =       q qf (0) + 2                                                               (15)
+                                      qL               1≤j<L i=0
+
+
+Here we use integer periods below. The Fourier transform of W is the continuous autocorrelation qf ,
+supported on [−1, 1] and zero at its endpoints. Thus the Fourier series has only finitely many nonzero
+terms. This also supplies a direct justification of (15) without distributional endpoint ambiguities.
+   Fix the following two rational configurations:
+
+                               q L               cyclic gaps
+                             A 2 3         (5189/5000, 9811/5000)
+                             B 3 4 (10289/10000, 10289/10000, 9711/5000).
+
+For r = 337017/500000, choose weight
+                                                   6    11051
+                                    λ=9−             =                 on configuration B.                           (16)
+                                                   r   112339
+Then 0 < λ < 1 and (1 − λ)3/2 + λ4/3 = 1/r exactly. This is the cancellation condition for the
+pressure term in Lemma 5.1.
+
+
+6     The 24-dimensional matrix certificate
+                                           √
+Write z = (1, c1 , . . . , c24 )t , ω0 =       2, ωi = 2πi for i > 0. Then qfc (h) = z t M (h)z, where
+                                                        Z 1/2−h
+                                                   1
+                                 Mik (h) =                        cos(ωi t) cos(ωk (t + h)) dt.                      (17)
+                                                   A2    −1/2
+
+Evenness makes this cross matrix symmetric: replace t by −t − h. Let QA , QB be the matrices for
+Ef + 1 in (15). They have the explicit forms
+                                                                         
+                      2
+        1            X
+    QA = 4M (0) + 2    [2 + 2 cos(2πjα/3)]M (j/3) ,                           α = 5189/5000,
+        6            j=1
+                                                                                             
+                        3
+         1            X
+    QB =    9M (0) + 2    [3 + 4 cos(2πjγ/4) + 2 cos(4πjγ/4)]M (j/4) ,                               γ = 10289/10000.
+         12            j=1
+
+Put Q = (1 − λ)QA + λQB and partition its index 0 from indices 1 through 24. Define
+
+                           A = D − rQ11 ,                v = rQ10 ,         b0 = H0 − 2r + rQ00 .
+
+Using (5), the obstruction left side is exactly
+
+                                      H(fc ) − r(1 − Efc ) = b0 + 2v t c − ct Ac.                                    (18)
+
+If A ≻ 0, its maximum over all c ∈ R24 is b0 + v t A−1 v. Enlarging the admissible set beyond
+nonnegative windows can only make this upper bound weaker.
+
+
+                                                                   7
+Proposition 6.1 (Outward matrix obstruction). For the exact rational configurations and mixture
+above, A ≻ 0 and
+                                                        9
+                                 b0 + v t A−1 v < −          < 0.                             (19)
+                                                    10000000
+Computer-assisted proof with analytic integration. All entries of (17) are evaluated by product-to-
+sum. For ℓ = 1 − h and center ch = −h/2 the needed integral is
+                         Z 1/2−h
+                                   cos(νt + θ) dt = ℓ cos(νch + θ) sinc(νℓ/2).
+                           −1/2
+
+The case ν = 0 is handled symbolically. For the other frequencies the denominators are rigorously
+separated from zero. Thus no numerical quadrature or optimizer is part of this certificate.
+    At 256-bit Arb precision, interval LDL elimination proves all 24 pivots positive. Applying the
+same elimination to v encloses v t A−1 v as a sum of squared transformed coordinates divided by
+positive pivots. A separate Arb matrix solve gives an overlapping enclosure as a cross-check. The
+final maximum is
+                       −0.0000009234900887510426958262744573708873 . . . ,
+with Arb radius below 6 · 10−76 . In particular, it is strictly less than the rational number in (19).
+All matrix entries, pivots, transformed quadratic form and the recomputing script are retained in
+family_ceiling_certificate.json and certify_family_ceiling.py.
+
+   Combining Proposition 6.1 with Lemma 5.1 contradicts (14) if κ ≥ r. This proves Theorem 1.2.
+The proof requires no claim about which periodic configurations are optimal. Two explicit test
+configurations suffice to obstruct every certificate in the defined class.
+
+
+7    What the method boundary does and does not say
+The number 0.67514250966 . . . in teal-sea’s family-wall analysis [3, 4] bounds a specified uniform-
+pressure/cap formula. Its stated large-n limit is H0 = 0.672500703679 . . .; the reported upper
+estimate is not identified with an attained sharp supremum. It therefore cannot be substituted for
+the limit of our joint-pressure, 25-mode clipped-Gram construction. Our new cap is derived directly
+for the latter interface.
+    Likewise, the quadratic window cost in (5) is not a theorem that successive optimization gains
+decay geometrically. Such a rate would require additional control of the optimized coefficients, the
+local constraints and the active projection geometry. No runtime extrapolation is used in either
+theorem here.
+    Longer compatible windows can increase the certified aggregate while retaining the same window.
+Our numerical lengths 4 through 12 give candidate local values, without certified enclosures or
+completed universal proofs. A tested interpolation with positive seventh-band weight also produced
+a new low basin and no accepted improvement; its discovery results are kept as such. None of
+these routes escapes Theorem 1.2 if it still yields (2). To exceed that cap one must leave at least
+one defining condition of the class, for example the fixed 25-mode window space or the affine
+pressure/clipped-trace transport. That observation does not prove that a particular enlarged class
+will improve the lower bound.
+    The Navigator’s common-realization and inheritance rules have a concrete role here: overlapping
+windows share variables; local and asymptotic claims are typed separately; numerical minima cannot
+become lower certificates; and an upper bound on a proof interface cannot become an upper bound
+on the zeros. SP and complexity perspectives motivate the overlap and certificate design, but supply
+no unproved mathematical premise.
+
+                                                   8
+8    Replay, provenance and computational scope
+All computational obligations were freshly executed in this research step. The nine inherited local
+inequalities were replayed with regenerated Arb tables in 647.52 seconds. A separate fresh replay
+of the complete new step regenerated the tables, rebuilt the cover and exact join, and recompiled
+and repeated the anchored eight-gap proof in 311.78 seconds. The two reports are composed by
+exact input hashes; this is not a claim that a third run of the combined full wrapper was performed
+afterward.
+
+                       Replayed obligation                       Visited nodes
+                       Nine inherited local inequalities             50,089,182
+                       Complete six-gap sublevel cover                7,638,774
+                       Compatible eight-gap restricted proof            849,081
+                       Total                                         58,577,037
+
+All completed local runs pass. The new projection has 141 exactly checked vertices. The 256-bit
+matrix obstruction has 24 positive LDL pivots and a strictly negative maximal value. An additional
+negative control places an Arb-certified point below a deliberately false local target inside one closed
+grid cell; the anchored checker rejects that target with an unresolved-cell failure, as required. No
+independent external replay or mathematical review is claimed.
+    verify.py performs a read-only check of retained file digests, the rational coefficient identities,
+the exact cover coarsening, an independent compatible join, the local upper witness, the 141-vertex
+projection and the 24-dimensional Arb obstruction. This quick check does not rerun exhaustive local
+subdivisions.
+    python reproduce.py –full –output /tmp/fresh.json regenerates the Arb tables, recom-
+piles and repeats all nine inherited local runs, then rebuilds the cover, performs the exact coarsening
+and join, recompiles the eight-gap checker and checks all restricted boxes. –new-step restricts
+execution to the new computational obligations, while still checking the retained inherited input
+hashes. Fresh reports may only be written to a previously absent output file.
+    The supplied GitHub Actions workflow calls the full replay for pushes, pull requests and manual
+runs when installed at a repository root. It is a prepared workflow; no hosted CI service is claimed
+to have been activated or to have independently reproduced the argument. The command it invokes
+is the local full-replay entry point.
+    The initial direct join of the uncoarsened cover exceeded a five-million distinct-box budget
+and was stopped with failure status. It contributes no proof. Exact outward coarsening resolved
+that combinatorial issue. Discovery scripts and superseded attempts are kept under history/; the
+accepted proof inputs are separate and hash-bound. The computational trust base is Python exact
+integers/rationals, python-flint/Arb, IEEE binary64 and outward extended-precision C++ arithmetic
+under the recorded compiler flags. This is not a proof assistant formalization or independent
+mathematical review.
+
+
+References
+[1] Youness Lamzouri, A new proof that more than 2/3 of the zeros of the Riemann zeta function are
+    simple and on the critical line, arXiv:2609.02882v1, https://arxiv.org/abs/2609.02882v1.
+    Fixed-function unconditional analytic input; see the full citation discussion in the appended
+    baseline.
+
+
+                                                   9
+[2] AMTOPA, zeta-exact-pressure, computational and clipped-Gram source, pinned repository
+    snapshot, https://github.com/AMTOPA/zeta-exact-pressure/tree/7253fdcab9366af45b8
+    c8caf44e408c0af44a1a7. MIT license retained with the inherited code and source inputs.
+
+[3] teal-sea, Family limit, pinned source, https://github.com/teal-sea/zeta-lab/blob/d393e1
+    a6bb2032c3fde94ccbbf257fa654a40f70/hunts/family_wall/FAMILY-LIMIT.md.
+
+[4] teal-sea, Family-wall results, same commit, https://github.com/teal-sea/zeta-lab/blob/
+    d393e1a6bb2032c3fde94ccbbf257fa654a40f70/hunts/family_wall/RESULTS.md.
+
+
+A     Unchanged analytic baseline and exact inherited coefficients
+The following historical note supplies the complete analytic transfer, clipped Schur proof, finite band
+estimate, position bookkeeping, window coefficients and nine local coefficient arrays used in this
+work. Its displayed v0.3 bound and source comparisons describe that earlier stage; the present lower
+bound is Theorem 1.1. Its nine computational obligations were freshly replayed for this consolidated
+work. The previous two-window local proof is not a premise of the new three-window gate: only
+the nine original inequalities are inherited. The appended historical note retains its original page
+numbering.
+
+
+
+
+                                                  10
+                An expanded window and joint position pressures
+                         for simple critical-line zeros
+                                              Jonas J. Gebendorfer∗
+
+                                   7 September 2026          Research draft v0.3
+
+
+
+                                                     Abstract
+           We give a computer-assisted proof argument for
+
+                                  Nsc (T )   1757544638415046796829717
+                        lim inf            ≥                           > 0.6734760237,
+                         T →∞     N (T )     2609661779050000000000000
+
+      where the numerator counts simple zeros of the Riemann zeta function on the critical line, and
+      the denominator counts all nontrivial zeros with multiplicity, between heights 0 and T . The
+      argument combines the unconditional fixed-test-function pair-correlation formula with known
+      clipped spectral and finite banded-Gram estimates. The additional step jointly optimizes the
+      analytic window and the local weights, and keeps nine different position-pressure vectors in one
+      seven-variable polyhedron. All 159 vertices are checked with rational arithmetic. Nine local
+      inequalities are proved by exhaustive interval subdivision, using newly generated Arb tables, for
+      one frozen 25-term analytic window. The result exceeds the strongest numerical extension located
+      in the source search by approximately 0.000016987291 in the fraction. The analytic argument is
+      written out; the computational obligations have been executed. This is an internally checked
+      research draft, not an independently reviewed record claim.
+
+
+1     Statement and relation to the sources
+Let N (T ) count the nontrivial zeros ρ = β + iγ of ζ with 0 < γ ≤ T , including multiplicity. Let
+Nsc (T ) count those that are simple and satisfy β = 1/2, once each. In particular, a lower bound
+for Nsc (T )/N (T ) is also a lower bound for the proportion on the critical line when multiplicity is
+allowed in the numerator.
+
+Theorem 1.1 (Computer-assisted research result). Using the unconditional pair-correlation formula
+stated in [2, Lemma 3.1], the written arguments and computational certificates below give
+
+           Nsc (T )                      1757544638415046796829717
+ lim inf            ≥ r∗ ,        r∗ =                             = 0.6734760237990874891990 . . . . (1)
+    T →∞   N (T )                        2609661779050000000000000
+
+No Riemann hypothesis, zero-density conjecture, or SP/complexity assumption is used. The assertion
+is cumulative in height.
+   ∗
+     Research and manuscript prepared with substantial assistance from OpenAI ChatGPT/Codex (Astra), including
+derivation, numerical discovery, implementation, and internal verification. Independent mathematical review is still
+open.
+
+
+
+
+                                                         1
+    The Alpöge–Furman/Claude argument [1] reaches 3/2 − 2−1/2 cot(2−1/2 ) = 0.6725007036794 . . ..
+Lamzouri [2] supplies the fixed-function formulation used here. The clipped Schur remainder is
+already present in Shi and subsequent work [3, 4]; no priority is claimed for that mechanism.
+    The computational starting point is AMTOPA’s public MIT-licensed repository [5], pinned at
+commit 7253fdca... (the full identifier is retained in the archive). Its root research-draft bound is
+0.673416490971499 . . .. Its separately labelled, analytically unreviewed trace-corrected extension
+records
+                                  61473185536
+                           rext =               = 0.6734590365084389 . . . .                      (2)
+                                  91279769375
+We use this larger number as the numerical comparison, without promoting the source’s extension
+to an established theorem. The preceding version of this note gave
+                       2700526829885474963706463
+               rprev =                              = 0.67347431366140697417 . . . .
+                       4009843842750000000000000
+The present exact rational improves that bound by approximately 0.00000171013768 in the fraction,
+or 0.000171013768 percentage points. The safe displayed percentage increases from 67.34743136% to
+67.34760237%. The difference from the larger external comparison is also positive:
+                                 r∗ − rext ≈ 0.00001698729065 > 0.
+Both differences are retained as exact rationals in the certificate. The unchanged v0.2 PDF and
+full archive are preserved with the new numerical discovery history. This search does not establish
+worldwide priority or an exhaustive bibliographic maximum. The Ainta construction and teal-sea’s
+audit were also examined [6, 7]. In particular, the latter’s large-gap counterexamples informed
+discovery; they are not used as proof of a universal inequality.
+
+
+2    The analytic window and the local certificates
+          √
+Put a = 1/ 2, and on I = [−1/2, 1/2] define
+                                  24
+                           √      X                             sin a                v(t)
+                v(t) = cos( 2t) +    cj cos(2πjt),       A=           ,   f0 (t) =        .
+                                   j=1
+                                                                  a                   A
+
+Extend f0 by zero outside I. All coefficients are rational and listed Rin Appendix A.
+                                                                                   R
+                                                                                      The simple
+                         P
+estimate v(t) ≥ cos a − j≥1 |cj | > 0.69194 proves positivity. Also I v = A and f0 = 1. Use
+                               R
+the Fourier convention fb(x) = f (t)e−2πixt dt, and put K0 = fb0 . With sinc z = sin z/z and its
+removable value at zero,
+                                    24
+                                 1 X
+                     K0 (x) =          cj {sinc(ωj /2 − πx) + sinc(ωj /2 + πx)} ,                (3)
+                                2A j=0
+                    √
+where c0 = 1, ω0 = 2, and ωj = 2πj for j ≥ 1. Thus K0 is real on R, and K0 (xi − xk ) is a positive
+semidefinite Gram kernel with unit diagonal.
+   For later use set
+                     Z           ZZ
+                                                                  210042647916503
+             C(f ) = f (t)2 dt +    |t − u|f (t)f (u) dt du, H=                     .
+                                                                  312500000000000
+An exact evaluation gives
+                                     24 2                  
+                      3            1 X  cj     1
+          2 − C(f0 ) = − a cot a − 2       1− 2 2               > H = 0.6721364733328096.        (4)
+                      2           A j=1 2    2j π
+
+                                                    2
+                                           R                                   √
+To verify the evaluation, let Dq(t) = I |t − u|q(u) du. Then (I + D) cos( 2t) is constant, while
+(I + D) cos(2πjt) is (1 − 1/(2j 2 π 2 )) cos(2πjt) plus a constant. The integer-frequency cosines have
+zero integral and squared norm 1/2, and are mutually orthogonal. This proves (4), including the
+vanishing cross terms. The strict numerical inequality is enclosed with 192-bit Arb:
+
+   2 − C(f0 ) = 0.67213647333280977542285707062155 . . . ,                        2 − C(f0 ) − H > 1.7542 · 10−16 .
+
+   For g = (g0 , . . . , g5 ) ∈ [0, ∞)6 and a case j ∈ {J, 0.99, 1.005, 1.01, 1.03, 1.05, 1.2, 1.6, 2} define
+                                    5
+                                    X                  X
+                         Fj (g) =         bjr gr +             ajik K0 (gi + · · · + gk−1 )2 .                        (5)
+                                    r=0              0≤i<k≤6
+
+The nonnegative pair weights have capacity
+                                          X
+                                               ajik = 2          (1 ≤ ℓ ≤ 6).                                         (6)
+                                      k−i=ℓ
+
+The strictly positive pressure vector is symmetric in r. Writing
+                                           1970462189
+                                 B=                    = 0.003940924378,
+                                          500000000000
+                             99     201
+its total is respectively B, 100 B, 200 B, 101    103    21    6    8
+                                           100 B, 100 B, 20 B, 5 B, 5 B, 2B. The complete rational data
+appear in Appendix A and in the nine JSON files, so no optimizer output needs to be trusted.
+Proposition 2.1 (Executed interval certificates). For every g ∈ [0, ∞)6 ,
+                             FJ (g) ≥ 0.0078647405, F0.99 (g) ≥ 0.0078053333,
+                         F1.005 (g) ≥ 0.0078931366, F1.01 (g) ≥ 0.007921103,
+                          F1.03 (g) ≥ 0.0080299079, F1.05 (g) ≥ 0.0081370839,
+                           F1.2 (g) ≥ 0.0089329271,             F1.6 (g) ≥ 0.0110524941,
+                             F2 (g) ≥ 0.0130464969.
+Denote these nine exact rational thresholds by ϵj .
+Computational proof and its enclosure rules. All pressure coefficients are positive. Since the pair
+terms are nonnegative, any gap gr ≥ ϵj /bjr proves the claim immediately. All remaining single
+gaps lie in [0, 25]; in fact 25 minr bjr > ϵj holds exactly in every case. Tables enclose W = K02 and
+W ′′ on each interval [i/4000, (i + 1)/4000], 0 ≤ i < 100000. Separate tables enclose W and W ′ at
+all half-grid points. Sums beyond the table range use only W ≥ 0; no derivative-based pruning is
+allowed without a covered derivative query.
+    Arb evaluates (3) with exact rational grid endpoints. Near zero, each sinc and its first two
+derivatives use 28 series terms. For |z| ≤ 1 the omitted terms in all three series have absolute sum
+at most 6160/57!: the first omitted second-derivative coefficient is 56 · 55/57!, and subsequent ratios
+are below 1/2. Away from zero the explicit differentiated sine formulas are used. The Arb endpoints
+are converted outwards to binary64 using one additional nextafter step.
+    The C++ checker first removes single-gap cells using pressure plus the adjacent-pair term. It
+then exhaustively bisects the Cartesian products of the retained interval components. Each box is
+removed only by an outward lower enclosure or by one of the following proved convex estimates. If
+sp is a lower bound for W ′′ on the span of pair p, and vp is its gap-incidence vector, then
+                                                                X
+                                      ∇2 Fj (g) ⪰ M0 :=               ap sp vp vpt .
+                                                                  p
+
+
+                                                           3
+Here M0 is one fixed symmetric matrix. Interval LDL elimination can prove it positive definite. On
+such a box with center c and coordinate radii hr , the two valid lower bounds are
+                                X
+                     Fj (c) −       |∂r Fj (c)|hr ,        Fj (c) − 12 ∇Fj (c)t M0−1 ∇Fj (c).
+                                r
+
+The second follows by minimizing the global quadratic minorant. Its quadratic form is enclosed by
+the same LDL elimination with a transformed gradient. Rational coefficients and rational centers
+are enclosed before any arithmetic. Every elementary C++ operation is rounded outwards, with
+fused contraction disabled. An unresolved terminal cell or exhausted node budget returns failure.
+    The nine complete runs terminate with VERIFIED=true; their visited-box counts, in the displayed
+case order, are 9412168, 9474494, 8219404, 7879898, 4798366, 4212704, 2570264, 2054092, 1467792, for
+a total of 50089182 boxes. The attached replay regenerates every table, compares its digest, recompiles
+the checker, and repeats all nine exhaustive runs. This proves precisely the local inequalities with
+the stated arithmetic implementation as the computational trust base.
+
+
+3    Two finite spectral estimates
+For t ≥ 0 define the nonnegative convex function
+                                                (
+                                                      (t − 1)2 ,   0 ≤ t ≤ 2,
+                                       Φ(t) =
+                                                      2t − 3,      t ≥ 2.
+
+Its Lipschitz constant is 2. The clipping at 2 is essential.
+
+Lemma 3.1 (Known clipped remainder). Let P = V V ∗ ⪰ 0 have s unit columns and let Q be
+Hermitian. Suppose tr(P + Q) = N , n+ (Q) ≤ b, and 2b ≤ N − s. For the Gram matrix G = V ∗ V ,
+
+                                     ∥P + Q∥2HS ≥ 2N − s + tr Φ(G).
+
+Proof. Write Q = Q+ − Q− with Q+ Q− = 0. Dropping the nonnegative 2 tr(P Q+ ) gives a lower
+bound ∥P − Q− ∥2HS + ∥Q+ ∥2HS . For p, n ≥ 0, minimization in n gives
+
+                                      (p − n)2 + 4n ≥ 2p + Φ(p) − 1.
+
+The trace rearrangement inequality for two positive semidefinite matrices therefore bounds the first
+term below by 2 tr P + tr g(P ) − 4 tr Q− , where g = Φ − 1. Since g(0) = 0, the nonzero eigenvalues
+of V V ∗ and V ∗ V imply tr g(P ) = tr Φ(G) − s. Also q 2 ≥ 4q − 4 on each positive eigenvalue of Q.
+The total lower bound is thus
+
+                          s + tr Φ(G) + 4(N − s) − 4b ≥ 2N − s + tr Φ(G).
+
+
+
+Lemma 3.2 (Pinching). For any partition of the indices of a positive semidefinite G into principal
+                     P
+blocks Ik , tr Φ(G) ≥ k tr Φ(G[Ik ]).
+
+Proof. Choose an eigenbasis separately inside each principal block. For every resulting unit basis
+vector u, scalar Jensen applied to the spectral resolution of G gives Φ(⟨u, Gu⟩) ≤ ⟨u, Φ(G)u⟩.
+Summing proves the assertion.
+
+
+                                                            4
+Lemma 3.3 (AMTOPA’s finite trace-corrected band profile). Let G ⪰ 0 be m × m with unit
+diagonal, and put                X
+                         E=2           |Gik |2 , τ = 7/6.
+                                            1≤k−i≤6
+Then tr Φ(G) ≥ Gm (E), where
+                                       
+                                       E,
+                                                                            0 ≤ E ≤ τ,
+                                                      p
+                            Gm (E) =     E + m(2 E/τ − 1)                                              (7)
+                                       
+                                                         ,                  E ≥ τ.
+                                                1 + m/τ
+This profile is increasing and concave on [0, ∞).
+Proof. This is the finite matrix argument in [5], reproduced for review. Write X = G − I and let
+Y be its six-band off-diagonal part. For a unit vector u put pi = |ui |2 , and let Pc be the mass in
+residue class c (mod 7). Cauchy–Schwarz gives
+                                              X                              6
+                                                                             X
+                        |u∗ Y u|2 ≤ E · 2             pi pk ≤ E(1 −                Pc2 ) ≤ E/τ.
+                                            1≤k−i≤6                          c=0
+                              p
+Consequently ∥Y ∥op ≤ ρ := E/τ .
+    For x ≥ −1 put ϕ(x) = Φ(x + 1). Its convex conjugate is −a − 1 when a < −2, a2 /4 when
+−2 ≤ a ≤ 2, and +∞ when a > 2. Thus scalar Fenchel and the trace rearrangement inequality give,
+for every Hermitian A0 ⪯ 2I,
+                              tr Φ(G) ≥ tr(A0 X) − 14 ∥A0 ∥2HS .
+No commutativity is needed: order both spectra, apply the trace inequality, then apply scalar
+Fenchel term by term. Take A0 = 2αY − dI with α ≥ 0 and d = 2(αρ − 1)+ . It satisfies A0 ⪯ 2I.
+Since tr X = tr Y = 0 and tr(Y X) = E,
+                                  tr Φ(G) ≥ (2α − α2 )E − m(αρ − 1)2+ .
+For E ≤ τ , set α = 1. For E > τ , maximize the quadratic on αρ ≥ 1 at α = (E + mρ)/(E + mρ2 );
+this point lies on that branch. Substitution yields (7). The derivatives of its two branches agree at
+τ , with value 1; the second branch has positive first derivative and negative second derivative.
+
+
+4    Retaining the different pressure vectors
+Let x1 ≤ · · · ≤ xm be real points, let gr = xr+1 − xr for 1 ≤ r < m, and set Gik = K0 (xi − xk ). Fix
+m ≥ 12 and n = m − 6. Summing each local inequality over its n seven-point windows, and using
+(6), gives
+                                                                       m−1
+                                                                       X
+                                   E + Pj ≥ nϵj ,               Pj =         pjr gr .                  (8)
+                                                                       r=1
+Indeed, each global pair receives a subset of the nonnegative local weights of its span, hence at most
+2; it contributes only to the six-band energy E. The position coefficient of the rth gap is the sum of
+the local pressure entries that cover it.
+     There are six position types. Types k = 0, . . . , 4 are the two positions r = k + 1, m − k − 1; type
+5 comprises 6 ≤ r ≤ m − 6. Their counts are 2, 2, 2, 2, 2, m − 11. The symmetry of every pressure
+vector means that its coefficient on type k is
+                                              k
+                                              X
+                                      djk =         bjr ,        0 ≤ k ≤ 5.
+                                              r=0
+
+
+                                                            5
+Define
+                                                           B     X
+                                  e = E/n,        uk =                   gr .
+                                                           n r of type k
+Then the actual block belongs to the common polyhedron
+                            (                        5
+                                                                                  )
+                                                     X djk
+                                             7
+                      P=     (e, u) ∈ [0, ∞) : e +              uk ≥ ϵj for every j .                (9)
+                                                     k=0
+                                                            B
+No identification of the nine distinct pressures is made.
+Remark 4.1 (Why the positions matter). The nine pressures have different boundary prefixes. Their
+total ratios do not authorize replacing every pressure by that ratio times the base pressure. All
+constraints in (9) apply to the same gap configuration. This retains the information needed at
+the boundary of an actual block. The preceding version contains an exact counterexample to the
+proportional-pressure identity for the original source vectors. That historical counterexample is not
+a claim about the newly optimized vectors in this version.
+    Set now m = 526, n = 520, and choose the following rational prices:
+     t = 10−10 (1017936952, 2846731194, 4964358029, 7196986272, 9030108774, 9928716047).            (10)
+Also set
+                          406764419
+                         R=          = 4.06764419 < nϵJ = 4.08966506.                               (11)
+                          100000000
+Proposition 4.2 (Exact polyhedral certificate). For all (e, u) ∈ P,
+                                                     5
+                                                     X
+                                       Gm (ne) + n         tk uk ≥ R.                               (12)
+                                                     k=0
+
+In particular every m-point Gram block satisfies
+                                                  m−1
+                                                  X
+                                    tr Φ(G) + B          ttype(r) gr ≥ R.                           (13)
+                                                  r=1
+
+Proof. All coefficients in (9) are nonnegative, so its recession cone is exactly the nonnegative orthant.
+The polyhedron contains no line and is the sum of the convex hull of its vertices and this cone. The
+function on the left of (12) is concave and is nondecreasing in every coordinate. It therefore suffices
+to check every vertex.
+    Here is a complete finite enumeration over Q. A vertex with k strictly positive coordinates must
+have k ≤ 7 and k independent active pressure constraints on those coordinates. For 1 ≤ k ≤ 7, choose
+k of the seven coordinates and k of the nine constraints, solve that square system,  
+                                                                                           set the other
+                                                                           P
+coordinates to zero, and check every inequality exactly. This tests 7k=1 k7 k9 = 11439 systems.
+Exactly 6960 are singular, 4320 are infeasible, and the remaining 159 give 159 distinct vertices.
+Degeneracy would still be covered by choosing any independent active subset.
+                                                 P
+    For a vertex, write E = ne and S = R − n tk uk . If E ≤ τ , check the rational inequality E ≥ S.
+If E > τ , put
+                                           (1 + m/τ )S − E + m
+                                      Q=                           .
+                                                      2m
+The required inequality is automatic when Q ≤ 0; otherwise it is equivalent to the rational
+check E/τ − Q2 ≥ 0. All 159 checks pass. Every vertex and its exact margin are retained in
+exact_projection_certificate.json; certify_projection.py independently enumerates them
+again. This check does not use a numerical LP solver or assume LP optimality. Finally combine (8),
+(9), and Lemma 3.3 to obtain (13).
+
+                                                     6
+5    Shifted blocks and transfer to zeta zeros
+For s ordered points in an interval of length L, use the m partitions into consecutive m-blocks,
+one for each starting offset. Discard their incomplete end blocks; their spectral contribution is
+nonnegative. Each partition has at least s/m − 2 full blocks. Across all offsets, any given gap
+occupies each internal block position at most once. Since every tk ≥ 0, summing (13) and applying
+pinching gives
+                                                      4
+                                                                                !
+            R    W                                    X                 10174286450242451170283
+ tr Φ(Gs ) ≥ s −   L − 2R,              W =B 2            tk + (m − 11)t5           =              .
+            m    m                              k=0
+                                                                         5000000000000000000000
+                                                                                                 (14)
+The same formula is harmless when s < m, since its right side is then negative. Boundary effects
+have thus been bounded explicitly.
+   We next give the analytic transfer in fixed-function
+                                                 R
+                                                        scope. Let η be real, even, smooth, compactly
+supported in (−1/2, 1/2), and normalized by η 2 = 1. Set f = η 2 , K = fb, and zρ = −i(ρ −
+1/2) log T /(2π). The unconditional formula in [2, Lemma 3.1 and Section 3] gives
+                                       X                                            
+                          Sf (T ) :=          K(zρ − zρ′ )2 = C(f ) + of (1) N (T ).                 (15)
+                                       ρ,ρ′
+
+Both zero sums include multiplicity and have 0 < γ, γ ′ ≤ T . To see the precise unweighting, set
+Q0 = f ∗ f . Its Fourier transform is K 2 . Apply the weighted formula to the two fixed test functions
+Q0 and Q′′0 separately, then take their linearRcombination Q0 − Q′′0 /(4 log2 T ). The rational weight
+cancels exactly. The main term is Q0 (0) + |u|Q0 (u) du = C(f ), because f is even. The second
+fixed function contributes a vanishing correction. No uniformity for an arbitrary T -dependent test
+function is invoked.
+    For completeness, we record why Lemma 3.1 applies to this sum without RH. Use the real Hilbert
+space
+                     HR = {h ∈ L2 (I) : h(−u) = h(u)},       vz (u) = η(u)e−2πizu .
+The finite multiset {zρ } is invariant under complex conjugation. For a nonreal pair let gz = (vz +vz̄ )/2
+and hz = (vz − vz̄ )/(2i); both lie in HR . A pair of multiplicity q contributes the real self-adjoint
+operator 2q(gz ⊗ gz − hz ⊗ hz ), of trace 2q and positive index at most one. A real point of multiplicity
+q contributes qvz ⊗ vz , of trace q. Here ∥vx ∥ = 1 for real x and ∥gz ∥2 − ∥hz ∥2 = 1. The sum
+A0 = P + Q has trace N (T ), where P is the simple-real part, with s = Nsc (T ) unit columns.
+                                                                                           P
+    Its Hilbert–Schmidt square equals Sf (T ): expand the squared L2 (I × I) norm of z vz (u)vz (v)
+and reorder one zero sum by conjugation. Equivalently the complex tensor expansion is precisely
+the real operator decomposition above. If there are r multiple real points and k nonreal conjugate
+pairs, positive-index subadditivity gives n+ (Q) ≤ r + k and N (T ) − s ≥ 2(r + k). Restricting to the
+finite-dimensional span, Lemma 3.1 therefore gives
+
+                      s ≥ 2N (T ) − Sf (T ) + tr Φ(Gs ),          (Gs )ik = K(xi − xk ),             (16)
+
+where the xi are the simple critical-line coordinates.
+   The window f0 itself is not a smooth compactly supported test function. Take real even smooth
+cutoffs χδ with 0 ≤ χδ ≤ 1, equal to one on [−1/2 + δ, 1/2 − δ], and supported in (−1/2, 1/2). Set
+
+                                              χ2 f0                  p
+                                        fδ = R δ 2 ,          ηδ =       fδ .
+                                               χδ f0
+
+
+                                                         7
+                                                           √ qR 2
+As f0 is positive and smooth on I, one may take ηδ = χδ f0 /       χδ f0 . Then fδ → f0 in L1 ∩ L2 ,
+C(fδ ) → C(f0 ), and dδ := ∥Kδ − K0 ∥L∞ (R) → 0. For every fixed m-point block, the eigenvalue
+perturbation bound and the Lipschitz constant of Φ give
+                                                √
+                    | tr Φ(Gδ ) − tr Φ(G0 )| ≤ 2 m ∥Gδ − G0 ∥HS ≤ 2m3/2 dδ =: eδ .
+
+Thus (13) transfers uniformly in the points with R replaced by R − eδ . It is this fixed-block inequality
+that is smoothed; no unbounded-gap pressure estimate is perturbed.
+    The simple critical-line coordinates lie in an interval of length LT = T log T /(2π), with
+LT /N (T ) → 1 by Riemann–von Mangoldt. Apply (15), (16), and the smoothed version of (14). For
+each sufficiently small fixed δ,
+                                          
+                                  R − eδ         s                   W
+                               1−                     ≥ 2 − C(fδ ) −   + oδ (1).
+                                    m          N (T )                m
+
+First take lim inf as T → ∞, then let δ ↓ 0. Since m − R > 0, (4) proves
+
+                                   s      m(2 − C(f0 )) − W   mH − W
+                       lim inf          ≥                   >        = r∗ .
+                        T →∞     N (T )        m−R             m−R
+This proves the slightly weaker non-strict formulation in Theorem 1.1, and in particular the displayed
+safe decimal.
+
+
+6    Reproducibility, controls, and review status
+The certificate separates discovery from verification. Numerical minimization and linear programming
+proposed the weights and the prices. Their apparent minima are not mathematical input. The proof
+inputs are the explicit rationals, the exhaustive local interval checks, the exact vertex checks, and
+the written analytic lemmas. The accepted base target is 0.0078647405. At the exact rational point
+
+                 (1.038726159347971, 1.966302731306515, 1.0358242905071375,
+                  1.0358242905071375, 1.966302731306515, 1.0387261593479709),
+
+Arb encloses FJ at 0.007864750510291926174609 . . .. This strictly rules out the target 0.007864751
+for the same weights. This falsification control is separate from the universal lower-bound proof.
+    The present search removed the preceding artificial pair-weight trust region and varied the 16
+original cosine coefficients jointly with pair and pressure weights. It then extended the window to 24
+nonconstant cosine modes. The expanded window was frozen before optimizing the auxiliary local
+inequalities. Their scales were evaluated together in the exact pressure relaxation. Sampled minima
+and optimizer success flags did not decide acceptance: every retained inequality had to pass the
+exhaustive interval checker. The archive preserves numerical failures, superseded designs, and all
+target choices.
+    The C++ verifier is adapted from AMTOPA under its MIT license. The changes use a fixed
+Loewner Hessian minorant, enclose rational centers directly, round compound expressions step by
+step, and add the proved quadratic terminal bound. The finite minorant must be distinguished from
+an entrywise half-infinite Hessian enclosure; an interval LDL test of the latter need not terminate
+successfully. The 192-bit Arb table builder is a new implementation.
+    The full replay uses Python 3, python-flint 0.9.0, and a C++17 compiler with little-endian IEEE
+binary64, extended-precision long double, round-to-nearest mode, and no fused contraction. It
+checks all input identities, regenerates and hashes the tables, recompiles, and executes all nine local
+
+                                                       8
+proofs. It fails on a missing table, changed coefficient, invalid exact vertex, unresolved terminal cell,
+or node limit. The quick verifier checks integrity, exact algebra, and the Arb window; it explicitly
+does not replace the full local replay. Commands and executed outputs are in the accompanying
+archive.
+    The Navigator’s shared-realization requirement motivated retaining the actual nine pressures
+in one polyhedron instead of combining incompatible scalar summaries. This is a concrete use
+of the research program’s verification discipline. It is not evidence for an SP theorem or for a
+complexity-theoretic consequence.
+    All computational gates for this draft have been executed internally. The complete mathematical
+chain, including the source analytic theorem and the finite spectral arguments, remains open to
+external review. There is no Lean formalization here, no claimed proof of RH, and no inference from
+this small gain to a method reaching 100%.
+
+
+A     Complete rational coefficient data
+The case J is the new joint window/pair/pressure vector. All eight auxiliary pair and pressure vectors
+were re-optimized here for the same new analytic window. Their ancestry is recorded separately;
+the source attribution in historical JSON fields identifies the seed, not authorship of these final
+coefficients. The decimal thresholds in Proposition 2.1 are exact.
+
+                                     j          1010 cj    j        1010 cj
+                                     0   10000000000      13      2509414
+                                     1     134656215      14     -2012861
+                                     2    -139477638      15      1663332
+                                     3      34872522      16     -1404391
+                                     4      72252628      17      1205471
+                                     5     -12013619      18     -1048421
+                                     6      82179075      19       921727
+                                     7     -82064960      20      -817718
+                                     8      46631992      21       731082
+                                     9     -52885554      22      -658022
+                                    10      -3890179      23       595754
+                                    11       4638973      24      -542191
+                                    12      -3273197
+
+The nine pressure vectors have the symmetric form (b0 , b1 , b2 , b2 , b1 , b0 ). Each row gives one denomi-
+nator and three integer numerators.
+
+                     Case       denominator b0 numerator       b1 numerator   b2 numerator
+                     J       100000000000000   35837520647 73189309162 88019389091
+                     0.99    100000000000000   35242593596 71860346030 87972817085
+                     1.005   200000000000000   72963632989 148306664943 174792602057
+                     1.01    100000000000000   37074479598 74470790243 87471411248
+                     1.03    100000000000000   40454580136 75362108913 87140916418
+                     1.05     20000000000000    8770410739 15154943392 17454351838
+                     1.2       2500000000000    1404051401   2122854588   2384480578
+                     1.6        625000000000     452838941    690530153    827093095
+                     2          500000000000     466634259    650318618    853509312
+
+
+
+
+                                                     9
+Every pair weight has denominator 1012 . The tables give all integer numerators; every span has
+total weight exactly 2.
+          (i, k)                 J            0.99           1.005            1.01            1.03
+          (0, 1)    168587433431      165385598350    171834879372    175401324251    202226617949
+          (0, 2)     21441587517       21855042957     66374015442     73290150499     88667537778
+          (0, 3)    211257322774      168503127550    254647965281    257896617739    420282570558
+          (0, 4)    149933660741      209517659445    140727955057    180414548413    366607269312
+          (0, 5)   1000000000000     1000000000000   1000000000000   1000000000000   1000000000000
+          (0, 6)   2000000000000     2000000000000   2000000000000   2000000000000   2000000000000
+          (1, 2)    398574559976      392131250812    392297301026    387678959738    370543088933
+          (1, 3)    514164640056      481197978554    482921866510    472928853950    454101826740
+          (1, 4)    788742677226      831496872450    745352034719    742103382261    579717429442
+          (1, 5)   1700132678518     1580964681110   1718544089886   1639170903174   1266785461376
+          (1, 6)   1000000000000     1000000000000   1000000000000   1000000000000   1000000000000
+          (2, 3)    432838006593      442483150838    435867819602    436919716011    427230293118
+          (2, 4)    928787544854      993893956978    901408236096    907561991102    914461270964
+          (2, 5)    788742677226      831496872450    745352034719    742103382261    579717429442
+          (2, 6)    149933660741      209517659445    140727955057    180414548413    366607269312
+          (3, 4)    432838006593      442483150838    435867819602    436919716011    427230293118
+          (3, 5)    514164640056      481197978554    482921866510    472928853950    454101826740
+          (3, 6)    211257322774      168503127550    254647965281    257896617739    420282570558
+          (4, 5)    398574559976      392131250812    392297301026    387678959738    370543088933
+          (4, 6)     21441587517       21855042957     66374015442     73290150499     88667537778
+          (5, 6)    168587433431      165385598350    171834879372    175401324251    202226617949
+
+
+                    (i, k)            1.05             1.2             1.6               2
+                   (0, 1)     222591658423    241363218966    216902617909    220797369851
+                   (0, 2)      84272781728    144250045102     69861740889               0
+                   (0, 3)     535336664330    687267145282    214354333136    207465035949
+                   (0, 4)     572799134659    737806833246    816982910903    830714480412
+                   (0, 5)    1000000000000   1000000000000   1000000000000   1000000000000
+                   (0, 6)    2000000000000   2000000000000   2000000000000   2000000000000
+                   (1, 2)     358069556475    350054053802    346926620323    343481347509
+                   (1, 3)     498770961302    512657192091    524481861177    482617114181
+                   (1, 4)     464663335670    312732854718    785645666864    792534964051
+                   (1, 5)     854401730682    524386333508    366034178194    338571039176
+                   (1, 6)    1000000000000   1000000000000   1000000000000   1000000000000
+                   (2, 3)     419338785102    408582727232    436170761768    435721282640
+                   (2, 4)     833912513940    686185525614    811312795868   1034765771638
+                   (2, 5)     464663335670    312732854718    785645666864    792534964051
+                   (2, 6)     572799134659    737806833246    816982910903    830714480412
+                   (3, 4)     419338785102    408582727232    436170761768    435721282640
+                   (3, 5)     498770961302    512657192091    524481861177    482617114181
+                   (3, 6)     535336664330    687267145282    214354333136    207465035949
+                   (4, 5)     358069556475    350054053802    346926620323    343481347509
+                   (4, 6)      84272781728    144250045102     69861740889               0
+                   (5, 6)     222591658423    241363218966    216902617909    220797369851
+
+
+References
+[1] L. Alpöge and R. Furman, More than two thirds of the zeta zeros are simple and on the critical
+    line, 2026. arXiv:2608.13637. The source attributes the argument to Claude.
+[2] Y. Lamzouri, A new proof that more than 2/3 of the zeros of the Riemann zeta function are
+    simple and on the critical line, 2026. arXiv:2609.02882v1.
+
+                                                       10
+[3] Y. Shi, A Schur–Jensen gain in the critical-line zero problem, 2026.
+    doi:10.5281/zenodo.21903013.
+
+[4] M. Devine, An Unconditional 67.3399% Bound and Conditional Advances Beyond 67.92% for
+    Simple Critical Zeros of the Riemann Zeta Function, v3, 2026. doi:10.5281/zenodo.22066689.
+
+[5] AMTOPA, zeta-exact-pressure, public research repository, commit 7253fdca..., retrieved 7
+    September 2026. AMTOPA/zeta-exact-pressure. In particular: candidate.json,
+    TRACE_CORRECTION.md, INSERTION_AUDIT.md, and trace-root-tightening.json. The
+    relevant pinned source files and license are retained in the archive.
+
+[6] Ainta, zeta-simple-zeros, public research repository. ainta/zeta-simple-zeros.
+
+[7] teal-sea, zeta-lab, AMTOPA audit and counterexample cuts, commit d393e1a6..., retrieved 7
+    September 2026. teal-sea/zeta-lab.
+
+
+
+
+                                                 11
+

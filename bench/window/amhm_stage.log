@@ -1,0 +1,14 @@
+== CandAMHM export
+export exit 0
+       40.19 real        27.26 user        11.56 sys
+          1596952112  peak memory footprint
+export bytes 669221251
+== CandAMHM nanoda
+nanoda exit 0
+      245.12 real       236.69 user         8.12 sys
+          4559097696  peak memory footprint
+== CandAMHM lean replay (full closure)
+nanoda/stage.sh: line 21: 99014 Terminated: 15          /usr/bin/time -l nice -n 10 $T/replayx/.lake/build/bin/replayx $EXP 2> nanoda/replayx_$MOD.err
+replayx exit 143
+parse_ms 15746 constants 74874
+replay_ms 314668 OK

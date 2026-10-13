@@ -1,0 +1,25 @@
+window rwin8.json: H = 0.6721684106; control (paper words): ceiling 0.6738159558
+q <= 1: tightened ceiling 0.6753575950  (envelope at d = 1.48070 between d = 1.000 and 2.000, weight 0.4807) (0s)
+    word d=1.000 q=1 Ef=0.008263779 gaps=[1.0]
+    word d=2.000 q=1 Ef=0.000896222 gaps=[2.0]
+q <= 2: tightened ceiling 0.6738782955  (envelope at d = 1.48395 between d = 1.000 and 1.500, weight 0.9679) (0s)
+    word d=1.000 q=1 Ef=0.008263779 gaps=[1.0]
+    word d=1.500 q=2 Ef=0.002347435 gaps=[1.96183, 1.03817]
+q <= 3: tightened ceiling 0.6738158115  (envelope at d = 1.48409 between d = 1.333 and 1.500, weight 0.9045) (1s)
+    word d=1.333 q=3 Ef=0.003367947 gaps=[1.028397, 1.028397, 1.943206]
+    word d=1.500 q=2 Ef=0.002347435 gaps=[1.96183, 1.03817]
+q <= 4: tightened ceiling 0.6738158115  (envelope at d = 1.48409 between d = 1.333 and 1.500, weight 0.9045) (2s)
+    word d=1.333 q=3 Ef=0.003367947 gaps=[1.028397, 1.028397, 1.943206]
+    word d=1.500 q=2 Ef=0.002347435 gaps=[1.96183, 1.03817]
+q <= 5: tightened ceiling 0.6738102505  (envelope at d = 1.48410 between d = 1.400 and 1.500, weight 0.8410) (4s)
+    word d=1.400 q=5 Ef=0.002908443 gaps=[1.029678, 1.951655, 1.037334, 1.951655, 1.029678]
+    word d=1.500 q=2 Ef=0.002347435 gaps=[1.96183, 1.03817]
+q <= 6: tightened ceiling 0.6738102505  (envelope at d = 1.48410 between d = 1.400 and 1.500, weight 0.8410) (6s)
+    word d=1.400 q=5 Ef=0.002908443 gaps=[1.029678, 1.951655, 1.037334, 1.951655, 1.029678]
+    word d=1.500 q=2 Ef=0.002347435 gaps=[1.96183, 1.03817]
+q <= 7: tightened ceiling 0.6738084973  (envelope at d = 1.48410 between d = 1.429 and 1.500, weight 0.7774) (9s)
+    word d=1.429 q=7 Ef=0.002736591 gaps=[1.029992, 1.953037, 1.037678, 1.958585, 1.037678, 1.953037, 1.029992]
+    word d=1.500 q=2 Ef=0.002347435 gaps=[1.96183, 1.03817]
+q <= 8: tightened ceiling 0.6738084973  (envelope at d = 1.48410 between d = 1.429 and 1.500, weight 0.7774) (12s)
+    word d=1.429 q=7 Ef=0.002736591 gaps=[1.029992, 1.953037, 1.037678, 1.958585, 1.037678, 1.953037, 1.029992]
+    word d=1.500 q=2 Ef=0.002347435 gaps=[1.96183, 1.03817]

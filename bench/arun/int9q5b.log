@@ -1,0 +1,67 @@
+== 1 private check INT9Q5 Sun Oct 11 18:47:45 PDT 2026
+[private_check] waiting 18:47:45
+[private_check] waiting 18:48:15
+[private_check] waiting 18:48:45
+[private_check] waiting 18:49:15
+[private_check] waiting 18:49:45
+[private_check] waiting 18:50:15
+[private_check] waiting 18:50:45
+[private_check] waiting 18:51:15
+[private_check] waiting 18:51:45
+[private_check] waiting 18:52:15
+[private_check] waiting 18:52:45
+[private_check] waiting 18:53:15
+[private_check] waiting 18:53:45
+[private_check] waiting 18:54:15
+[private_check] waiting 18:54:45
+[private_check] waiting 18:55:15
+[private_check] waiting 18:55:45
+[private_check] waiting 18:56:15
+[private_check] waiting 18:56:45
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      626.94 real       500.69 user        21.35 sys
+          4617918616  peak memory footprint
+BUILD EXIT 0
+module constants: 5038; imports: 26
+kernel replay of 5038 constants: 351170 ms
+      398.14 real       249.14 user        27.56 sys
+          3685595072  peak memory footprint
+REPLAY EXIT 0
+== 2 reachability Sun Oct 11 19:15:05 PDT 2026
+reachable 74113; unreachable module decls 932
+== 3 strip Sun Oct 11 19:15:42 PDT 2026
+removed 379 declarations (3500 lines); kept attributed/instance 3, by name 94, shared-with-reachable 68; bytes 2129603 -> 1928580 (201023 removed)
+== 4 private check INT9Q5S Sun Oct 11 19:15:42 PDT 2026
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      545.20 real       437.85 user        20.15 sys
+          4360935360  peak memory footprint
+BUILD EXIT 0
+module constants: 4482; imports: 26
+kernel replay of 4482 constants: 318117 ms
+      367.64 real       239.60 user        26.06 sys
+          3691558800  peak memory footprint
+REPLAY EXIT 0
+== CandINT9Q5S export
+export exit 0
+       59.24 real        31.18 user        16.16 sys
+          1608961560  peak memory footprint
+export bytes 673605839
+== CandINT9Q5S nanoda
+nanoda exit 0
+      272.32 real       247.04 user         9.49 sys
+          4632694528  peak memory footprint
+== CandINT9Q5S lean replay (full closure)
+parse_ms 16339 constants 74916
+replay_ms 359785 OK
+replayx exit 0
+      376.33 real       346.40 user         5.96 sys
+          1945454464  peak memory footprint
+INT9Q5S nanoda run 2 exit 0: 1819784389635 3549612960 
+INT9Q5S nanoda run 3 exit 0: 1818459223059 4658745088 
+INT9Q5S nanoda run 4 exit 0: 1814890271183 4413607608 
+INT9Q5S nanoda run 5 exit 0: 1889400355212 5139796168 
+== int9q5b done Sun Oct 11 20:04:20 PDT 2026

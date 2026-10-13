@@ -1,0 +1,8 @@
+Gen9Test.lean:179:0: warning: automatically included section variable(s) unused in theorem `OpethN.block_remainder_bound_n`:
+  [Fintype ι]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype ι] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+'OpethN.Final.actual_dyadic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpethN.Final.actual_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]

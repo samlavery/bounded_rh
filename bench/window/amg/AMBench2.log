@@ -1,0 +1,63 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:14:20)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:14:50)
+linting took 27.9ms
+linting took 26.7ms
+linting took 24.7ms
+linting took 26.9ms
+linting took 22.8ms
+linting took 21.9ms
+linting took 24.6ms
+linting took 23.4ms
+linting took 23.5ms
+type checking took 55.4ms
+type checking took 161ms
+type checking took 585ms
+type checking took 712ms
+type checking took 766ms
+type checking took 1.69s
+type checking took 2.75s
+type checking took 4.85s
+type checking took 8.22s
+type checking took 8.26s
+type checking took 8.32s
+cumulative profiling times:
+	attribute application 0.301ms
+	compilation (IR) 2.06ms
+	compilation (LCNF base) 34.8ms
+	compilation (LCNF impure) 10.8ms
+	compilation (LCNF mono) 16.8ms
+	congr simp thm 0.0357ms
+	elaboration 137ms
+	fix level params 0.352ms
+	instantiate metavars 0.709ms
+	interpretation 0.153ms
+	let-to-have transformation 0.293ms
+	linting 460ms
+	module linting 0.000625ms
+	overlappingInstancesLinter 26ms
+	parsing 15.3ms
+	process pre-definitions 14ms
+	share common exprs 2.13ms
+	simp 0.148ms
+	tactic execution 3.04ms
+	tacticAnalysis 77.5ms
+	type checking 36.4s
+	typeclass inference 162ms
+       21.33 real        10.78 user        11.06 sys
+          6892814336  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              497835  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   1  voluntary context switches
+               18444  involuntary context switches
+        115171682666  instructions retired
+         71047324859  cycles elapsed
+          2013434640  peak memory footprint

@@ -1,0 +1,3 @@
+P=128 N= 512: L-BFGS 1303.4044 -> Newton LP +1303.395973 | ||grad|| 4.976e-07 (rel 6.21e-08 to 8.019e+00) | Newton its 7, success True | min Hessian eig nan | depths max 1.125 | 19s
+P=256 N=1024: L-BFGS -9846.0051 -> Newton LP -9924.163273 | ||grad|| 1.221e+00 (rel 2.10e-04 to 5.807e+03) | Newton its 400, success False | min Hessian eig nan | depths max 1.679 | 558s | mp50 -9924.163273
+REPRO CHECK: Model.LP(saved z) = -8916734.926431 ; printed val = -9924.163273

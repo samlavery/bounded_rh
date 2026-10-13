@@ -1,0 +1,17 @@
+round 0: claimed 0.6815167  robust 0.6678967  min qf +4.8e-04
+round 1: claimed 30.8951354  robust 4.7273594  min qf -3.5e-01
+round 2: claimed 0.6773162  robust 0.6043695  min qf +1.5e-03
+round 3: claimed 7.3060274  robust 7.3060274  min qf -1.0e-01
+round 4: claimed 1.1102774  robust 1.1061209  min qf -2.3e-01
+round 5: claimed 9.0159808  robust 3.5589219  min qf -2.4e-01
+round 6: claimed 1.0238695  robust 1.0235082  min qf -5.5e-01
+round 7: claimed 1.1862076  robust 1.1206495  min qf -1.1e+00
+round 8: claimed 1.6769659  robust 1.1249376  min qf -2.7e-01
+round 9: claimed 2.0003130  robust 1.9438406  min qf -2.7e-01
+round 10: claimed 0.9998782  robust 0.9998828  min qf -3.7e+05
+round 11: claimed 7.8022435  robust 7.8022435  min qf -6.6e-02
+  N=24: kappa_D,N 0.4263939 (Delta_1/N 0.648881; wide multistart Delta_1/N 0.594344)
+  N=32: kappa_D,N 0.5556037 (Delta_1/N 0.700440; wide multistart Delta_1/N 0.532647)
+  N=48: kappa_D,N 7.8022435 (Delta_1/N -0.045914; wide multistart Delta_1/N -0.045914)
+  N=64: kappa_D,N 0.5359811 (Delta_1/N 0.673577; wide multistart Delta_1/N 0.665780)
+FAMOPT N=48: continuum kappa_D 0.5301598  delta 0.332890  int q a / int q 0.312810 ; c = [ 0.048114  0.136172  0.754846  0.928451 -0.107143  0.094641  0.039343 -0.028727  0.180922 -0.479742 -0.839322 -0.379606  0.337664  0.544773  0.52721   0.759113 -0.131522 -0.156601 -0.165061 -0.884403  0.185694  0.151373 -0.094644  0.556031]

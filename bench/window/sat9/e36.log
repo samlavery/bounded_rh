@@ -1,0 +1,23 @@
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e36_transplant.py:41: UserWarning: Solution may be inaccurate. Try another solver, adjusting the solver settings, or solve with verbose=True for more information.
+  prob = cp.Problem(cp.Maximize(T + cp.sum(tau) - 4 * cp.sum_squares(cp.multiply(np.sqrt(ek), z))), cons); prob.solve(solver=cp.CLARABEL)
+a=0.60: w*(64) QP +168.033 hard +166.421 | w*(128) QP +337.220 hard +335.054 | interior: w*(64) median 0.016985 (spread 8.59e-03), w*(128) median 0.000155 (spread 1.06e-02) | 112s
+     r=16: transplant hard D     -96448.987 (optimum +335.054, loss 96784.041)  neg
+     r=20: transplant hard D     -57671.234 (optimum +335.054, loss 58006.289)  neg
+     r=24: transplant hard D     -21899.264 (optimum +335.054, loss 22234.318)  neg
+     [diag] r=24 with w*(128) interior median: hard D -225581.085
+a=0.70: w*(64) QP +103.881 hard +103.228 | w*(128) QP +210.078 hard +209.159 | interior: w*(64) median 0.011496 (spread 5.72e-03), w*(128) median -0.001096 (spread 7.73e-03) | 105s
+     r=16: transplant hard D     -56834.919 (optimum +209.159, loss 57044.078)  neg
+     r=20: transplant hard D     -36550.971 (optimum +209.159, loss 36760.129)  neg
+     r=24: transplant hard D     -13897.249 (optimum +209.159, loss 14106.407)  neg
+     [diag] r=24 with w*(128) interior median: hard D -154165.682
+a=0.76: w*(64) QP +76.521 hard +75.128 | w*(128) QP +156.714 hard +155.020 | interior: w*(64) median 0.007887 (spread 2.79e-02), w*(128) median -0.001213 (spread 4.56e-03) | 104s
+     r=16: transplant hard D    -266179.772 (optimum +155.020, loss 266334.792)  neg
+     r=20: transplant hard D    -173563.563 (optimum +155.020, loss 173718.584)  neg
+     r=24: transplant hard D     -72369.634 (optimum +155.020, loss 72524.654)  neg
+     [diag] r=24 with w*(128) interior median: hard D -176913.825
+a=0.80: w*(64) QP +59.300 hard +57.329 | w*(128) QP +121.502 hard +118.523 | interior: w*(64) median 0.003904 (spread 2.52e-02), w*(128) median -0.000772 (spread 5.00e-03) | 103s
+     r=16: transplant hard D    -352255.919 (optimum +118.523, loss 352374.442)  neg
+     r=20: transplant hard D    -197981.032 (optimum +118.523, loss 198099.555)  neg
+     r=24: transplant hard D     -55182.961 (optimum +118.523, loss 55301.484)  neg
+     [diag] r=24 with w*(128) interior median: hard D -114648.563
+VERDICT: FAIL

@@ -1,0 +1,304 @@
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:2796:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:2901:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:3864:56: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:9314:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:11908:20: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:12448:16: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:13886:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:14519:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:16886:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:16904:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25258:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25276:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25737:49: error: Ambiguous term
+  pc_spl gsplit0(cov_gsplitQ hSL hPR 0 (qB BND 64 (toCl s) 0 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit0 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit0 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25738:49: error: Ambiguous term
+  pc_spl gsplit1(cov_gsplitQ hSL hPR 1 (qB BND 64 (toCl s) 1 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit1 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit1 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25739:49: error: Ambiguous term
+  pc_spl gsplit2(cov_gsplitQ hSL hPR 2 (qB BND 64 (toCl s) 2 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit2 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit2 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25740:49: error: Ambiguous term
+  pc_spl gsplit3(cov_gsplitQ hSL hPR 3 (qB BND 64 (toCl s) 3 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit3 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit3 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25741:51: error: Ambiguous term
+  pc_spl ssplit02(cov_ssplitQ hSL hPR 0 (qBr BND 64 (toCl s) 0 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit02 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit02 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25742:51: error: Ambiguous term
+  pc_spl ssplit03(cov_ssplitQ hSL hPR 1 (qBr BND 64 (toCl s) 1 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit03 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit03 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25743:51: error: Ambiguous term
+  pc_spl ssplit04(cov_ssplitQ hSL hPR 2 (qBr BND 64 (toCl s) 2 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit04 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit04 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25744:51: error: Ambiguous term
+  pc_spl ssplit13(cov_ssplitQ hSL hPR 3 (qBr BND 64 (toCl s) 3 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit13 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit13 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25745:51: error: Ambiguous term
+  pc_spl ssplit14(cov_ssplitQ hSL hPR 4 (qBr BND 64 (toCl s) 4 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit14 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit14 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:25746:51: error: Ambiguous term
+  pc_spl ssplit24(cov_ssplitQ hSL hPR 5 (qBr BND 64 (toCl s) 5 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit24 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit24 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26983:49: error: Ambiguous term
+  pc_spl gsplit0(cov_gsplitQ hSL hPR 0 (qB BND 64 (toCl s) 0 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit0 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit0 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit0 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26984:49: error: Ambiguous term
+  pc_spl gsplit1(cov_gsplitQ hSL hPR 1 (qB BND 64 (toCl s) 1 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit1 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit1 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit1 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26985:49: error: Ambiguous term
+  pc_spl gsplit2(cov_gsplitQ hSL hPR 2 (qB BND 64 (toCl s) 2 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit2 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit2 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit2 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26986:49: error: Ambiguous term
+  pc_spl gsplit3(cov_gsplitQ hSL hPR 3 (qB BND 64 (toCl s) 3 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit3 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit3 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit3 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26987:49: error: Ambiguous term
+  pc_spl gsplit4(cov_gsplitQ hSL hPR 4 (qB BND 64 (toCl s) 4 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit4 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit4 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (gsplit4 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26988:51: error: Ambiguous term
+  pc_spl ssplit02(cov_ssplitQ hSL hPR 0 (qBr BND 64 (toCl s) 0 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit02 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit02 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit02 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26989:51: error: Ambiguous term
+  pc_spl ssplit03(cov_ssplitQ hSL hPR 1 (qBr BND 64 (toCl s) 1 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit03 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit03 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit03 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26990:51: error: Ambiguous term
+  pc_spl ssplit04(cov_ssplitQ hSL hPR 2 (qBr BND 64 (toCl s) 2 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit04 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit04 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit04 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26991:51: error: Ambiguous term
+  pc_spl ssplit05(cov_ssplitQ hSL hPR 3 (qBr BND 64 (toCl s) 3 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit05 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit05 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit05 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26992:51: error: Ambiguous term
+  pc_spl ssplit13(cov_ssplitQ hSL hPR 4 (qBr BND 64 (toCl s) 4 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit13 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit13 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit13 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26993:51: error: Ambiguous term
+  pc_spl ssplit14(cov_ssplitQ hSL hPR 5 (qBr BND 64 (toCl s) 5 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit14 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit14 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit14 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26994:51: error: Ambiguous term
+  pc_spl ssplit15(cov_ssplitQ hSL hPR 6 (qBr BND 64 (toCl s) 6 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit15 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit15 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit15 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26995:51: error: Ambiguous term
+  pc_spl ssplit24(cov_ssplitQ hSL hPR 7 (qBr BND 64 (toCl s) 7 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit24 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit24 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit24 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26996:51: error: Ambiguous term
+  pc_spl ssplit25(cov_ssplitQ hSL hPR 8 (qBr BND 64 (toCl s) 8 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit25 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit25 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit25 ih md pos) s ≠ 0 → Covered (toCl s)
+specroot_pc8c5bfe4t/CandPC8C5BFE4T.lean:26997:51: error: Ambiguous term
+  pc_spl ssplit35(cov_ssplitQ hSL hPR 9 (qBr BND 64 (toCl s) 9 md) rfl rfl (by decide))
+Possible interpretations:
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit35 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit35 ih md pos) s ≠ 0 → Covered (toCl s)
+  
+  fun s h => ?m.3 : ∀ (s : St), U (ssplit35 ih md pos) s ≠ 0 → Covered (toCl s)
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+      464.43 real       443.02 user        18.90 sys
+          7658684416  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              731729  page reclaims
+               66825  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                1279  voluntary context switches
+              279758  involuntary context switches
+       3913928771857  instructions retired
+       1535353628064  cycles elapsed
+          5094545776  peak memory footprint
+BUILD EXIT 1

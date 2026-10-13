@@ -1,0 +1,30 @@
+== cfx9 tag=t570_QVL3 wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9so.py PFK=8 LPACCEPT= EXACTV=1 EXACTC= SO= Sat Oct 10 18:35:01 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=2,5,9
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 744 leaves (447s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 926 leaves (987s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 990 leaves (1474s)
+  bisection: 2660 leaves (Z 0, M 2590, empty 0), 2657 splits, 1368 at region boundaries (1474s)
+  LOBE: 346 lobe-case leaves, 6823 cases tried; LP solves 18494 (7.0 per leaf); kernel checks per leaf 1.87
+  fix-up: 0 re-decided; tables: w 1984 cells, d 0 cells, 2536 points (42550 point cells); failing 0 (1477s)
+leaves 2660 kinds {6: 2590, 0: 70} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 2657 (pair 1994); walk bits 1593668 (599.1 per leaf; multipliers 4247 x 14 bits); M nonzero multipliers [(0, 672), (1, 1258), (2, 291), (3, 368), (4, 1)]; constraints per M cell [(28, 2590)]; w 1984 d 0 pts 2536 ptc 42550 bad 0 MSTAT lp 18494 (1477s)
+nodes visited 5317 (leaves 2660 + splits 2657); explicit constraints per node: mean 28.00, dist [(28, 5317)]
+walk: 1593668 bits = 0.398 MB hex, 0.266 MB base64 (roots run); x8.73: 3.48 MB hex, 2.32 MB base64
+     1493.13 real      1228.36 user        54.70 sys
+          4605837312  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             2795942  page reclaims
+                1076  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               11979  voluntary context switches
+             3250004  involuntary context switches
+      13067393473058  instructions retired
+       4099321813776  cycles elapsed
+          5544137096  peak memory footprint
+== done Sat Oct 10 18:59:54 PDT 2026

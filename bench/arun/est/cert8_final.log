@@ -1,0 +1,25 @@
+n=8: rounded weights: B = 406753 / 10^8 (float LP B 0.004067520); capacities (x10^8) [199999997, 199999998, 199999998, 199999998, 199999999, 200000000, 200000000]; nonzero a 26 of 28
+fresh search: 16835 distinct local minima; c_true(rounded) = 0.0080876082 at [1.0374 1.9729 1.044  1.9719 1.044  1.9729 1.0374]; LP c_true (unrounded) 0.0080876009
+kappa_8 (rounded, true min, H floor) = 0.673548275 ; unrounded LP 0.673548280 ; rounding cost -5.20e-09 ; gain over 0.6735478 +4.746e-07
+   basins within 1e-06 rel: 7
+   basins within 1e-05 rel: 15
+   basins within 5e-05 rel: 15
+   basins within 2e-04 rel: 15
+   basins within 1e-03 rel: 19
+   basins within 5e-03 rel: 28
+near-binding basins at 2e-4: 15; minimal gap in them 1.0345; maximal gap 2.9216
+   F 0.0080876082 (+0.0e+00) gaps [1.037 1.973 1.044 1.972 1.044 1.973 1.037] | Hessian eig 0.213..1.56 | half-width at 2e-4: 1.44e-03..3.90e-03
+   F 0.0080876150 (+8.4e-07) gaps [1.963 1.035 1.038 1.966 1.044 1.97  1.038] | Hessian eig 0.112..1.74 | half-width at 2e-4: 1.37e-03..5.38e-03
+   F 0.0080876150 (+8.4e-07) gaps [1.038 1.97  1.044 1.966 1.038 1.035 1.963] | Hessian eig 0.112..1.74 | half-width at 2e-4: 1.37e-03..5.38e-03
+   F 0.0080876159 (+9.4e-07) gaps [1.042 1.983 1.05  2.922 1.045 1.04  1.978] | Hessian eig 0.103..1.44 | half-width at 2e-4: 1.50e-03..5.62e-03
+   F 0.0080876159 (+9.4e-07) gaps [1.978 1.04  1.045 2.922 1.05  1.983 1.042] | Hessian eig 0.103..1.44 | half-width at 2e-4: 1.50e-03..5.62e-03
+   F 0.0080876159 (+9.4e-07) gaps [1.038 1.965 1.035 1.035 1.966 1.042 1.973] | Hessian eig 0.106..1.95 | half-width at 2e-4: 1.29e-03..5.51e-03
+   F 0.0080876159 (+9.4e-07) gaps [1.973 1.042 1.966 1.035 1.035 1.965 1.038] | Hessian eig 0.106..1.95 | half-width at 2e-4: 1.29e-03..5.51e-03
+   F 0.0080876177 (+1.2e-06) gaps [1.985 1.047 1.986 1.985 1.047 1.978 1.041] | Hessian eig 0.0978..1.34 | half-width at 2e-4: 1.55e-03..5.75e-03
+   F 0.0080876177 (+1.2e-06) gaps [1.041 1.978 1.047 1.985 1.986 1.047 1.985] | Hessian eig 0.0978..1.34 | half-width at 2e-4: 1.55e-03..5.75e-03
+   F 0.0080876224 (+1.7e-06) gaps [1.034 1.039 1.967 1.044 1.971 1.042 1.972] | Hessian eig 0.104..1.58 | half-width at 2e-4: 1.43e-03..5.57e-03
+   F 0.0080876224 (+1.8e-06) gaps [1.972 1.042 1.971 1.044 1.967 1.039 1.034] | Hessian eig 0.104..1.58 | half-width at 2e-4: 1.43e-03..5.57e-03
+   F 0.0080876231 (+1.8e-06) gaps [1.986 1.045 1.979 1.05  2.921 1.05  1.043] | Hessian eig 0.0975..1.36 | half-width at 2e-4: 1.54e-03..5.76e-03
+   F 0.0080876231 (+1.8e-06) gaps [1.043 1.05  2.921 1.05  1.979 1.045 1.986] | Hessian eig 0.0975..1.36 | half-width at 2e-4: 1.54e-03..5.76e-03
+   F 0.0080876254 (+2.1e-06) gaps [1.977 1.039 1.044 2.915 1.044 1.039 1.977] | Hessian eig 0.0935..1.56 | half-width at 2e-4: 1.44e-03..5.88e-03
+   F 0.0080876270 (+2.3e-06) gaps [1.984 1.043 1.973 1.044 1.973 1.043 1.984] | Hessian eig 0.0904..1.53 | half-width at 2e-4: 1.45e-03..5.98e-03

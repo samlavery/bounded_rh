@@ -1,0 +1,10 @@
+R8 N=32 y=0.03: most negative Delta_B/2 -0.0015 | Delta_B/2 <= -0.001: min W +2.3913 (slack +2.3933) | Delta_B/2 <= -0.010: no feasible seed
+R8 N=32 y=0.05: most negative Delta_B/2 -0.0050 | Delta_B/2 <= -0.001: min W +2.2095 (slack +2.2115) | Delta_B/2 <= -0.010: no feasible seed
+R8 N=32 y=0.10: most negative Delta_B/2 -0.0336 | Delta_B/2 <= -0.001: min W +2.1815 (slack +2.1835) | Delta_B/2 <= -0.010: min W +2.4110 (slack +2.4310)
+R8 N=32 y=0.20: most negative Delta_B/2 -0.1062 | Delta_B/2 <= -0.001: min W +2.3940 (slack +2.3960) | Delta_B/2 <= -0.010: min W +2.4596 (slack +2.4796)
+R8 N=32 y=0.30: most negative Delta_B/2 +0.3450 | Delta_B/2 <= -0.001: no feasible seed | Delta_B/2 <= -0.010: no feasible seed
+joint N=32 y=0.03: most negative Delta_B/2 -0.0014 | Delta_B/2 <= -0.001: min W +2.3920 (slack +2.3940) | Delta_B/2 <= -0.010: no feasible seed
+joint N=32 y=0.05: most negative Delta_B/2 -0.0084 | Delta_B/2 <= -0.001: min W +2.2476 (slack +2.2496) | Delta_B/2 <= -0.010: no feasible seed
+joint N=32 y=0.10: most negative Delta_B/2 -0.0327 | Delta_B/2 <= -0.001: min W +2.1694 (slack +2.1714) | Delta_B/2 <= -0.010: min W +2.4157 (slack +2.4357)
+joint N=32 y=0.20: most negative Delta_B/2 -0.0538 | Delta_B/2 <= -0.001: min W +2.3177 (slack +2.3197) | Delta_B/2 <= -0.010: min W +2.3734 (slack +2.3934)
+joint N=32 y=0.30: most negative Delta_B/2 +0.3444 | Delta_B/2 <= -0.001: no feasible seed | Delta_B/2 <= -0.010: no feasible seed

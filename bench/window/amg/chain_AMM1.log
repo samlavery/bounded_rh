@@ -1,0 +1,15 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:32:15)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:32:45)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:33:16)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:33:46)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:34:16)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:34:46)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:35:16)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:35:46)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:36:16)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:36:46)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:37:16)
+== AMW/CMLeaf exit=0 wall=12.83s peak=841MB
+== AMW/AMM1Inst exit=0 wall=201.78s peak=2235MB
+== AMW/AMM1Data exit=0 wall=185.05s peak=2691MB
+EXIT 0

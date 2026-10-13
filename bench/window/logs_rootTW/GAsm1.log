@@ -1,0 +1,28 @@
+rootTW/AMW/GAsm1.lean:59:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+rootTW/AMW/GAsm1.lean:70:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true, show (2 : ℕ) ≠ 0 by norm_num, show (2 : ℕ) ≠ 1 by norm_num]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+rootTW/AMW/GAsm1.lean:87:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+rootTW/AMW/GAsm1.lean:96:24: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_ne_zero, if_false, if_true, show (2 : ℕ) ≠ 0 by norm_num, show (2 : ℕ) ≠ 1 by norm_num]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

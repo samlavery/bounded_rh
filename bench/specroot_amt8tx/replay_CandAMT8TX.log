@@ -1,0 +1,20 @@
+uncaught exception: failed to open file 'specroot_amt8tx/CandAMT8TX.olean': No such file or directory
+        3.89 real         0.46 user         1.41 sys
+          1330806784  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               74771  page reclaims
+               14115  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                2746  voluntary context switches
+                8705  involuntary context switches
+         10670170010  instructions retired
+          5687542294  cycles elapsed
+           226780856  peak memory footprint
+REPLAY EXIT 1

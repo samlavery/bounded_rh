@@ -1,0 +1,110 @@
+[private_check] waiting 21:27:53
+[private_check] waiting 21:28:23
+[private_check] waiting 21:28:53
+[private_check] waiting 21:29:23
+[private_check] waiting 21:29:53
+[private_check] waiting 21:30:23
+[private_check] waiting 21:30:53
+[private_check] waiting 21:31:23
+[private_check] waiting 21:31:53
+[private_check] waiting 21:32:23
+[private_check] waiting 21:32:53
+[private_check] waiting 21:33:23
+[private_check] waiting 21:33:53
+[private_check] waiting 21:34:23
+[private_check] waiting 21:34:53
+[private_check] waiting 21:35:23
+[private_check] waiting 21:35:53
+[private_check] waiting 21:36:23
+[private_check] waiting 21:36:53
+[private_check] waiting 21:37:23
+[private_check] waiting 21:37:53
+[private_check] waiting 21:38:23
+[private_check] waiting 21:38:53
+[private_check] waiting 21:39:23
+[private_check] waiting 21:39:53
+[private_check] waiting 21:40:23
+[private_check] waiting 21:40:53
+[private_check] waiting 21:41:23
+[private_check] waiting 21:41:53
+[private_check] waiting 21:42:23
+[private_check] waiting 21:42:53
+[private_check] waiting 21:43:23
+[private_check] waiting 21:43:53
+[private_check] waiting 21:44:23
+[private_check] waiting 21:44:53
+[private_check] waiting 21:45:23
+[private_check] waiting 21:45:53
+[private_check] waiting 21:46:23
+[private_check] waiting 21:46:53
+[private_check] waiting 21:47:23
+[private_check] waiting 21:47:53
+[private_check] waiting 21:48:24
+[private_check] waiting 21:48:54
+[private_check] waiting 21:49:24
+[private_check] waiting 21:49:54
+[private_check] waiting 21:50:24
+[private_check] waiting 21:50:54
+[private_check] waiting 21:51:24
+[private_check] waiting 21:51:54
+[private_check] waiting 21:52:24
+[private_check] waiting 21:52:54
+[private_check] waiting 21:53:24
+[private_check] waiting 21:53:54
+[private_check] waiting 21:54:24
+[private_check] waiting 21:54:54
+[private_check] waiting 21:55:24
+[private_check] waiting 21:55:54
+[private_check] waiting 21:56:24
+[private_check] waiting 21:56:54
+[private_check] waiting 21:57:24
+[private_check] waiting 21:57:54
+[private_check] waiting 21:58:24
+[private_check] waiting 21:58:54
+[private_check] waiting 21:59:24
+[private_check] waiting 21:59:54
+[private_check] waiting 22:00:24
+[private_check] waiting 22:00:54
+[private_check] waiting 22:01:24
+[private_check] waiting 22:01:54
+[private_check] waiting 22:02:24
+[private_check] waiting 22:02:54
+[private_check] waiting 22:03:24
+[private_check] waiting 22:03:54
+[private_check] waiting 22:04:24
+[private_check] waiting 22:04:54
+[private_check] waiting 22:05:24
+[private_check] waiting 22:05:54
+[private_check] waiting 22:06:24
+[private_check] waiting 22:06:54
+[private_check] waiting 22:07:24
+[private_check] waiting 22:07:54
+[private_check] waiting 22:08:24
+[private_check] waiting 22:08:54
+[private_check] waiting 22:09:24
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      344.71 real       331.01 user        13.13 sys
+          4490876816  peak memory footprint
+BUILD EXIT 0
+module constants: 2003; imports: 10
+kernel replay of 2003 constants: 224012 ms
+      239.55 real       221.48 user        15.79 sys
+          4486429184  peak memory footprint
+REPLAY EXIT 0
+== Cand8c export
+export exit 0
+       35.81 real        24.34 user        10.30 sys
+          1564888600  peak memory footprint
+export bytes 629402591
+== Cand8c nanoda
+nanoda exit 0
+      220.76 real       211.78 user         8.89 sys
+          5597598160  peak memory footprint
+== Cand8c lean replay (full closure)
+parse_ms 14406 constants 72165
+replay_ms 281142 OK
+replayx exit 0
+      295.73 real       289.14 user         6.37 sys
+          2752793096  peak memory footprint

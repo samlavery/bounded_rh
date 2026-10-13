@@ -1,0 +1,8 @@
+R8: int q a / int q 0.319568 | delta_true 0.495338 at ('s', 5) (isolated N=96: 0.495386) | kappa single 0.6774559, kappa delta_true 0.6774243
+   lowest five (relative to isolated): s5:0.99990 s96:1.00000 s80:1.00000 s64:1.00000 s56:1.00000
+   L3 y-Hessian/Delta_1 (N=32) +14.096 | far field N=64 (vacancy -2): K=0:8.81e-03/0.0063 K=1:1.46e-03/0.8357 K=2:5.24e-04/0.9409 K=3:1.20e-04/0.9865 K=4:1.14e-04/0.9871 K=5:6.98e-05/0.9921 K=6:4.38e-05/0.9951 K=8:2.21e-05/0.9975 K=10:1.26e-05/0.9986 K=15:4.64e-06/0.9995 K=20:1.71e-06/0.9998
+SHARPNESS R8: kappa 0.6774243, delta_true 0.495338, int q a 0.159784: to beat 0.6735 need 98.7981% of delta_true; to reach 0.676 99.5604%
+winopt_smoothfit_single_N24.json: int q a / int q 0.309313 | delta_true 0.484424 at ('s', 24) (isolated N=96: 0.484444) | kappa single 0.6807552, kappa delta_true 0.6807420
+   lowest five (relative to isolated): s24:0.99996 s26:1.00000 s96:1.00000 s80:1.00000 s64:1.00000
+   L3 y-Hessian/Delta_1 (N=32) +14.361 | far field N=64 (vacancy -2): K=0:3.16e-02/0.0015 K=1:6.33e-03/0.7998 K=2:2.25e-03/0.9287 K=3:5.81e-04/0.9816 K=4:5.27e-04/0.9833 K=5:3.10e-04/0.9902 K=6:1.97e-04/0.9938 K=8:9.37e-05/0.9970 K=10:4.50e-05/0.9986 K=15:1.24e-05/0.9996 K=20:3.85e-06/0.9999
+SHARPNESS winopt_smoothfit_single_N24.json: kappa 0.6807420, delta_true 0.484424, int q a 0.154656: to beat 0.6735 need 97.7819% of delta_true; to reach 0.676 98.5364%

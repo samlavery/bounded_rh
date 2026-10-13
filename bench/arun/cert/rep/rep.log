@@ -1,0 +1,155 @@
+== S sizing delta=0.00005 Sat Oct 10 10:30:11 PDT 2026
+delta=5e-05 cN=805124 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0): 126 leaves (20s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 51 leaves (28s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 139 leaves (51s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 92 leaves (65s)
+  root 4 (0, 0, 0, 1, 0, 0, 0): 247 leaves (108s)
+  root 5 (0, 0, 0, 1, 0, 1, 0): 179 leaves (137s)
+  root 6 (0, 0, 0, 1, 1, 0, 0): 131 leaves (158s)
+  root 7 (0, 0, 0, 1, 1, 1, 0): 103 leaves (174s)
+  root 8 (0, 0, 1, 0, 0, 0, 0): 121 leaves (194s)
+  root 9 (0, 0, 1, 0, 0, 1, 0): 190 leaves (226s)
+  root 10 (0, 0, 1, 0, 1, 0, 0): 380 leaves (285s)
+  root 11 (0, 0, 1, 0, 1, 1, 0): 174 leaves (313s)
+  root 12 (0, 0, 1, 1, 0, 0, 0): 122 leaves (333s)
+  root 13 (0, 0, 1, 1, 0, 1, 0): 169 leaves (359s)
+  root 14 (0, 0, 1, 1, 1, 0, 0): 138 leaves (380s)
+  root 15 (0, 0, 1, 1, 1, 1, 0): 30 leaves (384s)
+  root 16 (0, 1, 0, 0, 0, 0, 0): 51 leaves (392s)
+  root 17 (0, 1, 0, 0, 0, 1, 0): 187 leaves (424s)
+  root 18 (0, 1, 0, 0, 1, 0, 0): 225 leaves (462s)
+  root 19 (0, 1, 0, 0, 1, 1, 0): 111 leaves (480s)
+  root 20 (0, 1, 0, 1, 0, 0, 0): 305 leaves (533s)
+  root 21 (0, 1, 0, 1, 0, 1, 0): 249 leaves (576s)
+  root 22 (0, 1, 0, 1, 1, 0, 0): 213 leaves (612s)
+  root 23 (0, 1, 0, 1, 1, 1, 0): 115 leaves (627s)
+  root 24 (0, 1, 1, 0, 0, 0, 0): 107 leaves (645s)
+  root 25 (0, 1, 1, 0, 0, 1, 0): 109 leaves (662s)
+  root 26 (0, 1, 1, 0, 1, 0, 0): 176 leaves (689s)
+  root 27 (0, 1, 1, 0, 1, 1, 0): 96 leaves (701s)
+  root 28 (0, 1, 1, 1, 0, 0, 0): 109 leaves (718s)
+  root 29 (0, 1, 1, 1, 0, 1, 0): 112 leaves (733s)
+  root 30 (0, 1, 1, 1, 1, 0, 0): 31 leaves (737s)
+  root 31 (0, 1, 1, 1, 1, 1, 0): 10 leaves (738s)
+  bisection: 4598 leaves (Z 0, M 4419, empty 0), 4566 splits, 2260 at region boundaries (738s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2166 points (45161 point cells); failing 0 (741s)
+leaves 4598 kinds {6: 4419, 0: 179} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 4566 (pair 3349); walk bits 1181520 (257.0 per leaf; multipliers 3028 x 11 bits); M nonzero multipliers [(0, 1836), (1, 2182), (2, 360), (3, 38), (4, 3)]; constraints per M cell [(21, 4419)]; w 1984 d 2240 pts 2166 ptc 45161 bad 0 MSTAT lp 15997 (741s)
+nodes visited 9164 (leaves 4598 + splits 4566); explicit constraints per node: mean 21.00, dist [(21, 9164)]
+walk: 1181520 bits = 0.295 MB hex, 0.197 MB base64 (roots run); x8.73: 2.58 MB hex, 1.72 MB base64
+      753.20 real       745.84 user         3.06 sys
+          1876164608  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              241461  page reclaims
+                 133  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  41  voluntary context switches
+              189851  involuntary context switches
+      10496742655390  instructions retired
+       2444046024149  cycles elapsed
+          1853654816  peak memory footprint
+== E emit Sat Oct 10 10:42:44 PDT 2026
+  root 0 (0, 0, 0, 0, 0, 0, 0): 126 leaves (1s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 51 leaves (1s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 139 leaves (1s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 92 leaves (1s)
+  root 4 (0, 0, 0, 1, 0, 0, 0): 247 leaves (1s)
+  root 5 (0, 0, 0, 1, 0, 1, 0): 179 leaves (1s)
+  root 6 (0, 0, 0, 1, 1, 0, 0): 131 leaves (1s)
+  root 7 (0, 0, 0, 1, 1, 1, 0): 103 leaves (1s)
+  root 8 (0, 0, 1, 0, 0, 0, 0): 121 leaves (1s)
+  root 9 (0, 0, 1, 0, 0, 1, 0): 190 leaves (1s)
+  root 10 (0, 0, 1, 0, 1, 0, 0): 380 leaves (1s)
+  root 11 (0, 0, 1, 0, 1, 1, 0): 174 leaves (1s)
+  root 12 (0, 0, 1, 1, 0, 0, 0): 122 leaves (1s)
+  root 13 (0, 0, 1, 1, 0, 1, 0): 169 leaves (1s)
+  root 14 (0, 0, 1, 1, 1, 0, 0): 138 leaves (1s)
+  root 15 (0, 0, 1, 1, 1, 1, 0): 30 leaves (1s)
+  root 16 (0, 1, 0, 0, 0, 0, 0): 51 leaves (1s)
+  root 17 (0, 1, 0, 0, 0, 1, 0): 187 leaves (1s)
+  root 18 (0, 1, 0, 0, 1, 0, 0): 225 leaves (1s)
+  root 19 (0, 1, 0, 0, 1, 1, 0): 111 leaves (1s)
+  root 20 (0, 1, 0, 1, 0, 0, 0): 305 leaves (1s)
+  root 21 (0, 1, 0, 1, 0, 1, 0): 249 leaves (1s)
+  root 22 (0, 1, 0, 1, 1, 0, 0): 213 leaves (1s)
+  root 23 (0, 1, 0, 1, 1, 1, 0): 115 leaves (1s)
+  root 24 (0, 1, 1, 0, 0, 0, 0): 107 leaves (1s)
+  root 25 (0, 1, 1, 0, 0, 1, 0): 109 leaves (1s)
+  root 26 (0, 1, 1, 0, 1, 0, 0): 176 leaves (1s)
+  root 27 (0, 1, 1, 0, 1, 1, 0): 96 leaves (1s)
+  root 28 (0, 1, 1, 1, 0, 0, 0): 109 leaves (1s)
+  root 29 (0, 1, 1, 1, 0, 1, 0): 112 leaves (1s)
+  root 30 (0, 1, 1, 1, 1, 0, 0): 31 leaves (1s)
+  root 31 (0, 1, 1, 1, 1, 1, 0): 10 leaves (1s)
+  bisection: 4598 leaves (Z 0, M 4419, empty 0), 0 splits, 0 at region boundaries (1s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2166 points (45161 point cells); failing 0 (5s)
+replay: {'split': 4566, 6: 4419, 0: 179}; leaves 4598 kinds {6: 4419, 0: 179}; verification failures 0 (5s)
+walks: 32 roots, 1132496 bits = 283.1 KB hex; encode/decode round trip OK
+wrote /Users/samuellavery/work/riemann-submission/bench/arun/cert/rep/DATA_rep.json: 0.50 MB json; points 2166, w 1984 cells, d 2240 cells
+       17.58 real        17.08 user         0.28 sys
+          2005172224  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              127978  page reclaims
+                 197  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 868  voluntary context switches
+                2280  involuntary context switches
+        270966098620  instructions retired
+         56552882545  cycles elapsed
+          1983547264  peak memory footprint
+== D data module Sat Oct 10 10:43:01 PDT 2026
+chunks 32 boundaries 0
+/Users/samuellavery/work/riemann-submission/bench/eight/am8/../../window/../arun/cert/rep/root/AMW/PC8C5BFData.lean bytes 717153 walks 32 bads [1, 2, 2, 2, 2, 2, 1] point blocks 219
+        0.54 real         0.51 user         0.01 sys
+            28753920  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2499  page reclaims
+                 107  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  31  voluntary context switches
+                 100  involuntary context switches
+          8416702693  instructions retired
+          1729218002  cycles elapsed
+            20677040  peak memory footprint
+== I instance module Sat Oct 10 10:43:02 PDT 2026
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/rep/root/AMW/PC8C5BFInst.lean bytes 201840 pairs 28 constraints 21 active terms 26 SIG 6250000000000000 table entries 0 0 0 FIXED closure candidates per child: min 43 max 43 mean 43.0
+        0.05 real         0.04 user         0.00 sys
+            23871488  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2266  page reclaims
+                  43  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   3  voluntary context switches
+                  41  involuntary context switches
+           557217724  instructions retired
+           178442023  cycles elapsed
+            15745408  peak memory footprint
+== done Sat Oct 10 10:43:02 PDT 2026

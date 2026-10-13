@@ -1,0 +1,1 @@
+window R8b, N=256: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%

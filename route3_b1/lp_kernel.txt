@@ -1,0 +1,5 @@
+window [0.5, 1] (ratio 2): positivity range x* = 3.141  (in units of T_max*Delta; = 1.571 in units of T_min*Delta)
+window [0.25, 1] (ratio 4): positivity range x* = 8.192  (in units of T_max*Delta; = 2.048 in units of T_min*Delta)
+window [0.1, 1] (ratio 10): positivity range x* = 25.685  (in units of T_max*Delta; = 2.569 in units of T_min*Delta)
+window [0.05, 1] (ratio 20): positivity range x* = 56.442  (in units of T_max*Delta; = 2.822 in units of T_min*Delta)
+window [0.01, 1] (ratio 100): positivity range x* = 199.999  (in units of T_max*Delta; = 2.000 in units of T_min*Delta)

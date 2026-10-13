@@ -1,0 +1,4 @@
+fit to the general window: max rel. residual 4.89e-05; kappa_D,N(fit) 0.6819161; kappa_D,N(R8) 0.6779590
+it 0: cut value 0.9997255  true kappa_D,N 0.9997706  new cuts 8  (1s)
+it 1: cut value 1.0000000  true kappa_D,N 0.9998686  new cuts 0  (1s)
+FAMILY BEST N=24: kappa_D,N 0.9998686 (Delta_1/N -76.902697, min qf -3.8e+00); continuum kappa_D 1.0002271; c = [ 1.70891   1.972647  2.054936  2.073864  1.610033  1.099772  0.899363  0.586111  0.42404   0.407025  0.210808  0.01187  -0.126837  0.070507  0.21752   0.509603  0.882449  1.062596  1.228737  1.14454   0.980983  0.644181  0.516454  0.175204]

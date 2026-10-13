@@ -1,0 +1,8 @@
+[AMT8] 16 convex regions, 275 chain cells
+  bisection: 783 leaves (Z 272, S 0, basin 0); face nodes 0 (collapses 0) (9s)
+  fix-up: 2 re-decided; tables: w 992 cells, d 692 cells, 121 points (756 point cells); failing 0 (9s)
+[AMT8] sizing: 783 leaves (Z 272, S 0, basin 0); points 121 (756 point cells) (9s)
+[AMT8] re-verified on the final tables: Z 272, M 473, reflected 38; failures 0
+[AMT8] point table: 121 points, 32 blocks, 756 stored triples
+[AMT8] delta=0.3 cN=557992 leaves=783 (Z 272, M 473, reflected 38) w=992 d=692 points=121 chunks=32 bits=67388 order=[27, 0, 14, 19, 18, 7, 15, 13, 25, 22, 9, 3, 20, 21, 8, 23, 4, 17, 1, 2, 5, 6, 10, 11, 12, 16, 24, 26] data=180594 checker=146236 (10s)
+EXIT 0

@@ -1,0 +1,4 @@
+minimise Q_pp + 0.000 T_g, depths in [0.8, 3]
+  P=12: min +1.0756e+01 | Q_pp +1.0756e+01 | T_g 74.483 | Q_pp/T_g +0.1444 | depths>0.81: 5
+  P=16: min -2.4248e+01 | Q_pp -2.4248e+01 | T_g 168.215 | Q_pp/T_g -0.1441 | depths>0.81: 7
+  P=24: min -9.0795e+01 | Q_pp -9.0795e+01 | T_g 291.086 | Q_pp/T_g -0.3119 | depths>0.81: 8

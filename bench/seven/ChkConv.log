@@ -1,0 +1,23 @@
+'Zeta23Ext.Bridge.ThreePoint.PyrD.cterm_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23Ext.Bridge.ThreePoint.cellConv_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23Ext.Bridge.ThreePoint.hasDerivAt_w1' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23Ext.Bridge.ThreePoint.PyrD.chainOk_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23Ext.Bridge.ThreePoint.PyrD.lbDr_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+       10.56 real         1.68 user         8.90 sys
+          5727354880  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              426442  page reclaims
+                   7  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                3833  involuntary context switches
+         54287742478  instructions retired
+         38128798975  cycles elapsed
+           865849120  peak memory footprint

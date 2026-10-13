@@ -1,0 +1,2 @@
+Q=3 c=0.00231000: OK leaves=3847 tuples=64 bad-sizes=[4, 4, 4] (1s)
+[FourN] cells=1022 leaves=3847 bits=7630 walk_thms=124 bytes=260035

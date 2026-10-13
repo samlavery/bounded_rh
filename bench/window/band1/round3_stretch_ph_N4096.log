@@ -1,0 +1,7 @@
+window R8b, N=4096: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%
+N = 4096: h-hat(0) = 0.01647; lattice P_h = 0.0000 (low 0.0000, Bragg 0.0000), T_g = 5.5990
+L =   16: Delta P_h = +4.7421 (per unit length +0.29638) = low band +0.1487 (+0.00929/L) + Bragg region +4.5934 (+0.28709/L) | Delta T_g = +5.2312 (+0.32695/L)
+L =   32: Delta P_h = +9.0243 (per unit length +0.28201) = low band +0.3894 (+0.01217/L) + Bragg region +8.6348 (+0.26984/L) | Delta T_g = +7.3877 (+0.23087/L)
+L =   64: Delta P_h = +18.4558 (per unit length +0.28837) = low band +0.8988 (+0.01404/L) + Bragg region +17.5571 (+0.27433/L) | Delta T_g = +10.1578 (+0.15872/L)
+L =  128: Delta P_h = +30.9236 (per unit length +0.24159) = low band +1.9698 (+0.01539/L) + Bragg region +28.9537 (+0.22620/L) | Delta T_g = +19.1680 (+0.14975/L)
+L =  256: Delta P_h = +11.6028 (per unit length +0.04532) = low band +4.2464 (+0.01659/L) + Bragg region +7.3564 (+0.02874/L) | Delta T_g = +69.5305 (+0.27160/L)

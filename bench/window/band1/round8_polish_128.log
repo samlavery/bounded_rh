@@ -1,0 +1,6 @@
+window R8b, N=128: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%
+stacks N=128 rb32 Y=0.4 stack m=3 y=0.6 centre        R +0.5769 -> +0.5769 (dB -37.2821 s 64.6236 LP +27.3415; P_h 26.546 T_g 38.078; R_loc +0.980) y 0.001-1.427 [nit 25005, ABNORMAL: ]
+stacks N=128 rb32 Y=0.2 stack m=3 y=0.3 centre        R +0.5769 -> +0.5769 (dB -37.2821 s 64.6236 LP +27.3415; P_h 26.546 T_g 38.078; R_loc +0.980) y 0.001-1.427 [nit 2, ABNORMAL: ]
+stacks N=128 rb32 Y=0.4 stack m=3 y=0.3 centre        R +0.5769 -> +0.5769 (dB -37.2821 s 64.6235 LP +27.3414; P_h 26.546 T_g 38.078; R_loc +0.980) y 0.001-1.427 [nit 25565, CONVERGENCE: RELATIVE REDUCTION OF F <= ]
+stacks N=128 rb32 Y=0.4 stack m=3 y=0.9 centre        R +0.5769 -> +0.5769 (dB -37.2821 s 64.6235 LP +27.3415; P_h 26.545 T_g 38.078; R_loc +0.980) y 0.001-1.427 [nit 4, ABNORMAL: ]
+mixed  N=128 r7 c rb32 Y=0.2 on-line mult 2 en        R +0.5296 -> +0.5296 (dB -2.8416 s 5.3654 LP +2.5238; P_h 2.150 T_g 3.216; R_loc +0.885) y 0.001-0.660 [nit 0, ABNORMAL: ]

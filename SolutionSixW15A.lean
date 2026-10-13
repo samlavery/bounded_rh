@@ -1,0 +1,8075 @@
+/-
+Riemann.fail submission — an unconditional critical-line proportion of 0.6727382,
+strictly above the pinned record 2 − 1/cMT = 0.67250070…
+
+The mathematics: Ainta's n-point simple-zero refinement of Theorem D of the pinned
+Zeta23 development (the Montgomery–Taylor window at λ = 1), specialised to n = 3 and made
+unconditional by a kernel-checked finite certificate (`three_point_cert`: 368 interval cell
+lemmas and 487 leaves of a two-dimensional bisection), assembled with the window-count
+pressure bookkeeping (`n_point_bound_w'`).  The resulting constant is
+`(447000000·H − 297200)/446400399 = 0.67273822…` with `H = HD 1 = 3/2 − (1/√2)cot(1/√2)`,
+and `H` is enclosed to `1.1·10⁻⁸` by a twelve-term Taylor argument, which is what places
+the exact rational `3363691/5000000` strictly between the record and the proved constant.
+
+Every declaration below is proved from the pinned `anthropics/zeta-23-lean` and Mathlib;
+no placeholders, no `native_decide`, no additional axioms.  Sources: the Zeta Lab bridge
+(`Zeta23Ext.Bridge`, `Zeta23Ext.BridgeW`, `ThreePoint`), MIT-licensed, ported here into one
+file; the counting functions and `cMT` are those of `ChallengeDeps`.
+-/
+import ChallengeDeps.CandidateSpec
+import Zeta23.ZeroSide.RankTraceMult
+import Zeta23.ThmD.Mult
+import Zeta23.ThmD.ZeroSideD
+import Zeta23.PrimeSideA.EndsE1
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc
+import Mathlib.Analysis.Real.Pi.Bounds
+import Zeta23.Main
+import Zeta23.Final
+import Zeta23.Statement.SeamClosed
+import Zeta23.ThmD.Functional
+
+set_option linter.all false
+
+set_option Elab.async false
+
+/-! ###### source module: Zeta23Ext/StableRankTrace.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open Zeta23.ZeroSide.RankTraceMult
+open scoped ComplexOrder
+
+namespace Zeta23Ext.StableRankTrace
+
+def Psi (t : ℝ) : ℝ := if t ≤ 2 then (t - 1) ^ 2 else 2 * t - 3
+
+lemma Psi_eq_gc_two_add_one (t : ℝ) : Psi t = gc 2 t + 1 := by
+  unfold Psi
+  split_ifs with h
+  · rw [gc_of_le h]; ring
+  · rw [gc_of_ge (le_of_lt (not_le.mp h))]; ring
+
+@[simp] lemma Psi_zero : Psi 0 = 1 := by norm_num [Psi]
+
+lemma Psi_nonneg (t : ℝ) : 0 ≤ Psi t := by
+  unfold Psi
+  split_ifs with h
+  · positivity
+  · have : (2 : ℝ) < t := not_le.mp h
+    linarith
+
+lemma two_mul_sub_one_add_Psi_le {p nu : ℝ} (hp : 0 ≤ p) (hnu : 0 ≤ nu) :
+    2 * p - 1 + Psi p ≤ (p - nu) ^ 2 + 4 * nu := by
+  have h := sq_sub_ge_gc (c := 2) hp hnu (by norm_num)
+  rw [Psi_eq_gc_two_add_one]
+  linarith
+
+lemma Psi_attained (p : ℝ) :
+    (p - max (p - 2) 0) ^ 2 + 4 * max (p - 2) 0 = 2 * p - 1 + Psi p := by
+  unfold Psi
+  rcases le_or_gt p 2 with h | h
+  · rw [max_eq_right (by linarith), if_pos h]; ring
+  · rw [max_eq_left (by linarith), if_neg (not_le.mpr h)]; ring
+
+section Eigen
+
+variable {𝕜 : Type*} [RCLike 𝕜] {n : Type*} [Fintype n] [DecidableEq n]
+
+def eigCols {P : Matrix n n 𝕜} (hP : P.PosSemidef) : n → n → 𝕜 :=
+  fun j a => (hP.1.eigenvectorUnitary : Matrix n n 𝕜) a j
+
+lemma wmat_eigCols {P : Matrix n n 𝕜} (hP : P.PosSemidef) :
+    Wmat hP.1.eigenvalues (eigCols hP)
+      = (hP.1.eigenvectorUnitary : Matrix n n 𝕜)
+        * diagonal (fun j => ((Real.sqrt (hP.1.eigenvalues j) : ℝ) : 𝕜)) := by
+  ext a j
+  simp only [Wmat, eigCols, Matrix.mul_diagonal]
+  ring
+
+lemma pmat_eigCols {P : Matrix n n 𝕜} (hP : P.PosSemidef) :
+    Pmat hP.1.eigenvalues (eigCols hP) = P := by
+  have hdd : (fun j => ((Real.sqrt (hP.1.eigenvalues j) : ℝ) : 𝕜)
+        * ((Real.sqrt (hP.1.eigenvalues j) : ℝ) : 𝕜))
+      = RCLike.ofReal ∘ hP.1.eigenvalues := by
+    funext j
+    simp only [Function.comp_apply, ← RCLike.ofReal_mul]
+    rw [Real.mul_self_sqrt (hP.eigenvalues_nonneg j)]
+  have hstar : (diagonal (fun j => ((Real.sqrt (hP.1.eigenvalues j) : ℝ) : 𝕜)))ᴴ
+      = diagonal (fun j => ((Real.sqrt (hP.1.eigenvalues j) : ℝ) : 𝕜)) := by
+    rw [diagonal_conjTranspose]
+    simp [RCLike.star_def]
+  unfold Pmat
+  rw [wmat_eigCols hP, conjTranspose_mul, hstar, ← Matrix.mul_assoc,
+    Matrix.mul_assoc _ (diagonal _) (diagonal _), diagonal_mul_diagonal, hdd]
+  conv_rhs => rw [hP.1.spectral_theorem, Unitary.conjStarAlgAut_apply]
+  rfl
+
+lemma xsq_eigCols {P : Matrix n n 𝕜} (hP : P.PosSemidef) (j : n) :
+    xsq (eigCols hP) j = 1 := by
+  have hDS := normSqMatrix_mem_doublyStochastic_of_unitary (hP.1.eigenvectorUnitary).2
+  rw [mem_doublyStochastic_iff_sum] at hDS
+  simpa [xsq, eigCols, normSqMatrix] using hDS.2.2 j
+
+end Eigen
+
+section Main
+
+variable {𝕜 : Type*} [RCLike 𝕜] {n r : Type*} [Fintype n] [DecidableEq n]
+  [Fintype r] [DecidableEq r]
+
+lemma rtrace_self_mul_conjTranspose (V : Matrix n r 𝕜) :
+    rtrace (V * Vᴴ) = ∑ j, ∑ i, ‖V i j‖ ^ 2 := by
+  unfold rtrace
+  rw [trace_mul_comm, Matrix.trace, map_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [Matrix.diag_apply, Matrix.mul_apply, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Matrix.conjTranspose_apply, RCLike.star_def, RCLike.conj_mul]
+  simp
+
+lemma rtrace_specMap_Psi (V : Matrix n r 𝕜) :
+    rtrace (specMap (isHermitian_conjTranspose_mul_self V) Psi)
+      = (∑ i, gc 2 ((Matrix.posSemidef_self_mul_conjTranspose V).1.eigenvalues i))
+        + (Fintype.card r : ℝ) := by
+  rw [rtrace_specMap]
+  have hshift : ∀ x : ℝ, Psi x = gc 2 x + 1 := Psi_eq_gc_two_add_one
+  simp only [hshift]
+  rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, mul_one, Finset.card_univ]
+  congr 1
+  exact (sum_eigenvalues_comm V (gc 2) (gc_zero (by norm_num))).symm
+
+theorem stable_rank_trace_sharp (V : Matrix n r 𝕜)
+    {Q : Matrix n n 𝕜} (hQ : Q.IsHermitian) {b : ℕ} (hb : posIndex hQ ≤ b) :
+    2 * rtrace (V * Vᴴ) + 4 * rtrace Q - (Fintype.card r : ℝ) - 4 * b
+        + rtrace (specMap (isHermitian_conjTranspose_mul_self V) Psi)
+      ≤ frobSq (V * Vᴴ + Q) := by
+  classical
+  have hP : (V * Vᴴ).PosSemidef := Matrix.posSemidef_self_mul_conjTranspose V
+  have hm : ∀ j, 0 ≤ hP.1.eigenvalues j := fun j => hP.eigenvalues_nonneg j
+  have hR := rank_trace_mult hm (eigCols hP) hQ hb (c := 2) (by norm_num)
+  rw [pmat_eigCols hP] at hR
+  have hx : ∀ j, hP.1.eigenvalues j * xsq (eigCols hP) j = hP.1.eigenvalues j := by
+    intro j; rw [xsq_eigCols hP j, mul_one]
+  simp only [hx] at hR
+  rw [rtrace_specMap_Psi V]
+  have hcast : ((2 : ℝ) ^ 2) * (b : ℝ) = 4 * b := by norm_num
+  linarith [hR]
+
+theorem stable_rank_trace (V : Matrix n r 𝕜) (hV : ∀ j, ∑ i, ‖V i j‖ ^ 2 ≤ 1)
+    {Q : Matrix n n 𝕜} (hQ : Q.IsHermitian) {b : ℕ} (hb : posIndex hQ ≤ b) :
+    4 * rtrace (V * Vᴴ + Q) - 3 * (Fintype.card r : ℝ) - 4 * b
+        + rtrace (specMap (isHermitian_conjTranspose_mul_self V) Psi)
+      ≤ frobSq (V * Vᴴ + Q) := by
+  have hsharp := stable_rank_trace_sharp V hQ hb
+  have hle : rtrace (V * Vᴴ) ≤ (Fintype.card r : ℝ) := by
+    rw [rtrace_self_mul_conjTranspose V]
+    calc ∑ j, ∑ i, ‖V i j‖ ^ 2 ≤ ∑ _j : r, (1 : ℝ) := Finset.sum_le_sum fun j _ => hV j
+      _ = (Fintype.card r : ℝ) := by simp
+  rw [rtrace_add]
+  linarith
+
+theorem stable_rank_trace_no_defect (V : Matrix n r 𝕜) (hV : ∀ j, ∑ i, ‖V i j‖ ^ 2 ≤ 1)
+    {Q : Matrix n n 𝕜} (hQ : Q.IsHermitian) {b : ℕ} (hb : posIndex hQ ≤ b) :
+    4 * rtrace (V * Vᴴ + Q) - 3 * (Fintype.card r : ℝ) - 4 * b
+      ≤ frobSq (V * Vᴴ + Q) := by
+  have hP : (V * Vᴴ).PosSemidef := Matrix.posSemidef_self_mul_conjTranspose V
+  have hr : (V * Vᴴ).rank ≤ Fintype.card r := by
+    rw [Matrix.rank_self_mul_conjTranspose]
+    exact Matrix.rank_le_card_width V
+  have h := rank_trace_ineq_two hP hQ hr hb
+  have hle : rtrace (V * Vᴴ) ≤ (Fintype.card r : ℝ) := by
+    rw [rtrace_self_mul_conjTranspose V]
+    calc ∑ j, ∑ i, ‖V i j‖ ^ 2 ≤ ∑ _j : r, (1 : ℝ) := Finset.sum_le_sum fun j _ => hV j
+      _ = (Fintype.card r : ℝ) := by simp
+  rw [rtrace_add]
+  linarith
+
+theorem stable_rank_trace_collapse (V : Matrix n r 𝕜) (hV : ∀ j, ∑ i, ‖V i j‖ ^ 2 ≤ 1)
+    {Q : Matrix n n 𝕜} (hQ : Q.IsHermitian) {b : ℕ} (hb : posIndex hQ ≤ b) :
+    4 * rtrace (V * Vᴴ + Q) - 3 * (Fintype.card r : ℝ) - 4 * b
+      ≤ frobSq (V * Vᴴ + Q) := by
+  have h := stable_rank_trace V hV hQ hb
+  have hpos : 0 ≤ rtrace (specMap (isHermitian_conjTranspose_mul_self V) Psi) := by
+    rw [rtrace_specMap]
+    exact Finset.sum_nonneg fun j _ => Psi_nonneg _
+  linarith
+
+theorem sharp_le_stable (V : Matrix n r 𝕜) (hV : ∀ j, ∑ i, ‖V i j‖ ^ 2 ≤ 1)
+    {Q : Matrix n n 𝕜} :
+    4 * rtrace (V * Vᴴ + Q) - 3 * (Fintype.card r : ℝ)
+      ≤ 2 * rtrace (V * Vᴴ) + 4 * rtrace Q - (Fintype.card r : ℝ) := by
+  have hle : rtrace (V * Vᴴ) ≤ (Fintype.card r : ℝ) := by
+    rw [rtrace_self_mul_conjTranspose V]
+    calc ∑ j, ∑ i, ‖V i j‖ ^ 2 ≤ ∑ _j : r, (1 : ℝ) := Finset.sum_le_sum fun j _ => hV j
+      _ = (Fintype.card r : ℝ) := by simp
+  rw [rtrace_add]
+  linarith
+
+end Main
+
+
+end Zeta23Ext.StableRankTrace
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/Defs.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg Filter
+open scoped ComplexOrder BigOperators
+open Zeta23 Zeta23.ZeroSide Zeta23.ThmD Zeta23Ext.StableRankTrace
+
+namespace Zeta23Ext.Bridge
+
+def Kfun (x : ℝ) : ℝ :=
+  ∫ t in (-(1 : ℝ) / 2)..(1 / 2), Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * x * t)
+
+def kfun (x : ℝ) : ℝ := Kfun x / Kfun 0
+
+def wfun (x : ℝ) : ℝ := kfun x ^ 2
+
+def ptsN (n : ℕ) (g : Fin (n - 1) → ℝ) (i : Fin n) : ℝ :=
+  ∑ j : Fin (n - 1), if (j : ℕ) < (i : ℕ) then g j else 0
+
+def F (n p : ℕ) (g : Fin (n - 1) → ℝ) : ℝ :=
+  (1 / (p : ℝ)) * ∑ i, g i
+    + ∑ i : Fin n, ∑ j : Fin n,
+        if (i : ℕ) < (j : ℕ) then
+          (2 / ((n : ℝ) - (((j : ℕ) - (i : ℕ) : ℕ) : ℝ))) * wfun (ptsN n g j - ptsN n g i)
+        else 0
+
+def pts (g : Fin 6 → ℝ) (i : Fin 7) : ℝ := ∑ j : Fin 6, if (j : ℕ) < (i : ℕ) then g j else 0
+
+def F6 (p : ℕ) (g : Fin 6 → ℝ) : ℝ :=
+  (1 / (p : ℝ)) * ∑ i, g i
+    + ∑ i : Fin 7, ∑ j : Fin 7,
+        if (i : ℕ) < (j : ℕ) then
+          (2 / ((7 : ℝ) - (((j : ℕ) - (i : ℕ) : ℕ) : ℝ))) * wfun (pts g j - pts g i)
+        else 0
+
+theorem pts_eq_ptsN (g : Fin 6 → ℝ) (i : Fin 7) : pts g i = ptsN 7 g i := rfl
+
+theorem F6_eq (p : ℕ) (g : Fin 6 → ℝ) : F6 p g = F 7 p g := rfl
+
+section Blocks
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def energyOn (x : ι → ℝ) (B : Finset ι) : ℝ :=
+  ∑ i ∈ B, ∑ j ∈ B, if i = j then 0 else wfun (x i - x j)
+
+def offDiagSqOn (G : Matrix ι ι ℂ) (B : Finset ι) : ℝ :=
+  ∑ i ∈ B, ∑ j ∈ B, if i = j then 0 else ‖G i j‖ ^ 2
+
+def spanOf (x : ι → ℝ) (B : Finset ι) : ℝ :=
+  if h : B.Nonempty then B.sup' h x - B.inf' h x else 0
+
+def IsInterval (x : ι → ℝ) (B : Finset ι) : Prop :=
+  ∀ i ∈ B, ∀ j ∈ B, ∀ k, x i ≤ x k → x k ≤ x j → k ∈ B
+
+lemma abs_sub_le_spanOf (x : ι → ℝ) {B : Finset ι} {i j : ι} (hi : i ∈ B) (hj : j ∈ B) :
+    |x i - x j| ≤ spanOf x B := by
+  have hne : B.Nonempty := ⟨i, hi⟩
+  unfold spanOf
+  rw [dif_pos hne, abs_le]
+  constructor
+  · linarith [Finset.le_sup' x hj, Finset.inf'_le x hi]
+  · linarith [Finset.le_sup' x hi, Finset.inf'_le x hj]
+
+lemma spanOf_nonneg (x : ι → ℝ) (B : Finset ι) : 0 ≤ spanOf x B := by
+  unfold spanOf
+  split_ifs with h
+  · obtain ⟨i, hi⟩ := h
+    linarith [Finset.le_sup' x hi, Finset.inf'_le x hi]
+  · exact le_rfl
+
+def defect {M : Matrix ι ι ℂ} (hM : M.IsHermitian) : ℝ := rtrace (specMap hM Psi)
+
+lemma defect_nonneg {M : Matrix ι ι ℂ} (hM : M.IsHermitian) : 0 ≤ defect hM := by
+  unfold defect
+  rw [rtrace_specMap]
+  exact Finset.sum_nonneg fun _ _ => Psi_nonneg _
+
+def blockDefect {M : Matrix ι ι ℂ} (hM : M.IsHermitian) (B : Finset ι) : ℝ :=
+  defect (hM.submatrix (Subtype.val : B → ι))
+
+lemma blockDefect_nonneg {M : Matrix ι ι ℂ} (hM : M.IsHermitian) (B : Finset ι) :
+    0 ≤ blockDefect hM B :=
+  defect_nonneg _
+
+end Blocks
+
+def Phi_n (n : ℕ) (c : ℝ) (m p : ℕ) : ℝ :=
+  (HD 1 - ((n : ℝ) - 1) * ((m : ℝ) - 1) / ((p : ℝ) * m))
+    / (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m)
+
+def Phi (c : ℝ) (m p : ℕ) : ℝ :=
+  (HD 1 - 6 * ((m : ℝ) - 1) / ((p : ℝ) * m)) / (1 - c * ((m : ℝ) - 6) / m)
+
+theorem Phi_eq_Phi_n (c : ℝ) (m p : ℕ) : Phi c m p = Phi_n 7 c m p := by
+  unfold Phi Phi_n
+  norm_num
+
+section BlockLevel
+
+variable {ι d : Type*} [Fintype ι] [DecidableEq ι] [Fintype d] [DecidableEq d]
+variable (D : ZeroBlockData ι d)
+
+def Vsimple (c : ℝ) : Matrix d D.S₁ ℂ := fun k z => D.v z k / (Real.sqrt c : ℂ)
+
+def P₁ (c : ℝ) : Matrix d d ℂ := Vsimple D c * (Vsimple D c)ᴴ
+
+def Q' (c : ℝ) : Matrix d d ℂ := D.blockP c + D.blockQ c - P₁ D c
+
+def gramS₁ (c : ℝ) : Matrix D.S₁ D.S₁ ℂ := (Vsimple D c)ᴴ * Vsimple D c
+
+lemma P₁_posSemidef (c : ℝ) : (P₁ D c).PosSemidef := posSemidef_self_mul_conjTranspose _
+
+lemma gramS₁_isHermitian (c : ℝ) : (gramS₁ D c).IsHermitian :=
+  isHermitian_conjTranspose_mul_self _
+
+lemma gramS₁_posSemidef (c : ℝ) : (gramS₁ D c).PosSemidef :=
+  posSemidef_conjTranspose_mul_self _
+
+lemma blockP_isHermitian (c : ℝ) : (D.blockP c).IsHermitian :=
+  ZeroBlockData.isHermitian_real_smul D.onPart_posSemidef.isHermitian _
+
+lemma Q'_isHermitian (c : ℝ) : (Q' D c).IsHermitian :=
+  ((blockP_isHermitian D c).add (D.blockQ_isHermitian c)).sub (P₁_posSemidef D c).1
+
+lemma P₁_add_Q' (c : ℝ) : P₁ D c + Q' D c = D.blockP c + D.blockQ c := by
+  unfold Q'; abel
+
+end BlockLevel
+
+section Concrete
+
+open Classical
+
+def mtParams (T : ℝ) : Params := (paramsOf stdProfile 1).atD T
+
+variable (Z : ZeroConfig) (P : Params) (T : ℝ)
+
+def xnorm (ρ : ℂ) : ℝ := P.L T * (ρ.im - T) / (2 * Real.pi)
+
+def aL2 : ℝ := P.a T * P.L T ^ 2
+
+def bdata : ZeroBlockData (ZI Z T) (Fin (P.d T)) := blockData Z T P phiHatConj
+
+def retained : Finset (ZI Z T) :=
+  (bdata Z P T).S₁.filter fun z =>
+    P.L T ^ 2 ≤ xnorm P T z ∧ xnorm P T z ≤ (P.d T : ℝ) - P.L T ^ 2
+
+lemma mem_S₁_of_mem_retained {z : ZI Z T} (hz : z ∈ retained Z P T) : z ∈ (bdata Z P T).S₁ :=
+  (Finset.mem_filter.mp hz).1
+
+def toS₁ : retained Z P T → (bdata Z P T).S₁ :=
+  fun z => ⟨z.1, mem_S₁_of_mem_retained Z P T z.2⟩
+
+lemma toS₁_injective : Function.Injective (toS₁ Z P T) :=
+  fun _ _ h => Subtype.ext (congrArg (Subtype.val : (bdata Z P T).S₁ → ZI Z T) h)
+
+def gram : Matrix (retained Z P T) (retained Z P T) ℂ :=
+  (gramS₁ (bdata Z P T) (aL2 P T)).submatrix (toS₁ Z P T) (toS₁ Z P T)
+
+lemma gram_isHermitian : (gram Z P T).IsHermitian :=
+  (gramS₁_isHermitian _ _).submatrix _
+
+lemma gram_posSemidef : (gram Z P T).PosSemidef :=
+  (gramS₁_posSemidef _ _).submatrix _
+
+def Dcirc : ℝ := defect (gram_isHermitian Z P T)
+
+def xret : retained Z P T → ℝ := fun z => xnorm P T (z.1 : ℂ)
+
+lemma re_eq_half_of_mem_S₁ {z : ZI Z T} (hz : z ∈ (bdata Z P T).S₁) : (z : ℂ).re = 1 / 2 := by
+  have h : (bdata Z P T).σ z = z := by
+    simp only [ZeroBlockData.S₁, Finset.mem_filter, Finset.mem_univ, true_and] at hz
+    exact hz.1
+  exact (mkData_σ_eq_iff Z T _ _ z).mp h
+
+lemma xret_injective (hL : 0 < P.L T) : Function.Injective (xret Z P T) := by
+  intro z z' h
+  have hz := re_eq_half_of_mem_S₁ Z P T (mem_S₁_of_mem_retained Z P T z.2)
+  have hz' := re_eq_half_of_mem_S₁ Z P T (mem_S₁_of_mem_retained Z P T z'.2)
+  unfold xret xnorm at h
+  have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
+  have him : (z.1 : ℂ).im = (z'.1 : ℂ).im := by
+    have h1 := (div_left_inj' hpi.ne').mp h
+    have h2 := mul_left_cancel₀ hL.ne' h1
+    linarith
+  apply Subtype.ext; apply Subtype.ext
+  exact Complex.ext (by rw [hz, hz']) him
+
+end Concrete
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/Helpers_finite.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Finset
+open scoped BigOperators
+
+namespace Zeta23Ext.Bridge
+
+lemma Kfun_neg (x : ℝ) : Kfun (-x) = Kfun x := by
+  unfold Kfun
+  simp only [mul_neg, neg_mul, Real.cos_neg]
+
+lemma kfun_neg (x : ℝ) : kfun (-x) = kfun x := by
+  unfold kfun; rw [Kfun_neg]
+
+lemma wfun_neg (x : ℝ) : wfun (-x) = wfun x := by
+  unfold wfun; rw [kfun_neg]
+
+lemma wfun_sub_comm (a b : ℝ) : wfun (a - b) = wfun (b - a) := by
+  rw [← wfun_neg, neg_sub]
+
+lemma wfun_nonneg (x : ℝ) : 0 ≤ wfun x := sq_nonneg _
+
+lemma cos_sqrt_two_mul_nonneg {t : ℝ} (ht : t ∈ Set.Icc (-(1 : ℝ) / 2) (1 / 2)) :
+    0 ≤ Real.cos (Real.sqrt 2 * t) := by
+  obtain ⟨h1, h2⟩ := ht
+  have hs : Real.sqrt 2 < 2 := by
+    rw [show (2 : ℝ) = Real.sqrt 4 by rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  have hs0 : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
+  apply Real.cos_nonneg_of_mem_Icc
+  constructor
+  · nlinarith [Real.pi_gt_three]
+  · nlinarith [Real.pi_gt_three]
+
+lemma abs_Kfun_le_Kfun_zero (x : ℝ) : |Kfun x| ≤ Kfun 0 := by
+  unfold Kfun
+  have hle : (-(1 : ℝ) / 2) ≤ 1 / 2 := by norm_num
+  simp only [mul_zero, zero_mul, Real.cos_zero, mul_one]
+  refine (intervalIntegral.abs_integral_le_integral_abs hle).trans ?_
+  refine intervalIntegral.integral_mono_on hle ?_ ?_ ?_
+  · exact Continuous.intervalIntegrable (by fun_prop) _ _
+  · exact Continuous.intervalIntegrable (by fun_prop) _ _
+  · intro t ht
+    rw [abs_mul, abs_of_nonneg (cos_sqrt_two_mul_nonneg ht)]
+    calc Real.cos (Real.sqrt 2 * t) * |Real.cos (2 * Real.pi * x * t)|
+        ≤ Real.cos (Real.sqrt 2 * t) * 1 :=
+          mul_le_mul_of_nonneg_left (Real.abs_cos_le_one _) (cos_sqrt_two_mul_nonneg ht)
+      _ = Real.cos (Real.sqrt 2 * t) := mul_one _
+
+lemma abs_kfun_le_one (x : ℝ) : |kfun x| ≤ 1 := by
+  unfold kfun
+  rw [abs_div]
+  rcases eq_or_ne (Kfun 0) 0 with h | h
+  · rw [h, abs_zero, div_zero]; exact zero_le_one
+  · rw [div_le_one (abs_pos.mpr h)]
+    exact (abs_Kfun_le_Kfun_zero x).trans (le_abs_self _)
+
+lemma wfun_le_one (x : ℝ) : wfun x ≤ 1 := by
+  unfold wfun
+  rw [← sq_abs]
+  exact pow_le_one₀ (abs_nonneg _) (abs_kfun_le_one x)
+
+section Sorted
+
+variable {m : ℕ}
+
+def sortedExt (y : Fin m → ℝ) (n : ℕ) : ℝ := if h : n < m then y ⟨n, h⟩ else 0
+
+lemma sortedExt_of_lt (y : Fin m → ℝ) {n : ℕ} (h : n < m) : sortedExt y n = y ⟨n, h⟩ := by
+  unfold sortedExt; rw [dif_pos h]
+
+lemma sortedExt_mono {y : Fin m → ℝ} (hy : StrictMono y) {a b : ℕ} (hab : a ≤ b) (hb : b < m) :
+    sortedExt y a ≤ sortedExt y b := by
+  rw [sortedExt_of_lt y (lt_of_le_of_lt hab hb), sortedExt_of_lt y hb]
+  exact hy.monotone (Fin.mk_le_mk.mpr hab)
+
+def windowGaps (n : ℕ) (Y : ℕ → ℝ) (i : ℕ) : Fin (n - 1) → ℝ :=
+  fun j => Y (i + ((j : ℕ) + 1)) - Y (i + j)
+
+lemma range_filter_lt {N k : ℕ} (hk : k ≤ N) : ((range N).filter fun j => j < k) = range k := by
+  ext j
+  simp only [mem_filter, mem_range]
+  omega
+
+lemma ptsN_windowGaps (n : ℕ) (Y : ℕ → ℝ) (i : ℕ) (k : Fin n) :
+    ptsN n (windowGaps n Y i) k = Y (i + k) - Y i := by
+  have hk : (k : ℕ) ≤ n - 1 := by have := k.2; omega
+  unfold ptsN windowGaps
+  rw [Fin.sum_univ_eq_sum_range
+    (fun j => if j < (k : ℕ) then Y (i + (j + 1)) - Y (i + j) else 0) (n - 1),
+    ← sum_filter, range_filter_lt hk]
+  have := Finset.sum_range_sub (fun j => Y (i + j)) (k : ℕ)
+  simpa using this
+
+lemma sum_windowGaps (n : ℕ) (Y : ℕ → ℝ) (i : ℕ) :
+    ∑ j, windowGaps n Y i j = Y (i + (n - 1)) - Y i := by
+  unfold windowGaps
+  rw [Fin.sum_univ_eq_sum_range (fun j => Y (i + (j + 1)) - Y (i + j)) (n - 1)]
+  have := Finset.sum_range_sub (fun j => Y (i + j)) (n - 1)
+  simpa using this
+
+lemma F_windowGaps (n p : ℕ) (Y : ℕ → ℝ) (i : ℕ) :
+    F n p (windowGaps n Y i) = (1 / (p : ℝ)) * (Y (i + (n - 1)) - Y i)
+      + ∑ a : Fin n, ∑ b : Fin n,
+          if (a : ℕ) < (b : ℕ) then
+            (2 / ((n : ℝ) - (((b : ℕ) - (a : ℕ) : ℕ) : ℝ))) * wfun (Y (i + b) - Y (i + a))
+          else 0 := by
+  unfold F
+  rw [sum_windowGaps]
+  congr 1
+  refine sum_congr rfl fun a _ => sum_congr rfl fun b _ => ?_
+  rw [ptsN_windowGaps, ptsN_windowGaps,
+    show Y (i + ↑b) - Y i - (Y (i + ↑a) - Y i) = Y (i + ↑b) - Y (i + ↑a) by ring]
+
+lemma sum_shift_sub (f : ℕ → ℝ) (d N : ℕ) :
+    ∑ i ∈ range N, (f (i + d) - f i) = ∑ i ∈ range d, (f (N + i) - f i) := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+    rw [sum_range_succ, ih]
+    have h1 : ∑ i ∈ range d, (f (N + 1 + i) - f i) = ∑ i ∈ range d, (f (N + (i + 1)) - f i) :=
+      sum_congr rfl fun i _ => by rw [Nat.add_right_comm, Nat.add_assoc]
+    have h2 : ∑ i ∈ range d, f (N + (i + 1)) = ∑ i ∈ range d, f (N + i) + f (N + d) - f (N + 0) := by
+      have := sum_range_succ' (fun i => f (N + i)) d
+      rw [sum_range_succ] at this
+      linarith
+    rw [h1, sum_sub_distrib, sum_sub_distrib, h2]
+    simp only [add_zero]
+    ring
+
+end Sorted
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/Helpers_pinching.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open scoped ComplexOrder BigOperators
+
+namespace Zeta23Ext.Bridge
+
+section PsiConvex
+open Zeta23Ext.StableRankTrace
+
+lemma affine_le_Psi {s x : ℝ} (hs : s ≤ 2) : 2 * (s - 1) * x - (s ^ 2 - 1) ≤ Psi x := by
+  unfold Psi
+  split_ifs with h
+  · nlinarith [sq_nonneg (x - s)]
+  · have hx : 2 < x := not_le.mp h
+    nlinarith [mul_nonneg (sub_nonneg.mpr hs) (by linarith : (0 : ℝ) ≤ 2 * x - 2 - s)]
+
+lemma affine_eq_Psi (x : ℝ) : 2 * (min x 2 - 1) * x - ((min x 2) ^ 2 - 1) = Psi x := by
+  unfold Psi
+  rcases le_or_gt x 2 with h | h
+  · rw [min_eq_left h, if_pos h]; ring
+  · rw [min_eq_right h.le, if_neg (not_le.mpr h)]; ring
+
+theorem Psi_convexOn : ConvexOn ℝ Set.univ Psi := by
+  refine ⟨convex_univ, fun x _ y _ a b ha hb hab => ?_⟩
+  simp only [smul_eq_mul]
+  set z := a * x + b * y with hz
+  set t := min z 2 with ht
+  have ht2 : t ≤ 2 := min_le_right _ _
+  have hx := affine_le_Psi (x := x) ht2
+  have hy := affine_le_Psi (x := y) ht2
+  have hsplit : 2 * (t - 1) * z - (t ^ 2 - 1)
+      = a * (2 * (t - 1) * x - (t ^ 2 - 1)) + b * (2 * (t - 1) * y - (t ^ 2 - 1)) := by
+    rw [hz]; linear_combination (t ^ 2 - 1) * hab
+  calc Psi z = 2 * (t - 1) * z - (t ^ 2 - 1) := (affine_eq_Psi z).symm
+    _ = a * (2 * (t - 1) * x - (t ^ 2 - 1)) + b * (2 * (t - 1) * y - (t ^ 2 - 1)) := hsplit
+    _ ≤ a * Psi x + b * Psi y :=
+        add_le_add (mul_le_mul_of_nonneg_left hx ha) (mul_le_mul_of_nonneg_left hy hb)
+
+end PsiConvex
+
+section Entries
+
+variable {𝕜 : Type*} [RCLike 𝕜] {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+
+lemma re_mul_conjTranspose_apply_self (Y : Matrix κ ι 𝕜) (j : κ) :
+    RCLike.re ((Y * Yᴴ) j j) = ∑ i, ‖Y j i‖ ^ 2 := by
+  rw [Matrix.mul_apply, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [conjTranspose_apply, RCLike.star_def, RCLike.mul_conj]
+  simp
+
+lemma re_conjTranspose_mul_apply_self (Y : Matrix κ ι 𝕜) (i : ι) :
+    RCLike.re ((Yᴴ * Y) i i) = ∑ j, ‖Y j i‖ ^ 2 := by
+  rw [Matrix.mul_apply, map_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [conjTranspose_apply, RCLike.star_def, RCLike.conj_mul]
+  simp
+
+lemma re_mul_diagonal_mul_conjTranspose_apply (Y : Matrix κ ι 𝕜) (d : ι → ℝ) (j : κ) :
+    RCLike.re ((Y * (diagonal (RCLike.ofReal ∘ d) : Matrix ι ι 𝕜) * Yᴴ : Matrix κ κ 𝕜) j j)
+      = ∑ i, ‖Y j i‖ ^ 2 * d i := by
+  rw [Matrix.mul_apply, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [mul_diagonal, conjTranspose_apply, Function.comp_apply, RCLike.star_def,
+    show Y j i * (d i : 𝕜) * starRingEnd 𝕜 (Y j i) = (d i : 𝕜) * (Y j i * starRingEnd 𝕜 (Y j i))
+      by ring,
+    RCLike.mul_conj,
+    show ((d i : 𝕜) * ((‖Y j i‖ : 𝕜) ^ 2) : 𝕜) = ((‖Y j i‖ ^ 2 * d i : ℝ) : 𝕜) by push_cast; ring,
+    RCLike.ofReal_re]
+
+lemma sum_normSq_col_eigenvectorUnitary {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) (i : ι) :
+    ∑ k, ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) k i‖ ^ 2 = 1 := by
+  have h := re_conjTranspose_mul_apply_self (hM.eigenvectorUnitary : Matrix ι ι 𝕜) i
+  rw [← star_eq_conjTranspose, Unitary.star_mul_self_of_mem hM.eigenvectorUnitary.2] at h
+  simpa using h.symm
+
+end Entries
+
+section Mix
+
+variable {𝕜 : Type*} [RCLike 𝕜] {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+
+def compressWeight {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) (g : κ → ι) (i : ι) : ℝ :=
+  ∑ j, ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) (g j) i‖ ^ 2
+
+lemma compressWeight_nonneg {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) (g : κ → ι) (i : ι) :
+    0 ≤ compressWeight hM g i :=
+  Finset.sum_nonneg fun _ _ => by positivity
+
+lemma compressWeight_le_one {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) {g : κ → ι}
+    (hg : Function.Injective g) (i : ι) : compressWeight hM g i ≤ 1 := by
+  unfold compressWeight
+  calc ∑ j, ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) (g j) i‖ ^ 2
+      = ∑ k ∈ univ.image g, ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) k i‖ ^ 2 :=
+        (Finset.sum_image (f := fun k => ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) k i‖ ^ 2)
+          (s := univ) (g := g) hg.injOn).symm
+    _ ≤ ∑ k, ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) k i‖ ^ 2 :=
+        Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun _ _ _ => by positivity
+    _ = 1 := sum_normSq_col_eigenvectorUnitary hM i
+
+lemma sum_compressWeight_fiberwise {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) (β : ι → κ) (i : ι) :
+    ∑ b, compressWeight hM (Subtype.val : (univ.filter fun i => β i = b) → ι) i = 1 := by
+  unfold compressWeight
+  have h : ∀ b : κ, ∑ j : (univ.filter fun i => β i = b),
+      ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) (j : ι) i‖ ^ 2
+        = ∑ j ∈ univ.filter (fun i => β i = b), ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) j i‖ ^ 2 :=
+    fun b => Finset.sum_coe_sort (univ.filter fun i => β i = b)
+      (fun j => ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) j i‖ ^ 2)
+  simp only [h]
+  rw [Finset.sum_fiberwise univ β (fun j => ‖(hM.eigenvectorUnitary : Matrix ι ι 𝕜) j i‖ ^ 2)]
+  exact sum_normSq_col_eigenvectorUnitary hM i
+
+theorem eigenvalues_submatrix_eq_mix {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) {g : κ → ι}
+    (hg : Function.Injective g) :
+    ∃ S : κ → ι → ℝ, (∀ j i, 0 ≤ S j i) ∧ (∀ j, ∑ i, S j i = 1)
+      ∧ (∀ i, ∑ j, S j i = compressWeight hM g i)
+      ∧ ∀ j, (hM.submatrix g).eigenvalues j = ∑ i, S j i * hM.eigenvalues i := by
+  set U : Matrix ι ι 𝕜 := (hM.eigenvectorUnitary : Matrix ι ι 𝕜) with hUdef
+  have hP : (M.submatrix g g).IsHermitian := hM.submatrix g
+  set V : Matrix κ κ 𝕜 := (hP.eigenvectorUnitary : Matrix κ κ 𝕜) with hVdef
+  set Ug : Matrix κ ι 𝕜 := U.submatrix g id with hUgdef
+  set Y : Matrix κ ι 𝕜 := star V * Ug with hYdef
+  have hUU : U * star U = 1 := Unitary.mul_star_self_of_mem hM.eigenvectorUnitary.2
+  have hVsV : star V * V = 1 := Unitary.star_mul_self_of_mem hP.eigenvectorUnitary.2
+  have hVVs : V * star V = 1 := Unitary.mul_star_self_of_mem hP.eigenvectorUnitary.2
+
+  have hM' : M = U * (diagonal (RCLike.ofReal ∘ hM.eigenvalues) : Matrix ι ι 𝕜) * star U := by
+    conv_lhs => rw [hM.spectral_theorem, Unitary.conjStarAlgAut_apply]
+
+  have hUgUg : Ug * Ugᴴ = 1 := by
+    rw [hUgdef, conjTranspose_submatrix, ← star_eq_conjTranspose,
+      ← Matrix.submatrix_mul _ _ g id g Function.bijective_id, hUU, submatrix_one _ hg]
+  have hPsub : M.submatrix g g = Ug * (diagonal (RCLike.ofReal ∘ hM.eigenvalues) : Matrix ι ι 𝕜) * Ugᴴ := by
+    conv_lhs => rw [hM']
+    rw [Matrix.submatrix_mul _ _ g id g Function.bijective_id,
+      Matrix.submatrix_mul _ _ g id id Function.bijective_id, submatrix_id_id, hUgdef,
+      conjTranspose_submatrix, star_eq_conjTranspose]
+
+  have hdiag0 : diagonal (RCLike.ofReal ∘ hP.eigenvalues) = star V * M.submatrix g g * V := by
+    rw [← hP.conjStarAlgAut_star_eigenvectorUnitary, Unitary.conjStarAlgAut_star_apply]
+  have hdiag : diagonal (RCLike.ofReal ∘ hP.eigenvalues)
+      = Y * (diagonal (RCLike.ofReal ∘ hM.eigenvalues) : Matrix ι ι 𝕜) * Yᴴ := by
+    rw [hdiag0, hPsub, hYdef, conjTranspose_mul, star_eq_conjTranspose V,
+      conjTranspose_conjTranspose]
+    simp only [Matrix.mul_assoc]
+  have hYY : Y * Yᴴ = 1 := by
+    rw [hYdef, conjTranspose_mul, star_eq_conjTranspose V, conjTranspose_conjTranspose,
+      Matrix.mul_assoc, ← Matrix.mul_assoc Ug, hUgUg, Matrix.one_mul, ← star_eq_conjTranspose,
+      hVsV]
+  have hYtY : Yᴴ * Y = Ugᴴ * Ug := by
+    rw [hYdef, conjTranspose_mul, star_eq_conjTranspose V, conjTranspose_conjTranspose,
+      Matrix.mul_assoc, ← Matrix.mul_assoc V, ← star_eq_conjTranspose V, hVVs, Matrix.one_mul]
+  refine ⟨fun j i => ‖Y j i‖ ^ 2, fun j i => by positivity, ?_, ?_, ?_⟩
+  · intro j
+    show ∑ i, ‖Y j i‖ ^ 2 = 1
+    have h := re_mul_conjTranspose_apply_self Y j
+    rw [hYY] at h
+    simpa using h.symm
+  · intro i
+    show ∑ j, ‖Y j i‖ ^ 2 = compressWeight hM g i
+    have h1 := re_conjTranspose_mul_apply_self Y i
+    have h2 := re_conjTranspose_mul_apply_self Ug i
+    rw [hYtY] at h1
+    rw [← h1, h2]
+    rfl
+  · intro j
+    show hP.eigenvalues j = ∑ i, ‖Y j i‖ ^ 2 * hM.eigenvalues i
+    have h := re_mul_diagonal_mul_conjTranspose_apply Y hM.eigenvalues j
+    rw [← hdiag, diagonal_apply_eq, Function.comp_apply, RCLike.ofReal_re] at h
+    exact h
+
+end Mix
+
+section Pinching
+
+variable {𝕜 : Type*} [RCLike 𝕜] {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+
+theorem sum_eigenvalues_submatrix_le {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) {g : κ → ι}
+    (hg : Function.Injective g) {f : ℝ → ℝ} (hf : ConvexOn ℝ Set.univ f) :
+    ∑ j, f ((hM.submatrix g).eigenvalues j)
+      ≤ ∑ i, compressWeight hM g i * f (hM.eigenvalues i) := by
+  obtain ⟨S, hS0, hSrow, hScol, hSeig⟩ := eigenvalues_submatrix_eq_mix hM hg
+  calc ∑ j, f ((hM.submatrix g).eigenvalues j)
+      = ∑ j, f (∑ i, S j i * hM.eigenvalues i) := by simp only [hSeig]
+    _ ≤ ∑ j, ∑ i, S j i * f (hM.eigenvalues i) := by
+        refine Finset.sum_le_sum fun j _ => ?_
+        have h := hf.map_sum_le (t := Finset.univ) (w := S j) (p := hM.eigenvalues)
+          (fun i _ => hS0 j i) (hSrow j) (fun i _ => Set.mem_univ _)
+        simpa only [smul_eq_mul] using h
+    _ = ∑ i, (∑ j, S j i) * f (hM.eigenvalues i) := by
+        rw [Finset.sum_comm]; simp only [Finset.sum_mul]
+    _ = ∑ i, compressWeight hM g i * f (hM.eigenvalues i) := by simp only [hScol]
+
+theorem sum_eigenvalues_pinching_le {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) {f : ℝ → ℝ}
+    (hf : ConvexOn ℝ Set.univ f) (β : ι → κ) :
+    ∑ b, ∑ j, f ((hM.submatrix (Subtype.val : (univ.filter fun i => β i = b) → ι)).eigenvalues j)
+      ≤ ∑ i, f (hM.eigenvalues i) := by
+  calc ∑ b, ∑ j, f ((hM.submatrix (Subtype.val : (univ.filter fun i => β i = b) → ι)).eigenvalues j)
+      ≤ ∑ b, ∑ i, compressWeight hM (Subtype.val : (univ.filter fun i => β i = b) → ι) i
+            * f (hM.eigenvalues i) :=
+        Finset.sum_le_sum fun b _ => sum_eigenvalues_submatrix_le hM Subtype.val_injective hf
+    _ = ∑ i, (∑ b, compressWeight hM (Subtype.val : (univ.filter fun i => β i = b) → ι) i)
+            * f (hM.eigenvalues i) := by
+        rw [Finset.sum_comm]; simp only [Finset.sum_mul]
+    _ = ∑ i, f (hM.eigenvalues i) := by simp only [sum_compressWeight_fiberwise, one_mul]
+
+theorem sum_eigenvalues_submatrix_le_of_nonneg {M : Matrix ι ι 𝕜} (hM : M.IsHermitian)
+    {g : κ → ι} (hg : Function.Injective g) {f : ℝ → ℝ} (hf : ConvexOn ℝ Set.univ f)
+    (hf0 : ∀ t, 0 ≤ f t) :
+    ∑ j, f ((hM.submatrix g).eigenvalues j) ≤ ∑ i, f (hM.eigenvalues i) :=
+  (sum_eigenvalues_submatrix_le hM hg hf).trans <| Finset.sum_le_sum fun i _ => by
+    calc compressWeight hM g i * f (hM.eigenvalues i) ≤ 1 * f (hM.eigenvalues i) :=
+          mul_le_mul_of_nonneg_right (compressWeight_le_one hM hg i) (hf0 _)
+      _ = f (hM.eigenvalues i) := one_mul _
+
+theorem rtrace_specMap_pinching_le {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) {f : ℝ → ℝ}
+    (hf : ConvexOn ℝ Set.univ f) (β : ι → κ) :
+    ∑ b, rtrace (specMap (hM.submatrix (Subtype.val : (univ.filter fun i => β i = b) → ι)) f)
+      ≤ rtrace (specMap hM f) := by
+  simp only [rtrace_specMap]
+  exact sum_eigenvalues_pinching_le hM hf β
+
+theorem rtrace_specMap_submatrix_le {M : Matrix ι ι 𝕜} (hM : M.IsHermitian) {g : κ → ι}
+    (hg : Function.Injective g) {f : ℝ → ℝ} (hf : ConvexOn ℝ Set.univ f) (hf0 : ∀ t, 0 ≤ f t) :
+    rtrace (specMap (hM.submatrix g) f) ≤ rtrace (specMap hM f) := by
+  rw [rtrace_specMap, rtrace_specMap]
+  exact sum_eigenvalues_submatrix_le_of_nonneg hM hg hf hf0
+
+end Pinching
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/Helpers_S8.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Filter Asymptotics Topology Real RHLinalg
+open Zeta23 Zeta23.ThmD Zeta23.Assembly
+
+namespace Zeta23Ext.Bridge
+
+theorem seamA_mult2_defect {Z : ZeroConfig} {P : Params} {T : ℝ} (hT : 0 ≤ T)
+    {θ₀ : ℝ} (hTl : TailInputs Z P T θ₀) (ha : 0 < P.a T) (hL : 0 < P.L T)
+    {D : ℝ}
+    (hcore : 4 * rtrace (P.hat T (Z.Az P T)) - frobSq (P.hat T (Z.Az P T))
+      - 2 * (Z.NIprime T : ℝ) + D ≤ (Z.s1 T : ℝ)) :
+    4 * rtrace (P.hat T (Z.Gz P T)) - frobSq (P.hat T (Z.Gz P T)) - 2 * (Z.N T (2 * T) : ℝ)
+      - 3 * (NII Z T : ℝ)
+      - θ₀ / (P.a T * P.L T)
+          * (4 + 2 * Real.sqrt (frobSq (P.hat T (Z.Gz P T))) + θ₀ / (P.a T * P.L T))
+      + D ≤ Z.N0s T (2 * T) := by
+  obtain ⟨Bc, hB0, htrE, hfrE, hBle⟩ := hTl.hat
+  have hGAE : P.hat T (Z.Gz P T) = P.hat T (Z.Az P T) + P.hat T (Z.Ez P T) := by
+    rw [← hat_add]; congr 1; simp [ZeroConfig.Ez]
+  have hB₀ : 0 ≤ θ₀ / (P.a T * P.L T) := div_nonneg hTl.theta_nonneg (mul_pos ha hL).le
+
+  have hpert := ctr_sub_frobSq_perturb 4 (by norm_num) hGAE hB₀ (htrE.trans hBle)
+    (hfrE.trans (pow_le_pow_left₀ hB0 hBle 2))
+  have hs1 : (Z.s1 T : ℝ) ≤ (Z.N0s T (2 * T) : ℝ) + (NII Z T : ℝ) := by
+    exact_mod_cast s1_le Z hT
+  have hNI : (Z.NIprime T : ℝ) = (Z.N T (2 * T) : ℝ) + (NII Z T : ℝ) := by
+    exact_mod_cast NIprime_eq Z hT
+  rw [hNI] at hcore
+  linarith [hcore, hpert, hs1]
+
+theorem endgame_defect (Z : ZeroConfig) (H : PaperInputs Z) (P : Params) (hP : P.Valid)
+    (aT bT JT trG trG2 : ℝ → ℝ)
+    (hTr : TracesBoundsD P aT bT JT trG trG2 (fun T => (Z.N T (2 * T) : ℝ)))
+    {c : ℝ} (hc0 : 0 < c)
+    (hc : Tendsto (fun T => cRatio (P.lam1 T) (aT T) (bT T) (JT T)) atTop (𝓝 c))
+    (ha : ∀ᶠ T in atTop, 1 / 2 ≤ aT T ∧ aT T ≤ 1)
+    (θ₀ : ℝ → ℝ) (hTail : ∀ᶠ T in atTop, TailInputs Z (P.atD T) T (θ₀ T))
+    (hθ₀ : ∃ C : ℝ, ∀ᶠ T in atTop, θ₀ T ≤ C * l T * T ^ (P.lam / 2 - 1))
+    (hNII : ∃ C : ℝ, ∀ᶠ T in atTop, (NII Z T : ℝ) ≤ C * Real.sqrt T * l T)
+    (hGzGp : ∀ᶠ T in atTop, Z.Gz (P.atD T) T = (P.atD T).Gp T)
+    (hId : ∀ᶠ T in atTop, (P.atD T).trGtilde T = trG T ∧ (P.atD T).trGtildeSq T = trG2 T ∧
+      (P.atD T).a T = aT T)
+    (hcalE : Tendsto P.calE atTop (𝓝 0))
+    (D : ℝ → ℝ)
+    (hcore : ∀ᶠ T in atTop,
+      4 * rtrace ((P.atD T).hat T (Z.Az (P.atD T) T))
+        - frobSq ((P.atD T).hat T (Z.Az (P.atD T) T))
+        - 2 * (Z.NIprime T : ℝ) + D T ≤ (Z.s1 T : ℝ)) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      (2 - c⁻¹ - ε) * (Z.N T (2 * T) : ℝ) + D T ≤ (Z.N0s T (2 * T) : ℝ) := by
+  have hlam0 := hP.lam_pos
+  have hlam1 : P.lam ≤ 1 := hP.lam_le_one
+  obtain ⟨C₁, hC₁, T₁, htr1⟩ := hTr.tr1
+  obtain ⟨C₂, hC₂, T₂, hfr2⟩ := hTr.frhat
+  obtain ⟨Cθ, hθ⟩ := hθ₀
+  obtain ⟨CII, hII⟩ := hNII
+
+  set N : ℝ → ℝ := fun T => (Z.N T (2 * T) : ℝ) with hNdef
+  set cinv : ℝ → ℝ := fun T => (cRatio (P.lam1 T) (aT T) (bT T) (JT T))⁻¹ with hcinv
+  set R₁ : ℝ → ℝ := fun T => C₁ * Real.sqrt (P.X T) / aT T with hR₁
+  set R₂ : ℝ → ℝ := fun T => C₂ * P.calE T * (cinv T * N T) with hR₂
+  set B : ℝ → ℝ := fun T => θ₀ T / (aT T * P.L T) with hBdef
+  set err : ℝ → ℝ := fun T => (4 * R₁ T + R₂ T + 3 * (NII Z T : ℝ)
+      + B T * (4 + 2 * Real.sqrt (cinv T * N T + R₂ T) + B T)) + |cinv T - c⁻¹| * N T with herr
+
+  have hcinv_to : Tendsto cinv atTop (𝓝 c⁻¹) := hc.inv₀ hc0.ne'
+
+  have hmain : ∀ᶠ T in atTop,
+      (2 - c⁻¹) * N T - err T ≤ (Z.N0s T (2 * T) : ℝ) - D T := by
+    filter_upwards [hcore, hTail, hGzGp, hId, ha, eventually_ge_atTop T₁,
+      eventually_ge_atTop T₂, eventually_ge_atTop (0:ℝ), eventually_l_pos,
+      eventually_calE_nonneg P hlam0 (zero_le_one.trans hP.one_le_w), eventually_w8 hP]
+      with T hcoreT hTl hGG hid ha2 hT₁ hT₂ hT0 hl hE0 h8
+    obtain ⟨hidtr, hidfr, hida⟩ := hid
+    have hapos' : 0 < aT T := by linarith [ha2.1]
+    have haposD : 0 < (P.atD T).a T := by rw [hida]; exact hapos'
+    have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
+
+    have hA := seamA_mult2_defect hT0 hTl haposD hLpos hcoreT
+
+    have hrt : rtrace ((P.atD T).hat T (Z.Gz (P.atD T) T)) = (aT T * P.L T)⁻¹ * trG T := by
+      rw [rtrace_hat, hGG, rtrace_tilde_Gp, hidtr, hida]; rfl
+    have hfr : frobSq ((P.atD T).hat T (Z.Gz (P.atD T) T))
+        = ((aT T * P.L T)⁻¹) ^ 2 * trG2 T := by
+      rw [frobSq_hat, hGG, frobSq_tilde_Gp, hidfr, hida]; rfl
+    have haL : (P.atD T).a T * (P.atD T).L T = aT T * P.L T := by rw [hida]; rfl
+    rw [hrt, hfr, haL] at hA
+
+    have hA' : 4 * ((aT T * P.L T)⁻¹ * trG T) - ((aT T * P.L T)⁻¹) ^ 2 * trG2 T
+        - 2 * (Z.N T (2 * T) : ℝ) - 3 * (NII Z T : ℝ)
+        - θ₀ T / (aT T * P.L T)
+            * (4 + 2 * Real.sqrt (((aT T * P.L T)⁻¹) ^ 2 * trG2 T) + θ₀ T / (aT T * P.L T))
+        ≤ (Z.N0s T (2 * T) : ℝ) - D T := by linarith [hA]
+
+    have htr : |(aT T * P.L T)⁻¹ * trG T - N T| ≤ R₁ T :=
+      trGhat_sub_N_le hapos' hLpos (by simpa only using htr1 T hT₁)
+
+    have hfrb : ((aT T * P.L T)⁻¹) ^ 2 * trG2 T ≤ cinv T * N T + R₂ T := by
+      have h := hfr2 T hT₂
+      simp only at h
+      have h1 : trG2 T / (aT T * P.L T) ^ 2 - cinv T * N T ≤ C₂ * P.calE T * (cinv T * N T) := by
+        rw [← mul_assoc] at h
+        exact le_trans (le_trans (le_max_left _ 0) (le_abs_self _)) h
+      have e : ((aT T * P.L T)⁻¹) ^ 2 * trG2 T = trG2 T / (aT T * P.L T) ^ 2 := by
+        rw [inv_pow, div_eq_inv_mul]
+      rw [e]; simp only [hR₂]; linarith
+    have hB₀ : 0 ≤ B T := div_nonneg hTl.theta_nonneg (mul_pos hapos' hLpos).le
+    have h := N0star_lower_c hB₀ hA' htr hfrb
+    have hN0 : 0 ≤ N T := Nat.cast_nonneg _
+    have hcd : (2 - c⁻¹) * N T - |cinv T - c⁻¹| * N T ≤ (2 - cinv T) * N T := by
+      have h1 := mul_le_mul_of_nonneg_right (le_abs_self (cinv T - c⁻¹)) hN0
+      linarith [h1]
+    simp only [herr, hR₁, hR₂, hBdef, hNdef] at h hcd ⊢
+    linarith
+
+  have hNtop : Tendsto N atTop atTop := tendsto_N_atTop Z H.RvM
+
+  have o1 : R₁ =o[atTop] N := by
+    have hbd : (fun T => C₁ / aT T) =O[atTop] (fun _ => (1:ℝ)) := by
+      refine isBigO_one_of_abs_le (C := 2 * C₁) ?_
+      filter_upwards [ha] with T ha2
+      rw [abs_of_nonneg (div_nonneg hC₁.le (by linarith [ha2.1]))]
+      rw [div_le_iff₀ (by linarith [ha2.1])]; nlinarith [ha2.1]
+    have := isLittleO_of_bdd_mul hbd
+      (isLittleO_N_of_isLittleO_Tl Z H.RvM (isLittleO_sqrtX_Tl P hlam0 hlam1))
+    exact this.congr_left fun T => by simp only [hR₁]; ring
+
+  have hcinv_bd : ∀ᶠ T in atTop, 0 ≤ cinv T ∧ cinv T ≤ 2 * c⁻¹ := by
+    have hcpos : (0:ℝ) < c⁻¹ := inv_pos.mpr hc0
+    filter_upwards [hcinv_to.eventually (eventually_ge_nhds hcpos),
+      hcinv_to.eventually (eventually_le_nhds (show c⁻¹ < 2 * c⁻¹ by linarith))] with T h1 h2
+    exact ⟨h1, h2⟩
+  have hcinvO : cinv =O[atTop] (fun _ => (1:ℝ)) := by
+    refine isBigO_one_of_abs_le (C := 2 * c⁻¹) ?_
+    filter_upwards [hcinv_bd] with T h
+    rw [abs_of_nonneg h.1]; exact h.2
+
+  have o2 : R₂ =o[atTop] N := by
+    have hcE0 : Tendsto (fun T => C₂ * P.calE T) atTop (𝓝 0) := by
+      simpa using hcalE.const_mul C₂
+    have i1 : (fun T => cinv T * N T) =O[atTop] N := by
+      have := hcinvO.mul (isBigO_refl N atTop)
+      simpa using this
+    have := ((isLittleO_one_iff ℝ).2 hcE0).mul_isBigO i1
+    refine (this.congr_left fun T => ?_).congr_right fun T => by simp
+    simp only [hR₂]
+
+  have o3 : (fun T => (NII Z T : ℝ)) =o[atTop] N := by
+    have hO : (fun T => (NII Z T : ℝ)) =O[atTop] (fun T => Real.sqrt T * l T) := by
+      refine IsBigO.of_bound CII ?_
+      filter_upwards [hII, eventually_l_pos] with T h hl
+      rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (Nat.cast_nonneg _),
+        abs_of_nonneg (by positivity)]
+      simpa [mul_assoc] using h
+    exact hO.trans_isLittleO (isLittleO_N_of_isLittleO_Tl Z H.RvM isLittleO_sqrt_mul_l_Tl)
+
+  have o4 : Tendsto B atTop (𝓝 0) := by
+    have hup : Tendsto (fun T => 2 * |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T)) atTop (𝓝 0) := by
+      simpa using (tendsto_theta_over_L P hlam0 hlam1).const_mul (2 * |Cθ|)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup ?_ ?_
+    · filter_upwards [hTail, ha, eventually_l_pos] with T hTl ha2 hl
+      have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
+      exact div_nonneg hTl.theta_nonneg (by nlinarith [ha2.1])
+    · filter_upwards [hTail, ha, eventually_l_pos, hθ, eventually_gt_atTop (0:ℝ)]
+        with T hTl ha2 hl hθT hT0
+      have hLpos : 0 < P.L T := by simp only [Params.L]; positivity
+      have hapos' : 0 < aT T := by linarith [ha2.1]
+      have hq : 0 ≤ l T * T ^ (P.lam / 2 - 1) / P.L T := by positivity
+      simp only [hBdef]
+      rw [div_le_iff₀ (mul_pos hapos' hLpos)]
+      calc θ₀ T ≤ Cθ * l T * T ^ (P.lam / 2 - 1) := hθT
+        _ ≤ |Cθ| * l T * T ^ (P.lam / 2 - 1) := by gcongr; exact le_abs_self _
+        _ = |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T) * P.L T := by field_simp
+        _ ≤ (2 * |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T)) * (aT T * P.L T) := by
+          have : |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T) * P.L T
+              = (2 * |Cθ| * (l T * T ^ (P.lam / 2 - 1) / P.L T)) * (1 / 2 * P.L T) := by ring
+          rw [this]; gcongr; exact ha2.1
+
+  have o5 := err_isLittleO (R₁ := R₁) (R₂ := R₂) (NII := fun T => (NII Z T : ℝ)) (B := B)
+    (cl := cinv) hNtop o1 o2 o3 o4 hcinv_bd
+  have o6 : (fun T => |cinv T - c⁻¹| * N T) =o[atTop] N := by
+    refine isLittleO_of_tendsto_zero_mul ?_
+    have : Tendsto (fun T => cinv T - c⁻¹) atTop (𝓝 0) := by
+      simpa using hcinv_to.sub_const c⁻¹
+    simpa using this.abs
+  have herr_o : err =o[atTop] N := o5.add o6
+
+  have hfin := eps_form_of_isLittleO (lower := fun T => (Z.N0s T (2 * T) : ℝ) - D T) hmain
+    (Eventually.of_forall fun T => Nat.cast_nonneg _) herr_o
+  intro ε hε
+  obtain ⟨T₀, hT₀⟩ := hfin ε hε
+  filter_upwards [eventually_ge_atTop T₀] with T hT
+  have := hT₀ T hT
+  simp only [hNdef] at this
+  linarith
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/Helpers_S9.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset Filter MeasureTheory Real Set
+open scoped BigOperators
+open Zeta23 Zeta23.ZeroSide Zeta23.ThmD
+
+namespace Zeta23Ext.Bridge
+
+open Classical
+
+section GramEntry
+
+variable (Z : ZeroConfig) (P : Params) (T : ℝ)
+
+lemma bdata_v_eq (hreal : PhiHatReal T P) {y : ZI Z T} (hy : (y : ℂ).re = 1 / 2) (k : Fin (P.d T)) :
+    (bdata Z P T).v y k = (P.phiHatR T ((y : ℂ).im - P.tau T k) : ℂ) := by
+  simp only [bdata, blockData, mkData_v, evalVec]
+  rw [gammaOf_of_re_eq_half hy, ← Complex.ofReal_sub, hreal]
+
+lemma gram_apply (hreal : PhiHatReal T P) (hc : 0 ≤ aL2 P T) (z z' : retained Z P T) :
+    gram Z P T z z' =
+      (((aL2 P T)⁻¹ * ∑ k : Fin (P.d T),
+        P.phiHatR T ((z.1 : ℂ).im - P.tau T k) * P.phiHatR T ((z'.1 : ℂ).im - P.tau T k) : ℝ) : ℂ) := by
+  have hz := re_eq_half_of_mem_S₁ Z P T (mem_S₁_of_mem_retained Z P T z.2)
+  have hz' := re_eq_half_of_mem_S₁ Z P T (mem_S₁_of_mem_retained Z P T z'.2)
+  have hsq : (Real.sqrt (aL2 P T) : ℂ) * (Real.sqrt (aL2 P T) : ℂ) = (aL2 P T : ℂ) := by
+    rw [← Complex.ofReal_mul, Real.mul_self_sqrt hc]
+  have hentry : ∀ a b : (bdata Z P T).S₁, gramS₁ (bdata Z P T) (aL2 P T) a b
+      = ∑ k, star (Vsimple (bdata Z P T) (aL2 P T) k a) * Vsimple (bdata Z P T) (aL2 P T) k b := by
+    intro a b
+    simp only [gramS₁, Matrix.mul_apply, Matrix.conjTranspose_apply]
+  unfold gram
+  rw [Matrix.submatrix_apply, hentry]
+  have e : ∀ k : Fin (P.d T),
+      star (Vsimple (bdata Z P T) (aL2 P T) k (toS₁ Z P T z))
+        * Vsimple (bdata Z P T) (aL2 P T) k (toS₁ Z P T z')
+      = (((aL2 P T)⁻¹ * (P.phiHatR T ((z.1 : ℂ).im - P.tau T k)
+          * P.phiHatR T ((z'.1 : ℂ).im - P.tau T k)) : ℝ) : ℂ) := by
+    intro k
+    have h1 : (bdata Z P T).v (toS₁ Z P T z) k = (P.phiHatR T ((z.1 : ℂ).im - P.tau T k) : ℂ) :=
+      bdata_v_eq Z P T hreal hz k
+    have h2 : (bdata Z P T).v (toS₁ Z P T z') k = (P.phiHatR T ((z'.1 : ℂ).im - P.tau T k) : ℂ) :=
+      bdata_v_eq Z P T hreal hz' k
+    simp only [Vsimple]
+    rw [h1, h2]
+    simp only [star_div₀, Complex.star_def, Complex.conj_ofReal]
+    rw [div_mul_div_comm, hsq]
+    push_cast
+    ring
+  simp_rw [e]
+  rw [← Complex.ofReal_sum, Finset.mul_sum]
+
+end GramEntry
+
+section Window
+
+variable {P : Params} (hP : P.Valid) (T : ℝ)
+include hP
+
+lemma atD_phiHatR_eq : (P.atD T).phiHatR T = AdmWindow.vHatR (P.phiD T) := atD_phiHatR hP T
+
+lemma phiHatReal_atD : PhiHatReal T (P.atD T) := fun r => GzGp.phiHat_ofReal _ T r
+
+lemma abs_phiHatR_atD_mul_sq_le (h8 : 8 * P.w ≤ P.L T) (r : ℝ) :
+    |(P.atD T).phiHatR T r| * r ^ 2 ≤ cDT P.ϱ P.lam / P.w := by
+  rw [atD_phiHatR_eq hP T]
+  exact (admWindow_params hP h8).abs_vHatR_mul_sq_le r
+
+lemma hasSum_phiHatR_atD_mul (h8 : 8 * P.w ≤ P.L T) (τ τ' : ℝ) :
+    HasSum (fun k : ℤ => (P.atD T).phiHatR T (τ - (P.atD T).tau T k)
+        * (P.atD T).phiHatR T (τ' - (P.atD T).tau T k))
+      (P.L T * AdmWindow.VPhiR (P.phiD T) (τ - τ')) := by
+  have h := (admWindow_params hP h8).hasSum_vHatR_mul T τ τ'
+  simp only [atD_phiHatR_eq hP T, atD_tau_eq]
+  exact h
+
+end Window
+
+section Tail
+
+lemma Wfun_le_of_L_le {c : ℝ} {p : PrimeSide.Setting} {F : PrimeSide.LocalFun}
+    (hF : PrimeSide.LocalHypsCoreW c p F) {Δ : ℝ} (hΔ : p.L ≤ Δ) :
+    PrimeSide.Wfun c p Δ ≤ 2 * (c / p.w) ^ 2 / p.L ^ 2 := by
+  have h8 := hF.eight_le_L
+  have hL : 0 < p.L := hF.L_pos
+  have hΔ0 : 0 < Δ := lt_of_lt_of_le hL hΔ
+  have hw : 0 < p.w := by linarith [hF.one_le_w]
+  have hc : 0 ≤ c := by linarith [hF.four_le_cϱ]
+  set K : ℝ := (c / p.w) ^ 2 with hK
+  have hK0 : 0 ≤ K := sq_nonneg _
+  have hπ := Real.pi_pos
+
+  have hψ : PrimeSide.psiA c p Δ ^ 2 ≤ K / Δ ^ 4 := by
+    have h1 : PrimeSide.psiA c p Δ ≤ c / (p.w * Δ ^ 2) := PrimeSide.psiA_le_div_sq hΔ0.ne'
+    calc PrimeSide.psiA c p Δ ^ 2 ≤ (c / (p.w * Δ ^ 2)) ^ 2 :=
+          pow_le_pow_left₀ (PrimeSide.psiA_nonneg_of hF Δ) h1 2
+      _ = K / Δ ^ 4 := by rw [hK]; field_simp
+
+  have hint : ∫ r in Set.Ioi Δ, PrimeSide.psiA c p r ^ 2 ≤ K / (3 * Δ ^ 3) :=
+    PrimeSide.setIntegral_psiA_sq_Ioi_le_div hF hΔ0
+  have hh : (p.h)⁻¹ = p.L / (2 * Real.pi) := by
+    unfold PrimeSide.Setting.h; rw [inv_div]
+  have hhpos : 0 ≤ (p.h)⁻¹ := by rw [hh]; positivity
+
+  have hΔ4 : p.L ^ 2 ≤ Δ ^ 4 := by
+    have : p.L ^ 2 ≤ Δ ^ 2 := pow_le_pow_left₀ hL.le hΔ 2
+    have h2 : (1 : ℝ) ≤ Δ ^ 2 := by nlinarith
+    calc p.L ^ 2 ≤ Δ ^ 2 := this
+      _ = Δ ^ 2 * 1 := (mul_one _).symm
+      _ ≤ Δ ^ 2 * Δ ^ 2 := by gcongr
+      _ = Δ ^ 4 := by ring
+  have hA : K / Δ ^ 4 ≤ K / p.L ^ 2 :=
+    div_le_div_of_nonneg_left hK0 (by positivity) hΔ4
+  have hB : (p.h)⁻¹ * (K / (3 * Δ ^ 3)) ≤ K / p.L ^ 2 := by
+    rw [hh]
+    have e : p.L / (2 * Real.pi) * (K / (3 * Δ ^ 3)) = K * (p.L / (6 * Real.pi * Δ ^ 3)) := by
+      field_simp; ring
+    rw [e]
+    have hΔ3 : p.L ^ 3 ≤ Δ ^ 3 := pow_le_pow_left₀ hL.le hΔ 3
+    have h3 : p.L / (6 * Real.pi * Δ ^ 3) ≤ 1 / p.L ^ 2 := by
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      have : p.L * p.L ^ 2 = p.L ^ 3 := by ring
+      rw [this]
+      nlinarith [Real.pi_gt_three, pow_pos hΔ0 3]
+    calc K * (p.L / (6 * Real.pi * Δ ^ 3)) ≤ K * (1 / p.L ^ 2) :=
+          mul_le_mul_of_nonneg_left h3 hK0
+      _ = K / p.L ^ 2 := by ring
+  unfold PrimeSide.Wfun
+  calc PrimeSide.psiA c p Δ ^ 2 + (p.h)⁻¹ * ∫ r in Set.Ioi Δ, PrimeSide.psiA c p r ^ 2
+      ≤ K / Δ ^ 4 + (p.h)⁻¹ * (K / (3 * Δ ^ 3)) := by
+        gcongr
+    _ ≤ K / p.L ^ 2 + K / p.L ^ 2 := add_le_add hA hB
+    _ = 2 * K / p.L ^ 2 := by ring
+
+lemma rho_le_of_far {c : ℝ} {p : PrimeSide.Setting} {F : PrimeSide.LocalFun}
+    (hF : PrimeSide.LocalHypsCoreW c p F) (hT : 0 < p.T) {τ : ℝ}
+    (h1 : p.L ≤ τ - p.T) (h2 : p.L ≤ 2 * p.T - τ) (h3 : p.L ≤ p.tau p.d - τ) :
+    PrimeSide.rho p F τ ≤ 5 * (c / p.w) ^ 2 / p.L ^ 2 := by
+  have hL : 0 < p.L := hF.L_pos
+  have hτ : τ ∈ Set.Icc p.T (2 * p.T) := ⟨by linarith, by linarith⟩
+  have hmaj := PrimeSide.rho_le_majorant hF hT hτ
+  have hW1 := Wfun_le_of_L_le hF h1
+  have hW2 := Wfun_le_of_L_le hF h2
+  have hψ : PrimeSide.psiA c p (p.tau p.d - τ) ^ 2 ≤ (c / p.w) ^ 2 / p.L ^ 2 := by
+    have hΔ0 : 0 < p.tau p.d - τ := lt_of_lt_of_le hL h3
+    have hw : 0 < p.w := by linarith [hF.one_le_w]
+    have hc : 0 ≤ c := by linarith [hF.four_le_cϱ]
+    have hb : PrimeSide.psiA c p (p.tau p.d - τ) ≤ c / (p.w * (p.tau p.d - τ) ^ 2) :=
+      PrimeSide.psiA_le_div_sq hΔ0.ne'
+    have hΔ4 : p.L ^ 2 ≤ (p.tau p.d - τ) ^ 4 := by
+      have h8 := hF.eight_le_L
+      have : p.L ^ 2 ≤ (p.tau p.d - τ) ^ 2 := pow_le_pow_left₀ hL.le h3 2
+      have h2' : (1 : ℝ) ≤ (p.tau p.d - τ) ^ 2 := by nlinarith
+      calc p.L ^ 2 ≤ (p.tau p.d - τ) ^ 2 := this
+        _ = (p.tau p.d - τ) ^ 2 * 1 := (mul_one _).symm
+        _ ≤ (p.tau p.d - τ) ^ 2 * (p.tau p.d - τ) ^ 2 := by gcongr
+        _ = (p.tau p.d - τ) ^ 4 := by ring
+    calc PrimeSide.psiA c p (p.tau p.d - τ) ^ 2 ≤ (c / (p.w * (p.tau p.d - τ) ^ 2)) ^ 2 :=
+          pow_le_pow_left₀ (PrimeSide.psiA_nonneg_of hF _) hb 2
+      _ = (c / p.w) ^ 2 / (p.tau p.d - τ) ^ 4 := by field_simp
+      _ ≤ (c / p.w) ^ 2 / p.L ^ 2 :=
+          div_le_div_of_nonneg_left (sq_nonneg _) (by positivity) hΔ4
+  calc PrimeSide.rho p F τ
+      ≤ PrimeSide.Wfun c p (τ - p.T) + PrimeSide.Wfun c p (2 * p.T - τ)
+          + PrimeSide.psiA c p (p.tau p.d - τ) ^ 2 := hmaj
+    _ ≤ 2 * (c / p.w) ^ 2 / p.L ^ 2 + 2 * (c / p.w) ^ 2 / p.L ^ 2 + (c / p.w) ^ 2 / p.L ^ 2 :=
+        add_le_add (add_le_add hW1 hW2) hψ
+    _ = 5 * (c / p.w) ^ 2 / p.L ^ 2 := by ring
+
+lemma abs_Kinf_sub_Kfun_le_of_far {c : ℝ} {p : PrimeSide.Setting} {F : PrimeSide.LocalFun}
+    (hF : PrimeSide.LocalHypsCoreW c p F) (hT : 0 < p.T) {τ τ' : ℝ}
+    (h1 : p.L ≤ τ - p.T) (h2 : p.L ≤ 2 * p.T - τ) (h3 : p.L ≤ p.tau p.d - τ)
+    (h1' : p.L ≤ τ' - p.T) (h2' : p.L ≤ 2 * p.T - τ') (h3' : p.L ≤ p.tau p.d - τ') :
+    |PrimeSide.Kinf p F τ τ' - PrimeSide.Kfun p F τ τ'| ≤ 5 * (c / p.w) ^ 2 / p.L ^ 2 := by
+  have h := PrimeSide.abs_Kinf_sub_Kfun_le hF τ τ' one_pos
+  have hρ := rho_le_of_far hF hT h1 h2 h3
+  have hρ' := rho_le_of_far hF hT h1' h2' h3'
+  calc |PrimeSide.Kinf p F τ τ' - PrimeSide.Kfun p F τ τ'|
+      ≤ (1 * PrimeSide.rho p F τ + PrimeSide.rho p F τ' / 1) / 2 := h
+    _ ≤ (1 * (5 * (c / p.w) ^ 2 / p.L ^ 2) + 5 * (c / p.w) ^ 2 / p.L ^ 2 / 1) / 2 := by
+        gcongr
+    _ = 5 * (c / p.w) ^ 2 / p.L ^ 2 := by ring
+
+end Tail
+
+section Limit
+
+lemma Kfun_zero_eq_aStar : Kfun 0 = aStar 1 := by
+  simp [Kfun, aStar, vStar]
+
+lemma cos_sqrt_two_mul_pos {t : ℝ} (ht : t ∈ Set.Ioo (-(1 : ℝ) / 2) (1 / 2)) :
+    0 < Real.cos (Real.sqrt 2 * t) := by
+  apply Real.cos_pos_of_mem_Ioo
+  have hs : Real.sqrt 2 < 3 / 2 := by
+    rw [Real.sqrt_lt' (by norm_num)]; norm_num
+  have h0 := Real.sqrt_nonneg 2
+  have hπ := Real.pi_gt_three
+  constructor <;> nlinarith [mul_nonneg h0 (by linarith [ht.1] : (0:ℝ) ≤ t + 1 / 2),
+    mul_nonneg h0 (by linarith [ht.2] : (0:ℝ) ≤ 1 / 2 - t)]
+
+lemma Kfun_zero_pos : 0 < Kfun 0 := by
+  unfold Kfun
+  apply intervalIntegral.intervalIntegral_pos_of_pos_on
+  · exact (by fun_prop : Continuous fun t : ℝ =>
+      Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * 0 * t)).intervalIntegrable _ _
+  · intro t ht
+    simp only [mul_zero, zero_mul, Real.cos_zero, mul_one]
+    exact cos_sqrt_two_mul_pos ht
+  · norm_num
+
+lemma abs_Kfun_le (x : ℝ) : |Kfun x| ≤ Kfun 0 := by
+  unfold Kfun
+  have hab : (-(1 : ℝ) / 2) ≤ 1 / 2 := by norm_num
+  calc |∫ t in (-(1 : ℝ) / 2)..(1 / 2), Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * x * t)|
+      ≤ ∫ t in (-(1 : ℝ) / 2)..(1 / 2), |Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * x * t)| :=
+        intervalIntegral.abs_integral_le_integral_abs hab
+    _ ≤ ∫ t in (-(1 : ℝ) / 2)..(1 / 2), Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * 0 * t) := by
+        apply intervalIntegral.integral_mono_on hab
+        · exact ((by fun_prop : Continuous fun t : ℝ =>
+            Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * x * t)).abs).intervalIntegrable _ _
+        · exact (by fun_prop : Continuous fun t : ℝ =>
+            Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * 0 * t)).intervalIntegrable _ _
+        · intro t ht
+          simp only [mul_zero, zero_mul, Real.cos_zero, mul_one]
+          rw [abs_mul, abs_of_nonneg (cos_sqrt_two_mul_nonneg ht)]
+          exact mul_le_of_le_one_right (cos_sqrt_two_mul_nonneg ht) (Real.abs_cos_le_one _)
+
+lemma re_paperFT_ofReal {g : ℝ → ℝ} (hg : Integrable g) (r : ℝ) :
+    (paperFT (fun u => (g u : ℂ)) r).re = ∫ u, g u * Real.cos (r * u) := by
+  unfold paperFT
+  have hexp : Continuous fun u : ℝ => Complex.exp (Complex.I * (r : ℂ) * (u : ℂ)) := by fun_prop
+  have hint : Integrable (fun u : ℝ => (g u : ℂ) * Complex.exp (Complex.I * (r : ℂ) * (u : ℂ))) := by
+    refine hg.ofReal.mul_bdd (c := 1) hexp.aestronglyMeasurable (Filter.Eventually.of_forall fun u => ?_)
+    rw [Complex.norm_exp]
+    simp
+  rw [← integral_re_C hint]
+  congr 1 with u
+  have e : Complex.I * (r : ℂ) * (u : ℂ) = ((r * u : ℝ) : ℂ) * Complex.I := by push_cast; ring
+  rw [e, Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
+
+lemma sharpW_integrable {L : ℝ} : Integrable (sharpW 1 L) := by
+  unfold sharpW
+  rw [integrable_indicator_iff measurableSet_Icc]
+  have hc : Continuous fun u : ℝ => vStar 1 (u / L) := by unfold vStar; fun_prop
+  exact hc.integrableOn_Icc
+
+lemma integral_sharpW_mul_cos {L : ℝ} (hL : 0 < L) (x : ℝ) :
+    ∫ u, sharpW 1 L u * Real.cos (2 * Real.pi * x / L * u) = L * Kfun x := by
+  set f : ℝ → ℝ := fun t => Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * x * t) with hf
+  have hind : ∀ u, sharpW 1 L u * Real.cos (2 * Real.pi * x / L * u)
+      = (Set.Icc (-(L / 2)) (L / 2)).indicator (fun u => f (u / L)) u := by
+    intro u
+    unfold sharpW vStar
+    by_cases hu : u ∈ Set.Icc (-(L / 2)) (L / 2)
+    · rw [Set.indicator_of_mem hu, Set.indicator_of_mem hu, hf]
+      simp only [mul_one]
+      congr 2
+      field_simp
+    · rw [Set.indicator_of_notMem hu, Set.indicator_of_notMem hu, zero_mul]
+  simp_rw [hind]
+  rw [integral_indicator measurableSet_Icc, integral_Icc_eq_integral_Ioc,
+    ← intervalIntegral.integral_of_le (by linarith), intervalIntegral.integral_comp_div (f := f) hL.ne',
+    smul_eq_mul, show -(L / 2) / L = -(1 : ℝ) / 2 by field_simp; try ring,
+    show L / 2 / L = (1 : ℝ) / 2 by field_simp; try ring]
+  rfl
+
+lemma abs_integral_mul_cos_sub_le {f g : ℝ → ℝ} (hf : Integrable f) (hg : Integrable g) (r : ℝ) :
+    |(∫ u, f u * Real.cos (r * u)) - ∫ u, g u * Real.cos (r * u)| ≤ ∫ u, |f u - g u| := by
+  have hcos : Continuous fun u : ℝ => Real.cos (r * u) := by fun_prop
+  have hbd : ∀ u : ℝ, ‖Real.cos (r * u)‖ ≤ 1 := fun u => by
+    rw [Real.norm_eq_abs]; exact Real.abs_cos_le_one _
+  have hfi : Integrable fun u => f u * Real.cos (r * u) :=
+    hf.mul_bdd (c := 1) hcos.aestronglyMeasurable (Filter.Eventually.of_forall hbd)
+  have hgi : Integrable fun u => g u * Real.cos (r * u) :=
+    hg.mul_bdd (c := 1) hcos.aestronglyMeasurable (Filter.Eventually.of_forall hbd)
+  rw [← integral_sub hfi hgi]
+  calc |∫ u, (f u * Real.cos (r * u) - g u * Real.cos (r * u))|
+      ≤ ∫ u, |f u * Real.cos (r * u) - g u * Real.cos (r * u)| := abs_integral_le_integral_abs
+    _ ≤ ∫ u, |f u - g u| := by
+        refine integral_mono (hfi.sub hgi).abs (hf.sub hg).abs fun u => ?_
+        rw [← sub_mul, abs_mul]
+        exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+
+variable {P : Params} (hP : P.Valid) (hlam : P.lam = 1) {T : ℝ} (h8 : 8 * P.w ≤ P.L T)
+include hP hlam h8
+
+lemma abs_VPhiR_sub_L_mul_Kfun_le (x : ℝ) :
+    |AdmWindow.VPhiR (P.phiD T) (2 * Real.pi * x / P.L T) - P.L T * Kfun x| ≤ 2 * P.w := by
+  have hW := admWindow_params hP h8
+  have hL := hW.L_pos
+  have hw : 0 < P.w := hW.w_pos
+  set r := 2 * Real.pi * x / P.L T with hr
+  have hV : AdmWindow.VPhiR (P.phiD T) r = ∫ u, P.phiD T u ^ 2 * Real.cos (r * u) :=
+    re_paperFT_ofReal (hW.integrable_pow two_pos) r
+  have hS : ∫ u, sharpW 1 (P.L T) u * Real.cos (r * u) = P.L T * Kfun x :=
+    integral_sharpW_mul_cos hL x
+  have hL1 : ∫ u, |P.phiD T u ^ 2 - sharpW P.lam (P.L T) u| ≤ 2 * P.w :=
+    integral_abs_phiDsq_sub_sharp hP.taper hP.lam_pos hP.lam_le_one hw (by linarith)
+  rw [hlam] at hL1
+  rw [hV, ← hS]
+  exact (abs_integral_mul_cos_sub_le (hW.integrable_pow two_pos) sharpW_integrable r).trans hL1
+
+lemma abs_aL_sub_L_mul_Kfun_zero_le :
+    |(P.atD T).a T * P.L T - P.L T * Kfun 0| ≤ 4 * P.w := by
+  have hW := admWindow_params hP h8
+  have hL := hW.L_pos
+  have h : |(P.L T)⁻¹ * (∫ u, P.phiD T u ^ 2) - aStar P.lam| ≤ 4 * P.w / P.L T :=
+    aD_close hP.taper hP.lam_pos hP.lam_le_one hP.one_le_w h8
+  rw [hlam, ← Kfun_zero_eq_aStar] at h
+  have ha : (P.atD T).a T = (P.L T)⁻¹ * ∫ u, P.phiD T u ^ 2 := by rw [atD_a_eq_av hP]; rfl
+  rw [ha]
+  have e : (P.L T)⁻¹ * (∫ u, P.phiD T u ^ 2) * P.L T - P.L T * Kfun 0
+      = ((P.L T)⁻¹ * (∫ u, P.phiD T u ^ 2) - Kfun 0) * P.L T := by ring
+  rw [e, abs_mul, abs_of_pos hL]
+  calc |(P.L T)⁻¹ * (∫ u, P.phiD T u ^ 2) - Kfun 0| * P.L T ≤ 4 * P.w / P.L T * P.L T :=
+        mul_le_mul_of_nonneg_right h hL.le
+    _ = 4 * P.w := by field_simp
+
+lemma abs_VPhiR_div_sub_kfun_le (h4π : 4 * Real.pi * P.w ≤ P.L T) (x : ℝ) :
+    |AdmWindow.VPhiR (P.phiD T) (2 * Real.pi * x / P.L T) / ((P.atD T).a T * P.L T) - kfun x|
+      ≤ 12 * P.w / P.L T := by
+  have hW := admWindow_params hP h8
+  have hL := hW.L_pos
+  have hw : 0 < P.w := hW.w_pos
+  have ha : 1 / 2 ≤ (P.atD T).a T := (aD_range_of hP h8 h4π).1
+  have h1 := abs_VPhiR_sub_L_mul_Kfun_le hP hlam h8 x
+  have h2 := abs_aL_sub_L_mul_Kfun_zero_le hP hlam h8
+  have hK0 : 0 < Kfun 0 := Kfun_zero_pos
+  have hK : |Kfun x| ≤ Kfun 0 := abs_Kfun_le x
+  set V := AdmWindow.VPhiR (P.phiD T) (2 * Real.pi * x / P.L T) with hV
+  set A := (P.atD T).a T * P.L T with hA
+  set K := Kfun x with hK'
+  set K0 := Kfun 0 with hK0'
+  have hA2 : P.L T / 2 ≤ A := by rw [hA]; nlinarith
+  have hApos : 0 < A := by linarith
+  have e : V / A - K / K0 = (V - P.L T * K) / A + K * (P.L T * K0 - A) / (A * K0) := by
+    field_simp
+    ring
+  unfold kfun
+  rw [e]
+  have h2' : |P.L T * K0 - A| ≤ 4 * P.w := by rw [abs_sub_comm]; exact h2
+  calc |(V - P.L T * K) / A + K * (P.L T * K0 - A) / (A * K0)|
+      ≤ |(V - P.L T * K) / A| + |K * (P.L T * K0 - A) / (A * K0)| := abs_add_le _ _
+    _ = |V - P.L T * K| / A + |K| * |P.L T * K0 - A| / (A * K0) := by
+        rw [abs_div, abs_of_pos hApos, abs_div, abs_mul, abs_of_pos (mul_pos hApos hK0)]
+    _ ≤ 2 * P.w / A + K0 * (4 * P.w) / (A * K0) := by gcongr
+    _ = 6 * P.w / A := by field_simp; ring
+    _ ≤ 12 * P.w / P.L T := by
+        rw [div_le_div_iff₀ hApos hL]
+        nlinarith
+
+end Limit
+
+section Assembly
+
+lemma retained_far {Z : ZeroConfig} {P : Params} {T : ℝ} (hL : 0 < P.L T) (hT : 0 ≤ T)
+    {z : ZI Z T} (hz : z ∈ retained Z P T) :
+    P.L T ≤ (z : ℂ).im - T ∧ P.L T ≤ 2 * T - (z : ℂ).im ∧ P.L T ≤ P.tau T (P.d T) - (z : ℂ).im := by
+  obtain ⟨-, h1, h2⟩ := Finset.mem_filter.mp hz
+  unfold xnorm at h1 h2
+  have hπ : (0 : ℝ) < 2 * Real.pi := by positivity
+  have hπ1 : (1 : ℝ) ≤ 2 * Real.pi := by linarith [Real.pi_gt_three]
+  have hd : ((P.d T : ℕ) : ℝ) ≤ P.L T * T / (2 * Real.pi) := Nat.floor_le (by positivity)
+  have h1' : 2 * Real.pi * P.L T ^ 2 ≤ P.L T * ((z : ℂ).im - T) := by
+    have := (le_div_iff₀ hπ).mp h1; linarith
+  have h2' : P.L T * ((z : ℂ).im - T) ≤ 2 * Real.pi * ((P.d T : ℝ) - P.L T ^ 2) := by
+    have := (div_le_iff₀ hπ).mp h2; linarith
+  have hd' : 2 * Real.pi * (P.d T : ℝ) ≤ P.L T * T := by
+    have := (le_div_iff₀ hπ).mp hd; linarith
+  have g1 : 2 * Real.pi * P.L T ≤ (z : ℂ).im - T := by
+    have : P.L T * (2 * Real.pi * P.L T) ≤ P.L T * ((z : ℂ).im - T) := by nlinarith
+    exact le_of_mul_le_mul_left this hL
+  have g2 : 2 * Real.pi * P.L T ≤ 2 * T - (z : ℂ).im := by
+    have : P.L T * ((z : ℂ).im - T) ≤ P.L T * (T - 2 * Real.pi * P.L T) := by nlinarith
+    have := le_of_mul_le_mul_left this hL
+    linarith
+  have hL2 : P.L T ≤ 2 * Real.pi * P.L T := by nlinarith
+  refine ⟨by linarith, by linarith, ?_⟩
+
+  have htau : P.tau T (P.d T) = T + (P.d T : ℝ) * (2 * Real.pi / P.L T) := by
+    simp only [Params.tau, Params.hgrid, Int.cast_natCast]
+  rw [htau]
+  have e : T + (P.d T : ℝ) * (2 * Real.pi / P.L T) - (z : ℂ).im
+      = (2 * Real.pi * (P.d T : ℝ) - P.L T * ((z : ℂ).im - T)) / P.L T := by
+    field_simp
+    ring
+  rw [e, le_div_iff₀ hL]
+  nlinarith
+
+lemma Kfun_eq_sum {P : Params} (hP : P.Valid) (T γ γ' : ℝ) :
+    PrimeSide.Kfun (P.toSetting T) (P.localFunD T) γ γ'
+      = ∑ k : Fin ((P.atD T).d T), (P.atD T).phiHatR T (γ - (P.atD T).tau T k)
+          * (P.atD T).phiHatR T (γ' - (P.atD T).tau T k) := by
+  rw [atD_phiHatR_eq hP T]; rfl
+
+lemma Kinf_eq {P : Params} (T γ γ' : ℝ) :
+    PrimeSide.Kinf (P.toSetting T) (P.localFunD T) γ γ'
+      = P.L T * AdmWindow.VPhiR (P.phiD T) (γ - γ') := rfl
+
+theorem gram_close_of {P : Params} (hP : P.Valid) (hlam : P.lam = 1) {T : ℝ} (hT : 0 < T)
+    (h8 : 8 * P.w ≤ P.L T) (h4π : 4 * Real.pi * P.w ≤ P.L T)
+    (hF : PrimeSide.LocalHypsCoreW (cDT P.ϱ P.lam) (P.toSetting T) (P.localFunD T))
+    (Z : ZeroConfig) (z z' : retained Z (P.atD T) T) :
+    ‖gram Z (P.atD T) T z z'
+        - (kfun (xret Z (P.atD T) T z - xret Z (P.atD T) T z') : ℂ)‖
+      ≤ 10 * (cDT P.ϱ P.lam / P.w) ^ 2 / P.L T ^ 4 + 12 * P.w / P.L T := by
+  have hW := admWindow_params hP h8
+  have hL := hW.L_pos
+  have ha : 1 / 2 ≤ (P.atD T).a T := (aD_range_of hP h8 h4π).1
+  have hc : 0 < aL2 (P.atD T) T := by
+    unfold aL2; rw [Params.atD_L]; positivity
+  set K : ℝ := (cDT P.ϱ P.lam / P.w) ^ 2 with hK
+  have hK0 : 0 ≤ K := sq_nonneg _
+  rw [gram_apply Z (P.atD T) T (phiHatReal_atD hP T) hc.le z z', ← Complex.ofReal_sub,
+    Complex.norm_real, Real.norm_eq_abs, ← Kfun_eq_sum hP T (z.1 : ℂ).im (z'.1 : ℂ).im]
+  set γ : ℝ := (z.1 : ℂ).im with hγ
+  set γ' : ℝ := (z'.1 : ℂ).im with hγ'
+
+  obtain ⟨g1, g2, g3⟩ := retained_far (Z := Z) (P := P.atD T) hL hT.le z.2
+  obtain ⟨g1', g2', g3'⟩ := retained_far (Z := Z) (P := P.atD T) hL hT.le z'.2
+  have htail : |PrimeSide.Kinf (P.toSetting T) (P.localFunD T) γ γ'
+      - PrimeSide.Kfun (P.toSetting T) (P.localFunD T) γ γ'| ≤ 5 * K / P.L T ^ 2 :=
+    abs_Kinf_sub_Kfun_le_of_far hF hT g1 g2 g3 g1' g2' g3'
+
+  have hx : 2 * Real.pi * (xret Z (P.atD T) T z - xret Z (P.atD T) T z') / P.L T = γ - γ' := by
+    unfold xret xnorm
+    rw [Params.atD_L]
+    field_simp
+    ring
+  have hlim := abs_VPhiR_div_sub_kfun_le hP hlam h8 h4π (xret Z (P.atD T) T z - xret Z (P.atD T) T z')
+  rw [hx] at hlim
+
+  set A : ℝ := (P.atD T).a T with hA
+  set V : ℝ := AdmWindow.VPhiR (P.phiD T) (γ - γ') with hV
+  set Kf : ℝ := PrimeSide.Kfun (P.toSetting T) (P.localFunD T) γ γ' with hKf
+  have hKinf : PrimeSide.Kinf (P.toSetting T) (P.localFunD T) γ γ' = P.L T * V := Kinf_eq T γ γ'
+  rw [hKinf] at htail
+  have haL2 : aL2 (P.atD T) T = A * P.L T ^ 2 := by unfold aL2; rw [Params.atD_L]
+  rw [haL2]
+  have hApos : 0 < A := by linarith
+  have hsplit : (A * P.L T ^ 2)⁻¹ * Kf - kfun (xret Z (P.atD T) T z - xret Z (P.atD T) T z')
+      = (A * P.L T ^ 2)⁻¹ * (Kf - P.L T * V)
+        + (V / (A * P.L T) - kfun (xret Z (P.atD T) T z - xret Z (P.atD T) T z')) := by
+    field_simp
+    ring
+  rw [hsplit]
+  have hinv : (A * P.L T ^ 2)⁻¹ ≤ 2 / P.L T ^ 2 := by
+    rw [inv_eq_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [pow_pos hL 2]
+  calc |(A * P.L T ^ 2)⁻¹ * (Kf - P.L T * V)
+        + (V / (A * P.L T) - kfun (xret Z (P.atD T) T z - xret Z (P.atD T) T z'))|
+      ≤ |(A * P.L T ^ 2)⁻¹ * (Kf - P.L T * V)|
+        + |V / (A * P.L T) - kfun (xret Z (P.atD T) T z - xret Z (P.atD T) T z')| := abs_add_le _ _
+    _ = (A * P.L T ^ 2)⁻¹ * |P.L T * V - Kf|
+        + |V / (A * P.L T) - kfun (xret Z (P.atD T) T z - xret Z (P.atD T) T z')| := by
+        rw [abs_mul, abs_of_pos (by positivity : (0 : ℝ) < (A * P.L T ^ 2)⁻¹), abs_sub_comm]
+    _ ≤ 2 / P.L T ^ 2 * (5 * K / P.L T ^ 2) + 12 * P.w / P.L T := by
+        gcongr
+    _ = 10 * K / P.L T ^ 4 + 12 * P.w / P.L T := by
+        field_simp
+        ring
+
+end Assembly
+
+section Strips
+
+variable (Z : ZeroConfig)
+
+lemma window_union {a b c : ℝ} (h1 : a ≤ b) (h2 : b ≤ c) :
+    Z.window a c = Z.window a b ∪ Z.window b c := by
+  ext ρ
+  simp only [ZeroConfig.window, Set.mem_inter_iff, Set.mem_ofPred_eq, Set.mem_union]
+  constructor
+  · rintro ⟨hρ, ha, hc⟩
+    rcases le_or_gt ρ.im b with hle | hgt
+    · exact Or.inl ⟨hρ, ha, hle⟩
+    · exact Or.inr ⟨hρ, hgt, hc⟩
+  · rintro (⟨hρ, ha, hb⟩ | ⟨hρ, hb, hc⟩)
+    · exact ⟨hρ, ha, le_trans hb h2⟩
+    · exact ⟨hρ, lt_of_le_of_lt h1 hb, hc⟩
+
+lemma N_add {a b c : ℝ} (h1 : a ≤ b) (h2 : b ≤ c) : Z.N a c = Z.N a b + Z.N b c := by
+  unfold ZeroConfig.N
+  rw [window_union Z h1 h2]
+  refine finsum_mem_union ?_ (Z.finite_window a b) (Z.finite_window b c)
+  rw [Set.disjoint_left]
+  rintro ρ ⟨_, _, hb⟩ ⟨_, hb', _⟩
+  exact absurd hb (not_le.2 hb')
+
+lemma N_mono {a b c d : ℝ} (hca : c ≤ a) (hbd : b ≤ d) : Z.N a b ≤ Z.N c d := by
+  unfold ZeroConfig.N
+  have hsub : Z.window a b ⊆ Z.window c d := by
+    rintro ρ ⟨hρ, h1, h2⟩
+    exact ⟨hρ, lt_of_le_of_lt hca h1, le_trans h2 hbd⟩
+  have hfab : (Z.window a b).Finite := Z.finite_window a b
+  have hfcd : (Z.window c d).Finite := Z.finite_window c d
+  rw [finsum_mem_eq_finite_toFinset_sum _ hfab, finsum_mem_eq_finite_toFinset_sum _ hfcd]
+  apply Finset.sum_le_sum_of_subset
+  intro ρ hρ
+  rw [Set.Finite.mem_toFinset] at hρ ⊢
+  exact hsub hρ
+
+lemma ncard_window_le_N (a b : ℝ) : (Z.window a b).ncard ≤ Z.N a b := by
+  unfold ZeroConfig.N
+  have hfin : (Z.window a b).Finite := Z.finite_window a b
+  rw [finsum_mem_eq_finite_toFinset_sum _ hfin, Set.ncard_eq_toFinset_card _ hfin,
+    Finset.card_eq_sum_ones]
+  apply Finset.sum_le_sum
+  intro ρ hρ
+  rw [Set.Finite.mem_toFinset] at hρ
+  exact Z.one_le_mult ρ hρ.1
+
+lemma N_le_of_local_count {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
+    (hloc : ∀ t : ℝ, (Z.N t (t + 1) : ℝ) ≤ A₀ * Real.log (|t| + 3)) (a : ℝ) (n : ℕ) :
+    (Z.N a (a + n) : ℝ) ≤ n * A₀ * Real.log (|a| + n + 3) := by
+  induction n with
+  | zero =>
+    simp only [Nat.cast_zero, add_zero, zero_mul]
+    have : Z.N a a = 0 := by
+      unfold ZeroConfig.N
+      have : Z.window a a = ∅ := by
+        ext ρ
+        simp only [ZeroConfig.window, Set.mem_inter_iff, Set.mem_ofPred_eq, Set.mem_empty_iff_false,
+          iff_false]
+        rintro ⟨_, h1, h2⟩; linarith
+      rw [this, finsum_mem_empty]
+    rw [this]; simp
+  | succ n ih =>
+    have hsplit : Z.N a (a + (n + 1 : ℕ)) = Z.N a (a + n) + Z.N (a + n) (a + n + 1) := by
+      push_cast
+      rw [← add_assoc]
+      exact N_add Z (by linarith [(n.cast_nonneg : (0:ℝ) ≤ n)]) (by linarith)
+    rw [hsplit]
+    push_cast
+    have h1 := hloc (a + n)
+    have hlogmono : Real.log (|a| + n + 3) ≤ Real.log (|a| + (n + 1) + 3) :=
+      Real.log_le_log (by positivity) (by linarith)
+    have hlogmono' : Real.log (|a + n| + 3) ≤ Real.log (|a| + (n + 1) + 3) :=
+      Real.log_le_log (by positivity) (by linarith [abs_add_le a (n : ℝ), abs_of_nonneg (n.cast_nonneg : (0:ℝ) ≤ n)])
+    have hA : 0 ≤ A₀ := by linarith
+    have hn : (0 : ℝ) ≤ n := n.cast_nonneg
+    calc ((Z.N a (a + n) : ℕ) : ℝ) + ((Z.N (a + n) (a + n + 1) : ℕ) : ℝ)
+        ≤ n * A₀ * Real.log (|a| + n + 3) + A₀ * Real.log (|a + n| + 3) := add_le_add ih h1
+      _ ≤ n * A₀ * Real.log (|a| + (n + 1) + 3) + A₀ * Real.log (|a| + (n + 1) + 3) := by
+          gcongr
+      _ = (n + 1) * A₀ * Real.log (|a| + (n + 1) + 3) := by ring
+
+lemma N_le_of_local_count_real {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
+    (hloc : ∀ t : ℝ, (Z.N t (t + 1) : ℝ) ≤ A₀ * Real.log (|t| + 3)) (a : ℝ) {ℓ : ℝ} (hℓ : 0 ≤ ℓ) :
+    (Z.N a (a + ℓ) : ℝ) ≤ (ℓ + 1) * A₀ * Real.log (|a| + ℓ + 4) := by
+  set n : ℕ := ⌈ℓ⌉₊ with hn
+  have hn1 : ℓ ≤ n := Nat.le_ceil ℓ
+  have hn2 : (n : ℝ) < ℓ + 1 := Nat.ceil_lt_add_one hℓ
+  have hA : 0 ≤ A₀ := by linarith
+  have hmono : (Z.N a (a + ℓ) : ℝ) ≤ Z.N a (a + n) := by
+    exact_mod_cast N_mono Z le_rfl (by linarith)
+  have hlog : Real.log (|a| + n + 3) ≤ Real.log (|a| + ℓ + 4) :=
+    Real.log_le_log (by positivity) (by linarith)
+  have hlog0 : 0 ≤ Real.log (|a| + n + 3) := Real.log_nonneg (by linarith [abs_nonneg a, (n.cast_nonneg : (0:ℝ) ≤ n)])
+  calc (Z.N a (a + ℓ) : ℝ) ≤ Z.N a (a + n) := hmono
+    _ ≤ n * A₀ * Real.log (|a| + n + 3) := N_le_of_local_count Z hA₀ hloc a n
+    _ ≤ (ℓ + 1) * A₀ * Real.log (|a| + ℓ + 4) := by gcongr
+
+end Strips
+
+section StripInclusion
+
+lemma N0s_le_card_retained_add (Z : ZeroConfig) (P : Params) (T : ℝ) (hL : 0 < P.L T) :
+    (Z.N0s T (2 * T) : ℝ) ≤ (retained Z P T).card
+      + Z.N T (T + 2 * Real.pi * P.L T)
+      + Z.N (2 * T - (2 * Real.pi * P.L T + 2 * Real.pi / P.L T)) (2 * T) := by
+  classical
+  set ℓ : ℝ := 2 * Real.pi * P.L T with hℓ
+  set ℓ' : ℝ := 2 * Real.pi * P.L T + 2 * Real.pi / P.L T with hℓ'
+  set A : Set ℂ := Z.window T (2 * T) ∩ ZeroConfig.onLine ∩ Z.simple with hA
+  set R : Finset ℂ := (retained Z P T).map (Function.Embedding.subtype _) with hR
+  have hπ : (0 : ℝ) < 2 * Real.pi := by positivity
+  have hD0 : 0 ≤ D0 T := Real.sqrt_nonneg T
+  have hsub : A ⊆ (↑R : Set ℂ) ∪ Z.window T (T + ℓ) ∪ Z.window (2 * T - ℓ') (2 * T) := by
+    rintro ρ ⟨⟨⟨hρc, hT1, hT2⟩, hre⟩, hm⟩
+    have hre' : ρ.re = 1 / 2 := hre
+    have hm' : Z.mult ρ = 1 := hm
+    have hρZ : ρ ∈ ZI Z T := by
+      rw [mem_ZI, mem_ZIprime_iff]
+      exact ⟨hρc, by linarith, by linarith⟩
+    set z : ZI Z T := ⟨ρ, hρZ⟩ with hz
+    have hzS : z ∈ (bdata Z P T).S₁ := by
+      simp only [ZeroBlockData.S₁, Finset.mem_filter, Finset.mem_univ, true_and]
+      exact ⟨(mkData_σ_eq_iff Z T _ _ z).mpr hre', hm'⟩
+    by_cases hx : P.L T ^ 2 ≤ xnorm P T z ∧ xnorm P T z ≤ (P.d T : ℝ) - P.L T ^ 2
+    · left; left
+      rw [Finset.mem_coe, hR, Finset.mem_map]
+      exact ⟨z, Finset.mem_filter.mpr ⟨hzS, hx⟩, rfl⟩
+    · rw [not_and_or] at hx
+      rcases hx with hx | hx
+      · left; right
+        refine ⟨hρc, hT1, ?_⟩
+        push Not at hx
+        unfold xnorm at hx
+        have h1 := (div_lt_iff₀ hπ).mp hx
+        have : P.L T * (ρ.im - T) < P.L T * ℓ := by rw [hℓ]; nlinarith
+        have := lt_of_mul_lt_mul_left this hL.le
+        show ρ.im ≤ T + ℓ
+        linarith
+      · right
+        refine ⟨hρc, ?_, hT2⟩
+        push Not at hx
+        unfold xnorm at hx
+        have h1 := (lt_div_iff₀ hπ).mp hx
+        have hd : P.L T * T / (2 * Real.pi) < (P.d T : ℝ) + 1 := Nat.lt_floor_add_one _
+        have hd' := (div_lt_iff₀ hπ).mp hd
+        have hLℓ' : P.L T * ℓ' = 2 * Real.pi * P.L T ^ 2 + 2 * Real.pi := by
+          rw [hℓ']; field_simp
+        have : P.L T * (2 * T - ℓ') < P.L T * ρ.im := by nlinarith
+        exact lt_of_mul_lt_mul_left this hL.le
+  have hfin : ((↑R : Set ℂ) ∪ Z.window T (T + ℓ) ∪ Z.window (2 * T - ℓ') (2 * T)).Finite :=
+    ((R.finite_toSet).union (Z.finite_window _ _)).union (Z.finite_window _ _)
+  have hN0s : Z.N0s T (2 * T) = A.ncard := rfl
+  have hcard : ((↑R : Set ℂ).ncard : ℝ) = (retained Z P T).card := by
+    rw [Set.ncard_coe_finset, hR, Finset.card_map]
+  have hlo := ncard_window_le_N Z T (T + ℓ)
+  have hhi := ncard_window_le_N Z (2 * T - ℓ') (2 * T)
+  have hu : ((↑R : Set ℂ) ∪ Z.window T (T + ℓ) ∪ Z.window (2 * T - ℓ') (2 * T)).ncard
+      ≤ (↑R : Set ℂ).ncard + (Z.window T (T + ℓ)).ncard + (Z.window (2 * T - ℓ') (2 * T)).ncard :=
+    (Set.ncard_union_le _ _).trans (by gcongr; exact Set.ncard_union_le _ _)
+  have hle : A.ncard ≤ (↑R : Set ℂ).ncard + (Z.window T (T + ℓ)).ncard
+      + (Z.window (2 * T - ℓ') (2 * T)).ncard :=
+    (Set.ncard_le_ncard hsub hfin).trans hu
+  rw [hN0s]
+  calc (A.ncard : ℝ) ≤ ((↑R : Set ℂ).ncard : ℝ) + (Z.window T (T + ℓ)).ncard
+        + (Z.window (2 * T - ℓ') (2 * T)).ncard := by exact_mod_cast hle
+    _ ≤ (retained Z P T).card + Z.N T (T + ℓ) + Z.N (2 * T - ℓ') (2 * T) := by
+        rw [hcard]
+        have hlo' : ((Z.window T (T + ℓ)).ncard : ℝ) ≤ Z.N T (T + ℓ) := by exact_mod_cast hlo
+        have hhi' : ((Z.window (2 * T - ℓ') (2 * T)).ncard : ℝ) ≤ Z.N (2 * T - ℓ') (2 * T) := by
+          exact_mod_cast hhi
+        linarith
+
+end StripInclusion
+
+section StripCount
+
+lemma strips_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
+    (hloc : ∀ t : ℝ, (Z.N t (t + 1) : ℝ) ≤ A₀ * Real.log (|t| + 3)) {T L : ℝ} (hT : 1 ≤ T)
+    (hL1 : 1 ≤ L) (hLT : L ≤ T) (hlogT : Real.log T ≤ L + 2 * Real.pi) :
+    (Z.N T (T + 2 * Real.pi * L) : ℝ) + Z.N (2 * T - (2 * Real.pi * L + 2 * Real.pi / L)) (2 * T)
+      ≤ 1600 * A₀ * L ^ 2 := by
+  have hπ := Real.pi_pos
+  have hπ4 := Real.pi_lt_four
+  have hπ3 := Real.pi_gt_three
+  have hA : 0 ≤ A₀ := by linarith
+  set ℓ : ℝ := 2 * Real.pi * L with hℓ
+  set ℓ' : ℝ := 2 * Real.pi * L + 2 * Real.pi / L with hℓ'
+  have hLpos : 0 < L := by linarith
+  have hℓ0 : 0 ≤ ℓ := by positivity
+  have h2πL : 2 * Real.pi / L ≤ 2 * Real.pi * L := by
+    rw [div_le_iff₀ hLpos]; nlinarith
+  have hℓ'0 : 0 ≤ ℓ' := by positivity
+  have hℓ'le : ℓ' ≤ 4 * Real.pi * L := by rw [hℓ']; linarith
+  have hℓle : ℓ ≤ ℓ' := by
+    have : 0 ≤ 2 * Real.pi / L := by positivity
+    rw [hℓ, hℓ']; linarith
+  have h1 := N_le_of_local_count_real Z hA₀ hloc T hℓ0
+  have h2 := N_le_of_local_count_real Z hA₀ hloc (2 * T - ℓ') hℓ'0
+  rw [sub_add_cancel] at h2
+
+  set M : ℝ := (6 + 8 * Real.pi) * T with hM
+  have hM1 : |T| + ℓ + 4 ≤ M := by
+    rw [abs_of_pos (by linarith), hM]; nlinarith
+  have hM2 : |2 * T - ℓ'| + ℓ' + 4 ≤ M := by
+    have : |2 * T - ℓ'| ≤ 2 * T + ℓ' := by
+      rw [abs_le]; constructor <;> linarith
+    rw [hM]; nlinarith
+  have hlogM : Real.log M ≤ (6 + 10 * Real.pi) * L := by
+    have hT0 : 0 < T := by linarith
+    rw [hM, Real.log_mul (by positivity) hT0.ne']
+    have := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < 6 + 8 * Real.pi)
+    nlinarith
+  have hlog1 : Real.log (|T| + ℓ + 4) ≤ (6 + 10 * Real.pi) * L :=
+    (Real.log_le_log (by positivity) hM1).trans hlogM
+  have hlog2 : Real.log (|2 * T - ℓ'| + ℓ' + 4) ≤ (6 + 10 * Real.pi) * L :=
+    (Real.log_le_log (by positivity) hM2).trans hlogM
+  have hcoef : ℓ' + 1 ≤ (4 * Real.pi + 1) * L := by nlinarith
+  have hcoef' : ℓ + 1 ≤ (4 * Real.pi + 1) * L := by linarith
+  have hb1 : (Z.N T (T + ℓ) : ℝ) ≤ (4 * Real.pi + 1) * L * A₀ * ((6 + 10 * Real.pi) * L) := by
+    refine h1.trans ?_
+    have h0 : 0 ≤ Real.log (|T| + ℓ + 4) := Real.log_nonneg (by linarith [abs_nonneg T])
+    gcongr
+  have hb2 : (Z.N (2 * T - ℓ') (2 * T) : ℝ)
+      ≤ (4 * Real.pi + 1) * L * A₀ * ((6 + 10 * Real.pi) * L) := by
+    refine h2.trans ?_
+    have h0 : 0 ≤ Real.log (|2 * T - ℓ'| + ℓ' + 4) :=
+      Real.log_nonneg (by linarith [abs_nonneg (2 * T - ℓ')])
+    gcongr
+  have hL2 : 0 ≤ A₀ * L ^ 2 := by positivity
+  have hconst : 2 * ((4 * Real.pi + 1) * (6 + 10 * Real.pi)) ≤ 1600 := by nlinarith
+  calc (Z.N T (T + ℓ) : ℝ) + Z.N (2 * T - ℓ') (2 * T)
+      ≤ 2 * ((4 * Real.pi + 1) * L * A₀ * ((6 + 10 * Real.pi) * L)) := by linarith
+    _ = 2 * ((4 * Real.pi + 1) * (6 + 10 * Real.pi)) * (A₀ * L ^ 2) := by ring
+    _ ≤ 1600 * (A₀ * L ^ 2) := by
+        gcongr
+    _ = 1600 * A₀ * L ^ 2 := by ring
+
+end StripCount
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S6.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open scoped ComplexOrder BigOperators
+open Zeta23 Zeta23.ZeroSide
+
+namespace Zeta23Ext.Bridge
+
+variable {ι d : Type*} [Fintype ι] [DecidableEq ι] [Fintype d] [DecidableEq d]
+variable (D : ZeroBlockData ι d)
+
+def multPart (c : ℝ) : Matrix d d ℂ :=
+  ((c⁻¹ : ℝ) : ℂ) • ∑ z ∈ D.S₂, (D.m z : ℂ) • vecMulVec (D.v z) (D.v z)
+
+lemma mem_S₂_σ {z : ι} (hz : z ∈ D.S₂) : D.σ z = z := by
+  simp only [ZeroBlockData.S₂, mem_filter, mem_univ, true_and] at hz
+  exact hz.1
+
+lemma mem_S₁_σ {z : ι} (hz : z ∈ D.S₁) : D.σ z = z := by
+  simp only [ZeroBlockData.S₁, mem_filter, mem_univ, true_and] at hz
+  exact hz.1
+
+lemma mem_S₁_m {z : ι} (hz : z ∈ D.S₁) : D.m z = 1 := by
+  simp only [ZeroBlockData.S₁, mem_filter, mem_univ, true_and] at hz
+  exact hz.2
+
+lemma multPart_posSemidef {c : ℝ} (hc : 0 < c) : (multPart D c).PosSemidef := by
+  unfold multPart
+  refine (posSemidef_sum _ fun z hz => ?_).smul (Complex.zero_le_real.mpr (inv_nonneg.mpr hc.le))
+  have := ZeroBlockData.posSemidef_smul_vecMulVec (D.star_v_of_onLine (mem_S₂_σ D hz)) (Nat.cast_nonneg (D.m z))
+  simpa using this
+
+lemma rank_multPart_le {c : ℝ} (hc : 0 < c) : (multPart D c).rank ≤ D.s₂ := by
+  unfold multPart
+  rw [rank_smul_of_ne_zero _ (by exact_mod_cast (inv_ne_zero hc.ne'))]
+  refine (rank_sum_le _ _ (fun _ => 1) fun z _ => rank_smul_vecMulVec_le _ _ _).trans ?_
+  simp [ZeroBlockData.s₂]
+
+lemma P₁_eq_simplePart {c : ℝ} (hc : 0 < c) :
+    P₁ D c = ((c⁻¹ : ℝ) : ℂ) • ∑ z ∈ D.S₁, (D.m z : ℂ) • vecMulVec (D.v z) (D.v z) := by
+  ext k l
+  simp only [P₁, Vsimple, mul_apply, conjTranspose_apply, Matrix.smul_apply, Matrix.sum_apply,
+    vecMulVec_apply, smul_eq_mul]
+  rw [← Finset.sum_coe_sort D.S₁, mul_sum]
+  refine sum_congr rfl fun z _ => ?_
+  have hσ := mem_S₁_σ D z.2
+  have hm := mem_S₁_m D z.2
+  have hstar : star (D.v z l) = D.v z l := congrFun (D.star_v_of_onLine hσ) l
+  rw [hm, star_div₀, hstar, Nat.cast_one, one_mul, Complex.star_def, Complex.conj_ofReal]
+  have hsq : ((Real.sqrt c : ℂ)) * (Real.sqrt c : ℂ) = (c : ℂ) := by
+    rw [← Complex.ofReal_mul, Real.mul_self_sqrt hc.le]
+  rw [div_mul_div_comm, hsq, Complex.ofReal_inv, inv_mul_eq_div]
+
+lemma Q'_eq_multPart_add_blockQ {c : ℝ} (hc : 0 < c) :
+    Q' D c = multPart D c + D.blockQ c := by
+  unfold Q' ZeroBlockData.blockP ZeroBlockData.onPart multPart
+  rw [P₁_eq_simplePart D hc, D.onLine_eq_S₁_union_S₂, sum_union D.disjoint_S₁_S₂, smul_add]
+  abel
+
+theorem regroup_posIndex (Pr : D.PairReps) {c : ℝ} (hc : 0 < c) :
+    posIndex (Q'_isHermitian D c) ≤ D.s₂ + Pr.p := by
+  have hR := multPart_posSemidef D hc
+  have hH : (multPart D c + D.blockQ c).IsHermitian := hR.isHermitian.add (D.blockQ_isHermitian c)
+  rw [ZeroBlockData.posIndex_congr (Q'_isHermitian D c) hH (Q'_eq_multPart_add_blockQ D hc)]
+  calc posIndex hH
+      ≤ posIndex hR.isHermitian + posIndex (D.blockQ_isHermitian c) := posIndex_add_le _ _
+    _ ≤ D.s₂ + Pr.p := by
+        rw [posIndex_eq_rank_of_posSemidef hR]
+        exact Nat.add_le_add (rank_multPart_le D hc) (D.posIndex_blockQ_le Pr hc)
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S7.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open scoped ComplexOrder BigOperators
+open Zeta23 Zeta23.ZeroSide Zeta23Ext.StableRankTrace
+
+namespace Zeta23Ext.Bridge
+
+variable {ι d : Type*} [Fintype ι] [DecidableEq ι] [Fintype d] [DecidableEq d]
+variable (D : ZeroBlockData ι d)
+
+lemma Vsimple_col_le_one {c : ℝ} (hc : 0 < c)
+    (hPois : ∀ z ∈ D.onLine, ∑ k, ‖D.v z k‖ ^ 2 ≤ c) (z : D.S₁) :
+    ∑ k, ‖Vsimple D c k z‖ ^ 2 ≤ 1 := by
+  have hz : (z : ι) ∈ D.onLine := by
+    have := z.2
+    simp only [ZeroBlockData.S₁, mem_filter, mem_univ, true_and] at this
+    exact (D.mem_onLine).mpr this.1
+  have hs : ∀ k, ‖Vsimple D c k z‖ ^ 2 = ‖D.v z k‖ ^ 2 / c := by
+    intro k
+    simp only [Vsimple]
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.sqrt_pos.mpr hc), div_pow,
+      Real.sq_sqrt hc.le]
+  simp_rw [hs]
+  rw [← Finset.sum_div, div_le_one hc]
+  exact hPois z hz
+
+theorem count_defect (Pr : D.PairReps) {c : ℝ} (hc : 0 < c)
+    (hPois : ∀ z ∈ D.onLine, ∑ k, ‖D.v z k‖ ^ 2 ≤ c) :
+    4 * rtrace (D.blockP c + D.blockQ c) - frobSq (D.blockP c + D.blockQ c) - 2 * (D.Ncount : ℝ)
+      + defect (gramS₁_isHermitian D c) ≤ (D.s₁ : ℝ) := by
+  classical
+  have hb := regroup_posIndex D Pr hc
+  have h := stable_rank_trace (Vsimple D c) (Vsimple_col_le_one D hc hPois) (Q'_isHermitian D c) hb
+  have e : Vsimple D c * (Vsimple D c)ᴴ + Q' D c = D.blockP c + D.blockQ c := P₁_add_Q' D c
+  rw [e] at h
+  have hN : (D.s₁ : ℝ) + 2 * D.s₂ + 2 * Pr.p ≤ D.Ncount := by
+    exact_mod_cast D.s₁_add_two_s₂_add_two_p_le_Ncount Pr
+  have hcard : (Fintype.card D.S₁ : ℝ) = D.s₁ := by rw [Fintype.card_coe]; rfl
+  have hdef : defect (gramS₁_isHermitian D c)
+      = rtrace (specMap (isHermitian_conjTranspose_mul_self (Vsimple D c)) Psi) := rfl
+  rw [hcard] at h
+  push_cast at h
+  linarith
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S8.lean ###### -/
+
+
+
+noncomputable section
+
+open Matrix RHLinalg Filter Topology
+open Zeta23 Zeta23.ZeroSide Zeta23.ThmD
+
+namespace Zeta23Ext.Bridge
+
+theorem tail_passage (Z : ZeroConfig) (H : PaperInputs Z)
+    (h7 : ∀ᶠ T in atTop,
+      4 * rtrace ((mtParams T).hat T (Z.Az (mtParams T) T))
+        - frobSq ((mtParams T).hat T (Z.Az (mtParams T) T))
+        - 2 * (Z.NIprime T : ℝ) + Dcirc Z (mtParams T) T ≤ (Z.s1 T : ℝ)) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      (HD 1 - ε) * (Z.N T (2 * T) : ℝ) + Dcirc Z (mtParams T) T ≤ (Z.N0s T (2 * T) : ℝ) := by
+
+  set P : Params := paramsOf stdProfile 1 with hPdef
+  have hP : P.Valid := paramsOf_valid taperProfile_stdProfile one_pos le_rfl
+  have hlam : P.lam = 1 := rfl
+
+  have hLoc : LocalHypsCoreDEventually P := localHypsCoreD_eventually hP
+  have hTr := tracesBoundsD_concrete (Z := Z) hP H hLoc
+  have hc := tendsto_cRatio_concrete hP Z
+  have hc0 := cStar_pos hP.lam_pos hP.lam_le_one
+  have ha : ∀ᶠ T in atTop, 1 / 2 ≤ (concreteDataD P Z).aT T ∧ (concreteDataD P Z).aT T ≤ 1 :=
+    (concreteFactsD hP H hLoc).ab_range.mono fun T h => ⟨h.1.trans h.2.1, h.2.2.1⟩
+  obtain ⟨θ₀, hTail, hθ₀⟩ := eventually_tailPackageD Z H hP
+  obtain ⟨A₀, hA₀, hloc⟩ := H.RvM.local_count
+  have hNII := Tail.eventually_NII_le Z hA₀ hloc
+  have hGzGp := eventually_GzGpD Z H hP
+  have hId : ∀ᶠ T in atTop,
+      (P.atD T).trGtilde T = (concreteDataD P Z).trG T ∧
+      (P.atD T).trGtildeSq T = (concreteDataD P Z).trG2 T ∧
+      (P.atD T).a T = (concreteDataD P Z).aT T :=
+    Eventually.of_forall fun T =>
+      ⟨Params.atD_trGtilde T hP, Params.atD_trGtildeSq T hP, Params.atD_a T hP⟩
+  have hcalE := Assembly.calE_tendsto_zero P hP.lam_pos hP.lam_le_one
+    (zero_le_one.trans hP.one_le_w)
+
+  have h := endgame_defect Z H P hP _ _ _ _ _ hTr hc0 hc ha θ₀ hTail hθ₀ hNII hGzGp hId hcalE
+    (fun T => Dcirc Z (mtParams T) T) h7
+  intro ε hε
+  have h' := h ε hε
+
+  have hHD : HD 1 = 2 - (cStar P.lam)⁻¹ := by rw [hlam, HD, one_div]
+  rw [hHD]
+  exact h'
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S9.lean ###### -/
+
+
+
+noncomputable section
+
+open Matrix RHLinalg Filter
+open Zeta23 Zeta23.ZeroSide Zeta23.ThmD
+
+namespace Zeta23Ext.Bridge
+
+open Classical
+
+set_option linter.unusedVariables false in
+
+theorem kernel_limit (Z : ZeroConfig) (H : PaperInputs Z) (R₀ : ℝ) :
+    ∀ δ > 0, ∀ᶠ T in atTop, ∀ z z' : retained Z (mtParams T) T,
+      |xret Z (mtParams T) T z - xret Z (mtParams T) T z'| ≤ R₀ →
+      ‖gram Z (mtParams T) T z z'
+          - (kfun (xret Z (mtParams T) T z - xret Z (mtParams T) T z') : ℂ)‖ ≤ δ := by
+  intro δ hδ
+  have hP : (paramsOf stdProfile 1).Valid := paramsOf_valid taperProfile_stdProfile one_pos le_rfl
+  have hlam : (paramsOf stdProfile 1).lam = 1 := rfl
+  obtain ⟨T₀, hT₀⟩ := localHypsCoreD_eventually hP
+  set K : ℝ := (cDT (paramsOf stdProfile 1).ϱ (paramsOf stdProfile 1).lam
+    / (paramsOf stdProfile 1).w) ^ 2 with hK
+  have hK0 : 0 ≤ K := sq_nonneg _
+  have hw : 0 < (paramsOf stdProfile 1).w := by linarith [hP.one_le_w]
+  filter_upwards [eventually_gt_atTop 0, eventually_w8 hP, eventually_w4pi hP,
+    eventually_ge_atTop T₀, (tendsto_L hP).eventually_ge_atTop 1,
+    (tendsto_L hP).eventually_ge_atTop ((10 * K + 12 * (paramsOf stdProfile 1).w) / δ)]
+    with T hT h8 h4π hTT₀ hL1 hLδ
+  intro z z' _
+  have hF := (hT₀ T hTT₀).toCoreW
+  have h := gram_close_of hP hlam hT h8 h4π hF Z z z'
+  refine h.trans ?_
+  set L := (paramsOf stdProfile 1).L T with hLdef
+  have hL : 0 < L := by linarith
+  have hL4 : L ≤ L ^ 4 := by nlinarith [pow_pos hL 2, pow_pos hL 3]
+  have h1 : 10 * K / L ^ 4 ≤ 10 * K / L :=
+    div_le_div_of_nonneg_left (by positivity) hL hL4
+  have h2 : (10 * K + 12 * (paramsOf stdProfile 1).w) / L ≤ δ := by
+    rw [div_le_iff₀ hL]
+    have := (div_le_iff₀ hδ).mp hLδ
+    linarith
+  calc 10 * K / L ^ 4 + 12 * (paramsOf stdProfile 1).w / L
+      ≤ 10 * K / L + 12 * (paramsOf stdProfile 1).w / L := by gcongr
+    _ = (10 * K + 12 * (paramsOf stdProfile 1).w) / L := by ring
+    _ ≤ δ := h2
+
+theorem deleted_strips (Z : ZeroConfig) (H : PaperInputs Z) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      (Z.N0s T (2 * T) : ℝ) - ε * (Z.N T (2 * T) : ℝ)
+        ≤ ((retained Z (mtParams T) T).card : ℝ) := by
+  intro ε hε
+  have hP : (paramsOf stdProfile 1).Valid := paramsOf_valid taperProfile_stdProfile one_pos le_rfl
+  obtain ⟨A₀, hA₀, hloc⟩ := H.RvM.local_count
+  obtain ⟨C, T₀, hRvM⟩ := H.RvM.main
+  have hA0 : 0 < A₀ := by linarith
+  have hπ := Real.pi_pos
+  set c : ℝ := ε / (4 * Real.pi * (1600 * A₀)) with hc
+  have hcpos : 0 < c := by positivity
+  have hlittle : ∀ᶠ x in atTop, ‖Real.log x‖ ≤ c * ‖id x‖ :=
+    Real.isLittleO_log_id_atTop.def hcpos
+  filter_upwards [eventually_ge_atTop 1, eventually_ge_atTop T₀,
+    (tendsto_L hP).eventually_ge_atTop 1, hlittle,
+    eventually_ge_atTop (4 * Real.pi * |C| * (1 + 2 * Real.pi))] with T hT1 hTT₀ hL1 hlog hTC
+  have hT0 : 0 < T := by linarith
+  set L : ℝ := (paramsOf stdProfile 1).L T with hLdef
+
+  have hLeq : L = Real.log T - Real.log (2 * Real.pi) := by
+    rw [hLdef]
+    show 1 * Real.log (T / (2 * Real.pi)) = _
+    rw [one_mul, Real.log_div hT0.ne' (by positivity)]
+  have hlog2π0 : 0 < Real.log (2 * Real.pi) := Real.log_pos (by linarith [Real.pi_gt_three])
+  have hlog2π : Real.log (2 * Real.pi) ≤ 2 * Real.pi - 1 := Real.log_le_sub_one_of_pos (by positivity)
+  have hlogT : Real.log T ≤ L + 2 * Real.pi := by linarith
+  have hLlogT : L ≤ Real.log T := by linarith
+  have hlogT_le : Real.log T ≤ T - 1 := Real.log_le_sub_one_of_pos hT0
+  have hLT : L ≤ T := by linarith
+  have hlogT0 : 0 ≤ Real.log T := Real.log_nonneg hT1
+  have hlogc : Real.log T ≤ c * T := by
+    have h := hlog
+    simp only [id, Real.norm_eq_abs, abs_of_pos hT0, abs_of_nonneg hlogT0] at h
+    exact h
+
+  have hLpos : 0 < (mtParams T).L T := by show 0 < L; linarith
+  have hincl := N0s_le_card_retained_add Z (mtParams T) T hLpos
+  have hstrips := strips_le Z hA₀ hloc hT1 hL1 hLT hlogT
+  have hincl' : (Z.N0s T (2 * T) : ℝ) ≤ (retained Z (mtParams T) T).card + 1600 * A₀ * L ^ 2 := by
+    have e1 : (mtParams T).L T = L := rfl
+    rw [e1] at hincl
+    linarith
+
+  have hN : T * L / (2 * Real.pi) - |C| * Real.log T ≤ (Z.N T (2 * T) : ℝ) := by
+    have h := hRvM T hTT₀
+    have hℓ₁ : L ≤ ell1 T := by
+      show 1 * l T ≤ l T + 2 * Real.log 2 - 1
+      have := Real.log_two_gt_d9
+      linarith
+    have h1 := (abs_le.mp h).1
+    have h2 : C * Real.log T ≤ |C| * Real.log T :=
+      mul_le_mul_of_nonneg_right (le_abs_self C) hlogT0
+    have h3 : T * L / (2 * Real.pi) ≤ T / (2 * Real.pi) * ell1 T := by
+      rw [mul_div_right_comm]
+      exact mul_le_mul_of_nonneg_left hℓ₁ (by positivity)
+    linarith
+
+  have hkey : 1600 * A₀ * L ^ 2 + ε * |C| * Real.log T ≤ ε * (T * L / (2 * Real.pi)) := by
+    have hA : 1600 * A₀ * L ^ 2 ≤ ε * T * L / (4 * Real.pi) := by
+      have h1 : 1600 * A₀ * L ^ 2 ≤ 1600 * A₀ * L * (c * T) := by
+        have : L * L ≤ L * (c * T) := by
+          have : L ≤ c * T := hLlogT.trans hlogc
+          exact mul_le_mul_of_nonneg_left this (by linarith)
+        nlinarith
+      have h2 : 1600 * A₀ * L * (c * T) = ε * T * L / (4 * Real.pi) := by
+        rw [hc]; field_simp
+      linarith
+    have hB : ε * |C| * Real.log T ≤ ε * T * L / (4 * Real.pi) := by
+      have h1 : |C| * Real.log T ≤ |C| * ((1 + 2 * Real.pi) * L) := by
+        apply mul_le_mul_of_nonneg_left _ (abs_nonneg C)
+        nlinarith
+      have h2 : |C| * (1 + 2 * Real.pi) * (4 * Real.pi) ≤ T := by linarith
+      have h3 : |C| * ((1 + 2 * Real.pi) * L) ≤ T * L / (4 * Real.pi) := by
+        rw [le_div_iff₀ (by positivity)]
+        have hL0 : 0 ≤ L := by linarith
+        nlinarith
+      calc ε * |C| * Real.log T = ε * (|C| * Real.log T) := by ring
+        _ ≤ ε * (|C| * ((1 + 2 * Real.pi) * L)) := mul_le_mul_of_nonneg_left h1 hε.le
+        _ ≤ ε * (T * L / (4 * Real.pi)) := mul_le_mul_of_nonneg_left h3 hε.le
+        _ = ε * T * L / (4 * Real.pi) := by ring
+    have : ε * T * L / (4 * Real.pi) + ε * T * L / (4 * Real.pi) = ε * (T * L / (2 * Real.pi)) := by
+      field_simp
+      ring
+    linarith
+  have hεN : 1600 * A₀ * L ^ 2 ≤ ε * (Z.N T (2 * T) : ℝ) := by
+    have := mul_le_mul_of_nonneg_left hN hε.le
+    nlinarith [hkey]
+  linarith
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S11.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Finset
+open scoped BigOperators
+
+namespace Zeta23Ext.Bridge
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def pairCoef (n r : ℕ) : ℝ := 2 / ((n : ℝ) - (r : ℝ))
+
+lemma energyOn_eq_sorted {m : ℕ} (x : ι → ℝ) (hx : Function.Injective x)
+    (hS : (univ.image x).card = m) :
+    energyOn x univ = ∑ r : Fin m × Fin m,
+      if r.1 = r.2 then 0 else wfun ((univ.image x).orderEmbOfFin hS r.1
+        - (univ.image x).orderEmbOfFin hS r.2) := by
+  classical
+  set S := univ.image x with hSdef
+  set y := S.orderEmbOfFin hS with hydef
+  have hy : Function.Injective y := y.injective
+  have hSy : univ.image y = S := by
+    apply Finset.coe_injective
+    rw [coe_image, coe_univ, Set.image_univ]
+    exact Finset.range_orderEmbOfFin S hS
+  unfold energyOn
+  have h1 : ∀ i j : ι, (if i = j then (0 : ℝ) else wfun (x i - x j))
+      = (if x i = x j then 0 else wfun (x i - x j)) := by
+    intro i j; simp [hx.eq_iff]
+  simp_rw [h1]
+  have e1 : ∀ i : ι, ∑ j, (if x i = x j then (0 : ℝ) else wfun (x i - x j))
+      = ∑ t ∈ S, (if x i = t then 0 else wfun (x i - t)) := fun i =>
+    (sum_image (f := fun t => if x i = t then (0 : ℝ) else wfun (x i - t))
+      (fun a _ b _ h => hx h)).symm
+  simp_rw [e1]
+  rw [← sum_image (f := fun s => ∑ t ∈ S, (if s = t then (0 : ℝ) else wfun (s - t)))
+    (fun a _ b _ h => hx h)]
+  rw [← hSdef, ← hSy, sum_image (fun a _ b _ h => hy h)]
+  simp_rw [sum_image (fun a _ b _ h => hy h)]
+  simp only [hy.eq_iff]
+  exact (Fintype.sum_prod_type' (f := fun k l => if k = l then (0 : ℝ) else wfun (y k - y l))).symm
+
+lemma window_pairs_le_energy {n m : ℕ} (hn : 2 ≤ n) (hm : n ≤ m) (x : ι → ℝ)
+    (hx : Function.Injective x) (hS : (univ.image x).card = m) :
+    ∑ i ∈ range (m - (n - 1)), ∑ a : Fin n, ∑ b : Fin n,
+        (if (a : ℕ) < (b : ℕ) then
+          pairCoef n ((b : ℕ) - (a : ℕ))
+            * wfun (sortedExt ((univ.image x).orderEmbOfFin hS) (i + b)
+                - sortedExt ((univ.image x).orderEmbOfFin hS) (i + a))
+        else 0)
+      ≤ energyOn x univ := by
+  classical
+  set y : Fin m → ℝ := ⇑((univ.image x).orderEmbOfFin hS) with hydef
+  set Y := sortedExt y with hYdef
+  have hm0 : 0 < m := by omega
+
+  set T : Finset (ℕ × (Fin n × Fin n)) :=
+    (range (m - (n - 1)) ×ˢ (univ : Finset (Fin n × Fin n))).filter fun t => (t.2.1 : ℕ) < t.2.2
+    with hTdef
+  set f : ℕ × (Fin n × Fin n) → ℝ := fun t =>
+    pairCoef n ((t.2.2 : ℕ) - (t.2.1 : ℕ)) * wfun (Y (t.1 + t.2.2) - Y (t.1 + t.2.1)) with hfdef
+  have hLHS : ∑ i ∈ range (m - (n - 1)), ∑ a : Fin n, ∑ b : Fin n,
+      (if (a : ℕ) < (b : ℕ) then
+        pairCoef n ((b : ℕ) - (a : ℕ)) * wfun (Y (i + b) - Y (i + a)) else 0)
+      = ∑ t ∈ T, f t := by
+    rw [hTdef, sum_filter, sum_product]
+    refine sum_congr rfl fun i _ => ?_
+    exact (Fintype.sum_prod_type' (f := fun (a b : Fin n) => if (a : ℕ) < (b : ℕ) then
+      pairCoef n ((b : ℕ) - (a : ℕ)) * wfun (Y (i + b) - Y (i + a)) else 0)).symm
+  rw [hLHS]
+
+  set φ : ℕ × (Fin n × Fin n) → ℕ × ℕ := fun t => (t.1 + t.2.1, t.1 + t.2.2) with hφdef
+  set I := T.image φ with hIdef
+  have hmem : ∀ t ∈ T, t.1 < m - (n - 1) ∧ (t.2.1 : ℕ) < t.2.2 := by
+    intro t ht
+    simp only [hTdef, mem_filter, mem_product, mem_range, mem_univ, and_true] at ht
+    exact ht
+  have hI : ∀ q ∈ I, q.1 < q.2 ∧ q.2 < m ∧ q.2 - q.1 < n := by
+    intro q hq
+    obtain ⟨t, ht, rfl⟩ := mem_image.mp hq
+    obtain ⟨h1, h2⟩ := hmem t ht
+    have hb := t.2.2.2
+    simp only [hφdef]
+    omega
+
+  rw [← sum_fiberwise_of_maps_to (g := φ) (t := I) (fun t ht => mem_image_of_mem φ ht)]
+
+  have hfib : ∀ q ∈ I, ∑ t ∈ T with φ t = q, f t ≤ 2 * wfun (Y q.2 - Y q.1) := by
+    intro q hq
+    obtain ⟨hq1, hq2, hq3⟩ := hI q hq
+    set r := q.2 - q.1 with hrdef
+    have hconst : ∀ t ∈ T.filter (fun t => φ t = q), f t = pairCoef n r * wfun (Y q.2 - Y q.1) := by
+      intro t ht
+      rw [mem_filter] at ht
+      obtain ⟨ht, hφt⟩ := ht
+      have e1 : t.1 + (t.2.1 : ℕ) = q.1 := congrArg Prod.fst hφt
+      have e2 : t.1 + (t.2.2 : ℕ) = q.2 := congrArg Prod.snd hφt
+      simp only [hfdef]
+      rw [e1, e2, hrdef, ← e1, ← e2, Nat.add_sub_add_left]
+    rw [sum_congr rfl hconst, sum_const, nsmul_eq_mul]
+
+    have hcard : (T.filter (fun t => φ t = q)).card ≤ n - r := by
+      rw [← card_range (n - r)]
+      refine card_le_card_of_injOn (fun t => (t.2.1 : ℕ)) ?_ ?_
+      · intro t ht
+        rw [mem_coe, mem_filter] at ht
+        obtain ⟨ht, hφt⟩ := ht
+        have e1 : t.1 + (t.2.1 : ℕ) = q.1 := congrArg Prod.fst hφt
+        have e2 : t.1 + (t.2.2 : ℕ) = q.2 := congrArg Prod.snd hφt
+        have hb := t.2.2.2
+        simp only [coe_range, Set.mem_Iio]
+        omega
+      · intro t ht t' ht' hee
+        rw [mem_coe, mem_filter] at ht ht'
+        have e1 : t.1 + (t.2.1 : ℕ) = q.1 := congrArg Prod.fst ht.2
+        have e2 : t.1 + (t.2.2 : ℕ) = q.2 := congrArg Prod.snd ht.2
+        have e1' : t'.1 + (t'.2.1 : ℕ) = q.1 := congrArg Prod.fst ht'.2
+        have e2' : t'.1 + (t'.2.2 : ℕ) = q.2 := congrArg Prod.snd ht'.2
+        simp only at hee
+        have ha : t.2.1 = t'.2.1 := Fin.ext hee
+        have hi : t.1 = t'.1 := by omega
+        have hb : t.2.2 = t'.2.2 := Fin.ext (by omega)
+        exact Prod.ext hi (Prod.ext ha hb)
+    have hr7 : (r : ℝ) < (n : ℝ) := by exact_mod_cast hq3
+    have hcoef : 0 ≤ pairCoef n r := by
+      unfold pairCoef; apply div_nonneg (by norm_num); linarith
+    have hcardR : ((T.filter (fun t => φ t = q)).card : ℝ) ≤ (n : ℝ) - (r : ℝ) := by
+      have := (Nat.cast_le (α := ℝ)).mpr hcard
+      rwa [Nat.cast_sub hq3.le] at this
+    calc ((T.filter (fun t => φ t = q)).card : ℝ) * (pairCoef n r * wfun (Y q.2 - Y q.1))
+        ≤ ((n : ℝ) - (r : ℝ)) * (pairCoef n r * wfun (Y q.2 - Y q.1)) :=
+          mul_le_mul_of_nonneg_right hcardR (mul_nonneg hcoef (wfun_nonneg _))
+      _ = 2 * wfun (Y q.2 - Y q.1) := by
+          have h7 : (n : ℝ) - (r : ℝ) ≠ 0 := by linarith
+          unfold pairCoef
+          field_simp
+  refine (sum_le_sum hfib).trans ?_
+
+  rw [energyOn_eq_sorted x hx hS, ← hydef]
+  set G : Fin m × Fin m → ℝ := fun r => if r.1 = r.2 then 0 else wfun (y r.1 - y r.2) with hGdef
+  set toFin : ℕ → Fin m := fun n => if h : n < m then ⟨n, h⟩ else ⟨0, hm0⟩ with htoFin
+  have htoFin_lt : ∀ n (h : n < m), toFin n = ⟨n, h⟩ := by
+    intro n h; simp only [htoFin, dif_pos h]
+  set ψ₁ : ℕ × ℕ → Fin m × Fin m := fun q => (toFin q.1, toFin q.2) with hψ₁
+  set ψ₂ : ℕ × ℕ → Fin m × Fin m := fun q => (toFin q.2, toFin q.1) with hψ₂
+  have hG1 : ∀ q ∈ I, G (ψ₁ q) = wfun (Y q.2 - Y q.1) := by
+    intro q hq
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    have hq1m : q.1 < m := by omega
+    simp only [hGdef, hψ₁, htoFin_lt _ hq1m, htoFin_lt _ hq2, hYdef,
+      sortedExt_of_lt y hq1m, sortedExt_of_lt y hq2]
+    rw [if_neg (by intro h; exact absurd (Fin.mk.inj_iff.mp h) hq1.ne), wfun_sub_comm]
+  have hG2 : ∀ q ∈ I, G (ψ₂ q) = wfun (Y q.2 - Y q.1) := by
+    intro q hq
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    have hq1m : q.1 < m := by omega
+    simp only [hGdef, hψ₂, htoFin_lt _ hq1m, htoFin_lt _ hq2, hYdef,
+      sortedExt_of_lt y hq1m, sortedExt_of_lt y hq2]
+    rw [if_neg (by intro h; exact absurd (Fin.mk.inj_iff.mp h) hq1.ne')]
+  have hsplit : ∑ q ∈ I, 2 * wfun (Y q.2 - Y q.1) = ∑ q ∈ I, G (ψ₁ q) + ∑ q ∈ I, G (ψ₂ q) := by
+    rw [← sum_add_distrib]
+    refine sum_congr rfl fun q hq => ?_
+    rw [hG1 q hq, hG2 q hq]; ring
+  have hinj₁ : Set.InjOn ψ₁ I := by
+    intro q hq q' hq' h
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    obtain ⟨hq1', hq2', -⟩ := hI q' hq'
+    simp only [hψ₁, htoFin_lt _ (by omega : q.1 < m), htoFin_lt _ hq2,
+      htoFin_lt _ (by omega : q'.1 < m), htoFin_lt _ hq2', Prod.mk.injEq, Fin.mk.injEq] at h
+    exact Prod.ext h.1 h.2
+  have hinj₂ : Set.InjOn ψ₂ I := by
+    intro q hq q' hq' h
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    obtain ⟨hq1', hq2', -⟩ := hI q' hq'
+    simp only [hψ₂, htoFin_lt _ (by omega : q.1 < m), htoFin_lt _ hq2,
+      htoFin_lt _ (by omega : q'.1 < m), htoFin_lt _ hq2', Prod.mk.injEq, Fin.mk.injEq] at h
+    exact Prod.ext h.2 h.1
+  have hdisj : Disjoint (I.image ψ₁) (I.image ψ₂) := by
+    rw [disjoint_left]
+    intro r hr1 hr2
+    obtain ⟨q, hq, rfl⟩ := mem_image.mp hr1
+    obtain ⟨q', hq', hqq'⟩ := mem_image.mp hr2
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    obtain ⟨hq1', hq2', -⟩ := hI q' hq'
+    simp only [hψ₁, hψ₂, htoFin_lt _ (by omega : q.1 < m), htoFin_lt _ hq2,
+      htoFin_lt _ (by omega : q'.1 < m), htoFin_lt _ hq2', Prod.mk.injEq, Fin.mk.injEq] at hqq'
+    omega
+  have hGnn : ∀ r, 0 ≤ G r := by
+    intro r; simp only [hGdef]; split_ifs
+    · exact le_rfl
+    · exact wfun_nonneg _
+  rw [hsplit, ← sum_image hinj₁, ← sum_image hinj₂, ← sum_union hdisj]
+  exact sum_le_sum_of_subset_of_nonneg (subset_univ _) fun r _ _ => hGnn r
+
+theorem block_energy {c : ℝ} {n p : ℕ} (hn : 2 ≤ n) (hp : 0 < p)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ F n p g)
+    {m : ℕ} (hm : n ≤ m) (hcard : Fintype.card ι = m) (x : ι → ℝ) (hx : Function.Injective x) :
+    c * ((m : ℝ) - ((n : ℝ) - 1))
+      ≤ energyOn x univ + (((n : ℝ) - 1) / (p : ℝ)) * spanOf x univ := by
+  classical
+
+  have hS : (univ.image x).card = m := by
+    rw [card_image_of_injective _ hx, card_univ, hcard]
+  set y : Fin m → ℝ := ⇑((univ.image x).orderEmbOfFin hS) with hydef
+  have hymem : ∀ k, y k ∈ univ.image x := fun k => Finset.orderEmbOfFin_mem _ hS k
+  have hymono : StrictMono y := ((univ.image x).orderEmbOfFin hS).strictMono
+  set Y := sortedExt y with hYdef
+  have hm0 : 0 < m := by omega
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : 1 ≤ n)
+  have hcastn : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ n)]; norm_num
+
+  have hwin : ∀ i ∈ range (m - (n - 1)), c ≤ F n p (windowGaps n Y i) := by
+    intro i hi
+    rw [mem_range] at hi
+    apply hCert
+    intro j
+    have hj := j.2
+    have hlt : i + ((j : ℕ) + 1) < m := by omega
+    exact sub_nonneg.mpr (sortedExt_mono hymono (by omega) hlt)
+  have hsum : c * ((m : ℝ) - ((n : ℝ) - 1))
+      ≤ ∑ i ∈ range (m - (n - 1)), F n p (windowGaps n Y i) := by
+    have h := sum_le_sum hwin
+    rw [sum_const, card_range, nsmul_eq_mul] at h
+    have hcast : ((m - (n - 1) : ℕ) : ℝ) = (m : ℝ) - ((n : ℝ) - 1) := by
+      rw [Nat.cast_sub (by omega : n - 1 ≤ m), hcastn]
+    rw [hcast] at h
+    linarith
+  simp_rw [F_windowGaps] at hsum
+  rw [sum_add_distrib, ← mul_sum] at hsum
+
+  have hlin : ∑ i ∈ range (m - (n - 1)), (Y (i + (n - 1)) - Y i)
+      ≤ ((n : ℝ) - 1) * spanOf x univ := by
+    rw [sum_shift_sub]
+    have hterm : ∀ i ∈ range (n - 1), Y (m - (n - 1) + i) - Y i ≤ Y (m - 1) - Y 0 := by
+      intro i hi
+      rw [mem_range] at hi
+      have h1 := sortedExt_mono hymono (a := m - (n - 1) + i) (b := m - 1) (by omega) (by omega)
+      have h2 := sortedExt_mono hymono (a := 0) (b := i) (by omega) (by omega)
+      linarith
+    have hspan : Y (m - 1) - Y 0 ≤ spanOf x univ := by
+      obtain ⟨i₀, -, hi₀⟩ := mem_image.mp (hymem ⟨m - 1, by omega⟩)
+      obtain ⟨j₀, -, hj₀⟩ := mem_image.mp (hymem ⟨0, hm0⟩)
+      rw [hYdef, sortedExt_of_lt y (by omega : m - 1 < m), sortedExt_of_lt y hm0, ← hi₀, ← hj₀]
+      exact (le_abs_self _).trans (abs_sub_le_spanOf x (mem_univ i₀) (mem_univ j₀))
+    calc ∑ i ∈ range (n - 1), (Y (m - (n - 1) + i) - Y i)
+        ≤ ∑ i ∈ range (n - 1), (Y (m - 1) - Y 0) := sum_le_sum hterm
+      _ = ((n : ℝ) - 1) * (Y (m - 1) - Y 0) := by
+          rw [sum_const, card_range, nsmul_eq_mul, hcastn]
+      _ ≤ ((n : ℝ) - 1) * spanOf x univ := by nlinarith
+
+  have hquad := window_pairs_le_energy hn hm x hx hS
+  simp only [pairCoef] at hquad
+  rw [← hydef, ← hYdef] at hquad
+  have hp' : 0 ≤ 1 / (p : ℝ) := by positivity
+  calc c * ((m : ℝ) - ((n : ℝ) - 1))
+      ≤ _ := hsum
+    _ ≤ (1 / (p : ℝ)) * (((n : ℝ) - 1) * spanOf x univ) + energyOn x univ := by
+        gcongr
+    _ = energyOn x univ + (((n : ℝ) - 1) / (p : ℝ)) * spanOf x univ := by ring
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S12.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open scoped ComplexOrder BigOperators
+open Zeta23Ext.StableRankTrace
+
+namespace Zeta23Ext.Bridge
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+lemma specMap_const_one {A : Matrix ι ι ℂ} (hA : A.IsHermitian) :
+    specMap hA (fun _ => 1) = 1 := by
+  unfold specMap
+  simp
+
+lemma specMap_sub_one {A : Matrix ι ι ℂ} (hA : A.IsHermitian) :
+    specMap hA (fun t => t - 1) = A - 1 := by
+  have h : (fun t : ℝ => t - 1) = id - fun _ => 1 := rfl
+  rw [h, specMap_sub, specMap_id, specMap_const_one]
+
+lemma offDiagSqOn_le_frobSq_sub_one (A : Matrix ι ι ℂ) :
+    offDiagSqOn A univ ≤ frobSq (A - 1) := by
+  rw [Zeta23.Assembly.frobSq_eq_sum_norm_sq]
+  unfold offDiagSqOn
+  refine sum_le_sum fun i _ => sum_le_sum fun j _ => ?_
+  split_ifs with h
+  · positivity
+  · rw [Matrix.sub_apply, Matrix.one_apply_ne h, sub_zero]
+
+theorem block_defect_of_isHermitian {A : Matrix ι ι ℂ} (hA : A.IsHermitian) :
+    min 1 (offDiagSqOn A univ) ≤ defect hA := by
+  unfold defect
+  rw [rtrace_specMap]
+  by_cases hall : ∀ i, hA.eigenvalues i ≤ 2
+  ·
+    have hsum : ∑ i, Psi (hA.eigenvalues i) = ∑ i, (hA.eigenvalues i - 1) ^ 2 :=
+      sum_congr rfl fun i _ => by simp [Psi, hall i]
+    have hfrob := frobSq_specMap hA (fun t => t - 1)
+    rw [specMap_sub_one] at hfrob
+    rw [hsum, ← hfrob]
+    exact (min_le_right _ _).trans (offDiagSqOn_le_frobSq_sub_one A)
+  ·
+    push Not at hall
+    obtain ⟨i, hi⟩ := hall
+    refine (min_le_left _ _).trans ?_
+    calc (1 : ℝ) ≤ Psi (hA.eigenvalues i) := by
+          unfold Psi; rw [if_neg (not_le.mpr hi)]; linarith
+      _ ≤ ∑ j, Psi (hA.eigenvalues j) :=
+          single_le_sum (fun j _ => Psi_nonneg (hA.eigenvalues j)) (mem_univ i)
+
+theorem block_defect {G : Matrix ι ι ℂ} (hG : G.PosSemidef) :
+    min 1 (offDiagSqOn G univ) ≤ defect hG.1 :=
+  block_defect_of_isHermitian hG.1
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S13.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open scoped ComplexOrder BigOperators
+
+namespace Zeta23Ext.Bridge
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+lemma sq_sub_two_mul_le_sq {a b δ : ℝ} (ha0 : 0 ≤ a) (ha1 : a ≤ 1) (hb : 0 ≤ b)
+    (h : |b - a| ≤ δ) : a ^ 2 - 2 * δ ≤ b ^ 2 := by
+  rw [abs_le] at h
+  obtain ⟨h1, h2⟩ := h
+  rcases le_or_gt a b with hab | hab
+  · nlinarith
+  · rcases le_or_gt δ a with hδa | hδa
+    · nlinarith
+    · nlinarith
+
+lemma wfun_sub_le_norm_sq {g : ℂ} {t δ : ℝ} (h : ‖g - (kfun t : ℂ)‖ ≤ δ) :
+    wfun t - 2 * δ ≤ ‖g‖ ^ 2 := by
+  have hk : ‖(kfun t : ℂ)‖ = |kfun t| := Complex.norm_real _
+  have htri : abs (‖g‖ - |kfun t|) ≤ δ := by
+    rw [← hk]; exact (abs_norm_sub_norm_le g _).trans h
+  have := sq_sub_two_mul_le_sq (abs_nonneg _) (abs_kfun_le_one t) (norm_nonneg g) htri
+  rw [sq_abs] at this
+  exact this
+
+lemma offDiagSqOn_submatrix (G : Matrix ι ι ℂ) (B : Finset ι) :
+    offDiagSqOn (G.submatrix (Subtype.val : B → ι) Subtype.val) univ = offDiagSqOn G B := by
+  unfold offDiagSqOn
+  rw [← Finset.sum_coe_sort B]
+  refine sum_congr rfl fun i _ => ?_
+  rw [← Finset.sum_coe_sort B]
+  refine sum_congr rfl fun j _ => ?_
+  simp only [submatrix_apply, Subtype.ext_iff]
+
+lemma energyOn_subtype (x : ι → ℝ) (B : Finset ι) :
+    energyOn (fun i : B => x i) univ = energyOn x B := by
+  unfold energyOn
+  rw [← Finset.sum_coe_sort B]
+  refine sum_congr rfl fun i _ => ?_
+  rw [← Finset.sum_coe_sort B]
+  refine sum_congr rfl fun j _ => ?_
+  simp only [Subtype.ext_iff]
+
+lemma spanOf_subtype_le (x : ι → ℝ) (B : Finset ι) :
+    spanOf (fun i : B => x i) univ ≤ spanOf x B := by
+  by_cases h1 : (univ : Finset B).Nonempty
+  · have h2 : B.Nonempty := by
+      obtain ⟨i, -⟩ := h1
+      exact ⟨i.1, i.2⟩
+    unfold spanOf
+    rw [dif_pos h1, dif_pos h2]
+    have hs : (univ : Finset B).sup' h1 (fun i : B => x i) ≤ B.sup' h2 x :=
+      sup'_le _ _ fun i _ => le_sup' x i.2
+    have hi : B.inf' h2 x ≤ (univ : Finset B).inf' h1 (fun i : B => x i) :=
+      le_inf' _ _ fun i _ => inf'_le x i.2
+    linarith
+  · have h0 : spanOf (fun i : B => x i) univ = 0 := by
+      unfold spanOf; rw [dif_neg h1]
+    rw [h0]
+    exact spanOf_nonneg x B
+
+theorem block_bound {c : ℝ} {n m p : ℕ} (hn : 2 ≤ n) (hm : n ≤ m) (hp : 0 < p)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ F n p g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    (x : ι → ℝ) {G : Matrix ι ι ℂ} (hG : G.PosSemidef) (B : Finset ι) (hB : B.card = m)
+    (hx : Set.InjOn x B) {δ : ℝ} (hδ : 0 ≤ δ)
+    (hclose : ∀ i ∈ B, ∀ j ∈ B, i ≠ j → ‖G i j - (kfun (x i - x j) : ℂ)‖ ≤ δ) :
+    c * ((m : ℝ) - ((n : ℝ) - 1)) - 2 * (m : ℝ) ^ 2 * δ
+      ≤ blockDefect hG.1 B + (((n : ℝ) - 1) / (p : ℝ)) * spanOf x B := by
+  classical
+  have hn1 : (0 : ℝ) ≤ (n : ℝ) - 1 := by
+    have : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : 1 ≤ n)
+    linarith
+
+  have hS12 : min 1 (offDiagSqOn G B) ≤ blockDefect hG.1 B := by
+    have h := block_defect (hG.submatrix (Subtype.val : B → ι))
+    rw [offDiagSqOn_submatrix] at h
+    exact h
+
+  have hoff : energyOn x B - 2 * (m : ℝ) ^ 2 * δ ≤ offDiagSqOn G B := by
+    have hterm : ∀ i ∈ B, ∀ j ∈ B,
+        (if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ
+          ≤ (if i = j then 0 else ‖G i j‖ ^ 2) := by
+      intro i hi j hj
+      split_ifs with hij
+      · linarith
+      · exact wfun_sub_le_norm_sq (hclose i hi j hj hij)
+    have hsum : ∑ i ∈ B, ∑ j ∈ B, ((if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ)
+        ≤ offDiagSqOn G B :=
+      sum_le_sum fun i hi => sum_le_sum fun j hj => hterm i hi j hj
+    have hsplit : ∑ i ∈ B, ∑ j ∈ B, ((if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ)
+        = energyOn x B - 2 * (m : ℝ) ^ 2 * δ := by
+      unfold energyOn
+      simp only [sum_sub_distrib, sum_const, nsmul_eq_mul, hB]
+      ring
+    linarith
+
+  have hS11 : c * ((m : ℝ) - ((n : ℝ) - 1))
+      ≤ energyOn x B + (((n : ℝ) - 1) / (p : ℝ)) * spanOf x B := by
+    have hcard : Fintype.card B = m := by simp [hB]
+    have hinj : Function.Injective (fun i : B => x i) := by
+      intro i j h
+      exact Subtype.ext (hx i.2 j.2 h)
+    have h := block_energy hn hp hCert hm hcard (fun i : B => x i) hinj
+    rw [energyOn_subtype] at h
+    have hp' : (0 : ℝ) ≤ ((n : ℝ) - 1) / (p : ℝ) := div_nonneg hn1 (by positivity)
+    have := mul_le_mul_of_nonneg_left (spanOf_subtype_le x B) hp'
+    linarith
+
+  have hspan := spanOf_nonneg x B
+  have hp' : (0 : ℝ) ≤ ((n : ℝ) - 1) / (p : ℝ) := div_nonneg hn1 (by positivity)
+  have hm2 : (0 : ℝ) ≤ 2 * (m : ℝ) ^ 2 * δ := by positivity
+  rcases le_or_gt 1 (offDiagSqOn G B) with h1 | h1
+  · rw [min_eq_left h1] at hS12
+    nlinarith [mul_nonneg hp' hspan]
+  · rw [min_eq_right h1.le] at hS12
+    nlinarith [mul_nonneg hp' hspan]
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S14.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open scoped ComplexOrder BigOperators
+
+namespace Zeta23Ext.Bridge
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+theorem pinching_partition {M : Matrix ι ι ℂ} (hM : M.IsHermitian)
+    (κ : Type) [Fintype κ] [DecidableEq κ] (β : ι → κ) :
+    ∑ b, blockDefect hM (univ.filter fun i => β i = b) ≤ defect hM := by
+  unfold blockDefect defect
+  exact rtrace_specMap_pinching_le hM Psi_convexOn β
+
+theorem pinching_submatrix {κ : Type*} [Fintype κ] [DecidableEq κ]
+    {M : Matrix ι ι ℂ} (hM : M.IsHermitian) (f : κ → ι) (hf : Function.Injective f) :
+    defect (hM.submatrix f) ≤ defect hM := by
+  unfold defect
+  exact rtrace_specMap_submatrix_le hM hf Psi_convexOn Zeta23Ext.StableRankTrace.Psi_nonneg
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S15.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg Filter
+open scoped ComplexOrder BigOperators
+open Zeta23 Zeta23.ZeroSide Zeta23.ThmD
+
+namespace Zeta23Ext.Bridge
+
+section Abstract
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+lemma eq_of_mod_eq_of_overlap {m s s' k : ℕ} (_hm : 0 < m) (h : s % m = s' % m)
+    (hs : s ≤ k ∧ k < s + m) (hs' : s' ≤ k ∧ k < s' + m) : s = s' := by
+  rcases le_total s s' with h1 | h1
+  · have hd : m ∣ s' - s := (Nat.modEq_iff_dvd' h1).mp h
+    rcases Nat.eq_zero_or_pos (s' - s) with h0 | hpos
+    · omega
+    · have := Nat.le_of_dvd hpos hd; omega
+  · have hd : m ∣ s - s' := (Nat.modEq_iff_dvd' h1).mp h.symm
+    rcases Nat.eq_zero_or_pos (s - s') with h0 | hpos
+    · omega
+    · have := Nat.le_of_dvd hpos hd; omega
+
+open Classical in
+
+def blockStart (n m j k : ℕ) : ℕ :=
+  if h : ∃ s, s + m ≤ n ∧ s % m = j ∧ s ≤ k ∧ k < s + m then h.choose else n
+
+lemma blockStart_le (n m j k : ℕ) : blockStart n m j k ≤ n := by
+  unfold blockStart
+  split_ifs with h
+  · have := h.choose_spec.1; omega
+  · exact le_rfl
+
+lemma blockStart_eq_iff {n m j k s : ℕ} (hm : 0 < m) (hs : s + m ≤ n) (hj : s % m = j) :
+    blockStart n m j k = s ↔ (s ≤ k ∧ k < s + m) := by
+  unfold blockStart
+  constructor
+  · intro h
+    split_ifs at h with hex
+    · obtain ⟨h1, h2, h3⟩ := hex.choose_spec
+      rw [h] at h3; exact h3
+    · omega
+  · intro hk
+    have hex : ∃ s, s + m ≤ n ∧ s % m = j ∧ s ≤ k ∧ k < s + m := ⟨s, hs, hj, hk⟩
+    rw [dif_pos hex]
+    obtain ⟨h1, h2, h3⟩ := hex.choose_spec
+    exact eq_of_mod_eq_of_overlap hm (h2.trans hj.symm) h3 hk
+
+theorem offset_average (x : ι → ℝ) (hx : Function.Injective x) {m : ℕ} (hm : 1 ≤ m)
+    (Dblk : Finset ι → ℝ) (Dtot A q : ℝ) (hA : 0 ≤ A) (hq : 0 ≤ q)
+    (hD0 : ∀ B, 0 ≤ Dblk B)
+    (hblock : ∀ B : Finset ι, B.card = m → IsInterval x B → A ≤ Dblk B + q * spanOf x B)
+    (hpinch : ∀ (κ : Type) [Fintype κ] [DecidableEq κ] (β : ι → κ),
+      ∑ b, Dblk (univ.filter fun i => β i = b) ≤ Dtot) :
+    A * ((Fintype.card ι : ℝ) - m) - q * ((m : ℝ) - 1) * spanOf x univ ≤ m * Dtot := by
+  classical
+  set n := Fintype.card ι with hndef
+  have hDtot : 0 ≤ Dtot := by
+    have h := hpinch Unit (fun _ => ())
+    rw [Fintype.sum_unique] at h
+    exact (hD0 _).trans h
+  have hspan0 := spanOf_nonneg x (univ : Finset ι)
+  have hm0 : 0 < m := hm
+  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast hm
+
+  rcases lt_or_ge n m with hnm | hnm
+  · have : (n : ℝ) - m ≤ 0 := by
+      have : (n : ℝ) < m := by exact_mod_cast hnm
+      linarith
+    nlinarith [mul_nonneg hq (mul_nonneg (by linarith : (0:ℝ) ≤ (m : ℝ) - 1) hspan0),
+      mul_nonneg hA (by linarith : (0:ℝ) ≤ (m : ℝ) - n), mul_nonneg (by positivity : (0:ℝ) ≤ m) hDtot]
+
+  have hS : (univ.image x).card = n := by rw [card_image_of_injective _ hx, card_univ]
+  set y : Fin n → ℝ := ⇑((univ.image x).orderEmbOfFin hS) with hydef
+  have hymem : ∀ k, y k ∈ univ.image x := fun k => Finset.orderEmbOfFin_mem _ hS k
+  have hymono : StrictMono y := ((univ.image x).orderEmbOfFin hS).strictMono
+  choose ι' hι' using fun k => mem_image.mp (hymem k)
+  have hι'inj : Function.Injective ι' := by
+    intro k k' h
+    apply hymono.injective
+    rw [← (hι' k).2, ← (hι' k').2, h]
+  have hbij : Function.Bijective ι' :=
+    (Fintype.bijective_iff_injective_and_card ι').mpr ⟨hι'inj, by simp [hndef]⟩
+  set e : Fin n ≃ ι := Equiv.ofBijective ι' hbij with hedef
+  set pos : ι → ℕ := fun i => (e.symm i : ℕ) with hposdef
+  set Y := sortedExt y with hYdef
+  have hpos_lt : ∀ i, pos i < n := fun i => (e.symm i).2
+  have hxY : ∀ i, x i = Y (pos i) := by
+    intro i
+    rw [hYdef, hposdef]; simp only
+    rw [sortedExt_of_lt y (e.symm i).2, Fin.eta, ← (hι' (e.symm i)).2]
+    congr 1
+    exact (Equiv.ofBijective_apply_symm_apply ι' hbij i).symm
+  have hpos_inj : Function.Injective pos := by
+    intro i i' h
+    have : e.symm i = e.symm i' := Fin.ext h
+    exact e.symm.injective this
+  have hle_iff : ∀ i i', x i ≤ x i' ↔ pos i ≤ pos i' := by
+    intro i i'
+    rw [hxY, hxY, hYdef, hposdef]; simp only
+    rw [sortedExt_of_lt y (e.symm i).2, sortedExt_of_lt y (e.symm i').2, Fin.eta, Fin.eta,
+      hymono.le_iff_le, Fin.le_def]
+
+  set B : ℕ → Finset ι := fun s => univ.filter fun i => s ≤ pos i ∧ pos i < s + m with hBdef
+  have hmemB : ∀ s i, i ∈ B s ↔ s ≤ pos i ∧ pos i < s + m := by
+    intro s i; simp [hBdef]
+  set toFin : ℕ → Fin n := fun t => if h : t < n then ⟨t, h⟩ else ⟨0, by omega⟩ with htoFin
+  have hcardB : ∀ s, s + m ≤ n → (B s).card = m := by
+    intro s hs
+    have : (B s).card = (Ico s (s + m)).card := by
+      refine card_nbij' pos (fun t => e (toFin t)) ?_ ?_ ?_ ?_
+      · intro i hi
+        rw [mem_coe, hmemB] at hi
+        rw [mem_coe, mem_Ico]; exact hi
+      · intro t ht
+        rw [mem_coe, mem_Ico] at ht
+        rw [mem_coe, hmemB]
+        have htn : t < n := by omega
+        simp only [hposdef, htoFin, dif_pos htn, Equiv.symm_apply_apply]
+        exact ht
+      · intro i hi
+        have h := hpos_lt i
+        simp only [htoFin, dif_pos h]
+        simp only [hposdef, Fin.eta, Equiv.apply_symm_apply]
+      · intro t ht
+        rw [mem_coe, mem_Ico] at ht
+        have htn : t < n := by omega
+        simp only [hposdef, htoFin, dif_pos htn, Equiv.symm_apply_apply]
+    rw [this, Nat.card_Ico]; omega
+  have hintB : ∀ s, IsInterval x (B s) := by
+    intro s i hi j hj k hik hkj
+    rw [hmemB] at hi hj ⊢
+    rw [hle_iff] at hik hkj
+    omega
+  have hspanB : ∀ s, s + m ≤ n → spanOf x (B s) ≤ Y (s + (m - 1)) - Y s := by
+    intro s hs
+    have hne : (B s).Nonempty := by
+      rw [← card_pos, hcardB s hs]; exact hm0
+    unfold spanOf
+    rw [dif_pos hne]
+    have h1 : (B s).sup' hne x ≤ Y (s + (m - 1)) := by
+      apply sup'_le
+      intro i hi
+      rw [hmemB] at hi
+      rw [hxY]
+      exact sortedExt_mono hymono (by omega) (by omega)
+    have h2 : Y s ≤ (B s).inf' hne x := by
+      apply le_inf'
+      intro i hi
+      rw [hmemB] at hi
+      rw [hxY]
+      exact sortedExt_mono hymono (by omega) (hpos_lt i)
+    linarith
+
+  set St := range (n - m + 1) with hStdef
+  have hmemSt : ∀ s, s ∈ St ↔ s + m ≤ n := by
+    intro s; rw [hStdef, mem_range]; omega
+  have hsumblock : A * ((n : ℝ) - m + 1) ≤ ∑ s ∈ St, Dblk (B s) + q * ∑ s ∈ St, spanOf x (B s) := by
+    have h := sum_le_sum fun s (hs : s ∈ St) =>
+      hblock (B s) (hcardB s ((hmemSt s).mp hs)) (hintB s)
+    rw [sum_const, card_range, nsmul_eq_mul, sum_add_distrib, ← mul_sum] at h
+    have hcast : ((n - m + 1 : ℕ) : ℝ) = (n : ℝ) - m + 1 := by
+      rw [Nat.cast_add, Nat.cast_sub hnm]; norm_num
+    rw [hcast] at h
+    linarith
+
+  have hspans : ∑ s ∈ St, spanOf x (B s) ≤ ((m : ℝ) - 1) * spanOf x univ := by
+    have hY0 : ∀ i ∈ range (m - 1), Y (n - m + 1 + i) - Y i ≤ spanOf x univ := by
+      intro i hi
+      rw [mem_range] at hi
+      have hi' : n - m + 1 + i < n := by omega
+      obtain ⟨a, -, ha⟩ := mem_image.mp (hymem ⟨n - m + 1 + i, hi'⟩)
+      obtain ⟨b, -, hb⟩ := mem_image.mp (hymem ⟨i, by omega⟩)
+      rw [hYdef, sortedExt_of_lt y hi', sortedExt_of_lt y (by omega : i < n), ← ha, ← hb]
+      exact (le_abs_self _).trans (abs_sub_le_spanOf x (mem_univ a) (mem_univ b))
+    calc ∑ s ∈ St, spanOf x (B s)
+        ≤ ∑ s ∈ St, (Y (s + (m - 1)) - Y s) :=
+          sum_le_sum fun s hs => hspanB s ((hmemSt s).mp hs)
+      _ = ∑ i ∈ range (m - 1), (Y (n - m + 1 + i) - Y i) := sum_shift_sub Y (m - 1) (n - m + 1)
+      _ ≤ ∑ i ∈ range (m - 1), spanOf x univ := sum_le_sum hY0
+      _ = ((m : ℝ) - 1) * spanOf x univ := by
+          rw [sum_const, card_range, nsmul_eq_mul, Nat.cast_sub hm]; norm_num
+
+  have hdefects : ∑ s ∈ St, Dblk (B s) ≤ m * Dtot := by
+    rw [← sum_fiberwise_of_maps_to (g := fun s => s % m) (t := range m)
+      (fun s _ => mem_range.mpr (Nat.mod_lt s hm0))]
+    calc ∑ j ∈ range m, ∑ s ∈ St with s % m = j, Dblk (B s)
+        ≤ ∑ j ∈ range m, Dtot := by
+          refine sum_le_sum fun j hj => ?_
+
+          set β : ι → Fin (n + 1) := fun i =>
+            ⟨blockStart n m j (pos i), Nat.lt_succ_of_le (blockStart_le n m j (pos i))⟩ with hβ
+          have hclass : ∀ s (hs : s + m ≤ n) (hj : s % m = j),
+              (univ.filter fun i => β i = ⟨s, by omega⟩) = B s := by
+            intro s hs hj
+            ext i
+            rw [mem_filter, hmemB, hβ]
+            simp only [mem_univ, true_and, Fin.mk.injEq]
+            exact blockStart_eq_iff hm0 hs hj
+          set toFin' : ℕ → Fin (n + 1) := fun s => if h : s < n + 1 then ⟨s, h⟩ else 0 with htoFin'
+          have hinj : Set.InjOn toFin' (St.filter (fun s => s % m = j)) := by
+            intro s hs s' hs' h
+            rw [mem_coe, mem_filter, hmemSt] at hs hs'
+            simp only [htoFin', dif_pos (by omega : s < n + 1), dif_pos (by omega : s' < n + 1),
+              Fin.mk.injEq] at h
+            exact h
+          calc ∑ s ∈ St with s % m = j, Dblk (B s)
+              = ∑ s ∈ St with s % m = j, Dblk (univ.filter fun i => β i = toFin' s) := by
+                refine sum_congr rfl fun s hs => ?_
+                rw [mem_filter, hmemSt] at hs
+                have hsn : s < n + 1 := by omega
+                rw [← hclass s hs.1 hs.2]
+                congr 2
+                simp only [htoFin', dif_pos hsn]
+            _ = ∑ b ∈ (St.filter (fun s => s % m = j)).image toFin',
+                  Dblk (univ.filter fun i => β i = b) :=
+                (sum_image (f := fun b => Dblk (univ.filter fun i => β i = b)) hinj).symm
+            _ ≤ ∑ b, Dblk (univ.filter fun i => β i = b) :=
+                sum_le_sum_of_subset_of_nonneg (subset_univ _) fun b _ _ => hD0 _
+            _ ≤ Dtot := hpinch (Fin (n + 1)) β
+      _ = m * Dtot := by rw [sum_const, card_range, nsmul_eq_mul]
+
+  have hmn : (m : ℝ) ≤ n := by exact_mod_cast hnm
+  calc A * ((n : ℝ) - m) - q * ((m : ℝ) - 1) * spanOf x univ
+      ≤ A * ((n : ℝ) - m + 1) - q * ((m : ℝ) - 1) * spanOf x univ := by linarith
+    _ ≤ ∑ s ∈ St, Dblk (B s) + q * ∑ s ∈ St, spanOf x (B s)
+          - q * ((m : ℝ) - 1) * spanOf x univ := by linarith
+    _ ≤ m * Dtot := by nlinarith [mul_le_mul_of_nonneg_left hspans hq]
+
+end Abstract
+
+section Analytic
+
+open Classical
+
+lemma spanOf_xret_le_d (Z : ZeroConfig) (P : Params) (T : ℝ) :
+    spanOf (xret Z P T) univ ≤ (P.d T : ℝ) := by
+  have hb : ∀ z : retained Z P T,
+      P.L T ^ 2 ≤ xret Z P T z ∧ xret Z P T z ≤ (P.d T : ℝ) - P.L T ^ 2 :=
+    fun z => (Finset.mem_filter.mp z.2).2
+  unfold spanOf
+  split_ifs with h
+  · have h1 : (univ : Finset (retained Z P T)).sup' h (xret Z P T) ≤ (P.d T : ℝ) - P.L T ^ 2 :=
+      sup'_le _ _ fun z _ => (hb z).2
+    have h2 : P.L T ^ 2 ≤ (univ : Finset (retained Z P T)).inf' h (xret Z P T) :=
+      le_inf' _ _ fun z _ => (hb z).1
+    have : 0 ≤ P.L T ^ 2 := sq_nonneg _
+    linarith
+  · exact Nat.cast_nonneg _
+
+theorem span_retained_le (Z : ZeroConfig) (H : PaperInputs Z) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      spanOf (xret Z (mtParams T) T) univ ≤ (1 + ε) * (Z.N T (2 * T) : ℝ) := by
+  intro ε hε
+  obtain ⟨C, T₀, hRvM⟩ := H.RvM.main
+  have hV : (paramsOf stdProfile 1).Valid := paramsOf_valid taperProfile_stdProfile one_pos le_rfl
+  have hLpos : ∀ᶠ T in atTop, 0 < (mtParams T).L T := (tendsto_L hV).eventually_gt_atTop 0
+  set K : ℝ := max ((1 + ε) * C / ε) 0 with hK
+  have hK0 : 0 ≤ K := le_max_right _ _
+  have hc : (0 : ℝ) < 1 / (2 * Real.pi * (K + 1)) := by positivity
+  have hlogT : ∀ᶠ T in atTop, ‖Real.log T‖ ≤ (1 / (2 * Real.pi * (K + 1))) * ‖id T‖ :=
+    Real.isLittleO_log_id_atTop.def hc
+  have hell : ∀ᶠ T in atTop, 1 ≤ ell1 T := by
+    have h : Tendsto (fun T : ℝ => Real.log (T / (2 * Real.pi))) atTop atTop :=
+      Real.tendsto_log_atTop.comp (tendsto_id.atTop_div_const (by positivity))
+    have h' : Tendsto (fun T : ℝ => Real.log (T / (2 * Real.pi)) + (2 * Real.log 2 - 1))
+        atTop atTop := h.atTop_add tendsto_const_nhds
+    exact (h'.eventually_ge_atTop 1).mono fun T hT => by unfold ell1 l; linarith
+  filter_upwards [eventually_ge_atTop T₀, eventually_ge_atTop (2 * Real.pi), hLpos, hlogT, hell]
+    with T hT₀ h2π hL hlog hel
+  have hpi : 0 < 2 * Real.pi := by positivity
+  have hT0 : 0 < T := lt_of_lt_of_le hpi h2π
+  have hT1 : 1 ≤ T := by linarith [Real.pi_gt_three]
+  have hLg0 : 0 ≤ Real.log T := Real.log_nonneg hT1
+  have hl0 : 0 ≤ l T := Real.log_nonneg (by rw [le_div_iff₀ hpi]; linarith)
+  have hN := abs_le.mp (hRvM T hT₀)
+
+  have hLle : (mtParams T).L T ≤ l T := by
+    show (paramsOf stdProfile 1).lam * l T ≤ l T
+    exact mul_le_of_le_one_left hl0 hV.lam_le_one
+  have hl_ell : l T ≤ ell1 T := by
+    unfold ell1; linarith [Real.log_two_gt_d9]
+  have hd : ((mtParams T).d T : ℝ) ≤ T / (2 * Real.pi) * ell1 T := by
+    have h0 : 0 ≤ (mtParams T).L T * T / (2 * Real.pi) := by positivity
+    calc ((mtParams T).d T : ℝ) ≤ (mtParams T).L T * T / (2 * Real.pi) := Nat.floor_le h0
+      _ = T / (2 * Real.pi) * (mtParams T).L T := by ring
+      _ ≤ T / (2 * Real.pi) * ell1 T := by gcongr; exact hLle.trans hl_ell
+
+  have hKA : K * Real.log T ≤ T / (2 * Real.pi) * ell1 T := by
+    simp only [Real.norm_eq_abs, id, abs_of_nonneg hLg0, abs_of_pos hT0] at hlog
+    have h1 : K * Real.log T ≤ K * (1 / (2 * Real.pi * (K + 1)) * T) :=
+      mul_le_mul_of_nonneg_left hlog hK0
+    have h2 : K * (1 / (2 * Real.pi * (K + 1)) * T) ≤ T / (2 * Real.pi) := by
+      rw [show K * (1 / (2 * Real.pi * (K + 1)) * T) = T / (2 * Real.pi) * (K / (K + 1)) by
+        field_simp]
+      have : K / (K + 1) ≤ 1 := by rw [div_le_one (by linarith)]; linarith
+      exact mul_le_of_le_one_right (by positivity) this
+    have h3 : T / (2 * Real.pi) ≤ T / (2 * Real.pi) * ell1 T :=
+      le_mul_of_one_le_right (by positivity) hel
+    linarith
+  have h1 : (1 + ε) * C / ε * Real.log T ≤ T / (2 * Real.pi) * ell1 T :=
+    (mul_le_mul_of_nonneg_right (le_max_left _ _) hLg0).trans hKA
+  have h2 : (1 + ε) * C * Real.log T ≤ ε * (T / (2 * Real.pi) * ell1 T) := by
+    have e : (1 + ε) * C * Real.log T = ε * ((1 + ε) * C / ε * Real.log T) := by
+      field_simp
+    rw [e]
+    exact mul_le_mul_of_nonneg_left h1 hε.le
+  calc spanOf (xret Z (mtParams T) T) univ ≤ ((mtParams T).d T : ℝ) := spanOf_xret_le_d Z _ T
+    _ ≤ (1 + ε) * (Z.N T (2 * T) : ℝ) := by nlinarith [hN.1, hN.2, hd, h2]
+
+end Analytic
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/S16.lean ###### -/
+
+
+
+noncomputable section
+
+open Filter
+open Zeta23.ThmD
+
+namespace Zeta23Ext.Bridge
+
+lemma one_sub_div_pos {c : ℝ} {n m : ℕ} (hn : 2 ≤ n) (hm : n ≤ m)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    0 < 1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m := by
+  have hm' : (2 : ℝ) ≤ m := by exact_mod_cast (by omega : 2 ≤ m)
+  have hmpos : (0 : ℝ) < m := by linarith
+  rw [sub_pos, div_lt_one hmpos]
+  linarith
+
+theorem solve_linear {N N0 : ℝ → ℝ} {c : ℝ} {n m p : ℕ} (hn : 2 ≤ n) (hm : n ≤ m)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    (h : ∀ ε > 0, ∀ᶠ T in atTop,
+      (HD 1 - ((n : ℝ) - 1) * ((m : ℝ) - 1) / ((p : ℝ) * m) - ε) * N T
+        ≤ (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m) * N0 T) :
+    ∀ ε > 0, ∀ᶠ T in atTop, (Phi_n n c m p - ε) * N T ≤ N0 T := by
+  intro ε hε
+  have hD := one_sub_div_pos hn hm hA0
+  set Dn : ℝ := 1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m with hDn
+  filter_upwards [h (ε * Dn) (mul_pos hε hD)] with T hT
+  have hPhi : Phi_n n c m p
+      = (HD 1 - ((n : ℝ) - 1) * ((m : ℝ) - 1) / ((p : ℝ) * m)) / Dn := rfl
+  rw [hPhi]
+  have : (HD 1 - ((n : ℝ) - 1) * ((m : ℝ) - 1) / ((p : ℝ) * m)) / Dn - ε
+      = (HD 1 - ((n : ℝ) - 1) * ((m : ℝ) - 1) / ((p : ℝ) * m) - ε * Dn) / Dn := by
+    field_simp
+  rw [this, div_mul_eq_mul_div, div_le_iff₀ hD]
+  linarith
+
+theorem Phi_paper : Phi (19 / 5000) 269 3000 = (1345000 * HD 1 - 2680) / 1340003 := by
+  unfold Phi
+  norm_num
+  field_simp
+  ring
+
+theorem Phi_paper' :
+    Phi (19 / 5000) 269 3000
+      = (1345000 * (3 / 2 - (Real.sqrt 2)⁻¹ * (Real.cos (Real.sqrt 2)⁻¹ / Real.sin (Real.sqrt 2)⁻¹))
+          - 2680) / 1340003 := by
+  rw [Phi_paper, HD_one]
+
+theorem Phi_lab : Phi (34697 / 10000000) 294 3400
+    = (520625000 * HD 1 - 915625) / 518855453 := by
+  unfold Phi
+  norm_num
+  field_simp
+  ring
+
+theorem Phi_lab8 : Phi_n 8 (41763 / 10000000) 246 3200
+    = (2460000000 * HD 1 - 5359375) / 2450018643 := by
+  unfold Phi_n
+  norm_num
+  field_simp
+  ring
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/Bridge/Main.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg Filter
+open scoped ComplexOrder BigOperators
+open Zeta23 Zeta23.ZeroSide Zeta23.ThmD
+
+namespace Zeta23Ext.Bridge
+
+open Classical
+
+def P₀ : Params := paramsOf stdProfile 1
+
+lemma P₀_valid : P₀.Valid := paramsOf_valid taperProfile_stdProfile one_pos le_rfl
+
+lemma eventually_L_pos : ∀ᶠ T in atTop, 0 < (mtParams T).L T :=
+  (tendsto_L P₀_valid).eventually_gt_atTop 0
+
+theorem eventually_h7 (Z : ZeroConfig) :
+    ∀ᶠ T in atTop,
+      4 * rtrace ((mtParams T).hat T (Z.Az (mtParams T) T))
+        - frobSq ((mtParams T).hat T (Z.Az (mtParams T) T))
+        - 2 * (Z.NIprime T : ℝ) + Dcirc Z (mtParams T) T ≤ (Z.s1 T : ℝ) := by
+  filter_upwards [eventually_w8 P₀_valid, eventually_w4pi P₀_valid] with T h8 h4π
+  set P := mtParams T with hP
+  have hconj : PhiHatConj T P := phiHatConj
+  have hL : 0 < P.L T := by
+    change 0 < P₀.L T; linarith [P₀_valid.one_le_w]
+  have ha : 1 / 2 ≤ P.a T := (aD_range_of P₀_valid h8 h4π).1
+  have hc : 0 < aL2 P T := mul_pos (by linarith) (pow_pos hL 2)
+  have hPois : PoissonSq T P := poissonSqD P₀_valid h8
+  have h7 := count_defect (bdata Z P T) (mkPairReps Z T _ (evalVec_reflect hconj)) hc
+    (sum_normSq_v_le Z T P hconj phiHatReal hPois)
+  have hD : Dcirc Z P T ≤ defect (gramS₁_isHermitian (bdata Z P T) (aL2 P T)) :=
+    pinching_submatrix (gramS₁_isHermitian (bdata Z P T) (aL2 P T)) (toS₁ Z P T)
+      (toS₁_injective Z P T)
+  have hA : P.hat T (Z.Az P T) = (bdata Z P T).blockP (aL2 P T) + (bdata Z P T).blockQ (aL2 P T) :=
+    hat_Az_eq_hatP_add_hatQ Z T P hconj
+  have hN : (Z.NIprime T : ℝ) = ((bdata Z P T).Ncount : ℝ) := by
+    rw [NIprime_eq_mk Z T _ (evalVec_reflect hconj)]; rfl
+  have hs : (Z.s1 T : ℝ) = ((bdata Z P T).s₁ : ℝ) := by
+    rw [s1_eq_mk Z T _ (evalVec_reflect hconj)]; rfl
+  rw [hA, hN, hs]
+  linarith [h7, hD]
+
+theorem block_bound_eventually (Z : ZeroConfig) (H : PaperInputs Z) {c : ℝ} {n m p : ℕ}
+    (hn : 2 ≤ n) (hm : n ≤ m) (hp : 0 < p)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ F n p g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    {η : ℝ} (hη : 0 < η) :
+    ∀ᶠ T in atTop, ∀ B : Finset (retained Z (mtParams T) T), B.card = m →
+      c * ((m : ℝ) - ((n : ℝ) - 1)) - η ≤ blockDefect (gram_isHermitian Z (mtParams T) T) B
+        + (((n : ℝ) - 1) / (p : ℝ)) * spanOf (xret Z (mtParams T) T) B := by
+  have hn' : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hgap : (1 : ℝ) ≤ (n : ℝ) - 1 := by linarith
+  have hm' : (2 : ℝ) ≤ m := by exact_mod_cast (by omega : 2 ≤ m)
+  have hmsq : 0 < 2 * (m : ℝ) ^ 2 := by positivity
+  set δ : ℝ := η / (2 * (m : ℝ) ^ 2) with hδ
+  have hδpos : 0 < δ := div_pos hη hmsq
+  have hp' : (0 : ℝ) < p := by exact_mod_cast hp
+  filter_upwards [kernel_limit Z H ((p : ℝ) / ((n : ℝ) - 1)) δ hδpos, eventually_L_pos]
+    with T hclose hL
+  intro B hB
+  set x := xret Z (mtParams T) T with hx
+  set q : ℝ := ((n : ℝ) - 1) / (p : ℝ) with hq
+  have hq0 : 0 < q := by rw [hq]; exact div_pos (by linarith) hp'
+  by_cases hsp : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ q * spanOf x B
+  · linarith [blockDefect_nonneg (gram_isHermitian Z (mtParams T) T) B]
+  · rw [not_le] at hsp
+    have hR : spanOf x B ≤ (p : ℝ) / ((n : ℝ) - 1) := by
+      have h1 : spanOf x B < 1 / q := by
+        rw [lt_div_iff₀ hq0]; linarith
+      have h1q : 1 / q = (p : ℝ) / ((n : ℝ) - 1) := by
+        rw [hq]; exact one_div_div ((n : ℝ) - 1) (p : ℝ)
+      linarith
+    have hcl : ∀ i ∈ B, ∀ j ∈ B, i ≠ j →
+        ‖gram Z (mtParams T) T i j - (kfun (x i - x j) : ℂ)‖ ≤ δ := by
+      intro i hi j hj _
+      exact hclose i j ((abs_sub_le_spanOf x hi hj).trans hR)
+    have h13 := block_bound hn hm hp hCert hA0 x (gram_posSemidef Z (mtParams T) T) B hB
+      (xret_injective Z (mtParams T) T hL).injOn hδpos.le hcl
+    have hη' : 2 * (m : ℝ) ^ 2 * δ = η := by rw [hδ]; field_simp
+    rw [hη'] at h13
+    exact h13
+
+theorem pre_solve (Z : ZeroConfig) (H : PaperInputs Z) {c : ℝ} {n m p : ℕ}
+    (hn : 2 ≤ n) (hm : n ≤ m) (hp : 0 < p) (hc : 0 < c)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ F n p g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      (HD 1 - ((n : ℝ) - 1) * ((m : ℝ) - 1) / ((p : ℝ) * m) - ε) * (Z.N T (2 * T) : ℝ)
+        ≤ (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m) * (Z.N0s T (2 * T) : ℝ) := by
+  intro ε hε
+  have hn' : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hmn : (n : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+  have hm' : (2 : ℝ) ≤ m := le_trans hn' hmn
+  have hmpos : (0 : ℝ) < m := by linarith
+  have hgap : (1 : ℝ) ≤ (n : ℝ) - 1 := by linarith
+  have hp' : (0 : ℝ) < p := by exact_mod_cast hp
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp
+  have hA₀pos : 0 < c * ((m : ℝ) - ((n : ℝ) - 1)) := mul_pos hc (by linarith)
+  have hq0 : (0 : ℝ) ≤ ((n : ℝ) - 1) / (p : ℝ) := div_nonneg (by linarith) hp'.le
+  have hqn : ((n : ℝ) - 1) / (p : ℝ) ≤ (n : ℝ) - 1 := by
+    rw [div_le_iff₀ hp']; nlinarith
+
+  set Cn : ℝ := (m : ℝ) + 3 + ((n : ℝ) - 1) * ((m : ℝ) - 1) with hCn
+  have hCnpos : 0 < Cn := by
+    have h := mul_nonneg (by linarith : (0 : ℝ) ≤ (n : ℝ) - 1) (by linarith : (0 : ℝ) ≤ (m : ℝ) - 1)
+    rw [hCn]; linarith
+  have hCne : Cn ≠ 0 := hCnpos.ne'
+  set ε₀ : ℝ := ε * (m : ℝ) / Cn with hε₀
+  have hε₀pos : 0 < ε₀ := by rw [hε₀]; positivity
+  have hηpos : 0 < min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) := lt_min hε₀pos hA₀pos
+  have hηε : min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) ≤ ε₀ := min_le_left _ _
+  have hηA : min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) ≤ c * ((m : ℝ) - ((n : ℝ) - 1)) :=
+    min_le_right _ _
+  have hA' : 0 ≤ c * ((m : ℝ) - ((n : ℝ) - 1)) - min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) := by
+    linarith
+  filter_upwards [block_bound_eventually Z H hn hm hp hCert hA0 hηpos,
+    deleted_strips Z H _ hηpos, span_retained_le Z H _ hηpos,
+    tail_passage Z H (eventually_h7 Z) _ hηpos,
+    (Assembly.tendsto_N_atTop Z H.RvM).eventually_ge_atTop
+      ((m : ℝ) / min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1)))),
+    eventually_L_pos] with T hblk hstrip hspan h8 hNbig hL
+
+  have h15 := offset_average (xret Z (mtParams T) T) (xret_injective Z (mtParams T) T hL)
+    (show 1 ≤ m by omega) (blockDefect (gram_isHermitian Z (mtParams T) T))
+    (Dcirc Z (mtParams T) T)
+    (c * ((m : ℝ) - ((n : ℝ) - 1)) - min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))))
+    (((n : ℝ) - 1) / (p : ℝ))
+    hA' hq0 (blockDefect_nonneg _) (fun B hB _ => hblk B hB)
+    (fun κ _ _ β => pinching_partition (gram_isHermitian Z (mtParams T) T) κ β)
+  rw [Fintype.card_coe] at h15
+  have hN0 : (0 : ℝ) ≤ (Z.N T (2 * T) : ℝ) := Nat.cast_nonneg _
+  have hn0N : (Z.N0s T (2 * T) : ℝ) ≤ (Z.N T (2 * T) : ℝ) := by
+    have h := (Z.trivial_chain T (2 * T)).1.trans
+      ((Z.trivial_chain T (2 * T)).2.1.trans (Z.trivial_chain T (2 * T)).2.2.1)
+    exact_mod_cast h
+  have hmN : (m : ℝ) ≤ min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) * (Z.N T (2 * T) : ℝ) := by
+    have := (div_le_iff₀ hηpos).mp hNbig; linarith
+
+  set A₀ : ℝ := c * ((m : ℝ) - ((n : ℝ) - 1)) with hA₀
+  set q : ℝ := ((n : ℝ) - 1) / (p : ℝ) with hq
+  set η : ℝ := min ε₀ A₀ with hη
+  set N : ℝ := (Z.N T (2 * T) : ℝ) with hNdef
+  set n0 : ℝ := (Z.N0s T (2 * T) : ℝ) with hn0def
+  set S : ℝ := ((retained Z (mtParams T) T).card : ℝ) with hSdef
+  set D : ℝ := Dcirc Z (mtParams T) T with hDdef
+  set sp : ℝ := spanOf (xret Z (mtParams T) T) univ with hspdef
+  clear_value A₀ q η N n0 S D sp
+
+  have step1 : (A₀ - η) * (n0 - 2 * η * N) ≤ (A₀ - η) * (S - m) :=
+    mul_le_mul_of_nonneg_left (by linarith) hA'
+  have step2 : q * ((m : ℝ) - 1) * sp ≤ q * ((m : ℝ) - 1) * ((1 + η) * N) :=
+    mul_le_mul_of_nonneg_left hspan (mul_nonneg hq0 (by linarith))
+  have hηN : 0 ≤ η * N := mul_nonneg hηpos.le hN0
+  have e1 : A₀ * (η * N) ≤ 1 * (η * N) := mul_le_mul_of_nonneg_right hA0 hηN
+  have e2 : η * n0 ≤ η * N := mul_le_mul_of_nonneg_left hn0N hηpos.le
+  have e3 : 0 ≤ η * η * N := mul_nonneg (mul_nonneg hηpos.le hηpos.le) hN0
+  have step3 : A₀ * n0 - 3 * η * N ≤ (A₀ - η) * (n0 - 2 * η * N) := by linarith [e1, e2, e3]
+  have hmD : (m : ℝ) * D ≤ m * (n0 - (HD 1 - η) * N) :=
+    mul_le_mul_of_nonneg_left (by linarith) hmpos.le
+  have hq' : q * ((m : ℝ) - 1) ≤ ((n : ℝ) - 1) * ((m : ℝ) - 1) :=
+    mul_le_mul_of_nonneg_right hqn (by linarith)
+  have hcoef1 : η * ((m : ℝ) + 3 + q * ((m : ℝ) - 1)) ≤ η * Cn :=
+    mul_le_mul_of_nonneg_left (by rw [hCn]; linarith) hηpos.le
+  have hcoef2 : η * Cn ≤ ε₀ * Cn := mul_le_mul_of_nonneg_right hηε hCnpos.le
+  have hεCn : ε₀ * Cn = ε * (m : ℝ) := by
+    rw [hε₀, div_mul_eq_mul_div, mul_div_assoc, div_self hCne, mul_one]
+  have hcoef : η * ((m : ℝ) + 3 + q * ((m : ℝ) - 1)) ≤ m * ε := by
+    linarith [hcoef1, hcoef2, hεCn]
+  have hηN' : η * ((m : ℝ) + 3 + q * ((m : ℝ) - 1)) * N ≤ m * ε * N :=
+    mul_le_mul_of_nonneg_right hcoef hN0
+  have key : ((m : ℝ) * HD 1 - q * ((m : ℝ) - 1) - m * ε) * N ≤ ((m : ℝ) - A₀) * n0 := by
+    linarith [h15, step1, step2, step3, hmD, hηN']
+  have hL1 : (HD 1 - ((n : ℝ) - 1) * ((m : ℝ) - 1) / ((p : ℝ) * m) - ε) * N
+      = ((m : ℝ) * HD 1 - q * ((m : ℝ) - 1) - m * ε) * N / m := by
+    rw [hq]; field_simp
+  have hR1 : (1 - A₀ / m) * n0 = ((m : ℝ) - A₀) * n0 / m := by
+    field_simp
+  rw [hL1, hR1]
+  exact div_le_div_of_nonneg_right key hmpos.le
+
+theorem n_point_bound (n : ℕ) (c : ℝ) (m p : ℕ) (hn : 2 ≤ n) (hm : n ≤ m) (hp : 0 < p)
+    (hc : 0 < c)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ F n p g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (Phi_n n c m p - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0simple T (2 * T) := by
+  have h := solve_linear (N := fun T => (Zeta23.Ncount T (2 * T) : ℝ))
+    (N0 := fun T => (Zeta23.N0simple T (2 * T) : ℝ)) hn hm hA0 (by
+      have := pre_solve zetaZeroConfig paperInputs_zeta hn hm hp hc hCert hA0
+      simpa only [zetaZeroConfig_N, zetaZeroConfig_N0s] using this)
+  intro ε hε
+  exact eventually_atTop.mp (h ε hε)
+
+theorem seven_point_bound (c : ℝ) (m p : ℕ) (hm : 7 ≤ m) (hp : 0 < p) (hc : 0 < c)
+    (hCert : ∀ g : Fin 6 → ℝ, (∀ i, 0 ≤ g i) → c ≤ F6 p g)
+    (hA0 : c * ((m : ℝ) - 6) ≤ 1) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (Phi c m p - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0simple T (2 * T) := by
+  have h7 : ((7 : ℕ) : ℝ) - 1 = 6 := by norm_num
+  rw [Phi_eq_Phi_n]
+  refine n_point_bound 7 c m p (by norm_num) hm hp hc (fun g hg => ?_) ?_
+  · exact le_of_le_of_eq (hCert g hg) (F6_eq p g)
+  · rw [h7]; exact hA0
+
+theorem seven_point_bound_paper
+    (hCert : ∀ g : Fin 6 → ℝ, (∀ i, 0 ≤ g i) → 19 / 5000 ≤ F6 3000 g) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      ((1345000 * HD 1 - 2680) / 1340003 - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0simple T (2 * T) := by
+  rw [← Phi_paper]
+  exact seven_point_bound (19 / 5000) 269 3000 (by norm_num) (by norm_num) (by norm_num) hCert
+    (by norm_num)
+
+lemma eventually_Ncount_pos : ∀ᶠ T in atTop, 0 < (Zeta23.Ncount T (2 * T) : ℝ) := by
+  have h := Zeta23.Assembly.tendsto_N_atTop zetaZeroConfig paperInputs_zeta.RvM
+  simpa only [zetaZeroConfig_N] using h.eventually_gt_atTop 0
+
+theorem seven_point_bound_lab
+    (hCert : ∀ g : Fin 6 → ℝ, (∀ i, 0 ≤ g i) → 34697 / 10000000 ≤ F6 3400 g) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      ((520625000 * HD 1 - 915625) / 518855453 - ε) * (Zeta23.Ncount T (2 * T) : ℝ)
+        ≤ Zeta23.N0simple T (2 * T) := by
+  rw [← Phi_lab]
+  exact seven_point_bound (34697 / 10000000) 294 3400 (by norm_num) (by norm_num) (by norm_num)
+    hCert (by norm_num)
+
+theorem seven_point_bound_lab_ratio
+    (hCert : ∀ g : Fin 6 → ℝ, (∀ i, 0 ≤ g i) → 34697 / 10000000 ≤ F6 3400 g) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (520625000 * HD 1 - 915625) / 518855453 - ε
+        ≤ (Zeta23.N0simple T (2 * T) : ℝ) / (Zeta23.Ncount T (2 * T) : ℝ) := by
+  intro ε hε
+  obtain ⟨T₁, hT₁⟩ := seven_point_bound_lab hCert ε hε
+  obtain ⟨T₂, hT₂⟩ := eventually_atTop.mp eventually_Ncount_pos
+  refine ⟨max T₁ T₂, fun T hT => ?_⟩
+  have h1 := hT₁ T (le_trans (le_max_left _ _) hT)
+  have h2 := hT₂ T (le_trans (le_max_right _ _) hT)
+  rw [le_div_iff₀ h2]
+  exact h1
+
+theorem eight_point_bound
+    (hCert : ∀ g : Fin 7 → ℝ, (∀ i, 0 ≤ g i) → 41763 / 10000000 ≤ F 8 3200 g) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      ((2460000000 * HD 1 - 5359375) / 2450018643 - ε) * (Zeta23.Ncount T (2 * T) : ℝ)
+        ≤ Zeta23.N0simple T (2 * T) := by
+  rw [← Phi_lab8]
+  exact n_point_bound 8 (41763 / 10000000) 246 3200 (by norm_num) (by norm_num) (by norm_num)
+    (by norm_num) hCert (by norm_num)
+
+theorem eight_point_bound_ratio
+    (hCert : ∀ g : Fin 7 → ℝ, (∀ i, 0 ≤ g i) → 41763 / 10000000 ≤ F 8 3200 g) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (2460000000 * HD 1 - 5359375) / 2450018643 - ε
+        ≤ (Zeta23.N0simple T (2 * T) : ℝ) / (Zeta23.Ncount T (2 * T) : ℝ) := by
+  intro ε hε
+  obtain ⟨T₁, hT₁⟩ := eight_point_bound hCert ε hε
+  obtain ⟨T₂, hT₂⟩ := eventually_atTop.mp eventually_Ncount_pos
+  refine ⟨max T₁ T₂, fun T hT => ?_⟩
+  have h1 := hT₁ T (le_trans (le_max_left _ _) hT)
+  have h2 := hT₂ T (le_trans (le_max_right _ _) hT)
+  rw [le_div_iff₀ h2]
+  exact h1
+
+
+end Zeta23Ext.Bridge
+
+end
+
+/-! ###### source module: Zeta23Ext/BridgeW/DefsW.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Finset
+open scoped BigOperators
+
+namespace Zeta23Ext.BridgeW
+
+open Zeta23Ext.Bridge
+
+structure WCert (n : ℕ) where
+  a : Fin n → Fin n → ℝ
+  b : Fin (n - 1) → ℝ
+
+variable {n : ℕ}
+
+def Fw (W : WCert n) (g : Fin (n - 1) → ℝ) : ℝ :=
+  ∑ r, W.b r * g r
+    + ∑ i : Fin n, ∑ j : Fin n,
+        if (i : ℕ) < (j : ℕ) then W.a i j * wfun (ptsN n g j - ptsN n g i) else 0
+
+def WCert.B (W : WCert n) : ℝ := ∑ r, W.b r
+
+def WCert.spanMass (W : WCert n) (s : ℕ) : ℝ :=
+  ∑ i : Fin n, ∑ j : Fin n,
+    if (i : ℕ) < (j : ℕ) ∧ (j : ℕ) - (i : ℕ) = s then W.a i j else 0
+
+structure WCert.Adm (W : WCert n) : Prop where
+  a_nonneg : ∀ i j, 0 ≤ W.a i j
+  b_nonneg : ∀ r, 0 ≤ W.b r
+  capacity : ∀ s : ℕ, W.spanMass s ≤ 2
+
+lemma WCert.B_nonneg {W : WCert n} (hW : W.Adm) : 0 ≤ W.B :=
+  sum_nonneg fun r _ => hW.b_nonneg r
+
+def ofFixed (n p : ℕ) : WCert n :=
+  ⟨fun i j => 2 / ((n : ℝ) - (((j : ℕ) - (i : ℕ) : ℕ) : ℝ)), fun _ => 1 / (p : ℝ)⟩
+
+theorem Fw_ofFixed (n p : ℕ) (g : Fin (n - 1) → ℝ) : Fw (ofFixed n p) g = F n p g := by
+  unfold Fw F ofFixed
+  simp only
+  rw [← mul_sum]
+
+lemma Fw_windowGaps (W : WCert n) (Y : ℕ → ℝ) (i : ℕ) :
+    Fw W (windowGaps n Y i)
+      = ∑ r : Fin (n - 1), W.b r * (Y (i + ((r : ℕ) + 1)) - Y (i + r))
+        + ∑ a : Fin n, ∑ b : Fin n,
+            if (a : ℕ) < (b : ℕ) then W.a a b * wfun (Y (i + b) - Y (i + a)) else 0 := by
+  unfold Fw
+  have hq : (∑ a : Fin n, ∑ b : Fin n,
+        if (a : ℕ) < (b : ℕ) then
+          W.a a b * wfun (ptsN n (windowGaps n Y i) b - ptsN n (windowGaps n Y i) a) else 0)
+      = ∑ a : Fin n, ∑ b : Fin n,
+          if (a : ℕ) < (b : ℕ) then W.a a b * wfun (Y (i + b) - Y (i + a)) else 0 := by
+    refine sum_congr rfl fun a _ => sum_congr rfl fun b _ => ?_
+    rw [ptsN_windowGaps, ptsN_windowGaps,
+      show Y (i + ↑b) - Y i - (Y (i + ↑a) - Y i) = Y (i + ↑b) - Y (i + ↑a) by ring]
+  rw [hq]
+  rfl
+
+section BlockPressure
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def sortedOn (x : ι → ℝ) (B : Finset ι) : ℕ → ℝ :=
+  sortedExt (⇑((B.image x).orderEmbOfFin (rfl : (B.image x).card = (B.image x).card)))
+
+def blkPress (b : Fin (n - 1) → ℝ) (x : ι → ℝ) (B : Finset ι) : ℝ :=
+  ∑ r : Fin (n - 1), b r * (sortedOn x B ((B.image x).card - (n - 1) + r) - sortedOn x B r)
+
+end BlockPressure
+
+
+end Zeta23Ext.BridgeW
+
+end
+
+/-! ###### source module: Zeta23Ext/BridgeW/S11W.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Finset
+open scoped BigOperators
+
+namespace Zeta23Ext.BridgeW
+
+open Zeta23Ext.Bridge
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+lemma window_pairs_le_energy_w {n m : ℕ} (hn : 2 ≤ n) (hm : n ≤ m) (W : WCert n) (hW : W.Adm)
+    (x : ι → ℝ) (hx : Function.Injective x) (hS : (univ.image x).card = m) :
+    ∑ i ∈ range (m - (n - 1)), ∑ a : Fin n, ∑ b : Fin n,
+        (if (a : ℕ) < (b : ℕ) then
+          W.a a b * wfun (sortedExt ((univ.image x).orderEmbOfFin hS) (i + b)
+                - sortedExt ((univ.image x).orderEmbOfFin hS) (i + a))
+        else 0)
+      ≤ energyOn x univ := by
+  classical
+  set y : Fin m → ℝ := ⇑((univ.image x).orderEmbOfFin hS) with hydef
+  set Y := sortedExt y with hYdef
+  have hm0 : 0 < m := by omega
+
+  set T : Finset (ℕ × (Fin n × Fin n)) :=
+    (range (m - (n - 1)) ×ˢ (univ : Finset (Fin n × Fin n))).filter fun t => (t.2.1 : ℕ) < t.2.2
+    with hTdef
+  set f : ℕ × (Fin n × Fin n) → ℝ := fun t =>
+    W.a t.2.1 t.2.2 * wfun (Y (t.1 + t.2.2) - Y (t.1 + t.2.1)) with hfdef
+  have hLHS : ∑ i ∈ range (m - (n - 1)), ∑ a : Fin n, ∑ b : Fin n,
+      (if (a : ℕ) < (b : ℕ) then
+        W.a a b * wfun (Y (i + b) - Y (i + a)) else 0)
+      = ∑ t ∈ T, f t := by
+    rw [hTdef, sum_filter, sum_product]
+    refine sum_congr rfl fun i _ => ?_
+    exact (Fintype.sum_prod_type' (f := fun (a b : Fin n) => if (a : ℕ) < (b : ℕ) then
+      W.a a b * wfun (Y (i + b) - Y (i + a)) else 0)).symm
+  rw [hLHS]
+
+  set φ : ℕ × (Fin n × Fin n) → ℕ × ℕ := fun t => (t.1 + t.2.1, t.1 + t.2.2) with hφdef
+  set I := T.image φ with hIdef
+  have hmem : ∀ t ∈ T, t.1 < m - (n - 1) ∧ (t.2.1 : ℕ) < t.2.2 := by
+    intro t ht
+    simp only [hTdef, mem_filter, mem_product, mem_range, mem_univ, and_true] at ht
+    exact ht
+  have hI : ∀ q ∈ I, q.1 < q.2 ∧ q.2 < m ∧ q.2 - q.1 < n := by
+    intro q hq
+    obtain ⟨t, ht, rfl⟩ := mem_image.mp hq
+    obtain ⟨h1, h2⟩ := hmem t ht
+    have hb := t.2.2.2
+    simp only [hφdef]
+    omega
+
+  rw [← sum_fiberwise_of_maps_to (g := φ) (t := I) (fun t ht => mem_image_of_mem φ ht)]
+
+  have hfib : ∀ q ∈ I, ∑ t ∈ T with φ t = q, f t ≤ 2 * wfun (Y q.2 - Y q.1) := by
+    intro q hq
+    obtain ⟨hq1, hq2, hq3⟩ := hI q hq
+    set r := q.2 - q.1 with hrdef
+    have hconst : ∀ t ∈ T.filter (fun t => φ t = q),
+        f t = W.a t.2.1 t.2.2 * wfun (Y q.2 - Y q.1) := by
+      intro t ht
+      rw [mem_filter] at ht
+      obtain ⟨ht, hφt⟩ := ht
+      have e1 : t.1 + (t.2.1 : ℕ) = q.1 := congrArg Prod.fst hφt
+      have e2 : t.1 + (t.2.2 : ℕ) = q.2 := congrArg Prod.snd hφt
+      simp only [hfdef]
+      rw [e1, e2]
+    rw [sum_congr rfl hconst, ← sum_mul]
+
+    set ψ : ℕ × (Fin n × Fin n) → Fin n × Fin n := fun t => t.2 with hψdef
+    have hψinj : Set.InjOn ψ (T.filter (fun t => φ t = q)) := by
+      intro t ht t' ht' hee
+      rw [mem_coe, mem_filter] at ht ht'
+      have e1 : t.1 + (t.2.1 : ℕ) = q.1 := congrArg Prod.fst ht.2
+      have e1' : t'.1 + (t'.2.1 : ℕ) = q.1 := congrArg Prod.fst ht'.2
+      simp only [hψdef] at hee
+      have ha : (t.2.1 : ℕ) = t'.2.1 := by rw [hee]
+      have hi : t.1 = t'.1 := by omega
+      exact Prod.ext hi hee
+    have hsub : (T.filter (fun t => φ t = q)).image ψ
+        ⊆ (univ ×ˢ univ).filter fun p : Fin n × Fin n =>
+            (p.1 : ℕ) < (p.2 : ℕ) ∧ (p.2 : ℕ) - (p.1 : ℕ) = r := by
+      intro p hp
+      obtain ⟨t, ht, rfl⟩ := mem_image.mp hp
+      rw [mem_filter] at ht
+      have e1 : t.1 + (t.2.1 : ℕ) = q.1 := congrArg Prod.fst ht.2
+      have e2 : t.1 + (t.2.2 : ℕ) = q.2 := congrArg Prod.snd ht.2
+      obtain ⟨-, hlt⟩ := hmem t ht.1
+      rw [mem_filter, mem_product]
+      refine ⟨⟨mem_univ _, mem_univ _⟩, hlt, ?_⟩
+      simp only [hψdef]
+      omega
+    have hmass : ∑ t ∈ T.filter (fun t => φ t = q), W.a t.2.1 t.2.2 ≤ 2 := by
+      have h1 : ∑ t ∈ T.filter (fun t => φ t = q), W.a t.2.1 t.2.2
+          = ∑ p ∈ (T.filter (fun t => φ t = q)).image ψ, W.a p.1 p.2 := by
+        rw [sum_image hψinj]
+      have h2 : ∑ p ∈ (T.filter (fun t => φ t = q)).image ψ, W.a p.1 p.2
+          ≤ ∑ p ∈ (univ ×ˢ univ).filter (fun p : Fin n × Fin n =>
+              (p.1 : ℕ) < (p.2 : ℕ) ∧ (p.2 : ℕ) - (p.1 : ℕ) = r), W.a p.1 p.2 :=
+        sum_le_sum_of_subset_of_nonneg hsub fun p _ _ => hW.a_nonneg p.1 p.2
+      have h3 : ∑ p ∈ (univ ×ˢ univ).filter (fun p : Fin n × Fin n =>
+              (p.1 : ℕ) < (p.2 : ℕ) ∧ (p.2 : ℕ) - (p.1 : ℕ) = r), W.a p.1 p.2
+          = W.spanMass r := by
+        unfold WCert.spanMass
+        rw [sum_filter, sum_product]
+      rw [h1]
+      exact h2.trans (h3 ▸ hW.capacity r)
+    exact mul_le_mul_of_nonneg_right hmass (wfun_nonneg _)
+  refine (sum_le_sum hfib).trans ?_
+
+  rw [energyOn_eq_sorted x hx hS, ← hydef]
+  set G : Fin m × Fin m → ℝ := fun r => if r.1 = r.2 then 0 else wfun (y r.1 - y r.2) with hGdef
+  set toFin : ℕ → Fin m := fun n => if h : n < m then ⟨n, h⟩ else ⟨0, hm0⟩ with htoFin
+  have htoFin_lt : ∀ n (h : n < m), toFin n = ⟨n, h⟩ := by
+    intro n h; simp only [htoFin, dif_pos h]
+  set ψ₁ : ℕ × ℕ → Fin m × Fin m := fun q => (toFin q.1, toFin q.2) with hψ₁
+  set ψ₂ : ℕ × ℕ → Fin m × Fin m := fun q => (toFin q.2, toFin q.1) with hψ₂
+  have hG1 : ∀ q ∈ I, G (ψ₁ q) = wfun (Y q.2 - Y q.1) := by
+    intro q hq
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    have hq1m : q.1 < m := by omega
+    simp only [hGdef, hψ₁, htoFin_lt _ hq1m, htoFin_lt _ hq2, hYdef,
+      sortedExt_of_lt y hq1m, sortedExt_of_lt y hq2]
+    rw [if_neg (by intro h; exact absurd (Fin.mk.inj_iff.mp h) hq1.ne), wfun_sub_comm]
+  have hG2 : ∀ q ∈ I, G (ψ₂ q) = wfun (Y q.2 - Y q.1) := by
+    intro q hq
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    have hq1m : q.1 < m := by omega
+    simp only [hGdef, hψ₂, htoFin_lt _ hq1m, htoFin_lt _ hq2, hYdef,
+      sortedExt_of_lt y hq1m, sortedExt_of_lt y hq2]
+    rw [if_neg (by intro h; exact absurd (Fin.mk.inj_iff.mp h) hq1.ne')]
+  have hsplit : ∑ q ∈ I, 2 * wfun (Y q.2 - Y q.1) = ∑ q ∈ I, G (ψ₁ q) + ∑ q ∈ I, G (ψ₂ q) := by
+    rw [← sum_add_distrib]
+    refine sum_congr rfl fun q hq => ?_
+    rw [hG1 q hq, hG2 q hq]; ring
+  have hinj₁ : Set.InjOn ψ₁ I := by
+    intro q hq q' hq' h
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    obtain ⟨hq1', hq2', -⟩ := hI q' hq'
+    simp only [hψ₁, htoFin_lt _ (by omega : q.1 < m), htoFin_lt _ hq2,
+      htoFin_lt _ (by omega : q'.1 < m), htoFin_lt _ hq2', Prod.mk.injEq, Fin.mk.injEq] at h
+    exact Prod.ext h.1 h.2
+  have hinj₂ : Set.InjOn ψ₂ I := by
+    intro q hq q' hq' h
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    obtain ⟨hq1', hq2', -⟩ := hI q' hq'
+    simp only [hψ₂, htoFin_lt _ (by omega : q.1 < m), htoFin_lt _ hq2,
+      htoFin_lt _ (by omega : q'.1 < m), htoFin_lt _ hq2', Prod.mk.injEq, Fin.mk.injEq] at h
+    exact Prod.ext h.2 h.1
+  have hdisj : Disjoint (I.image ψ₁) (I.image ψ₂) := by
+    rw [disjoint_left]
+    intro r hr1 hr2
+    obtain ⟨q, hq, rfl⟩ := mem_image.mp hr1
+    obtain ⟨q', hq', hqq'⟩ := mem_image.mp hr2
+    obtain ⟨hq1, hq2, -⟩ := hI q hq
+    obtain ⟨hq1', hq2', -⟩ := hI q' hq'
+    simp only [hψ₁, hψ₂, htoFin_lt _ (by omega : q.1 < m), htoFin_lt _ hq2,
+      htoFin_lt _ (by omega : q'.1 < m), htoFin_lt _ hq2', Prod.mk.injEq, Fin.mk.injEq] at hqq'
+    omega
+  have hGnn : ∀ r, 0 ≤ G r := by
+    intro r; simp only [hGdef]; split_ifs
+    · exact le_rfl
+    · exact wfun_nonneg _
+  rw [hsplit, ← sum_image hinj₁, ← sum_image hinj₂, ← sum_union hdisj]
+  exact sum_le_sum_of_subset_of_nonneg (subset_univ _) fun r _ _ => hGnn r
+
+lemma sum_gap_shift (Y : ℕ → ℝ) (r N : ℕ) :
+    ∑ i ∈ range N, (Y (i + (r + 1)) - Y (i + r)) = Y (N + r) - Y r := by
+  have h : ∀ i, i + (r + 1) = i + 1 + r := fun i => by omega
+  simp_rw [h]
+  have := Finset.sum_range_sub (fun i => Y (i + r)) N
+  simpa using this
+
+theorem block_energy_w {c : ℝ} {n : ℕ} (hn : 2 ≤ n) (W : WCert n) (hW : W.Adm)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    {m : ℕ} (hm : n ≤ m) (hcard : Fintype.card ι = m) (x : ι → ℝ) (hx : Function.Injective x) :
+    c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ energyOn x univ + W.B * spanOf x univ := by
+  classical
+
+  have hS : (univ.image x).card = m := by
+    rw [card_image_of_injective _ hx, card_univ, hcard]
+  set y : Fin m → ℝ := ⇑((univ.image x).orderEmbOfFin hS) with hydef
+  have hymem : ∀ k, y k ∈ univ.image x := fun k => Finset.orderEmbOfFin_mem _ hS k
+  have hymono : StrictMono y := ((univ.image x).orderEmbOfFin hS).strictMono
+  set Y := sortedExt y with hYdef
+  have hm0 : 0 < m := by omega
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : 1 ≤ n)
+  have hcastn : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ n)]; norm_num
+
+  have hwin : ∀ i ∈ range (m - (n - 1)), c ≤ Fw W (windowGaps n Y i) := by
+    intro i hi
+    rw [mem_range] at hi
+    apply hCert
+    intro j
+    have hj := j.2
+    have hlt : i + ((j : ℕ) + 1) < m := by omega
+    exact sub_nonneg.mpr (sortedExt_mono hymono (by omega) hlt)
+  have hsum : c * ((m : ℝ) - ((n : ℝ) - 1))
+      ≤ ∑ i ∈ range (m - (n - 1)), Fw W (windowGaps n Y i) := by
+    have h := sum_le_sum hwin
+    rw [sum_const, card_range, nsmul_eq_mul] at h
+    have hcast : ((m - (n - 1) : ℕ) : ℝ) = (m : ℝ) - ((n : ℝ) - 1) := by
+      rw [Nat.cast_sub (by omega : n - 1 ≤ m), hcastn]
+    rw [hcast] at h
+    linarith
+  simp_rw [Fw_windowGaps] at hsum
+  rw [sum_add_distrib] at hsum
+
+  have hspan : ∀ r : Fin (n - 1), Y (m - (n - 1) + r) - Y r ≤ spanOf x univ := by
+    intro r
+    have hr := r.2
+    have h1 := sortedExt_mono hymono (a := m - (n - 1) + r) (b := m - 1) (by omega) (by omega)
+    have h2 := sortedExt_mono hymono (a := 0) (b := r) (by omega) (by omega)
+    have hsp : Y (m - 1) - Y 0 ≤ spanOf x univ := by
+      obtain ⟨i₀, -, hi₀⟩ := mem_image.mp (hymem ⟨m - 1, by omega⟩)
+      obtain ⟨j₀, -, hj₀⟩ := mem_image.mp (hymem ⟨0, hm0⟩)
+      rw [hYdef, sortedExt_of_lt y (by omega : m - 1 < m), sortedExt_of_lt y hm0, ← hi₀, ← hj₀]
+      exact (le_abs_self _).trans (abs_sub_le_spanOf x (mem_univ i₀) (mem_univ j₀))
+    linarith
+  have hlin : ∑ i ∈ range (m - (n - 1)), ∑ r : Fin (n - 1), W.b r * (Y (i + ((r : ℕ) + 1)) - Y (i + r))
+      ≤ W.B * spanOf x univ := by
+    rw [sum_comm]
+    unfold WCert.B
+    rw [sum_mul]
+    refine sum_le_sum fun r _ => ?_
+    rw [← mul_sum, sum_gap_shift]
+    exact mul_le_mul_of_nonneg_left (hspan r) (hW.b_nonneg r)
+
+  have hquad := window_pairs_le_energy_w hn hm W hW x hx hS
+  rw [← hydef, ← hYdef] at hquad
+  linarith
+
+lemma sortedOn_eq {x : ι → ℝ} {B : Finset ι} {m : ℕ} (hS : (B.image x).card = m) (k : ℕ) :
+    sortedOn x B k = sortedExt (⇑((B.image x).orderEmbOfFin hS)) k := by
+  unfold sortedOn sortedExt
+  by_cases hk : k < (B.image x).card
+  · have hk' : k < m := hS ▸ hk
+    rw [dif_pos hk, dif_pos hk']
+    set f : Fin (B.image x).card → ℝ := fun j => (B.image x).orderEmbOfFin hS ⟨j, hS ▸ j.2⟩
+      with hf
+    have hfs : ∀ j, f j ∈ B.image x := fun j => Finset.orderEmbOfFin_mem _ hS _
+    have hmono : StrictMono f := by
+      intro j j' hj
+      exact ((B.image x).orderEmbOfFin hS).strictMono (Fin.mk_lt_mk.mpr (Fin.lt_def.mp hj))
+    have := Finset.orderEmbOfFin_unique rfl hfs hmono
+    have h2 := congrFun this ⟨k, hk⟩
+    simp only [hf] at h2
+    rw [← h2]
+  · have hk' : ¬ k < m := hS ▸ hk
+    rw [dif_neg hk, dif_neg hk']
+
+lemma sortedOn_congr {S S' : Finset ℝ} (h : S = S') :
+    sortedExt (⇑(S.orderEmbOfFin (rfl : S.card = S.card)))
+      = sortedExt (⇑(S'.orderEmbOfFin (rfl : S'.card = S'.card))) := by
+  subst h; rfl
+
+theorem block_energy_w' {c : ℝ} {n : ℕ} (hn : 2 ≤ n) (W : WCert n) (hW : W.Adm)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    {m : ℕ} (hm : n ≤ m) (hcard : Fintype.card ι = m) (x : ι → ℝ) (hx : Function.Injective x) :
+    c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ energyOn x univ + blkPress W.b x univ := by
+  classical
+  have hS : (univ.image x).card = m := by
+    rw [card_image_of_injective _ hx, card_univ, hcard]
+  set y : Fin m → ℝ := ⇑((univ.image x).orderEmbOfFin hS) with hydef
+  have hymono : StrictMono y := ((univ.image x).orderEmbOfFin hS).strictMono
+  set Y := sortedExt y with hYdef
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : 1 ≤ n)
+  have hcastn : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ n)]; norm_num
+  have hwin : ∀ i ∈ range (m - (n - 1)), c ≤ Fw W (windowGaps n Y i) := by
+    intro i hi
+    rw [mem_range] at hi
+    apply hCert
+    intro j
+    have hj := j.2
+    have hlt : i + ((j : ℕ) + 1) < m := by omega
+    exact sub_nonneg.mpr (sortedExt_mono hymono (by omega) hlt)
+  have hsum : c * ((m : ℝ) - ((n : ℝ) - 1))
+      ≤ ∑ i ∈ range (m - (n - 1)), Fw W (windowGaps n Y i) := by
+    have h := sum_le_sum hwin
+    rw [sum_const, card_range, nsmul_eq_mul] at h
+    have hcast : ((m - (n - 1) : ℕ) : ℝ) = (m : ℝ) - ((n : ℝ) - 1) := by
+      rw [Nat.cast_sub (by omega : n - 1 ≤ m), hcastn]
+    rw [hcast] at h
+    linarith
+  simp_rw [Fw_windowGaps] at hsum
+  rw [sum_add_distrib] at hsum
+  have hlin : ∑ i ∈ range (m - (n - 1)), ∑ r : Fin (n - 1), W.b r * (Y (i + ((r : ℕ) + 1)) - Y (i + r))
+      = blkPress W.b x univ := by
+    rw [sum_comm]
+    unfold blkPress
+    rw [hS]
+    refine sum_congr rfl fun r _ => ?_
+    rw [← mul_sum, sum_gap_shift, sortedOn_eq hS, sortedOn_eq hS]
+  have hquad := window_pairs_le_energy_w hn hm W hW x hx hS
+  rw [← hydef, ← hYdef] at hquad
+  linarith
+
+theorem block_energy_blk {c : ℝ} {n : ℕ} (hn : 2 ≤ n) (W : WCert n) (hW : W.Adm)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    {m : ℕ} (hm : n ≤ m) (x : ι → ℝ) (B : Finset ι) (hB : B.card = m) (hx : Set.InjOn x B) :
+    c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ energyOn x B + blkPress W.b x B := by
+  classical
+  have hcard : Fintype.card B = m := by simp [hB]
+  have hinj : Function.Injective (fun i : B => x i) := by
+    intro i j h
+    exact Subtype.ext (hx i.2 j.2 h)
+  have h := block_energy_w' hn W hW hCert hm hcard (fun i : B => x i) hinj
+  rw [energyOn_subtype] at h
+  have himg : (univ : Finset B).image (fun i : B => x i) = B.image x := by
+    ext t
+    simp only [mem_image, mem_univ, true_and]
+    constructor
+    · rintro ⟨i, rfl⟩
+      exact ⟨i.1, i.2, rfl⟩
+    · rintro ⟨i, hi, rfl⟩
+      exact ⟨⟨i, hi⟩, rfl⟩
+  have hP : blkPress W.b (fun i : B => x i) univ = blkPress W.b x B := by
+    unfold blkPress sortedOn
+    rw [sortedOn_congr himg, himg]
+  rw [hP] at h
+  exact h
+
+
+end Zeta23Ext.BridgeW
+
+end
+
+/-! ###### source module: Zeta23Ext/BridgeW/S13W.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg
+open scoped ComplexOrder BigOperators
+
+namespace Zeta23Ext.BridgeW
+
+open Zeta23Ext.Bridge
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+theorem block_bound_w {c : ℝ} {n m : ℕ} (hn : 2 ≤ n) (hm : n ≤ m) (W : WCert n) (hW : W.Adm)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    (x : ι → ℝ) {G : Matrix ι ι ℂ} (hG : G.PosSemidef) (B : Finset ι) (hB : B.card = m)
+    (hx : Set.InjOn x B) {δ : ℝ} (hδ : 0 ≤ δ)
+    (hclose : ∀ i ∈ B, ∀ j ∈ B, i ≠ j → ‖G i j - (kfun (x i - x j) : ℂ)‖ ≤ δ) :
+    c * ((m : ℝ) - ((n : ℝ) - 1)) - 2 * (m : ℝ) ^ 2 * δ
+      ≤ blockDefect hG.1 B + W.B * spanOf x B := by
+  classical
+  have hBnn : 0 ≤ W.B := WCert.B_nonneg hW
+
+  have hS12 : min 1 (offDiagSqOn G B) ≤ blockDefect hG.1 B := by
+    have h := block_defect (hG.submatrix (Subtype.val : B → ι))
+    rw [offDiagSqOn_submatrix] at h
+    exact h
+
+  have hoff : energyOn x B - 2 * (m : ℝ) ^ 2 * δ ≤ offDiagSqOn G B := by
+    have hterm : ∀ i ∈ B, ∀ j ∈ B,
+        (if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ
+          ≤ (if i = j then 0 else ‖G i j‖ ^ 2) := by
+      intro i hi j hj
+      split_ifs with hij
+      · linarith
+      · exact wfun_sub_le_norm_sq (hclose i hi j hj hij)
+    have hsum : ∑ i ∈ B, ∑ j ∈ B, ((if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ)
+        ≤ offDiagSqOn G B :=
+      sum_le_sum fun i hi => sum_le_sum fun j hj => hterm i hi j hj
+    have hsplit : ∑ i ∈ B, ∑ j ∈ B, ((if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ)
+        = energyOn x B - 2 * (m : ℝ) ^ 2 * δ := by
+      unfold energyOn
+      simp only [sum_sub_distrib, sum_const, nsmul_eq_mul, hB]
+      ring
+    linarith
+
+  have hS11 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ energyOn x B + W.B * spanOf x B := by
+    have hcard : Fintype.card B = m := by simp [hB]
+    have hinj : Function.Injective (fun i : B => x i) := by
+      intro i j h
+      exact Subtype.ext (hx i.2 j.2 h)
+    have h := block_energy_w hn W hW hCert hm hcard (fun i : B => x i) hinj
+    rw [energyOn_subtype] at h
+    have := mul_le_mul_of_nonneg_left (spanOf_subtype_le x B) hBnn
+    linarith
+
+  have hspan := spanOf_nonneg x B
+  have hm2 : (0 : ℝ) ≤ 2 * (m : ℝ) ^ 2 * δ := by positivity
+  rcases le_or_gt 1 (offDiagSqOn G B) with h1 | h1
+  · rw [min_eq_left h1] at hS12
+    nlinarith [mul_nonneg hBnn hspan]
+  · rw [min_eq_right h1.le] at hS12
+    nlinarith [mul_nonneg hBnn hspan]
+
+theorem block_bound_w' {c : ℝ} {n m : ℕ} (hn : 2 ≤ n) (hm : n ≤ m) (W : WCert n) (hW : W.Adm)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    (x : ι → ℝ) {G : Matrix ι ι ℂ} (hG : G.PosSemidef) (B : Finset ι) (hB : B.card = m)
+    (hx : Set.InjOn x B) {δ : ℝ} (hδ : 0 ≤ δ)
+    (hclose : ∀ i ∈ B, ∀ j ∈ B, i ≠ j → ‖G i j - (kfun (x i - x j) : ℂ)‖ ≤ δ) :
+    c * ((m : ℝ) - ((n : ℝ) - 1)) - 2 * (m : ℝ) ^ 2 * δ
+      ≤ blockDefect hG.1 B + blkPress W.b x B := by
+  classical
+  have hS12 : min 1 (offDiagSqOn G B) ≤ blockDefect hG.1 B := by
+    have h := block_defect (hG.submatrix (Subtype.val : B → ι))
+    rw [offDiagSqOn_submatrix] at h
+    exact h
+  have hoff : energyOn x B - 2 * (m : ℝ) ^ 2 * δ ≤ offDiagSqOn G B := by
+    have hterm : ∀ i ∈ B, ∀ j ∈ B,
+        (if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ
+          ≤ (if i = j then 0 else ‖G i j‖ ^ 2) := by
+      intro i hi j hj
+      split_ifs with hij
+      · linarith
+      · exact wfun_sub_le_norm_sq (hclose i hi j hj hij)
+    have hsum : ∑ i ∈ B, ∑ j ∈ B, ((if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ)
+        ≤ offDiagSqOn G B :=
+      sum_le_sum fun i hi => sum_le_sum fun j hj => hterm i hi j hj
+    have hsplit : ∑ i ∈ B, ∑ j ∈ B, ((if i = j then (0 : ℝ) else wfun (x i - x j)) - 2 * δ)
+        = energyOn x B - 2 * (m : ℝ) ^ 2 * δ := by
+      unfold energyOn
+      simp only [sum_sub_distrib, sum_const, nsmul_eq_mul, hB]
+      ring
+    linarith
+  have hS11 := block_energy_blk hn W hW hCert hm x B hB hx
+  have hP0 : 0 ≤ blkPress W.b x B := by
+    unfold blkPress
+    refine sum_nonneg fun r _ => mul_nonneg (hW.b_nonneg r) ?_
+
+    unfold sortedOn
+    have hic : (B.image x).card = m := by rw [card_image_of_injOn hx, hB]
+    have hr2 := r.2
+    have hr : (r : ℕ) < (B.image x).card := by rw [hic]; omega
+    have hk : (B.image x).card - (n - 1) + r < (B.image x).card := by rw [hic]; omega
+    have hmono := ((B.image x).orderEmbOfFin rfl).strictMono
+    rw [sub_nonneg, sortedExt_of_lt _ hk, sortedExt_of_lt _ hr]
+    exact hmono.monotone (Fin.mk_le_mk.mpr (by omega))
+  have hm2 : (0 : ℝ) ≤ 2 * (m : ℝ) ^ 2 * δ := by positivity
+  rcases le_or_gt 1 (offDiagSqOn G B) with h1 | h1
+  · rw [min_eq_left h1] at hS12
+    nlinarith
+  · rw [min_eq_right h1.le] at hS12
+    nlinarith
+
+
+end Zeta23Ext.BridgeW
+
+end
+
+/-! ###### source module: Zeta23Ext/BridgeW/S15W.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg Filter
+open scoped ComplexOrder BigOperators
+
+namespace Zeta23Ext.BridgeW
+
+open Zeta23Ext.Bridge
+
+section Abstract
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+theorem offset_average_w {n : ℕ} (hn : 2 ≤ n) (b : Fin (n - 1) → ℝ) (hb : ∀ r, 0 ≤ b r)
+    (x : ι → ℝ) (hx : Function.Injective x) {m : ℕ} (hm : n ≤ m)
+    (Dblk : Finset ι → ℝ) (Dtot A : ℝ) (hA : 0 ≤ A)
+    (hD0 : ∀ B, 0 ≤ Dblk B)
+    (hblock : ∀ B : Finset ι, B.card = m → IsInterval x B → A ≤ Dblk B + blkPress b x B)
+    (hpinch : ∀ (κ : Type) [Fintype κ] [DecidableEq κ] (β : ι → κ),
+      ∑ b, Dblk (univ.filter fun i => β i = b) ≤ Dtot) :
+    A * ((Fintype.card ι : ℝ) - m)
+      - (∑ r, b r) * ((m : ℝ) - ((n : ℝ) - 1)) * spanOf x univ ≤ m * Dtot := by
+  classical
+  set N := Fintype.card ι with hNdef
+  set Bt : ℝ := ∑ r, b r with hBt
+  have hBt0 : 0 ≤ Bt := sum_nonneg fun r _ => hb r
+  have hDtot : 0 ≤ Dtot := by
+    have h := hpinch Unit (fun _ => ())
+    rw [Fintype.sum_unique] at h
+    exact (hD0 _).trans h
+  have hspan0 := spanOf_nonneg x (univ : Finset ι)
+  have hm0 : 0 < m := by omega
+  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast hm0
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : 1 ≤ n)
+  have hmn' : (n : ℝ) ≤ m := by exact_mod_cast hm
+  have hmq0 : (0 : ℝ) ≤ (m : ℝ) - ((n : ℝ) - 1) := by linarith
+
+  rcases lt_or_ge N m with hnm | hnm
+  · have : (N : ℝ) - m ≤ 0 := by
+      have : (N : ℝ) < m := by exact_mod_cast hnm
+      linarith
+    nlinarith [mul_nonneg hBt0 (mul_nonneg hmq0 hspan0),
+      mul_nonneg hA (by linarith : (0:ℝ) ≤ (m : ℝ) - N), mul_nonneg (by positivity : (0:ℝ) ≤ m) hDtot]
+
+  have hS : (univ.image x).card = N := by rw [card_image_of_injective _ hx, card_univ]
+  set y : Fin N → ℝ := ⇑((univ.image x).orderEmbOfFin hS) with hydef
+  have hymem : ∀ k, y k ∈ univ.image x := fun k => Finset.orderEmbOfFin_mem _ hS k
+  have hymono : StrictMono y := ((univ.image x).orderEmbOfFin hS).strictMono
+  choose ι' hι' using fun k => mem_image.mp (hymem k)
+  have hι'inj : Function.Injective ι' := by
+    intro k k' h
+    apply hymono.injective
+    rw [← (hι' k).2, ← (hι' k').2, h]
+  have hbij : Function.Bijective ι' :=
+    (Fintype.bijective_iff_injective_and_card ι').mpr ⟨hι'inj, by simp [hNdef]⟩
+  set e : Fin N ≃ ι := Equiv.ofBijective ι' hbij with hedef
+  set pos : ι → ℕ := fun i => (e.symm i : ℕ) with hposdef
+  set Y := sortedExt y with hYdef
+  have hpos_lt : ∀ i, pos i < N := fun i => (e.symm i).2
+  have hxY : ∀ i, x i = Y (pos i) := by
+    intro i
+    rw [hYdef, hposdef]; simp only
+    rw [sortedExt_of_lt y (e.symm i).2, Fin.eta, ← (hι' (e.symm i)).2]
+    congr 1
+    exact (Equiv.ofBijective_apply_symm_apply ι' hbij i).symm
+  have hpos_inj : Function.Injective pos := by
+    intro i i' h
+    have : e.symm i = e.symm i' := Fin.ext h
+    exact e.symm.injective this
+  have hle_iff : ∀ i i', x i ≤ x i' ↔ pos i ≤ pos i' := by
+    intro i i'
+    rw [hxY, hxY, hYdef, hposdef]; simp only
+    rw [sortedExt_of_lt y (e.symm i).2, sortedExt_of_lt y (e.symm i').2, Fin.eta, Fin.eta,
+      hymono.le_iff_le, Fin.le_def]
+  have hYlt : ∀ a b, a < b → b < N → Y a < Y b := by
+    intro a b hab hb
+    rw [hYdef, sortedExt_of_lt y (lt_trans hab hb), sortedExt_of_lt y hb]
+    exact hymono (Fin.mk_lt_mk.mpr hab)
+
+  set B : ℕ → Finset ι := fun s => univ.filter fun i => s ≤ pos i ∧ pos i < s + m with hBdef
+  have hmemB : ∀ s i, i ∈ B s ↔ s ≤ pos i ∧ pos i < s + m := by
+    intro s i; simp [hBdef]
+  set toFin : ℕ → Fin N := fun t => if h : t < N then ⟨t, h⟩ else ⟨0, by omega⟩ with htoFin
+  have hcardB : ∀ s, s + m ≤ N → (B s).card = m := by
+    intro s hs
+    have : (B s).card = (Ico s (s + m)).card := by
+      refine card_nbij' pos (fun t => e (toFin t)) ?_ ?_ ?_ ?_
+      · intro i hi
+        rw [mem_coe, hmemB] at hi
+        rw [mem_coe, mem_Ico]; exact hi
+      · intro t ht
+        rw [mem_coe, mem_Ico] at ht
+        rw [mem_coe, hmemB]
+        have htn : t < N := by omega
+        simp only [hposdef, htoFin, dif_pos htn, Equiv.symm_apply_apply]
+        exact ht
+      · intro i hi
+        have h := hpos_lt i
+        simp only [htoFin, dif_pos h]
+        simp only [hposdef, Fin.eta, Equiv.apply_symm_apply]
+      · intro t ht
+        rw [mem_coe, mem_Ico] at ht
+        have htn : t < N := by omega
+        simp only [hposdef, htoFin, dif_pos htn, Equiv.symm_apply_apply]
+    rw [this, Nat.card_Ico]; omega
+  have hintB : ∀ s, IsInterval x (B s) := by
+    intro s i hi j hj k hik hkj
+    rw [hmemB] at hi hj ⊢
+    rw [hle_iff] at hik hkj
+    omega
+
+  have hsortB : ∀ s, s + m ≤ N → ∀ k, k < m → sortedOn x (B s) k = Y (s + k) := by
+    intro s hs k hk
+    have hxinj : Set.InjOn x (B s) := hx.injOn
+    have hic : ((B s).image x).card = m := by rw [card_image_of_injOn hxinj, hcardB s hs]
+    rw [sortedOn_eq hic, sortedExt_of_lt _ hk]
+    set f : Fin m → ℝ := fun j => Y (s + j) with hf
+    have hfs : ∀ j, f j ∈ (B s).image x := by
+      intro j
+      have hj : s + (j : ℕ) < N := by have := j.2; omega
+      refine mem_image.mpr ⟨e ⟨s + j, hj⟩, ?_, ?_⟩
+      · rw [hmemB, hposdef]
+        simp only [Equiv.symm_apply_apply]
+        have := j.2
+        constructor <;> omega
+      · rw [hxY, hposdef]
+        simp only [hf, Equiv.symm_apply_apply]
+    have hmono : StrictMono f := by
+      intro j j' hj
+      simp only [hf]
+      have := j'.2
+      exact hYlt _ _ (by have := Fin.lt_def.mp hj; omega) (by omega)
+    have := Finset.orderEmbOfFin_unique hic hfs hmono
+    have h2 := congrFun this ⟨k, hk⟩
+    simp only [hf] at h2
+    rw [← h2]
+
+  set St := range (N - m + 1) with hStdef
+  have hmemSt : ∀ s, s ∈ St ↔ s + m ≤ N := by
+    intro s; rw [hStdef, mem_range]; omega
+  have hsumblock : A * ((N : ℝ) - m + 1) ≤ ∑ s ∈ St, Dblk (B s) + ∑ s ∈ St, blkPress b x (B s) := by
+    have h := sum_le_sum fun s (hs : s ∈ St) =>
+      hblock (B s) (hcardB s ((hmemSt s).mp hs)) (hintB s)
+    rw [sum_const, card_range, nsmul_eq_mul, sum_add_distrib] at h
+    have hcast : ((N - m + 1 : ℕ) : ℝ) = (N : ℝ) - m + 1 := by
+      rw [Nat.cast_add, Nat.cast_sub hnm]; norm_num
+    rw [hcast] at h
+    linarith
+
+  have hpress : ∑ s ∈ St, blkPress b x (B s) ≤ Bt * ((m : ℝ) - ((n : ℝ) - 1)) * spanOf x univ := by
+    have hY0 : ∀ r : Fin (n - 1), ∀ i ∈ range (m - (n - 1)),
+        Y (N - m + 1 + i + r) - Y (i + r) ≤ spanOf x univ := by
+      intro r i hi
+      rw [mem_range] at hi
+      have hr := r.2
+      have hi' : N - m + 1 + i + r < N := by omega
+      obtain ⟨a, -, ha⟩ := mem_image.mp (hymem ⟨N - m + 1 + i + r, hi'⟩)
+      obtain ⟨c, -, hc⟩ := mem_image.mp (hymem ⟨i + r, by omega⟩)
+      rw [hYdef, sortedExt_of_lt y hi', sortedExt_of_lt y (by omega : i + r < N), ← ha, ← hc]
+      exact (le_abs_self _).trans (abs_sub_le_spanOf x (mem_univ a) (mem_univ c))
+    have hblk : ∀ s ∈ St, blkPress b x (B s)
+        = ∑ r : Fin (n - 1), b r * (Y (s + (m - (n - 1) + r)) - Y (s + r)) := by
+      intro s hs
+      have hs' := (hmemSt s).mp hs
+      unfold blkPress
+      have hic : ((B s).image x).card = m := by
+        rw [card_image_of_injOn hx.injOn, hcardB s hs']
+      rw [hic]
+      refine sum_congr rfl fun r _ => ?_
+      have hr := r.2
+      rw [hsortB s hs' _ (by omega), hsortB s hs' _ (by omega)]
+    calc ∑ s ∈ St, blkPress b x (B s)
+        = ∑ s ∈ St, ∑ r : Fin (n - 1), b r * (Y (s + (m - (n - 1) + r)) - Y (s + r)) :=
+          sum_congr rfl hblk
+      _ = ∑ r : Fin (n - 1), b r * ∑ s ∈ St, (Y (s + (m - (n - 1)) + r) - Y (s + r)) := by
+          rw [sum_comm]
+          refine sum_congr rfl fun r _ => ?_
+          rw [mul_sum]
+          refine sum_congr rfl fun s _ => ?_
+          congr 3
+          omega
+      _ = ∑ r : Fin (n - 1), b r * ∑ i ∈ range (m - (n - 1)), (Y (N - m + 1 + i + r) - Y (i + r)) := by
+          refine sum_congr rfl fun r _ => ?_
+          congr 1
+          have := sum_shift_sub (fun t => Y (t + r)) (m - (n - 1)) (N - m + 1)
+          simpa only [hStdef] using this
+      _ ≤ ∑ r : Fin (n - 1), b r * ∑ i ∈ range (m - (n - 1)), spanOf x univ := by
+          refine sum_le_sum fun r _ => mul_le_mul_of_nonneg_left (sum_le_sum (hY0 r)) (hb r)
+      _ = Bt * ((m : ℝ) - ((n : ℝ) - 1)) * spanOf x univ := by
+          rw [sum_const, card_range, nsmul_eq_mul, ← sum_mul, ← hBt]
+          have hcast : ((m - (n - 1) : ℕ) : ℝ) = (m : ℝ) - ((n : ℝ) - 1) := by
+            rw [Nat.cast_sub (by omega : n - 1 ≤ m), Nat.cast_sub (by omega : 1 ≤ n)]; norm_num
+          rw [hcast]; ring
+
+  have hdefects : ∑ s ∈ St, Dblk (B s) ≤ m * Dtot := by
+    rw [← sum_fiberwise_of_maps_to (g := fun s => s % m) (t := range m)
+      (fun s _ => mem_range.mpr (Nat.mod_lt s hm0))]
+    calc ∑ j ∈ range m, ∑ s ∈ St with s % m = j, Dblk (B s)
+        ≤ ∑ j ∈ range m, Dtot := by
+          refine sum_le_sum fun j hj => ?_
+          set β : ι → Fin (N + 1) := fun i =>
+            ⟨blockStart N m j (pos i), Nat.lt_succ_of_le (blockStart_le N m j (pos i))⟩ with hβ
+          have hclass : ∀ s (hs : s + m ≤ N) (hj : s % m = j),
+              (univ.filter fun i => β i = ⟨s, by omega⟩) = B s := by
+            intro s hs hj
+            ext i
+            rw [mem_filter, hmemB, hβ]
+            simp only [mem_univ, true_and, Fin.mk.injEq]
+            exact blockStart_eq_iff hm0 hs hj
+          set toFin' : ℕ → Fin (N + 1) := fun s => if h : s < N + 1 then ⟨s, h⟩ else 0 with htoFin'
+          have hinj : Set.InjOn toFin' (St.filter (fun s => s % m = j)) := by
+            intro s hs s' hs' h
+            rw [mem_coe, mem_filter, hmemSt] at hs hs'
+            simp only [htoFin', dif_pos (by omega : s < N + 1), dif_pos (by omega : s' < N + 1),
+              Fin.mk.injEq] at h
+            exact h
+          calc ∑ s ∈ St with s % m = j, Dblk (B s)
+              = ∑ s ∈ St with s % m = j, Dblk (univ.filter fun i => β i = toFin' s) := by
+                refine sum_congr rfl fun s hs => ?_
+                rw [mem_filter, hmemSt] at hs
+                have hsn : s < N + 1 := by omega
+                rw [← hclass s hs.1 hs.2]
+                congr 2
+                simp only [htoFin', dif_pos hsn]
+            _ = ∑ b ∈ (St.filter (fun s => s % m = j)).image toFin',
+                  Dblk (univ.filter fun i => β i = b) :=
+                (sum_image (f := fun b => Dblk (univ.filter fun i => β i = b)) hinj).symm
+            _ ≤ ∑ b, Dblk (univ.filter fun i => β i = b) :=
+                sum_le_sum_of_subset_of_nonneg (subset_univ _) fun b _ _ => hD0 _
+            _ ≤ Dtot := hpinch (Fin (N + 1)) β
+      _ = m * Dtot := by rw [sum_const, card_range, nsmul_eq_mul]
+
+  have hmn : (m : ℝ) ≤ N := by exact_mod_cast hnm
+  calc A * ((N : ℝ) - m) - Bt * ((m : ℝ) - ((n : ℝ) - 1)) * spanOf x univ
+      ≤ A * ((N : ℝ) - m + 1) - Bt * ((m : ℝ) - ((n : ℝ) - 1)) * spanOf x univ := by linarith
+    _ ≤ ∑ s ∈ St, Dblk (B s) + ∑ s ∈ St, blkPress b x (B s)
+          - Bt * ((m : ℝ) - ((n : ℝ) - 1)) * spanOf x univ := by linarith
+    _ ≤ m * Dtot := by linarith
+
+end Abstract
+
+
+end Zeta23Ext.BridgeW
+
+end
+
+/-! ###### source module: Zeta23Ext/BridgeW/MainW.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Matrix Finset RHLinalg Filter
+open scoped ComplexOrder BigOperators
+open Zeta23 Zeta23.ZeroSide Zeta23.ThmD
+
+namespace Zeta23Ext.BridgeW
+
+open Zeta23Ext.Bridge
+open Classical
+
+def Phi_w (n : ℕ) (c : ℝ) (m : ℕ) (B : ℝ) : ℝ :=
+  (HD 1 - B * ((m : ℝ) - 1) / m) / (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m)
+
+theorem Phi_w_ofFixed (n : ℕ) (c : ℝ) (m p : ℕ) (hn : 1 ≤ n) (hp : 0 < p) :
+    Phi_w n c m (ofFixed n p).B = Phi_n n c m p := by
+  unfold Phi_w Phi_n WCert.B ofFixed
+  simp only [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]
+  have hcast : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
+    rw [Nat.cast_sub hn]; norm_num
+  rw [hcast]
+  have hp' : (p : ℝ) ≠ 0 := by exact_mod_cast hp.ne'
+  congr 1
+  field_simp
+
+theorem block_bound_eventually_w (Z : ZeroConfig) (H : PaperInputs Z) {c : ℝ} {n m : ℕ}
+    (hn : 2 ≤ n) (hm : n ≤ m) (W : WCert n) (hW : W.Adm) (hBpos : 0 < W.B)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    {η : ℝ} (hη : 0 < η) :
+    ∀ᶠ T in atTop, ∀ B : Finset (retained Z (mtParams T) T), B.card = m →
+      c * ((m : ℝ) - ((n : ℝ) - 1)) - η ≤ blockDefect (gram_isHermitian Z (mtParams T) T) B
+        + W.B * spanOf (xret Z (mtParams T) T) B := by
+  have hm' : (2 : ℝ) ≤ m := by exact_mod_cast (by omega : 2 ≤ m)
+  have hmsq : 0 < 2 * (m : ℝ) ^ 2 := by positivity
+  set δ : ℝ := η / (2 * (m : ℝ) ^ 2) with hδ
+  have hδpos : 0 < δ := div_pos hη hmsq
+  filter_upwards [kernel_limit Z H (1 / W.B) δ hδpos, eventually_L_pos]
+    with T hclose hL
+  intro B hB
+  set x := xret Z (mtParams T) T with hx
+  by_cases hsp : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ W.B * spanOf x B
+  · linarith [blockDefect_nonneg (gram_isHermitian Z (mtParams T) T) B]
+  · rw [not_le] at hsp
+    have hR : spanOf x B ≤ 1 / W.B := by
+      rw [le_div_iff₀ hBpos]; linarith
+    have hcl : ∀ i ∈ B, ∀ j ∈ B, i ≠ j →
+        ‖gram Z (mtParams T) T i j - (Bridge.kfun (x i - x j) : ℂ)‖ ≤ δ := by
+      intro i hi j hj _
+      exact hclose i j ((abs_sub_le_spanOf x hi hj).trans hR)
+    have h13 := block_bound_w hn hm W hW hCert hA0 x (gram_posSemidef Z (mtParams T) T) B hB
+      (xret_injective Z (mtParams T) T hL).injOn hδpos.le hcl
+    have hη' : 2 * (m : ℝ) ^ 2 * δ = η := by rw [hδ]; field_simp
+    rw [hη'] at h13
+    exact h13
+
+theorem pre_solve_w (Z : ZeroConfig) (H : PaperInputs Z) {c : ℝ} {n m : ℕ}
+    (hn : 2 ≤ n) (hm : n ≤ m) (W : WCert n) (hW : W.Adm) (hBpos : 0 < W.B) (hc : 0 < c)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      (HD 1 - W.B * ((m : ℝ) - 1) / m - ε) * (Z.N T (2 * T) : ℝ)
+        ≤ (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m) * (Z.N0s T (2 * T) : ℝ) := by
+  intro ε hε
+  have hn' : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hmn : (n : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+  have hm' : (2 : ℝ) ≤ m := le_trans hn' hmn
+  have hmpos : (0 : ℝ) < m := by linarith
+  have hA₀pos : 0 < c * ((m : ℝ) - ((n : ℝ) - 1)) := mul_pos hc (by linarith)
+  have hq0 : (0 : ℝ) ≤ W.B := hBpos.le
+
+  set Cn : ℝ := (m : ℝ) + 3 + W.B * ((m : ℝ) - 1) with hCn
+  have hCnpos : 0 < Cn := by
+    have h := mul_nonneg hq0 (by linarith : (0 : ℝ) ≤ (m : ℝ) - 1)
+    rw [hCn]; linarith
+  have hCne : Cn ≠ 0 := hCnpos.ne'
+  set ε₀ : ℝ := ε * (m : ℝ) / Cn with hε₀
+  have hε₀pos : 0 < ε₀ := by rw [hε₀]; positivity
+  have hηpos : 0 < min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) := lt_min hε₀pos hA₀pos
+  have hηε : min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) ≤ ε₀ := min_le_left _ _
+  have hηA : min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) ≤ c * ((m : ℝ) - ((n : ℝ) - 1)) :=
+    min_le_right _ _
+  have hA' : 0 ≤ c * ((m : ℝ) - ((n : ℝ) - 1)) - min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) := by
+    linarith
+  filter_upwards [block_bound_eventually_w Z H hn hm W hW hBpos hCert hA0 hηpos,
+    deleted_strips Z H _ hηpos, span_retained_le Z H _ hηpos,
+    tail_passage Z H (eventually_h7 Z) _ hηpos,
+    (Assembly.tendsto_N_atTop Z H.RvM).eventually_ge_atTop
+      ((m : ℝ) / min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1)))),
+    eventually_L_pos] with T hblk hstrip hspan h8 hNbig hL
+
+  have h15 := offset_average (xret Z (mtParams T) T) (xret_injective Z (mtParams T) T hL)
+    (show 1 ≤ m by omega) (blockDefect (gram_isHermitian Z (mtParams T) T))
+    (Dcirc Z (mtParams T) T)
+    (c * ((m : ℝ) - ((n : ℝ) - 1)) - min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))))
+    W.B
+    hA' hq0 (blockDefect_nonneg _) (fun B hB _ => hblk B hB)
+    (fun κ _ _ β => pinching_partition (gram_isHermitian Z (mtParams T) T) κ β)
+  rw [Fintype.card_coe] at h15
+  have hN0 : (0 : ℝ) ≤ (Z.N T (2 * T) : ℝ) := Nat.cast_nonneg _
+  have hn0N : (Z.N0s T (2 * T) : ℝ) ≤ (Z.N T (2 * T) : ℝ) := by
+    have h := (Z.trivial_chain T (2 * T)).1.trans
+      ((Z.trivial_chain T (2 * T)).2.1.trans (Z.trivial_chain T (2 * T)).2.2.1)
+    exact_mod_cast h
+  have hmN : (m : ℝ) ≤ min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) * (Z.N T (2 * T) : ℝ) := by
+    have := (div_le_iff₀ hηpos).mp hNbig; linarith
+
+  set A₀ : ℝ := c * ((m : ℝ) - ((n : ℝ) - 1)) with hA₀
+  set q : ℝ := W.B with hq
+  set η : ℝ := min ε₀ A₀ with hη
+  set N : ℝ := (Z.N T (2 * T) : ℝ) with hNdef
+  set n0 : ℝ := (Z.N0s T (2 * T) : ℝ) with hn0def
+  set S : ℝ := ((retained Z (mtParams T) T).card : ℝ) with hSdef
+  set D : ℝ := Dcirc Z (mtParams T) T with hDdef
+  set sp : ℝ := spanOf (xret Z (mtParams T) T) univ with hspdef
+  clear_value A₀ q η N n0 S D sp
+
+  have step1 : (A₀ - η) * (n0 - 2 * η * N) ≤ (A₀ - η) * (S - m) :=
+    mul_le_mul_of_nonneg_left (by linarith) hA'
+  have step2 : q * ((m : ℝ) - 1) * sp ≤ q * ((m : ℝ) - 1) * ((1 + η) * N) :=
+    mul_le_mul_of_nonneg_left hspan (mul_nonneg hq0 (by linarith))
+  have hηN : 0 ≤ η * N := mul_nonneg hηpos.le hN0
+  have e1 : A₀ * (η * N) ≤ 1 * (η * N) := mul_le_mul_of_nonneg_right hA0 hηN
+  have e2 : η * n0 ≤ η * N := mul_le_mul_of_nonneg_left hn0N hηpos.le
+  have e3 : 0 ≤ η * η * N := mul_nonneg (mul_nonneg hηpos.le hηpos.le) hN0
+  have step3 : A₀ * n0 - 3 * η * N ≤ (A₀ - η) * (n0 - 2 * η * N) := by linarith [e1, e2, e3]
+  have hmD : (m : ℝ) * D ≤ m * (n0 - (HD 1 - η) * N) :=
+    mul_le_mul_of_nonneg_left (by linarith) hmpos.le
+  have hcoef1 : η * ((m : ℝ) + 3 + q * ((m : ℝ) - 1)) ≤ η * Cn :=
+    mul_le_mul_of_nonneg_left (by rw [hCn]) hηpos.le
+  have hcoef2 : η * Cn ≤ ε₀ * Cn := mul_le_mul_of_nonneg_right hηε hCnpos.le
+  have hεCn : ε₀ * Cn = ε * (m : ℝ) := by
+    rw [hε₀]; field_simp
+  have hcoef : η * ((m : ℝ) + 3 + q * ((m : ℝ) - 1)) ≤ m * ε := by
+    linarith [hcoef1, hcoef2, hεCn]
+  have hηN' : η * ((m : ℝ) + 3 + q * ((m : ℝ) - 1)) * N ≤ m * ε * N :=
+    mul_le_mul_of_nonneg_right hcoef hN0
+  have key : ((m : ℝ) * HD 1 - q * ((m : ℝ) - 1) - m * ε) * N ≤ ((m : ℝ) - A₀) * n0 := by
+    linarith [h15, step1, step2, step3, hmD, hηN']
+  have hL1 : (HD 1 - q * ((m : ℝ) - 1) / m - ε) * N
+      = ((m : ℝ) * HD 1 - q * ((m : ℝ) - 1) - m * ε) * N / m := by
+    field_simp
+  have hR1 : (1 - A₀ / m) * n0 = ((m : ℝ) - A₀) * n0 / m := by
+    field_simp
+  rw [hL1, hR1]
+  exact div_le_div_of_nonneg_right key hmpos.le
+
+theorem solve_linear_w {N N0 : ℝ → ℝ} {c : ℝ} {n m : ℕ} (K : ℝ) (hn : 2 ≤ n) (hm : n ≤ m)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    (h : ∀ ε > 0, ∀ᶠ T in atTop,
+      (K - ε) * N T ≤ (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m) * N0 T) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      (K / (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m) - ε) * N T ≤ N0 T := by
+  intro ε hε
+  have hD := one_sub_div_pos hn hm hA0
+  set Dn : ℝ := 1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m with hDn
+  filter_upwards [h (ε * Dn) (mul_pos hε hD)] with T hT
+  have : K / Dn - ε = (K - ε * Dn) / Dn := by
+    field_simp
+  rw [this, div_mul_eq_mul_div, div_le_iff₀ hD]
+  linarith
+
+theorem n_point_bound_w (n : ℕ) (c : ℝ) (m : ℕ) (W : WCert n) (hn : 2 ≤ n) (hm : n ≤ m)
+    (hW : W.Adm) (hBpos : 0 < W.B) (hc : 0 < c)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (Phi_w n c m W.B - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0simple T (2 * T) := by
+  have h := solve_linear_w (N := fun T => (Zeta23.Ncount T (2 * T) : ℝ))
+    (N0 := fun T => (Zeta23.N0simple T (2 * T) : ℝ)) (HD 1 - W.B * ((m : ℝ) - 1) / m) hn hm hA0 (by
+      have := pre_solve_w zetaZeroConfig paperInputs_zeta hn hm W hW hBpos hc hCert hA0
+      simpa only [zetaZeroConfig_N, zetaZeroConfig_N0s] using this)
+  intro ε hε
+  exact eventually_atTop.mp (h ε hε)
+
+def Phi_w' (n : ℕ) (c : ℝ) (m : ℕ) (B : ℝ) : ℝ :=
+  (HD 1 - B * ((m : ℝ) - ((n : ℝ) - 1)) / m) / (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m)
+
+section SpanPressure
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+lemma spanOf_le_blkPress_div {n m : ℕ} (hn3 : 3 ≤ n) (h2n : 2 * n ≤ m) (b : Fin (n - 1) → ℝ)
+    {bmin : ℝ} (hbmin : 0 < bmin) (hb : ∀ r, bmin ≤ b r)
+    (x : ι → ℝ) (B : Finset ι) (hB : B.card = m) (hx : Set.InjOn x B) :
+    spanOf x B ≤ blkPress b x B / bmin := by
+  classical
+  have hn : 2 ≤ n := by omega
+  have hm0 : 0 < m := by omega
+  have hne : B.Nonempty := by rw [← card_pos, hB]; exact hm0
+  have hic : (B.image x).card = m := by rw [card_image_of_injOn hx, hB]
+  have hine : (B.image x).Nonempty := by rw [← card_pos, hic]; exact hm0
+  set S := B.image x with hSdef
+  set y : ℕ → ℝ := sortedOn x B with hydef
+  have hyk : ∀ k (hk : k < m), y k = S.orderEmbOfFin hic ⟨k, hk⟩ := by
+    intro k hk
+    rw [hydef, sortedOn_eq hic, sortedExt_of_lt _ hk]
+  have hmono : ∀ a c, a ≤ c → c < m → y a ≤ y c := by
+    intro a c hac hc
+    rw [hyk a (lt_of_le_of_lt hac hc), hyk c hc]
+    exact (S.orderEmbOfFin hic).monotone (Fin.mk_le_mk.mpr hac)
+
+  have hspan : spanOf x B ≤ y (m - 1) - y 0 := by
+    unfold spanOf
+    rw [dif_pos hne]
+    have h1 : B.sup' hne x ≤ S.max' hine := by
+      apply sup'_le
+      intro i hi
+      exact le_max' _ _ (mem_image_of_mem x hi)
+    have h2 : S.min' hine ≤ B.inf' hne x := by
+      apply le_inf'
+      intro i hi
+      exact min'_le _ _ (mem_image_of_mem x hi)
+    have hlast : y (m - 1) = S.max' hine := by
+      rw [hyk (m - 1) (by omega)]
+      exact Finset.orderEmbOfFin_last hic hm0
+    have hzero : y 0 = S.min' hine := by
+      rw [hyk 0 hm0]
+      exact Finset.orderEmbOfFin_zero hic hm0
+    rw [hlast, hzero]
+    linarith
+
+  have hq1 : n - 1 - 1 < n - 1 := by omega
+  have h0 : 0 < n - 1 := by omega
+  set r0 : Fin (n - 1) := ⟨0, h0⟩ with hr0
+  set r1 : Fin (n - 1) := ⟨n - 1 - 1, hq1⟩ with hr1
+  have hterm : ∀ r : Fin (n - 1), 0 ≤ b r * (y (m - (n - 1) + r) - y r) := by
+    intro r
+    have hr := r.2
+    exact mul_nonneg (hbmin.le.trans (hb r)) (sub_nonneg.mpr (hmono _ _ (by omega) (by omega)))
+  have hsum : b r0 * (y (m - (n - 1) + r0) - y r0) + b r1 * (y (m - (n - 1) + r1) - y r1)
+      ≤ blkPress b x B := by
+    unfold blkPress
+    rw [← hydef, hic]
+    have hr01 : r0 ≠ r1 := by
+      intro h; rw [hr0, hr1] at h
+      have := Fin.mk.inj_iff.mp h; omega
+    have := Finset.add_le_sum (s := univ) (f := fun r : Fin (n - 1) => b r * (y (m - (n - 1) + r) - y r))
+      (fun r _ => hterm r) (mem_univ r0) (mem_univ r1) hr01
+    simpa using this
+  have hmid : y (m - 1) - y 0 ≤ (y (m - (n - 1) + r0) - y r0) + (y (m - (n - 1) + r1) - y r1) := by
+    simp only [hr0, hr1]
+    have e1 : m - (n - 1) + 0 = m - (n - 1) := by omega
+    have e2 : m - (n - 1) + (n - 1 - 1) = m - 1 := by omega
+    rw [e1, e2]
+    have := hmono (n - 1 - 1) (m - (n - 1)) (by omega) (by omega)
+    linarith
+  have hb0 := hb r0
+  have hb1 := hb r1
+  have hnn0 : 0 ≤ y (m - (n - 1) + r0) - y r0 := by
+    have := r0.2; exact sub_nonneg.mpr (hmono _ _ (by omega) (by omega))
+  have hnn1 : 0 ≤ y (m - (n - 1) + r1) - y r1 := by
+    have := r1.2; exact sub_nonneg.mpr (hmono _ _ (by omega) (by omega))
+  rw [le_div_iff₀ hbmin]
+  nlinarith [mul_le_mul_of_nonneg_right hb0 hnn0, mul_le_mul_of_nonneg_right hb1 hnn1]
+
+end SpanPressure
+
+theorem block_bound_eventually_w' (Z : ZeroConfig) (H : PaperInputs Z) {c : ℝ} {n m : ℕ}
+    (hn3 : 3 ≤ n) (h2n : 2 * n ≤ m) (W : WCert n) (hW : W.Adm)
+    {bmin : ℝ} (hbmin : 0 < bmin) (hb : ∀ r, bmin ≤ W.b r)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1)
+    {η : ℝ} (hη : 0 < η) :
+    ∀ᶠ T in atTop, ∀ B : Finset (retained Z (mtParams T) T), B.card = m →
+      c * ((m : ℝ) - ((n : ℝ) - 1)) - η ≤ blockDefect (gram_isHermitian Z (mtParams T) T) B
+        + blkPress W.b (xret Z (mtParams T) T) B := by
+  have hn : 2 ≤ n := by omega
+  have hm : n ≤ m := by omega
+  have hm' : (2 : ℝ) ≤ m := by exact_mod_cast (by omega : 2 ≤ m)
+  have hmsq : 0 < 2 * (m : ℝ) ^ 2 := by positivity
+  set δ : ℝ := η / (2 * (m : ℝ) ^ 2) with hδ
+  have hδpos : 0 < δ := div_pos hη hmsq
+  filter_upwards [kernel_limit Z H (1 / bmin) δ hδpos, eventually_L_pos]
+    with T hclose hL
+  intro B hB
+  set x := xret Z (mtParams T) T with hx
+  have hinj : Set.InjOn x B := (xret_injective Z (mtParams T) T hL).injOn
+  by_cases hsp : spanOf x B ≤ 1 / bmin
+  · have hcl : ∀ i ∈ B, ∀ j ∈ B, i ≠ j →
+        ‖gram Z (mtParams T) T i j - (Bridge.kfun (x i - x j) : ℂ)‖ ≤ δ := by
+      intro i hi j hj _
+      exact hclose i j ((abs_sub_le_spanOf x hi hj).trans hsp)
+    have h13 := block_bound_w' hn hm W hW hCert hA0 x (gram_posSemidef Z (mtParams T) T) B hB
+      hinj hδpos.le hcl
+    have hη' : 2 * (m : ℝ) ^ 2 * δ = η := by rw [hδ]; field_simp
+    rw [hη'] at h13
+    exact h13
+  · rw [not_le] at hsp
+    have hP := spanOf_le_blkPress_div hn3 h2n W.b hbmin hb x B hB hinj
+    have hP1 : 1 < blkPress W.b x B := by
+      have := (lt_of_lt_of_le hsp hP)
+      rw [lt_div_iff₀ hbmin] at this
+      rw [div_mul_cancel₀ _ hbmin.ne'] at this
+      exact this
+    linarith [blockDefect_nonneg (gram_isHermitian Z (mtParams T) T) B]
+
+theorem pre_solve_w' (Z : ZeroConfig) (H : PaperInputs Z) {c : ℝ} {n m : ℕ}
+    (hn3 : 3 ≤ n) (h2n : 2 * n ≤ m) (W : WCert n) (hW : W.Adm)
+    {bmin : ℝ} (hbmin : 0 < bmin) (hb : ∀ r, bmin ≤ W.b r) (hc : 0 < c)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    ∀ ε > 0, ∀ᶠ T in atTop,
+      (HD 1 - W.B * ((m : ℝ) - ((n : ℝ) - 1)) / m - ε) * (Z.N T (2 * T) : ℝ)
+        ≤ (1 - c * ((m : ℝ) - ((n : ℝ) - 1)) / m) * (Z.N0s T (2 * T) : ℝ) := by
+  intro ε hε
+  have hn : 2 ≤ n := by omega
+  have hm : n ≤ m := by omega
+  have hn' : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hmn : (n : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+  have hm' : (2 : ℝ) ≤ m := le_trans hn' hmn
+  have hmpos : (0 : ℝ) < m := by linarith
+  have hmq : (1 : ℝ) ≤ (m : ℝ) - ((n : ℝ) - 1) := by linarith
+  have hA₀pos : 0 < c * ((m : ℝ) - ((n : ℝ) - 1)) := mul_pos hc (by linarith)
+  have hq0 : (0 : ℝ) ≤ W.B := WCert.B_nonneg hW
+
+  set Cn : ℝ := (m : ℝ) + 3 + W.B * ((m : ℝ) - ((n : ℝ) - 1)) with hCn
+  have hCnpos : 0 < Cn := by
+    have h := mul_nonneg hq0 (by linarith : (0 : ℝ) ≤ (m : ℝ) - ((n : ℝ) - 1))
+    rw [hCn]; linarith
+  have hCne : Cn ≠ 0 := hCnpos.ne'
+  set ε₀ : ℝ := ε * (m : ℝ) / Cn with hε₀
+  have hε₀pos : 0 < ε₀ := by rw [hε₀]; positivity
+  have hηpos : 0 < min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) := lt_min hε₀pos hA₀pos
+  have hηε : min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) ≤ ε₀ := min_le_left _ _
+  have hηA : min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) ≤ c * ((m : ℝ) - ((n : ℝ) - 1)) :=
+    min_le_right _ _
+  have hA' : 0 ≤ c * ((m : ℝ) - ((n : ℝ) - 1)) - min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) := by
+    linarith
+  filter_upwards [block_bound_eventually_w' Z H hn3 h2n W hW hbmin hb hCert hA0 hηpos,
+    deleted_strips Z H _ hηpos, span_retained_le Z H _ hηpos,
+    tail_passage Z H (eventually_h7 Z) _ hηpos,
+    (Assembly.tendsto_N_atTop Z H.RvM).eventually_ge_atTop
+      ((m : ℝ) / min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1)))),
+    eventually_L_pos] with T hblk hstrip hspan h8 hNbig hL
+
+  have h15 := offset_average_w hn W.b hW.b_nonneg (xret Z (mtParams T) T)
+    (xret_injective Z (mtParams T) T hL) hm
+    (blockDefect (gram_isHermitian Z (mtParams T) T))
+    (Dcirc Z (mtParams T) T)
+    (c * ((m : ℝ) - ((n : ℝ) - 1)) - min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))))
+    hA' (blockDefect_nonneg _) (fun B hB _ => hblk B hB)
+    (fun κ _ _ β => pinching_partition (gram_isHermitian Z (mtParams T) T) κ β)
+  rw [Fintype.card_coe] at h15
+  have hBeq : (∑ r, W.b r) = W.B := rfl
+  rw [hBeq] at h15
+  have hN0 : (0 : ℝ) ≤ (Z.N T (2 * T) : ℝ) := Nat.cast_nonneg _
+  have hn0N : (Z.N0s T (2 * T) : ℝ) ≤ (Z.N T (2 * T) : ℝ) := by
+    have h := (Z.trivial_chain T (2 * T)).1.trans
+      ((Z.trivial_chain T (2 * T)).2.1.trans (Z.trivial_chain T (2 * T)).2.2.1)
+    exact_mod_cast h
+  have hmN : (m : ℝ) ≤ min ε₀ (c * ((m : ℝ) - ((n : ℝ) - 1))) * (Z.N T (2 * T) : ℝ) := by
+    have := (div_le_iff₀ hηpos).mp hNbig; linarith
+
+  set A₀ : ℝ := c * ((m : ℝ) - ((n : ℝ) - 1)) with hA₀
+  set q : ℝ := W.B with hq
+  set mq : ℝ := (m : ℝ) - ((n : ℝ) - 1) with hmqdef
+  set η : ℝ := min ε₀ A₀ with hη
+  set N : ℝ := (Z.N T (2 * T) : ℝ) with hNdef
+  set n0 : ℝ := (Z.N0s T (2 * T) : ℝ) with hn0def
+  set S : ℝ := ((retained Z (mtParams T) T).card : ℝ) with hSdef
+  set D : ℝ := Dcirc Z (mtParams T) T with hDdef
+  set sp : ℝ := spanOf (xret Z (mtParams T) T) univ with hspdef
+  clear_value A₀ q mq η N n0 S D sp
+
+  have step1 : (A₀ - η) * (n0 - 2 * η * N) ≤ (A₀ - η) * (S - m) :=
+    mul_le_mul_of_nonneg_left (by linarith) hA'
+  have hmq0 : (0 : ℝ) ≤ mq := by linarith
+  have step2 : q * mq * sp ≤ q * mq * ((1 + η) * N) :=
+    mul_le_mul_of_nonneg_left hspan (mul_nonneg hq0 hmq0)
+  have hηN : 0 ≤ η * N := mul_nonneg hηpos.le hN0
+  have e1 : A₀ * (η * N) ≤ 1 * (η * N) := mul_le_mul_of_nonneg_right hA0 hηN
+  have e2 : η * n0 ≤ η * N := mul_le_mul_of_nonneg_left hn0N hηpos.le
+  have e3 : 0 ≤ η * η * N := mul_nonneg (mul_nonneg hηpos.le hηpos.le) hN0
+  have step3 : A₀ * n0 - 3 * η * N ≤ (A₀ - η) * (n0 - 2 * η * N) := by linarith [e1, e2, e3]
+  have hmD : (m : ℝ) * D ≤ m * (n0 - (HD 1 - η) * N) :=
+    mul_le_mul_of_nonneg_left (by linarith) hmpos.le
+  have hcoef1 : η * ((m : ℝ) + 3 + q * mq) ≤ η * Cn :=
+    mul_le_mul_of_nonneg_left (by rw [hCn]) hηpos.le
+  have hcoef2 : η * Cn ≤ ε₀ * Cn := mul_le_mul_of_nonneg_right hηε hCnpos.le
+  have hεCn : ε₀ * Cn = ε * (m : ℝ) := by
+    rw [hε₀]; field_simp
+  have hcoef : η * ((m : ℝ) + 3 + q * mq) ≤ m * ε := by
+    linarith [hcoef1, hcoef2, hεCn]
+  have hηN' : η * ((m : ℝ) + 3 + q * mq) * N ≤ m * ε * N :=
+    mul_le_mul_of_nonneg_right hcoef hN0
+  have key : ((m : ℝ) * HD 1 - q * mq - m * ε) * N ≤ ((m : ℝ) - A₀) * n0 := by
+    linarith [h15, step1, step2, step3, hmD, hηN']
+  have hL1 : (HD 1 - q * mq / m - ε) * N
+      = ((m : ℝ) * HD 1 - q * mq - m * ε) * N / m := by
+    field_simp
+  have hR1 : (1 - A₀ / m) * n0 = ((m : ℝ) - A₀) * n0 / m := by
+    field_simp
+  rw [hL1, hR1]
+  exact div_le_div_of_nonneg_right key hmpos.le
+
+theorem n_point_bound_w' (n : ℕ) (c : ℝ) (m : ℕ) (W : WCert n) (hn3 : 3 ≤ n) (h2n : 2 * n ≤ m)
+    (hW : W.Adm) {bmin : ℝ} (hbmin : 0 < bmin) (hb : ∀ r, bmin ≤ W.b r) (hc : 0 < c)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ Fw W g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (Phi_w' n c m W.B - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0simple T (2 * T) := by
+  have hn : 2 ≤ n := by omega
+  have hm : n ≤ m := by omega
+  have h := solve_linear_w (N := fun T => (Zeta23.Ncount T (2 * T) : ℝ))
+    (N0 := fun T => (Zeta23.N0simple T (2 * T) : ℝ)) (HD 1 - W.B * ((m : ℝ) - ((n : ℝ) - 1)) / m) hn hm hA0
+    (by
+      have := pre_solve_w' zetaZeroConfig paperInputs_zeta hn3 h2n W hW hbmin hb hc hCert hA0
+      simpa only [zetaZeroConfig_N, zetaZeroConfig_N0s] using this)
+  intro ε hε
+  exact eventually_atTop.mp (h ε hε)
+
+
+end Zeta23Ext.BridgeW
+
+end
+
+/-! ###### source module: Zeta23Ext/BridgeW/Fixed.lean ###### -/
+
+
+
+noncomputable section
+set_option linter.unusedSectionVars false
+
+open Finset Filter
+open scoped BigOperators
+open Zeta23 Zeta23.ThmD
+
+namespace Zeta23Ext.BridgeW
+
+open Zeta23Ext.Bridge
+
+theorem ofFixed_spanMass_le (n p : ℕ) (s : ℕ) : (ofFixed n p).spanMass s ≤ 2 := by
+  classical
+  set P : Finset (Fin n × Fin n) :=
+    (univ ×ˢ univ).filter fun q : Fin n × Fin n => (q.1 : ℕ) < (q.2 : ℕ) ∧ (q.2 : ℕ) - (q.1 : ℕ) = s
+    with hP
+  have e : (ofFixed n p).spanMass s = ∑ q ∈ P, (2 / ((n : ℝ) - (((q.2 : ℕ) - (q.1 : ℕ) : ℕ) : ℝ))) := by
+    unfold WCert.spanMass ofFixed
+    rw [hP, sum_filter, sum_product]
+  rw [e]
+  by_cases hs : 0 < s ∧ s < n
+  · obtain ⟨hs0, hsn⟩ := hs
+    have hconst : ∀ q ∈ P, (2 / ((n : ℝ) - (((q.2 : ℕ) - (q.1 : ℕ) : ℕ) : ℝ))) = 2 / ((n : ℝ) - (s : ℝ)) := by
+      intro q hq
+      rw [hP, mem_filter] at hq
+      rw [hq.2.2]
+    rw [sum_congr rfl hconst, sum_const, nsmul_eq_mul]
+    have hcard : P.card ≤ n - s := by
+      rw [← card_range (n - s)]
+      refine card_le_card_of_injOn (fun q => (q.1 : ℕ)) ?_ ?_
+      · intro q hq
+        rw [mem_coe, hP, mem_filter] at hq
+        have h2 := q.2.2
+        simp only [coe_range, Set.mem_Iio]
+        omega
+      · intro q hq q' hq' h
+        rw [mem_coe, hP, mem_filter] at hq hq'
+        simp only at h
+        have h1 : q.1 = q'.1 := Fin.ext h
+        have h2 : q.2 = q'.2 := Fin.ext (by omega)
+        exact Prod.ext h1 h2
+    have hns : (s : ℝ) < (n : ℝ) := by exact_mod_cast hsn
+    have hcardR : (P.card : ℝ) ≤ (n : ℝ) - (s : ℝ) := by
+      have := (Nat.cast_le (α := ℝ)).mpr hcard
+      rwa [Nat.cast_sub hsn.le] at this
+    have hpos : 0 < (n : ℝ) - (s : ℝ) := by linarith
+    calc (P.card : ℝ) * (2 / ((n : ℝ) - (s : ℝ)))
+        ≤ ((n : ℝ) - (s : ℝ)) * (2 / ((n : ℝ) - (s : ℝ))) :=
+          mul_le_mul_of_nonneg_right hcardR (by positivity)
+      _ = 2 := by field_simp
+  · have hempty : P = ∅ := by
+      rw [hP, filter_eq_empty_iff]
+      intro q _
+      have h2 := q.2.2
+      intro hq
+      apply hs
+      omega
+    rw [hempty, sum_empty]
+    norm_num
+
+theorem ofFixed_adm (n p : ℕ) : (ofFixed n p).Adm := by
+  refine ⟨fun i j => ?_, fun _ => ?_, ofFixed_spanMass_le n p⟩
+  · unfold ofFixed
+    simp only
+    have hj := j.2
+    have h1 : (((j : ℕ) - (i : ℕ) : ℕ) : ℝ) ≤ (n : ℝ) - 1 := by
+      have h2 : (j : ℕ) - (i : ℕ) ≤ n - 1 := by omega
+      have h3 : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
+        rw [Nat.cast_sub (by omega : 1 ≤ n)]; norm_num
+      rw [← h3]; exact_mod_cast h2
+    apply div_nonneg (by norm_num); linarith
+  · unfold ofFixed; simp only; positivity
+
+theorem ofFixed_B (n p : ℕ) (hn : 1 ≤ n) : (ofFixed n p).B = ((n : ℝ) - 1) / (p : ℝ) := by
+  unfold WCert.B ofFixed
+  simp only [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]
+  rw [Nat.cast_sub hn]
+  simp only [Nat.cast_one]
+  ring
+
+theorem n_point_bound_fixed' (n : ℕ) (c : ℝ) (m p : ℕ) (hn3 : 3 ≤ n) (h2n : 2 * n ≤ m)
+    (hp : 0 < p) (hc : 0 < c)
+    (hCert : ∀ g : Fin (n - 1) → ℝ, (∀ i, 0 ≤ g i) → c ≤ F n p g)
+    (hA0 : c * ((m : ℝ) - ((n : ℝ) - 1)) ≤ 1) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (Phi_w' n c m (((n : ℝ) - 1) / (p : ℝ)) - ε) * (Zeta23.Ncount T (2 * T) : ℝ)
+        ≤ Zeta23.N0simple T (2 * T) := by
+  have hn1 : 1 ≤ n := by omega
+  rw [← ofFixed_B n p hn1]
+  have hp' : (0 : ℝ) < 1 / (p : ℝ) := by positivity
+  refine n_point_bound_w' n c m (ofFixed n p) hn3 h2n (ofFixed_adm n p) hp'
+    (fun r => le_of_eq rfl) hc (fun g hg => ?_) hA0
+  rw [Fw_ofFixed]; exact hCert g hg
+
+theorem eight_point_bound_w'
+    (hCert : ∀ g : Fin 7 → ℝ, (∀ i, 0 ≤ g i) → 41763 / 10000000 ≤ F 8 3200 g) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      ((2460000000 * HD 1 - 5228125) / 2450018643 - ε) * (Zeta23.Ncount T (2 * T) : ℝ)
+        ≤ Zeta23.N0simple T (2 * T) := by
+  have h := n_point_bound_fixed' 8 (41763 / 10000000) 246 3200 (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) hCert (by norm_num)
+  have hPhi : Phi_w' 8 (41763 / 10000000) 246 (((8 : ℕ) - 1 : ℝ) / ((3200 : ℕ) : ℝ))
+      = (2460000000 * HD 1 - 5228125) / 2450018643 := by
+    unfold Phi_w'
+    norm_num
+    field_simp
+    ring
+  rw [hPhi] at h
+  exact h
+
+theorem eight_point_bound_w'_ratio
+    (hCert : ∀ g : Fin 7 → ℝ, (∀ i, 0 ≤ g i) → 41763 / 10000000 ≤ F 8 3200 g) :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (2460000000 * HD 1 - 5228125) / 2450018643 - ε
+        ≤ (Zeta23.N0simple T (2 * T) : ℝ) / (Zeta23.Ncount T (2 * T) : ℝ) := by
+  intro ε hε
+  obtain ⟨T₁, hT₁⟩ := eight_point_bound_w' hCert ε hε
+  obtain ⟨T₂, hT₂⟩ := Filter.eventually_atTop.mp eventually_Ncount_pos
+  refine ⟨max T₁ T₂, fun T hT => ?_⟩
+  have h1 := hT₁ T (le_trans (le_max_left _ _) hT)
+  have h2 := hT₂ T (le_trans (le_max_right _ _) hT)
+  rw [le_div_iff₀ h2]
+  exact h1
+
+
+end Zeta23Ext.BridgeW
+
+end
+
+/-! ###### source module: ThreePoint/Base.lean ###### -/
+
+
+
+noncomputable section
+open Real intervalIntegral
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+def taylorCos (t : ℝ) : ℝ := 1 - t^2/2 + t^4/24 - t^6/720 + t^8/40320 - t^10/3628800
+
+def taylorSin (t : ℝ) : ℝ := t - t^3/6 + t^5/120 - t^7/5040 + t^9/362880 - t^11/39916800
+
+def taylorErr : ℝ := 13/5748019200
+
+theorem cos_sin_taylor12 (θ : ℝ) (hθ : |θ| ≤ 1) :
+    |Real.cos θ - (1 - θ^2/2 + θ^4/24 - θ^6/720 + θ^8/40320 - θ^10/3628800)|
+        ≤ |θ|^12 * (13/5748019200) ∧
+    |Real.sin θ - (θ - θ^3/6 + θ^5/120 - θ^7/5040 + θ^9/362880 - θ^11/39916800)|
+        ≤ |θ|^12 * (13/5748019200) := by
+  have hx : ‖(θ : ℂ) * Complex.I‖ ≤ 1 := by
+    simpa using hθ
+  have hb := Complex.exp_bound hx (n := 12) (by norm_num)
+  have hnx : ‖(θ : ℂ) * Complex.I‖ = |θ| := by simp
+  have hsum : ∑ m ∈ Finset.range 12, ((θ : ℂ) * Complex.I) ^ m / (m.factorial : ℂ)
+      = ((1 - θ^2/2 + θ^4/24 - θ^6/720 + θ^8/40320 - θ^10/3628800 : ℝ) : ℂ)
+        + ((θ - θ^3/6 + θ^5/120 - θ^7/5040 + θ^9/362880 - θ^11/39916800 : ℝ) : ℂ)
+          * Complex.I := by
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.factorial]
+    apply Complex.ext <;> · simp [pow_succ]; ring
+  rw [hsum, hnx] at hb
+  have hE : ‖Complex.exp ((θ : ℂ) * Complex.I)
+      - (((1 - θ^2/2 + θ^4/24 - θ^6/720 + θ^8/40320 - θ^10/3628800 : ℝ) : ℂ)
+        + ((θ - θ^3/6 + θ^5/120 - θ^7/5040 + θ^9/362880 - θ^11/39916800 : ℝ) : ℂ)
+          * Complex.I)‖ ≤ |θ|^12 * (13/5748019200) := by
+    refine hb.trans (le_of_eq ?_)
+    norm_num
+  constructor
+  · have := Complex.abs_re_le_norm (Complex.exp ((θ : ℂ) * Complex.I)
+      - (((1 - θ^2/2 + θ^4/24 - θ^6/720 + θ^8/40320 - θ^10/3628800 : ℝ) : ℂ)
+        + ((θ - θ^3/6 + θ^5/120 - θ^7/5040 + θ^9/362880 - θ^11/39916800 : ℝ) : ℂ)
+          * Complex.I))
+    refine le_trans (le_of_eq ?_) (this.trans hE)
+    simp [Complex.exp_ofReal_mul_I_re, - Complex.ofReal_pow]
+  · have := Complex.abs_im_le_norm (Complex.exp ((θ : ℂ) * Complex.I)
+      - (((1 - θ^2/2 + θ^4/24 - θ^6/720 + θ^8/40320 - θ^10/3628800 : ℝ) : ℂ)
+        + ((θ - θ^3/6 + θ^5/120 - θ^7/5040 + θ^9/362880 - θ^11/39916800 : ℝ) : ℂ)
+          * Complex.I))
+    refine le_trans (le_of_eq ?_) (this.trans hE)
+    simp [Complex.exp_ofReal_mul_I_im, - Complex.ofReal_pow]
+
+private lemma one_le_pi : (1 : ℝ) ≤ Real.pi := by linarith [Real.pi_gt_three]
+
+private lemma err_scale {t : ℝ} (h0 : 0 ≤ t) (h1 : t ≤ 1) :
+    |t| ^ 12 * (13 / 5748019200) ≤ taylorErr := by
+  rw [abs_of_nonneg h0]
+  have : t ^ 12 ≤ 1 := pow_le_one₀ h0 h1
+  unfold taylorErr; nlinarith
+
+theorem cos_lower {θ u : ℝ} (h0 : 0 ≤ θ) (hu : θ ≤ u) (hu1 : u ≤ 1) :
+    taylorCos u - taylorErr ≤ Real.cos θ := by
+  have h0u : 0 ≤ u := h0.trans hu
+  have hmono : Real.cos u ≤ Real.cos θ :=
+    Real.cos_le_cos_of_nonneg_of_le_pi h0 (hu1.trans one_le_pi) hu
+  have ht := (cos_sin_taylor12 u (by rw [abs_of_nonneg h0u]; exact hu1)).1
+  have he := err_scale h0u hu1
+  have := abs_le.mp ht
+  unfold taylorCos
+  linarith [this.1, this.2]
+
+theorem cos_upper {θ l : ℝ} (h0 : 0 ≤ l) (hl : l ≤ θ) (hθ1 : θ ≤ 1) :
+    Real.cos θ ≤ taylorCos l + taylorErr := by
+  have hl1 : l ≤ 1 := hl.trans hθ1
+  have hmono : Real.cos θ ≤ Real.cos l :=
+    Real.cos_le_cos_of_nonneg_of_le_pi h0 (hθ1.trans one_le_pi) hl
+  have ht := (cos_sin_taylor12 l (by rw [abs_of_nonneg h0]; exact hl1)).1
+  have he := err_scale h0 hl1
+  have := abs_le.mp ht
+  unfold taylorCos
+  linarith [this.1, this.2]
+
+theorem sin_lower {θ l : ℝ} (h0 : 0 ≤ l) (hl : l ≤ θ) (hθ1 : θ ≤ 1) :
+    taylorSin l - taylorErr ≤ Real.sin θ := by
+  have hl1 : l ≤ 1 := hl.trans hθ1
+  have hpi2 : (1 : ℝ) ≤ Real.pi / 2 := by linarith [Real.pi_gt_three]
+  have hmono : Real.sin l ≤ Real.sin θ :=
+    Real.sin_le_sin_of_le_of_le_pi_div_two (by linarith) (hθ1.trans hpi2) hl
+  have ht := (cos_sin_taylor12 l (by rw [abs_of_nonneg h0]; exact hl1)).2
+  have he := err_scale h0 hl1
+  have := abs_le.mp ht
+  unfold taylorSin
+  linarith [this.1, this.2]
+
+theorem sin_upper {θ u : ℝ} (h0 : 0 ≤ θ) (hu : θ ≤ u) (hu1 : u ≤ 1) :
+    Real.sin θ ≤ taylorSin u + taylorErr := by
+  have h0u : 0 ≤ u := h0.trans hu
+  have hpi2 : (1 : ℝ) ≤ Real.pi / 2 := by linarith [Real.pi_gt_three]
+  have hmono : Real.sin θ ≤ Real.sin u :=
+    Real.sin_le_sin_of_le_of_le_pi_div_two (by linarith) (hu1.trans hpi2) hu
+  have ht := (cos_sin_taylor12 u (by rw [abs_of_nonneg h0u]; exact hu1)).2
+  have he := err_scale h0u hu1
+  have := abs_le.mp ht
+  unfold taylorSin
+  linarith [this.1, this.2]
+
+theorem integral_cos_mul_eq_sinc (c : ℝ) :
+    (∫ t in (-(1 : ℝ) / 2)..(1 / 2), Real.cos (c * t)) = Real.sinc (c / 2) := by
+  rcases eq_or_ne c 0 with hc | hc
+  · subst hc; norm_num
+  · have hc2 : c / 2 ≠ 0 := by simpa using hc
+    rw [integral_comp_mul_left _ hc, integral_cos, Real.sinc_of_ne_zero hc2,
+      show c * ((1:ℝ)/2) = c/2 by ring, show c * (-(1:ℝ)/2) = -(c/2) by ring,
+      Real.sin_neg, smul_eq_mul]
+    field_simp
+    ring
+
+private lemma cos_mul_intervalIntegrable (c a b : ℝ) :
+    IntervalIntegrable (fun t => Real.cos (c * t)) MeasureTheory.volume a b :=
+  (Real.continuous_cos.comp (continuous_const.mul continuous_id)).intervalIntegrable _ _
+
+theorem Kfun_eq_sinc (x : ℝ) :
+    Kfun x =
+      (Real.sinc ((Real.sqrt 2 - 2 * Real.pi * x) / 2)
+        + Real.sinc ((Real.sqrt 2 + 2 * Real.pi * x) / 2)) / 2 := by
+  have key : ∀ t : ℝ, Real.cos (Real.sqrt 2 * t) * Real.cos (2 * Real.pi * x * t)
+      = (Real.cos ((Real.sqrt 2 - 2 * Real.pi * x) * t)
+          + Real.cos ((Real.sqrt 2 + 2 * Real.pi * x) * t)) / 2 := by
+    intro t
+    rw [sub_mul, add_mul, Real.cos_sub, Real.cos_add]; ring
+  unfold Kfun
+  simp_rw [key]
+  rw [intervalIntegral.integral_div,
+    intervalIntegral.integral_add (cos_mul_intervalIntegrable _ _ _)
+      (cos_mul_intervalIntegrable _ _ _),
+    integral_cos_mul_eq_sinc, integral_cos_mul_eq_sinc]
+
+def gam : ℝ := (Real.sqrt 2 / 2) * Real.cos (Real.sqrt 2 / 2) / Real.sin (Real.sqrt 2 / 2)
+
+private lemma sqrt2_half_bounds :
+    (7071067811865475244/10^19 : ℝ) ≤ Real.sqrt 2 / 2 ∧
+      Real.sqrt 2 / 2 ≤ 7071067811865475245/10^19 := by
+  have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hnn : (0:ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
+  constructor <;> nlinarith [h2, hnn]
+
+private lemma sin_sqrt2_half_pos : 0 < Real.sin (Real.sqrt 2 / 2) := by
+  have hb := sqrt2_half_bounds
+  refine Real.sin_pos_of_pos_of_lt_pi (by linarith [hb.1]) ?_
+  linarith [hb.2, Real.pi_gt_three]
+
+theorem cos_sqrt2_half_bounds :
+    (7602445947/10^10 : ℝ) ≤ Real.cos (Real.sqrt 2 / 2) ∧
+      Real.cos (Real.sqrt 2 / 2) ≤ 7602445994/10^10 := by
+  have hb := sqrt2_half_bounds
+  have h0 : (0:ℝ) ≤ Real.sqrt 2 / 2 := by linarith [hb.1]
+  constructor
+  · have := cos_lower h0 hb.2 (by norm_num)
+    have h : (7602445947/10^10 : ℝ)
+        ≤ taylorCos (7071067811865475245/10^19) - taylorErr := by
+      unfold taylorCos taylorErr; norm_num
+    linarith
+  · have := cos_upper (by norm_num) hb.1 (by linarith [hb.2])
+    have h : taylorCos (7071067811865475244/10^19 : ℝ) + taylorErr
+        ≤ 7602445994/10^10 := by
+      unfold taylorCos taylorErr; norm_num
+    linarith
+
+theorem sin_sqrt2_half_bounds :
+    (6496369368/10^10 : ℝ) ≤ Real.sin (Real.sqrt 2 / 2) ∧
+      Real.sin (Real.sqrt 2 / 2) ≤ 6496369414/10^10 := by
+  have hb := sqrt2_half_bounds
+  have h0 : (0:ℝ) ≤ Real.sqrt 2 / 2 := by linarith [hb.1]
+  constructor
+  · have := sin_lower (by norm_num) hb.1 (by linarith [hb.2])
+    have h : (6496369368/10^10 : ℝ)
+        ≤ taylorSin (7071067811865475244/10^19) - taylorErr := by
+      unfold taylorSin taylorErr; norm_num
+    linarith
+  · have := sin_upper h0 hb.2 (by norm_num)
+    have h : taylorSin (7071067811865475245/10^19 : ℝ) + taylorErr
+        ≤ 6496369414/10^10 := by
+      unfold taylorSin taylorErr; norm_num
+    linarith
+
+theorem gam_bounds : (8274992907/10^10 : ℝ) ≤ gam ∧ gam ≤ 8274993018/10^10 := by
+  have hb := sqrt2_half_bounds
+  have hc := cos_sqrt2_half_bounds
+  have hs := sin_sqrt2_half_bounds
+  have h0 : (0:ℝ) ≤ Real.sqrt 2 / 2 := by linarith [hb.1]
+  have hspos : (0:ℝ) < Real.sin (Real.sqrt 2 / 2) := by linarith [hs.1]
+  have hprodl : (7071067811865475244/10^19 : ℝ) * (7602445947/10^10)
+      ≤ (Real.sqrt 2 / 2) * Real.cos (Real.sqrt 2 / 2) :=
+    mul_le_mul hb.1 hc.1 (by norm_num) h0
+  have hprodu : (Real.sqrt 2 / 2) * Real.cos (Real.sqrt 2 / 2)
+      ≤ (7071067811865475245/10^19 : ℝ) * (7602445994/10^10) :=
+    mul_le_mul hb.2 hc.2 (by linarith [hc.1]) (by norm_num)
+  constructor
+  · rw [gam, le_div_iff₀ hspos]; nlinarith [hprodl, hs.2]
+  · rw [gam, div_le_iff₀ hspos]; nlinarith [hprodu, hs.1]
+
+private lemma kfun_aux (a b : ℝ) (ha : a ≠ 0) (hsa : Real.sin a ≠ 0)
+    (h1 : a - b ≠ 0) (h2 : a + b ≠ 0) :
+    ((Real.sin (a - b) / (a - b) + Real.sin (a + b) / (a + b)) / 2) / (Real.sin a / a)
+      = (a^2 * Real.cos b - a * b * (Real.cos a / Real.sin a) * Real.sin b) / (a^2 - b^2) := by
+  have hab : a^2 - b^2 ≠ 0 := by
+    have hfac : a^2 - b^2 = (a - b) * (a + b) := by ring
+    rw [hfac]; exact mul_ne_zero h1 h2
+  rw [Real.sin_sub, Real.sin_add]
+  field_simp
+  ring
+
+theorem kfun_closed (x : ℝ) (h : 1 - 2*(Real.pi*x)^2 ≠ 0) :
+    kfun x = (Real.cos (Real.pi*x) - 2*gam*(Real.pi*x)*Real.sin (Real.pi*x))
+      / (1 - 2*(Real.pi*x)^2) := by
+  have hb := sqrt2_half_bounds
+  set a : ℝ := Real.sqrt 2 / 2 with ha_def
+  set b : ℝ := Real.pi * x with hb_def
+  have ha2 : a^2 = 1/2 := by
+    rw [ha_def, div_pow, Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 2)]; norm_num
+  have ha : a ≠ 0 := by positivity
+  have hsa : Real.sin a ≠ 0 := ne_of_gt sin_sqrt2_half_pos
+  have h1 : a - b ≠ 0 := by
+    intro hz
+    apply h
+    have : b = a := by linarith [sub_eq_zero.mp hz]
+    rw [this]; nlinarith [ha2]
+  have h2 : a + b ≠ 0 := by
+    intro hz
+    apply h
+    have : b = -a := by linarith
+    rw [this]; nlinarith [ha2]
+  have hK : Kfun x = (Real.sin (a - b)/(a - b) + Real.sin (a + b)/(a + b))/2 := by
+    rw [Kfun_eq_sinc, show (Real.sqrt 2 - 2*Real.pi*x)/2 = a - b by rw [ha_def, hb_def]; ring,
+      show (Real.sqrt 2 + 2*Real.pi*x)/2 = a + b by rw [ha_def, hb_def]; ring,
+      Real.sinc_of_ne_zero h1, Real.sinc_of_ne_zero h2]
+  have hK0 : Kfun 0 = Real.sin a / a := by
+    rw [Kfun_eq_sinc, show (Real.sqrt 2 - 2*Real.pi*0)/2 = a by rw [ha_def]; ring,
+      show (Real.sqrt 2 + 2*Real.pi*0)/2 = a by rw [ha_def]; ring,
+      Real.sinc_of_ne_zero ha]
+    ring
+  have hgam : gam = a * (Real.cos a / Real.sin a) := by
+    rw [gam, ← ha_def]; field_simp
+  have hne1 : (1/2 : ℝ) - b^2 ≠ 0 := by
+    intro hz; apply h; linarith
+  rw [kfun, hK, hK0, kfun_aux a b ha hsa h1 h2, hgam, ha2,
+    div_eq_div_iff hne1 h]
+  ring
+
+theorem pi_lo : (3.14159265358979323846 : ℝ) ≤ Real.pi := le_of_lt Real.pi_gt_d20
+
+theorem pi_hi : Real.pi ≤ 3.14159265358979323847 := le_of_lt Real.pi_lt_d20
+
+lemma wfun_nonneg (x : ℝ) : 0 ≤ wfun x := sq_nonneg _
+
+theorem wfun_ge (x nlo dhi : ℝ) (hnlo : 0 ≤ nlo) (hdhi : 0 < dhi)
+    (hD0 : 1 < 2*(Real.pi*x)^2) (hD : 2*(Real.pi*x)^2 - 1 ≤ dhi)
+    (hN : nlo ≤ |Real.cos (Real.pi*x) - 2*gam*(Real.pi*x)*Real.sin (Real.pi*x)|) :
+    (nlo/dhi)^2 ≤ wfun x := by
+  have hne : 1 - 2*(Real.pi*x)^2 ≠ 0 := by intro hz; nlinarith
+  have hk : kfun x = (Real.cos (Real.pi*x) - 2*gam*(Real.pi*x)*Real.sin (Real.pi*x))
+      / (1 - 2*(Real.pi*x)^2) := kfun_closed x hne
+  have hw : wfun x = kfun x ^ 2 := rfl
+  set N : ℝ := Real.cos (Real.pi*x) - 2*gam*(Real.pi*x)*Real.sin (Real.pi*x) with hN_def
+  set Dd : ℝ := 1 - 2*(Real.pi*x)^2 with hD_def
+  have hNsq : nlo^2 ≤ N^2 := by
+    have := abs_nonneg N
+    nlinarith [sq_abs N]
+  have h1 : Dd < 0 := by rw [hD_def]; linarith
+  have hDsq : Dd^2 ≤ dhi^2 := by nlinarith
+  have hDpos : 0 < Dd^2 := by positivity
+  rw [hw, hk, div_pow, div_pow, div_le_div_iff₀ (by positivity) hDpos]
+  nlinarith [sq_nonneg nlo, sq_nonneg N, hNsq, hDsq, hDpos]
+
+lemma abs_ge_of_le {N nlo : ℝ} (h : nlo ≤ N) : nlo ≤ |N| := h.trans (le_abs_self N)
+
+lemma abs_ge_of_ge {N nlo : ℝ} (h : N ≤ -nlo) : nlo ≤ |N| :=
+  le_trans (by linarith) (neg_le_abs N)
+
+lemma cs_h1 : Real.cos (Real.pi*(1/2:ℝ)) = 0 ∧ Real.sin (Real.pi*(1/2:ℝ)) = 1 := by
+  constructor <;> · rw [show Real.pi*(1/2:ℝ) = Real.pi/2 by ring]; simp
+
+lemma cs_1 : Real.cos (Real.pi*(1:ℝ)) = -1 ∧ Real.sin (Real.pi*(1:ℝ)) = 0 := by
+  constructor <;> · rw [show Real.pi*(1:ℝ) = Real.pi by ring]; simp
+
+lemma cs_h3 : Real.cos (Real.pi*(3/2:ℝ)) = 0 ∧ Real.sin (Real.pi*(3/2:ℝ)) = -1 := by
+  constructor <;> · rw [show Real.pi*(3/2:ℝ) = Real.pi/2 + Real.pi by ring]
+                    simp [Real.cos_add, Real.sin_add]
+
+lemma cs_2 : Real.cos (Real.pi*(2:ℝ)) = 1 ∧ Real.sin (Real.pi*(2:ℝ)) = 0 := by
+  constructor <;> · rw [show Real.pi*(2:ℝ) = 2*Real.pi by ring]; simp
+
+lemma cs_h5 : Real.cos (Real.pi*(5/2:ℝ)) = 0 ∧ Real.sin (Real.pi*(5/2:ℝ)) = 1 := by
+  constructor <;> · rw [show Real.pi*(5/2:ℝ) = Real.pi/2 + 2*Real.pi by ring]
+                    simp [Real.cos_add, Real.sin_add]
+
+lemma cs_3 : Real.cos (Real.pi*(3:ℝ)) = -1 ∧ Real.sin (Real.pi*(3:ℝ)) = 0 := by
+  constructor <;> · rw [show Real.pi*(3:ℝ) = Real.pi + 2*Real.pi by ring]
+                    simp [Real.cos_add, Real.sin_add]
+
+lemma cs_h7 : Real.cos (Real.pi*(7/2:ℝ)) = 0 ∧ Real.sin (Real.pi*(7/2:ℝ)) = -1 := by
+  constructor <;> · rw [show Real.pi*(7/2:ℝ) = Real.pi/2 + Real.pi + 2*Real.pi by ring]
+                    simp [Real.cos_add, Real.sin_add]
+
+lemma cs_4 : Real.cos (Real.pi*(4:ℝ)) = 1 ∧ Real.sin (Real.pi*(4:ℝ)) = 0 := by
+  constructor <;> · rw [show Real.pi*(4:ℝ) = 2*Real.pi + 2*Real.pi by ring]
+                    simp [Real.cos_add, Real.sin_add]
+
+lemma cs_h9 : Real.cos (Real.pi*(9/2:ℝ)) = 0 ∧ Real.sin (Real.pi*(9/2:ℝ)) = 1 := by
+  constructor <;> · rw [show Real.pi*(9/2:ℝ) = Real.pi/2 + 2*Real.pi + 2*Real.pi by ring]
+                    simp [Real.cos_add, Real.sin_add]
+
+lemma cos_flip (a x : ℝ) : Real.cos (Real.pi*(x-a)) = Real.cos (Real.pi*(a-x)) := by
+  rw [show Real.pi*(x-a) = -(Real.pi*(a-x)) by ring, Real.cos_neg]
+
+lemma sin_flip (a x : ℝ) : Real.sin (Real.pi*(x-a)) = -Real.sin (Real.pi*(a-x)) := by
+  rw [show Real.pi*(x-a) = -(Real.pi*(a-x)) by ring, Real.sin_neg]
+
+def taylorSinc (z : ℝ) : ℝ :=
+  1 - z^2/6 + z^4/120 - z^6/5040 + z^8/362880 - z^10/39916800
+
+theorem sinc_taylor (z : ℝ) (hz : |z| ≤ 1) : taylorSinc z - taylorErr ≤ Real.sinc z := by
+  rcases eq_or_ne z 0 with rfl | hz0
+  · norm_num [Real.sinc_zero, taylorSinc, taylorErr]
+  · have ht := (cos_sin_taylor12 z hz).2
+    have hzpos : 0 < |z| := abs_pos.mpr hz0
+    have hpow : |z|^12 * (13/5748019200) ≤ |z| * taylorErr := by
+      have h11 : |z|^11 ≤ 1 := pow_le_one₀ (abs_nonneg z) hz
+      have hsplit : |z|^12 = |z| * |z|^11 := by ring
+      rw [hsplit]
+      unfold taylorErr
+      nlinarith [abs_nonneg z]
+    have key : |Real.sin z - z * taylorSinc z| ≤ |z| * taylorErr := by
+      have hpoly : z * taylorSinc z
+          = z - z^3/6 + z^5/120 - z^7/5040 + z^9/362880 - z^11/39916800 := by
+        unfold taylorSinc; ring
+      rw [hpoly]
+      exact le_trans ht hpow
+    have habs : |(Real.sin z - z * taylorSinc z)/z| ≤ taylorErr := by
+      rw [abs_div, div_le_iff₀ hzpos]
+      exact le_of_le_of_eq key (mul_comm _ _)
+    have hsplit : Real.sin z / z = (Real.sin z - z * taylorSinc z)/z + taylorSinc z := by
+      field_simp; ring
+    rw [Real.sinc_of_ne_zero hz0, hsplit]
+    linarith [(abs_le.mp habs).1]
+
+private lemma sqrt2_bounds : (14142135623/10^10 : ℝ) ≤ Real.sqrt 2 ∧
+    Real.sqrt 2 ≤ 14142135624/10^10 := by
+  have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hnn : (0:ℝ) ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
+  constructor <;> nlinarith [h2, hnn]
+
+theorem wfun_window (x : ℝ) (h0 : 0 ≤ x) (h1 : x ≤ 1/2) : (19/100 : ℝ) ≤ wfun x := by
+  have hpl := pi_lo
+  have hph := pi_hi
+  have h2 := sqrt2_bounds
+  set A : ℝ := (Real.sqrt 2 - 2*Real.pi*x)/2 with hA
+  set B : ℝ := (Real.sqrt 2 + 2*Real.pi*x)/2 with hB
+  have hAlo : (-8637/10000 : ℝ) ≤ A := by rw [hA]; nlinarith
+  have hAhi : A ≤ 7072/10000 := by rw [hA]; nlinarith
+  have hAabs : |A| ≤ 1 := by rw [abs_le]; constructor <;> linarith
+  have hA2 : A^2 ≤ 7460/10000 := by nlinarith
+  have hsincA : (87557/100000 : ℝ) ≤ Real.sinc A := by
+    have h := sinc_taylor A hAabs
+    have hq : (87557/100000 : ℝ) ≤ taylorSinc A - taylorErr := by
+      unfold taylorSinc taylorErr
+      nlinarith [sq_nonneg A, sq_nonneg (A^2), sq_nonneg (A^3), sq_nonneg (A^4),
+        sq_nonneg (A^5), hA2, sq_nonneg (A^2 - 7460/10000)]
+    linarith
+  have hBlo : (7071/10000 : ℝ) < B := by rw [hB]; nlinarith
+  have hBhi : B ≤ 22780/10000 := by rw [hB]; nlinarith
+  have hsincB : (0:ℝ) ≤ Real.sinc B := by
+    rw [Real.sinc_of_ne_zero (by positivity)]
+    exact div_nonneg (Real.sin_nonneg_of_nonneg_of_le_pi (by linarith) (by linarith))
+      (by linarith)
+  have hK : (43778/100000 : ℝ) ≤ Kfun x := by
+    rw [Kfun_eq_sinc, ← hA, ← hB]; linarith
+  have hK0 : Kfun 0 = Real.sinc (Real.sqrt 2/2) := by
+    rw [Kfun_eq_sinc, show (Real.sqrt 2 - 2*Real.pi*0)/2 = Real.sqrt 2/2 by ring,
+      show (Real.sqrt 2 + 2*Real.pi*0)/2 = Real.sqrt 2/2 by ring]
+    ring
+  have hK0le : Kfun 0 ≤ 1 := by rw [hK0]; exact Real.sinc_le_one _
+  have hK0pos : 0 < Kfun 0 := by
+    rw [hK0, Real.sinc_of_ne_zero (by positivity)]
+    exact div_pos sin_sqrt2_half_pos (by linarith [sqrt2_bounds.1])
+  have hk : (43778/100000 : ℝ) ≤ kfun x := by
+    rw [kfun, le_div_iff₀ hK0pos]
+    nlinarith
+  have hw : wfun x = kfun x ^ 2 := rfl
+  rw [hw]; nlinarith
+
+lemma trig_shift (a y : ℝ) :
+    Real.cos (Real.pi * (a + y)) =
+        Real.cos (Real.pi*a) * Real.cos (Real.pi*y) - Real.sin (Real.pi*a) * Real.sin (Real.pi*y)
+      ∧ Real.sin (Real.pi * (a + y)) =
+        Real.sin (Real.pi*a) * Real.cos (Real.pi*y) + Real.cos (Real.pi*a) * Real.sin (Real.pi*y) := by
+  constructor
+  · rw [mul_add, Real.cos_add]
+  · rw [mul_add, Real.sin_add]
+
+end Zeta23Ext.Bridge.ThreePoint
+
+end
+
+/-! ###### helper lemmas for the cell certificates ###### -/
+
+noncomputable section
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+/-- Interval product, lower end, for a nonnegative first factor: `P s ≥ P c ≥ min (a c) (b c)`. -/
+theorem prod_lo {P s a b c m : ℝ} (ha : 0 ≤ a) (h1 : a ≤ P) (h2 : P ≤ b) (h3 : c ≤ s)
+    (k1 : m ≤ a * c) (k3 : m ≤ b * c) : m ≤ P * s := by
+  rcases le_total 0 c with hc | hc
+  · nlinarith [mul_nonneg (sub_nonneg.2 h1) hc, mul_nonneg (ha.trans h1) (sub_nonneg.2 h3)]
+  · nlinarith [mul_nonneg (sub_nonneg.2 h2) (neg_nonneg.2 hc), mul_nonneg (ha.trans h1) (sub_nonneg.2 h3)]
+
+/-- Interval product, upper end, for a nonnegative first factor: `P s ≤ P d ≤ max (a d) (b d)`. -/
+theorem prod_hi {P s a b d m : ℝ} (ha : 0 ≤ a) (h1 : a ≤ P) (h2 : P ≤ b) (h4 : s ≤ d)
+    (k2 : a * d ≤ m) (k4 : b * d ≤ m) : P * s ≤ m := by
+  rcases le_total 0 d with hd | hd
+  · nlinarith [mul_nonneg (sub_nonneg.2 h2) hd, mul_nonneg (ha.trans h1) (sub_nonneg.2 h4)]
+  · nlinarith [mul_nonneg (sub_nonneg.2 h1) (neg_nonneg.2 hd), mul_nonneg (ha.trans h1) (sub_nonneg.2 h4)]
+
+/-- Product of nonnegative lower bounds. -/
+theorem mul_ge_of {P s a c m : ℝ} (h1 : a ≤ P) (h2 : c ≤ s) (ha : 0 ≤ a) (hc : 0 ≤ c)
+    (hm : m ≤ a * c) : m ≤ P * s :=
+  hm.trans (mul_le_mul h1 h2 hc (ha.trans h1))
+
+/-- Product of upper bounds of nonnegative factors. -/
+theorem mul_le_of {P s b d m : ℝ} (h1 : P ≤ b) (h2 : s ≤ d) (hP : 0 ≤ P) (hs : 0 ≤ s)
+    (hm : b * d ≤ m) : P * s ≤ m :=
+  (mul_le_mul h1 h2 hs (hP.trans h1)).trans hm
+
+end Zeta23Ext.Bridge.ThreePoint
+
+end
+
+/-! ###### verified certificate checker: rational cells, chains, boxes, cover ###### -/
+
+section CheckerDefs
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+/-! ### Rational mirrors of the enclosure constants -/
+
+/-- Horner forms of the twelve-term Taylor polynomials (fewer rational operations for the kernel). -/
+def taylorCosQ (t : ℚ) : ℚ :=
+  let s := t * t
+  1 + s * (-1/2 + s * (1/24 + s * (-1/720 + s * (1/40320 + s * (-1/3628800)))))
+def taylorSinQ (t : ℚ) : ℚ :=
+  let s := t * t
+  t * (1 + s * (-1/6 + s * (1/120 + s * (-1/5040 + s * (1/362880 + s * (-1/39916800))))))
+def errQ : ℚ := 13/5748019200
+def piLoQ : ℚ := 314159265358979323846 / 10^20
+def piHiQ : ℚ := 314159265358979323847 / 10^20
+def gamLoQ : ℚ := 8274992907 / 10^10
+def gamHiQ : ℚ := 8274993018 / 10^10
+
+/-- rounding to `10⁻¹²`, downwards and upwards -/
+def floorD (x : ℚ) : ℚ := ((⌊x * 1000000000000⌋ : ℤ) : ℚ) / 1000000000000
+def ceilD (x : ℚ) : ℚ := ((⌈x * 1000000000000⌉ : ℤ) : ℚ) / 1000000000000
+
+/-- `(cos (π k/2), sin (π k/2))` as integers. -/
+def csA : ℕ → ℤ × ℤ
+  | 0 => (1, 0)
+  | k+1 => (-(csA k).2, (csA k).1)
+
+def imulZ (e : ℤ) (I : ℚ × ℚ) : ℚ × ℚ :=
+  if 0 ≤ e then ((e:ℚ) * I.1, (e:ℚ) * I.2) else ((e:ℚ) * I.2, (e:ℚ) * I.1)
+def iadd (I J : ℚ × ℚ) : ℚ × ℚ := (I.1 + J.1, I.2 + J.2)
+def isub (I J : ℚ × ℚ) : ℚ × ℚ := (I.1 - J.2, I.2 - J.1)
+
+/-- A table cell: the interval `[L, U]`, its anchor `A = k/2`, the side (`true`: `x − A`,
+`false`: `A − x`), and the claimed lower bound `W ≤ wfun` on the cell. -/
+structure Cell where
+  (L U : ℚ) (k : ℕ) (side : Bool) (W : ℚ)
+
+instance : Inhabited Cell := ⟨⟨0, 0, 0, true, 0⟩⟩
+
+namespace Cell
+def A (c : Cell) : ℚ := (c.k : ℚ) / 2
+def rlo (c : Cell) : ℚ := if c.side then c.L - c.A else c.A - c.U
+def rhi (c : Cell) : ℚ := if c.side then c.U - c.A else c.A - c.L
+def TL (c : Cell) : ℚ := floorD (piLoQ * c.rlo)
+def TU (c : Cell) : ℚ := ceilD (piHiQ * c.rhi)
+def CI (c : Cell) : ℚ × ℚ := (floorD (taylorCosQ c.TU - errQ), ceilD (taylorCosQ c.TL + errQ))
+def SI (c : Cell) : ℚ × ℚ := (floorD (taylorSinQ c.TL - errQ), ceilD (taylorSinQ c.TU + errQ))
+def cA (c : Cell) : ℤ := (csA c.k).1
+def sA (c : Cell) : ℤ := (csA c.k).2
+def CX (c : Cell) : ℚ × ℚ :=
+  if c.side then isub (imulZ c.cA c.CI) (imulZ c.sA c.SI) else iadd (imulZ c.cA c.CI) (imulZ c.sA c.SI)
+def SX (c : Cell) : ℚ × ℚ :=
+  if c.side then iadd (imulZ c.sA c.CI) (imulZ c.cA c.SI) else isub (imulZ c.sA c.CI) (imulZ c.cA c.SI)
+def BL (c : Cell) : ℚ := floorD (piLoQ * c.L)
+def BU (c : Cell) : ℚ := ceilD (piHiQ * c.U)
+def P2L (c : Cell) : ℚ := floorD (2 * gamLoQ * c.BL)
+def P2U (c : Cell) : ℚ := ceilD (2 * gamHiQ * c.BU)
+def TLO (c : Cell) : ℚ := floorD (min (c.P2L * c.SX.1) (c.P2U * c.SX.1))
+def THI (c : Cell) : ℚ := ceilD (max (c.P2L * c.SX.2) (c.P2U * c.SX.2))
+def NLO (c : Cell) : ℚ := max 0 (max (c.CX.1 - c.THI) (c.TLO - c.CX.2))
+def DHI (c : Cell) : ℚ := ceilD (2 * c.BU * c.BU - 1)
+def Wc (c : Cell) : ℚ := (c.NLO / c.DHI)^2
+def ok (c : Cell) : Bool :=
+  decide (0 ≤ c.L) && decide (c.L ≤ c.U) && decide (0 ≤ c.rlo) && decide (c.TU ≤ 1)
+    && decide (0 ≤ c.TL) && decide (0 ≤ c.BL) && decide (0 ≤ c.P2L)
+    && decide (1 < 2 * c.BL * c.BL) && decide (0 < c.DHI) && decide (c.W ≤ c.Wc)
+end Cell
+
+/-! ### Chains of cells covering an interval -/
+
+def chainW (cs : List Cell) : List ℕ → ℚ
+  | [] => 0
+  | i :: rest => if rest.isEmpty then (cs.getD i default).W else min (cs.getD i default).W (chainW cs rest)
+
+def chainCheck (cs : List Cell) : ℚ → ℚ → List ℕ → Bool
+  | lo, hi, [] => decide (hi ≤ lo)
+  | lo, hi, i :: rest =>
+      decide (i < cs.length) && decide ((cs.getD i default).L ≤ lo)
+        && chainCheck cs (cs.getD i default).U hi rest
+
+def termW (cs : List Cell) (idxs : List ℕ) : ℚ := if idxs.isEmpty then 0 else chainW cs idxs
+def termCheck (cs : List Cell) (lo hi : ℚ) (idxs : List ℕ) : Bool :=
+  idxs.isEmpty || chainCheck cs lo hi idxs
+
+/-! ### Boxes and bisection trees for the four-point functional -/
+
+structure Box where
+  (xl xu yl yu zl zu : ℚ)
+  deriving DecidableEq
+
+inductive Tree
+  | leaf (t0 t1 t2 t3 t4 t5 : List ℕ)
+  | split (ax : ℕ) (q : ℚ) (lo hi : Tree)
+
+def leafCheck (cs : List Cell) (c p : ℚ) (b : Box) (t0 t1 t2 t3 t4 t5 : List ℕ) : Bool :=
+  termCheck cs b.xl b.xu t0 && termCheck cs b.yl b.yu t1 && termCheck cs b.zl b.zu t2
+    && termCheck cs (b.xl + b.yl) (b.xu + b.yu) t3 && termCheck cs (b.yl + b.zl) (b.yu + b.zu) t4
+    && termCheck cs (b.xl + b.yl + b.zl) (b.xu + b.yu + b.zu) t5
+    && decide (c ≤ (b.xl + b.yl + b.zl) / p
+        + 2/3 * termW cs t0 + 2/3 * termW cs t1 + 2/3 * termW cs t2
+        + termW cs t3 + termW cs t4 + 2 * termW cs t5)
+
+def treeCheck (cs : List Cell) (c p : ℚ) : Box → Tree → Bool
+  | b, .leaf t0 t1 t2 t3 t4 t5 => leafCheck cs c p b t0 t1 t2 t3 t4 t5
+  | b, .split ax q lo hi =>
+      if ax = 0 then treeCheck cs c p {b with xu := q} lo && treeCheck cs c p {b with xl := q} hi
+      else if ax = 1 then treeCheck cs c p {b with yu := q} lo && treeCheck cs c p {b with yl := q} hi
+      else if ax = 2 then treeCheck cs c p {b with zu := q} lo && treeCheck cs c p {b with zl := q} hi
+      else false
+
+/-! ### The one-dimensional cover and the trees over the bad triples -/
+
+/-- segments `(a, b, chain)`, contiguous from `pos`; an empty chain marks a bad segment. -/
+def coverCheck (cs : List Cell) (lvl : ℚ) : ℚ → ℚ → List (ℚ × ℚ × List ℕ) → Bool
+  | pos, S, [] => decide (S ≤ pos)
+  | pos, S, (a, b, ch) :: rest =>
+      decide (a = pos) && decide (a ≤ b)
+        && (ch.isEmpty || (chainCheck cs a b ch && decide (lvl ≤ chainW cs ch)))
+        && coverCheck cs lvl b S rest
+
+def badOf (cover : List (ℚ × ℚ × List ℕ)) : List (ℚ × ℚ) :=
+  cover.filterMap fun s => if s.2.2.isEmpty then some (s.1, s.2.1) else none
+
+def boxOf (bad : List (ℚ × ℚ)) (i j k : ℕ) : Box :=
+  ⟨(bad.getD i (0, 0)).1, (bad.getD i (0, 0)).2, (bad.getD j (0, 0)).1, (bad.getD j (0, 0)).2,
+    (bad.getD k (0, 0)).1, (bad.getD k (0, 0)).2⟩
+
+def treesCheck (cs : List Cell) (c p : ℚ) (bad : List (ℚ × ℚ)) (trees : List Tree) : Bool :=
+  let nb := bad.length
+  (List.range nb).all fun i => (List.range nb).all fun j => (List.range nb).all fun k =>
+    treeCheck cs c p (boxOf bad i j k) (trees.getD (i * nb * nb + j * nb + k) (.leaf [] [] [] [] [] []))
+
+end Zeta23Ext.Bridge.ThreePoint
+
+end CheckerDefs
+
+noncomputable section
+
+open Real
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+/-! ### Soundness: the constants -/
+
+theorem taylorCosQ_cast (q : ℚ) : taylorCos (q:ℝ) = ((taylorCosQ q : ℚ) : ℝ) := by
+  simp only [taylorCos, taylorCosQ]; push_cast; ring
+
+theorem taylorSinQ_cast (q : ℚ) : taylorSin (q:ℝ) = ((taylorSinQ q : ℚ) : ℝ) := by
+  simp only [taylorSin, taylorSinQ]; push_cast; ring
+
+theorem errQ_cast : taylorErr = ((errQ : ℚ) : ℝ) := by
+  simp only [taylorErr, errQ]; push_cast; ring
+
+theorem floorD_le (x : ℚ) : floorD x ≤ x := by
+  unfold floorD
+  rw [div_le_iff₀ (by norm_num)]
+  exact Int.floor_le _
+
+theorem le_ceilD (x : ℚ) : x ≤ ceilD x := by
+  unfold ceilD
+  rw [le_div_iff₀ (by norm_num)]
+  exact Int.le_ceil _
+
+theorem floorD_le' (x : ℚ) : ((floorD x : ℚ) : ℝ) ≤ (x : ℝ) := Rat.cast_le.mpr (floorD_le x)
+theorem le_ceilD' (x : ℚ) : (x : ℝ) ≤ ((ceilD x : ℚ) : ℝ) := Rat.cast_le.mpr (le_ceilD x)
+
+theorem piLoQ_le : ((piLoQ : ℚ) : ℝ) ≤ Real.pi := by
+  have h := pi_lo
+  simp only [piLoQ]; push_cast
+  norm_num at h ⊢
+  linarith
+
+theorem piHiQ_ge : Real.pi ≤ ((piHiQ : ℚ) : ℝ) := by
+  have h := pi_hi
+  simp only [piHiQ]; push_cast
+  norm_num at h ⊢
+  linarith
+
+theorem piLoQ_nonneg : (0:ℝ) ≤ ((piLoQ : ℚ) : ℝ) := by simp only [piLoQ]; push_cast; norm_num
+theorem gamLoQ_le : ((gamLoQ : ℚ) : ℝ) ≤ gam := by
+  have h := gam_bounds.1; simp only [gamLoQ]; push_cast; norm_num at h ⊢; linarith
+theorem gamHiQ_ge : gam ≤ ((gamHiQ : ℚ) : ℝ) := by
+  have h := gam_bounds.2; simp only [gamHiQ]; push_cast; norm_num at h ⊢; linarith
+theorem gamLoQ_nonneg : (0:ℝ) ≤ ((gamLoQ : ℚ) : ℝ) := by simp only [gamLoQ]; push_cast; norm_num
+
+theorem cos_sin_half (k : ℕ) :
+    Real.cos (Real.pi * ((k:ℝ) / 2)) = ((csA k).1 : ℝ) ∧
+      Real.sin (Real.pi * ((k:ℝ) / 2)) = ((csA k).2 : ℝ) := by
+  induction k with
+  | zero => simp [csA]
+  | succ k ih =>
+    have e : Real.pi * (((k + 1 : ℕ) : ℝ) / 2) = Real.pi * ((k:ℝ) / 2) + Real.pi / 2 := by
+      push_cast; ring
+    rw [e, Real.cos_add_pi_div_two, Real.sin_add_pi_div_two, ih.1, ih.2]
+    simp [csA]
+
+theorem imulZ_sound (e : ℤ) (I : ℚ × ℚ) {f : ℝ} (h1 : (I.1 : ℝ) ≤ f) (h2 : f ≤ I.2) :
+    ((imulZ e I).1 : ℝ) ≤ (e:ℝ) * f ∧ (e:ℝ) * f ≤ ((imulZ e I).2 : ℝ) := by
+  unfold imulZ
+  split_ifs with he
+  · have he' : (0:ℝ) ≤ e := by exact_mod_cast he
+    simp only; push_cast
+    exact ⟨mul_le_mul_of_nonneg_left h1 he', mul_le_mul_of_nonneg_left h2 he'⟩
+  · have he' : (e:ℝ) ≤ 0 := by push_neg at he; exact_mod_cast he.le
+    simp only; push_cast
+    exact ⟨mul_le_mul_of_nonpos_left h2 he', mul_le_mul_of_nonpos_left h1 he'⟩
+
+theorem iadd_sound (I J : ℚ × ℚ) {f g : ℝ} (hI : (I.1:ℝ) ≤ f ∧ f ≤ I.2) (hJ : (J.1:ℝ) ≤ g ∧ g ≤ J.2) :
+    ((iadd I J).1 : ℝ) ≤ f + g ∧ f + g ≤ ((iadd I J).2 : ℝ) := by
+  unfold iadd; simp only; push_cast; constructor <;> linarith [hI.1, hI.2, hJ.1, hJ.2]
+
+theorem isub_sound (I J : ℚ × ℚ) {f g : ℝ} (hI : (I.1:ℝ) ≤ f ∧ f ≤ I.2) (hJ : (J.1:ℝ) ≤ g ∧ g ≤ J.2) :
+    ((isub I J).1 : ℝ) ≤ f - g ∧ f - g ≤ ((isub I J).2 : ℝ) := by
+  unfold isub; simp only; push_cast; constructor <;> linarith [hI.1, hI.2, hJ.1, hJ.2]
+
+/-! ### Soundness: one cell -/
+
+set_option maxHeartbeats 4000000 in
+theorem cell_sound (c : Cell) (h : c.ok = true) (x : ℝ) (hx1 : (c.L : ℝ) ≤ x) (hx2 : x ≤ c.U) :
+    (c.W : ℝ) ≤ wfun x := by
+  simp only [Cell.ok, Bool.and_eq_true, decide_eq_true_eq] at h
+  obtain ⟨⟨⟨⟨⟨⟨⟨⟨⟨h0, hLU⟩, hr0⟩, hTU⟩, hTL0q⟩, hBL0q⟩, hP2L0q⟩, hB⟩, hD⟩, hW⟩ := h
+  have h0' : (0:ℝ) ≤ c.L := Rat.cast_nonneg.mpr h0
+  have hr0' : (0:ℝ) ≤ c.rlo := Rat.cast_nonneg.mpr hr0
+  have hTL0 : (0:ℝ) ≤ c.TL := Rat.cast_nonneg.mpr hTL0q
+  have hBL0 : (0:ℝ) ≤ c.BL := Rat.cast_nonneg.mpr hBL0q
+  have hP2L0 : (0:ℝ) ≤ c.P2L := Rat.cast_nonneg.mpr hP2L0q
+  have hTU' : (c.TU : ℝ) ≤ 1 := by
+    have := (Rat.cast_le (K := ℝ)).mpr hTU; simpa using this
+  have hB' : (1:ℝ) < 2 * c.BL * c.BL := by
+    have := (Rat.cast_lt (K := ℝ)).mpr hB; push_cast at this; exact this
+  have hD' : (0:ℝ) < c.DHI := Rat.cast_pos.mpr hD
+  have hW' : (c.W : ℝ) ≤ c.Wc := (Rat.cast_le (K := ℝ)).mpr hW
+  -- the reduced offset
+  set r : ℝ := if c.side then x - c.A else c.A - x with hr
+  have hrlo : (c.rlo : ℝ) ≤ r := by
+    simp only [Cell.rlo, hr]; split_ifs <;> push_cast <;> linarith
+  have hrhi : r ≤ c.rhi := by
+    simp only [Cell.rhi, hr]; split_ifs <;> push_cast <;> linarith
+  have hr0r : 0 ≤ r := hr0'.trans hrlo
+  have hTL : (c.TL : ℝ) ≤ Real.pi * r := by
+    have h1 : (c.TL : ℝ) ≤ ((piLoQ * c.rlo : ℚ) : ℝ) := floorD_le' _
+    rw [Rat.cast_mul] at h1
+    exact h1.trans (mul_ge_of piLoQ_le hrlo piLoQ_nonneg hr0' le_rfl)
+  have hTUr : Real.pi * r ≤ c.TU := by
+    have h1 : ((piHiQ * c.rhi : ℚ) : ℝ) ≤ (c.TU : ℝ) := le_ceilD' _
+    rw [Rat.cast_mul] at h1
+    exact (mul_le_of piHiQ_ge hrhi Real.pi_pos.le hr0r le_rfl).trans h1
+  have hθ0 : (0:ℝ) ≤ Real.pi * r := mul_nonneg Real.pi_pos.le hr0r
+  have hθ1 : Real.pi * r ≤ 1 := hTUr.trans hTU'
+  -- Taylor enclosures of cos (π r), sin (π r)
+  have hc1 : ((c.CI).1 : ℝ) ≤ Real.cos (Real.pi * r) := by
+    have h := cos_lower hθ0 hTUr hTU'
+    rw [taylorCosQ_cast, errQ_cast] at h
+    have h1 : ((c.CI).1 : ℝ) ≤ ((taylorCosQ c.TU - errQ : ℚ) : ℝ) := floorD_le' _
+    push_cast at h1; exact h1.trans h
+  have hc2 : Real.cos (Real.pi * r) ≤ ((c.CI).2 : ℝ) := by
+    have h := cos_upper hTL0 hTL hθ1
+    rw [taylorCosQ_cast, errQ_cast] at h
+    have h1 : ((taylorCosQ c.TL + errQ : ℚ) : ℝ) ≤ ((c.CI).2 : ℝ) := le_ceilD' _
+    push_cast at h1; exact h.trans h1
+  have hs1 : ((c.SI).1 : ℝ) ≤ Real.sin (Real.pi * r) := by
+    have h := sin_lower hTL0 hTL hθ1
+    rw [taylorSinQ_cast, errQ_cast] at h
+    have h1 : ((c.SI).1 : ℝ) ≤ ((taylorSinQ c.TL - errQ : ℚ) : ℝ) := floorD_le' _
+    push_cast at h1; exact h1.trans h
+  have hs2 : Real.sin (Real.pi * r) ≤ ((c.SI).2 : ℝ) := by
+    have h := sin_upper hθ0 hTUr hTU'
+    rw [taylorSinQ_cast, errQ_cast] at h
+    have h1 : ((taylorSinQ c.TU + errQ : ℚ) : ℝ) ≤ ((c.SI).2 : ℝ) := le_ceilD' _
+    push_cast at h1; exact h.trans h1
+  -- the shift to the anchor
+  have hcs := cos_sin_half c.k
+  have eA : (c.A : ℝ) = (c.k : ℝ) / 2 := by simp [Cell.A]
+  have hCX : ((c.CX).1 : ℝ) ≤ Real.cos (Real.pi * x) ∧ Real.cos (Real.pi * x) ≤ ((c.CX).2 : ℝ) := by
+    cases hsd : c.side
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) - Real.pi * r := by
+        simp only [hr, hsd, Bool.false_eq_true, if_false]; rw [← eA]; ring
+      rw [ex, Real.cos_sub, hcs.1, hcs.2]
+      simp only [Cell.CX, hsd, Bool.false_eq_true, if_false]
+      exact iadd_sound _ _ (imulZ_sound _ _ hc1 hc2) (imulZ_sound _ _ hs1 hs2)
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) + Real.pi * r := by
+        simp only [hr, hsd, if_true]; rw [← eA]; ring
+      rw [ex, Real.cos_add, hcs.1, hcs.2]
+      simp only [Cell.CX, hsd, if_true]
+      exact isub_sound _ _ (imulZ_sound _ _ hc1 hc2) (imulZ_sound _ _ hs1 hs2)
+  have hSX : ((c.SX).1 : ℝ) ≤ Real.sin (Real.pi * x) ∧ Real.sin (Real.pi * x) ≤ ((c.SX).2 : ℝ) := by
+    cases hsd : c.side
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) - Real.pi * r := by
+        simp only [hr, hsd, Bool.false_eq_true, if_false]; rw [← eA]; ring
+      rw [ex, Real.sin_sub, hcs.1, hcs.2]
+      simp only [Cell.SX, hsd, Bool.false_eq_true, if_false]
+      exact isub_sound _ _ (imulZ_sound _ _ hc1 hc2) (imulZ_sound _ _ hs1 hs2)
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) + Real.pi * r := by
+        simp only [hr, hsd, if_true]; rw [← eA]; ring
+      rw [ex, Real.sin_add, hcs.1, hcs.2]
+      simp only [Cell.SX, hsd, if_true]
+      exact iadd_sound _ _ (imulZ_sound _ _ hc1 hc2) (imulZ_sound _ _ hs1 hs2)
+  -- π x and 2 γ π x
+  have hb1 : (c.BL : ℝ) ≤ Real.pi * x := by
+    have h1 : (c.BL : ℝ) ≤ ((piLoQ * c.L : ℚ) : ℝ) := floorD_le' _
+    rw [Rat.cast_mul] at h1
+    exact h1.trans (mul_ge_of piLoQ_le hx1 piLoQ_nonneg h0' le_rfl)
+  have hb2 : Real.pi * x ≤ c.BU := by
+    have h1 : ((piHiQ * c.U : ℚ) : ℝ) ≤ (c.BU : ℝ) := le_ceilD' _
+    rw [Rat.cast_mul] at h1
+    exact (mul_le_of piHiQ_ge hx2 Real.pi_pos.le (h0'.trans hx1) le_rfl).trans h1
+  have hπx0 : (0:ℝ) ≤ Real.pi * x := hBL0.trans hb1
+  have hgam0 : (0:ℝ) ≤ gam := gamLoQ_nonneg.trans gamLoQ_le
+  have hp1 : (c.P2L : ℝ) ≤ 2 * gam * (Real.pi * x) := by
+    have h1 : (c.P2L : ℝ) ≤ ((2 * gamLoQ * c.BL : ℚ) : ℝ) := floorD_le' _
+    push_cast at h1
+    have := mul_le_mul gamLoQ_le hb1 hBL0 hgam0
+    linarith
+  have hp2 : 2 * gam * (Real.pi * x) ≤ c.P2U := by
+    have h1 : ((2 * gamHiQ * c.BU : ℚ) : ℝ) ≤ (c.P2U : ℝ) := le_ceilD' _
+    push_cast at h1
+    have := mul_le_mul gamHiQ_ge hb2 hπx0 (gamLoQ_nonneg.trans (gamLoQ_le.trans gamHiQ_ge))
+    linarith
+  -- the product 2 γ π x · sin (π x)
+  have hT1 : (c.TLO : ℝ) ≤ 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) := by
+    have h1 : (c.TLO : ℝ) ≤ ((min (c.P2L * c.SX.1) (c.P2U * c.SX.1) : ℚ) : ℝ) := floorD_le' _
+    rw [Rat.cast_min, Rat.cast_mul, Rat.cast_mul] at h1
+    exact h1.trans (prod_lo hP2L0 hp1 hp2 hSX.1 (min_le_left _ _) (min_le_right _ _))
+  have hT2 : 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) ≤ c.THI := by
+    have h1 : ((max (c.P2L * c.SX.2) (c.P2U * c.SX.2) : ℚ) : ℝ) ≤ (c.THI : ℝ) := le_ceilD' _
+    rw [Rat.cast_max, Rat.cast_mul, Rat.cast_mul] at h1
+    exact (prod_hi hP2L0 hp1 hp2 hSX.2 (le_max_left _ _) (le_max_right _ _)).trans h1
+  -- the numerator
+  have eNLO : (c.NLO : ℝ) = max 0 (max (((c.CX).1 : ℝ) - c.THI) ((c.TLO : ℝ) - (c.CX).2)) := by
+    rw [Cell.NLO, Rat.cast_max, Rat.cast_max]; push_cast; rfl
+  have hN : (c.NLO : ℝ) ≤ |Real.cos (Real.pi * x) - 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x)| := by
+    rw [eNLO]
+    refine max_le (abs_nonneg _) (max_le ?_ ?_)
+    · exact le_trans (by linarith [hCX.1, hT2]) (le_abs_self _)
+    · exact le_trans (by linarith [hCX.2, hT1]) (neg_le_abs _)
+  have hNLO0 : (0:ℝ) ≤ c.NLO := by rw [eNLO]; exact le_max_left _ _
+  -- the denominator
+  have hD0 : (1:ℝ) < 2 * (Real.pi * x)^2 := by
+    have := mul_le_mul hb1 hb1 hBL0 hπx0
+    rw [pow_two]; linarith [this, hB']
+  have hDD : 2 * (Real.pi * x)^2 - 1 ≤ c.DHI := by
+    have h1 : ((2 * c.BU * c.BU - 1 : ℚ) : ℝ) ≤ (c.DHI : ℝ) := le_ceilD' _
+    push_cast at h1
+    have := mul_le_mul hb2 hb2 hπx0 (hπx0.trans hb2)
+    rw [pow_two]; linarith [this, h1]
+  have hfin := wfun_ge x (c.NLO : ℝ) (c.DHI : ℝ) hNLO0 hD' hD0 hDD hN
+  have eWc : (c.Wc : ℝ) = ((c.NLO : ℝ) / c.DHI)^2 := by rw [Cell.Wc]; push_cast; rfl
+  rw [eWc] at hW'
+  exact hW'.trans hfin
+
+/-! ### Soundness: chains -/
+
+theorem getD_mem_of_lt {cs : List Cell} {i : ℕ} (h : i < cs.length) : cs.getD i default ∈ cs := by
+  rw [List.getD_eq_getElem cs default h]; exact List.getElem_mem h
+
+theorem chain_sound (cs : List Cell) (hcs : cs.all Cell.ok = true) :
+    ∀ (idxs : List ℕ) (lo hi : ℚ), chainCheck cs lo hi idxs = true →
+      ∀ e : ℝ, (lo : ℝ) ≤ e → e ≤ hi → (chainW cs idxs : ℝ) ≤ wfun e := by
+  intro idxs
+  induction idxs with
+  | nil =>
+    intro lo hi h e _ _
+    simp only [chainW, Rat.cast_zero]; exact wfun_nonneg e
+  | cons i rest ih =>
+    intro lo hi h e he1 he2
+    simp only [chainCheck, Bool.and_eq_true, decide_eq_true_eq] at h
+    obtain ⟨⟨hi_lt, hL⟩, hrest⟩ := h
+    have hok : (cs.getD i default).ok = true :=
+      List.all_eq_true.mp hcs _ (getD_mem_of_lt hi_lt)
+    have hL' : ((cs.getD i default).L : ℝ) ≤ e := le_trans (by exact_mod_cast hL) he1
+    simp only [chainW]
+    split_ifs with hempty
+    · -- the last cell: `chainCheck cs U hi [] = decide (hi ≤ U)`
+      have hU : hi ≤ (cs.getD i default).U := by
+        rw [List.isEmpty_iff.mp hempty] at hrest
+        simpa [chainCheck] using hrest
+      exact cell_sound _ hok e hL' (he2.trans (by exact_mod_cast hU))
+    · rw [Rat.cast_min]
+      rcases le_total e ((cs.getD i default).U : ℝ) with hU | hU
+      · exact (min_le_left _ _).trans (cell_sound _ hok e hL' hU)
+      · exact (min_le_right _ _).trans (ih _ _ hrest e hU he2)
+
+theorem term_sound (cs : List Cell) (hcs : cs.all Cell.ok = true) (idxs : List ℕ) (lo hi : ℚ)
+    (h : termCheck cs lo hi idxs = true) (e : ℝ) (he1 : (lo : ℝ) ≤ e) (he2 : e ≤ hi) :
+    (termW cs idxs : ℝ) ≤ wfun e := by
+  simp only [termCheck, Bool.or_eq_true] at h
+  simp only [termW]
+  split_ifs with hempty
+  · simp only [Rat.cast_zero]; exact wfun_nonneg e
+  · rcases h with h | h
+    · exact absurd h (by simpa using hempty)
+    · exact chain_sound cs hcs idxs lo hi h e he1 he2
+
+/-! ### Soundness: boxes and trees -/
+
+/-- The four-point functional written out on the three gaps. -/
+def G4 (p : ℚ) (x y z : ℝ) : ℝ :=
+  (1 / (p : ℝ)) * (x + y + z) + 2/3 * wfun x + 2/3 * wfun y + 2/3 * wfun z
+    + wfun (x + y) + wfun (y + z) + 2 * wfun (x + y + z)
+
+theorem leaf_sound (cs : List Cell) (hcs : cs.all Cell.ok = true) (c p : ℚ) (hp : 0 < p) (b : Box)
+    (t0 t1 t2 t3 t4 t5 : List ℕ) (h : leafCheck cs c p b t0 t1 t2 t3 t4 t5 = true)
+    (x y z : ℝ) (hx1 : (b.xl : ℝ) ≤ x) (hx2 : x ≤ b.xu) (hy1 : (b.yl : ℝ) ≤ y) (hy2 : y ≤ b.yu)
+    (hz1 : (b.zl : ℝ) ≤ z) (hz2 : z ≤ b.zu) : (c : ℝ) ≤ G4 p x y z := by
+  simp only [leafCheck, Bool.and_eq_true, decide_eq_true_eq] at h
+  obtain ⟨⟨⟨⟨⟨⟨h0, h1⟩, h2⟩, h3⟩, h4⟩, h5⟩, hineq⟩ := h
+  have w0 := term_sound cs hcs t0 _ _ h0 x hx1 hx2
+  have w1 := term_sound cs hcs t1 _ _ h1 y hy1 hy2
+  have w2 := term_sound cs hcs t2 _ _ h2 z hz1 hz2
+  have w3 := term_sound cs hcs t3 _ _ h3 (x + y) (by push_cast; linarith) (by push_cast; linarith)
+  have w4 := term_sound cs hcs t4 _ _ h4 (y + z) (by push_cast; linarith) (by push_cast; linarith)
+  have w5 := term_sound cs hcs t5 _ _ h5 (x + y + z) (by push_cast; linarith) (by push_cast; linarith)
+  have hineq' := (Rat.cast_le (K := ℝ)).mpr hineq
+  push_cast at hineq'
+  have hp' : (0:ℝ) < p := by exact_mod_cast hp
+  have hlin : ((b.xl : ℝ) + b.yl + b.zl) / (p : ℝ) ≤ (1 / (p : ℝ)) * (x + y + z) := by
+    rw [div_eq_mul_one_div, mul_comm]
+    apply mul_le_mul_of_nonneg_left _ (by positivity)
+    linarith
+  unfold G4
+  linarith
+
+theorem tree_sound (cs : List Cell) (hcs : cs.all Cell.ok = true) (c p : ℚ) (hp : 0 < p) :
+    ∀ (t : Tree) (b : Box), treeCheck cs c p b t = true →
+      ∀ x y z : ℝ, (b.xl : ℝ) ≤ x → x ≤ b.xu → (b.yl : ℝ) ≤ y → y ≤ b.yu →
+        (b.zl : ℝ) ≤ z → z ≤ b.zu → (c : ℝ) ≤ G4 p x y z := by
+  intro t
+  induction t with
+  | leaf t0 t1 t2 t3 t4 t5 =>
+    intro b h x y z hx1 hx2 hy1 hy2 hz1 hz2
+    exact leaf_sound cs hcs c p hp b t0 t1 t2 t3 t4 t5 h x y z hx1 hx2 hy1 hy2 hz1 hz2
+  | split ax q lo hi ihlo ihhi =>
+    intro b h x y z hx1 hx2 hy1 hy2 hz1 hz2
+    simp only [treeCheck] at h
+    split_ifs at h with h0 h1 h2
+    · rw [Bool.and_eq_true] at h
+      rcases le_total x (q : ℝ) with hq | hq
+      · exact ihlo _ h.1 x y z hx1 hq hy1 hy2 hz1 hz2
+      · exact ihhi _ h.2 x y z hq hx2 hy1 hy2 hz1 hz2
+    · rw [Bool.and_eq_true] at h
+      rcases le_total y (q : ℝ) with hq | hq
+      · exact ihlo _ h.1 x y z hx1 hx2 hy1 hq hz1 hz2
+      · exact ihhi _ h.2 x y z hx1 hx2 hq hy2 hz1 hz2
+    · rw [Bool.and_eq_true] at h
+      rcases le_total z (q : ℝ) with hq | hq
+      · exact ihlo _ h.1 x y z hx1 hx2 hy1 hy2 hz1 hq
+      · exact ihhi _ h.2 x y z hx1 hx2 hy1 hy2 hq hz2
+
+/-! ### Soundness: the cover -/
+
+theorem cover_sound (cs : List Cell) (hcs : cs.all Cell.ok = true) (lvl : ℚ) :
+    ∀ (cover : List (ℚ × ℚ × List ℕ)) (pos S : ℚ), coverCheck cs lvl pos S cover = true →
+      ∀ v : ℝ, (pos : ℝ) ≤ v → v < S →
+        (lvl : ℝ) ≤ wfun v ∨ ∃ s ∈ cover, s.2.2.isEmpty = true ∧ (s.1 : ℝ) ≤ v ∧ v ≤ s.2.1 := by
+  intro cover
+  induction cover with
+  | nil =>
+    intro pos S h v hv1 hv2
+    simp only [coverCheck, decide_eq_true_eq] at h
+    have : (S : ℝ) ≤ pos := by exact_mod_cast h
+    exact absurd (lt_of_le_of_lt (this.trans hv1) hv2) (lt_irrefl _)
+  | cons s rest ih =>
+    intro pos S h v hv1 hv2
+    obtain ⟨a, b, ch⟩ := s
+    simp only [coverCheck, Bool.and_eq_true, decide_eq_true_eq, Bool.or_eq_true] at h
+    obtain ⟨⟨⟨hpos, hab⟩, hch⟩, hrest⟩ := h
+    rcases le_total v (b : ℝ) with hvb | hvb
+    · rcases hch with hch | ⟨hchain, hlvl⟩
+      · right
+        refine ⟨(a, b, ch), List.mem_cons_self .., hch, ?_, hvb⟩
+        rw [hpos]; exact hv1
+      · left
+        have hW := chain_sound cs hcs ch a b hchain v (by rw [hpos]; exact hv1) hvb
+        exact le_trans (by exact_mod_cast hlvl) hW
+    · rcases ih b S hrest v hvb hv2 with h | ⟨s', hs', he, h1, h2⟩
+      · left; exact h
+      · right; exact ⟨s', List.mem_cons_of_mem _ hs', he, h1, h2⟩
+
+theorem badOf_mem {cover : List (ℚ × ℚ × List ℕ)} {s : ℚ × ℚ × List ℕ} (hs : s ∈ cover)
+    (he : s.2.2.isEmpty = true) : (s.1, s.2.1) ∈ badOf cover := by
+  simp only [badOf, List.mem_filterMap]
+  exact ⟨s, hs, by simp [he]⟩
+
+theorem trees_sound (cs : List Cell) (hcs : cs.all Cell.ok = true) (c p : ℚ) (hp : 0 < p)
+    (bad : List (ℚ × ℚ)) (trees : List Tree) (h : treesCheck cs c p bad trees = true)
+    (i j k : ℕ) (hi : i < bad.length) (hj : j < bad.length) (hk : k < bad.length)
+    (x y z : ℝ)
+    (hx1 : ((bad.getD i (0, 0)).1 : ℝ) ≤ x) (hx2 : x ≤ (bad.getD i (0, 0)).2)
+    (hy1 : ((bad.getD j (0, 0)).1 : ℝ) ≤ y) (hy2 : y ≤ (bad.getD j (0, 0)).2)
+    (hz1 : ((bad.getD k (0, 0)).1 : ℝ) ≤ z) (hz2 : z ≤ (bad.getD k (0, 0)).2) :
+    (c : ℝ) ≤ G4 p x y z := by
+  simp only [treesCheck, List.all_eq_true, List.mem_range] at h
+  have ht := h i hi j hj k hk
+  exact tree_sound cs hcs c p hp _ (boxOf bad i j k) ht x y z hx1 hx2 hy1 hy2 hz1 hz2
+
+/-! ### The four-point certificate from a checked table -/
+
+theorem four_point_of_check (cs : List Cell) (cover : List (ℚ × ℚ × List ℕ)) (trees : List Tree)
+    (c p S : ℚ) (hS : S = c * p) (hp : 0 < p)
+    (hwin : 3/2 * c ≤ 19/100) (hcs : cs.all Cell.ok = true)
+    (hcov : coverCheck cs (3/2 * c) (1/2) S cover = true)
+    (htr : treesCheck cs c p (badOf cover) trees = true) :
+    ∀ x y z : ℝ, 0 ≤ x → 0 ≤ y → 0 ≤ z → (c : ℝ) ≤ G4 p x y z := by
+  intro x y z hx hy hz
+  have hw := fun t : ℝ => wfun_nonneg t
+  have hp' : (0:ℝ) < p := by exact_mod_cast hp
+  have hlin : (0:ℝ) ≤ (1 / (p : ℝ)) * (x + y + z) := by positivity
+  by_cases hsum : (S : ℝ) ≤ x + y + z
+  · have hS' : (S : ℝ) = c * p := by exact_mod_cast hS
+    have : (c : ℝ) ≤ (1 / (p : ℝ)) * (x + y + z) := by
+      rw [one_div, inv_mul_eq_div, le_div_iff₀ hp']; linarith
+    unfold G4; linarith [hw x, hw y, hw z, hw (x + y), hw (y + z), hw (x + y + z)]
+  push_neg at hsum
+  have key : ∀ v : ℝ, 0 ≤ v → v < S →
+      (c : ℝ) ≤ 2/3 * wfun v ∨ ∃ i, i < (badOf cover).length ∧
+        (((badOf cover).getD i (0, 0)).1 : ℝ) ≤ v ∧ v ≤ ((badOf cover).getD i (0, 0)).2 := by
+    intro v hv0 hvS
+    rcases le_total v (1/2 : ℝ) with hv | hv
+    · left
+      have := wfun_window v hv0 hv
+      have hwin' := (Rat.cast_le (K := ℝ)).mpr hwin
+      push_cast at hwin'
+      linarith
+    · rcases cover_sound cs hcs _ cover (1/2) S hcov v (by push_cast; exact hv) hvS with
+        h | ⟨s, hs, he, h1, h2⟩
+      · left; push_cast at h; linarith
+      · right
+        have hmem := badOf_mem hs he
+        obtain ⟨i, hi, hsi⟩ := List.mem_iff_getElem.mp hmem
+        refine ⟨i, hi, ?_, ?_⟩
+        · rw [List.getD_eq_getElem _ _ hi, hsi]; exact h1
+        · rw [List.getD_eq_getElem _ _ hi, hsi]; exact h2
+  rcases key x hx (by linarith) with hxc | ⟨i, hi, hxi1, hxi2⟩
+  · unfold G4; linarith [hw y, hw z, hw (x + y), hw (y + z), hw (x + y + z)]
+  rcases key y hy (by linarith) with hyc | ⟨j, hj, hyj1, hyj2⟩
+  · unfold G4; linarith [hw x, hw z, hw (x + y), hw (y + z), hw (x + y + z)]
+  rcases key z hz (by linarith) with hzc | ⟨k, hk, hzk1, hzk2⟩
+  · unfold G4; linarith [hw x, hw y, hw (x + y), hw (y + z), hw (x + y + z)]
+  exact trees_sound cs hcs c p hp _ trees htr i j k hi hj hk x y z hxi1 hxi2 hyj1 hyj2 hzk1 hzk2
+
+private lemma sum3 (f : Fin (4 - 1) → ℝ) : ∑ i, f i = f 0 + f 1 + f 2 := by
+  show ∑ i : Fin 3, f i = f 0 + f 1 + f 2
+  exact Fin.sum_univ_three f
+
+/-- The four-point functional, written out. -/
+lemma F4_eq (p : ℕ) (g : Fin 3 → ℝ) :
+    F 4 p g = (1 / (p : ℝ)) * (g 0 + g 1 + g 2)
+      + 2/3 * wfun (g 0) + 2/3 * wfun (g 1) + 2/3 * wfun (g 2)
+      + wfun (g 0 + g 1) + wfun (g 1 + g 2) + 2 * wfun (g 0 + g 1 + g 2) := by
+  simp only [F, ptsN, sum3, Fin.sum_univ_four, Fin.isValue]
+  norm_num
+  try ring
+
+end Zeta23Ext.Bridge.ThreePoint
+
+end
+
+/-! ###### natural-number checker for the 6-point weighted certificate `SixW15A` ###### -/
+
+section SixW15ADefs
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+structure CellN where
+  (LN UN : ℕ) (WN : ℕ)
+
+instance : Inhabited CellN := ⟨⟨0, 0, 0⟩⟩
+
+def SC : ℕ := 32768
+def SW : ℕ := 10000000000000
+def SC4 : ℕ := 8192
+
+/-- the anchor index `k` (anchor at `k/2`) nearest the cell's midpoint, and the side of that anchor the cell lies on -/
+def CellN.k (c : CellN) : ℕ := (2 * (c.LN + c.UN) + SC) / (2 * SC)
+def CellN.side (c : CellN) : Bool := Nat.ble (c.k * SC) (2 * c.LN)
+
+/-- the rational cell a natural-number cell denotes -/
+def CellN.toQ (c : CellN) : Cell := ⟨(c.LN : ℚ) / SC, (c.UN : ℚ) / SC, c.k, c.side, (c.WN : ℚ) / SW⟩
+
+-- ZDEFS-BEGIN
+/-- the scale of the integer bounds -/
+def DZ : ℕ := 1000000000000000
+def DZ2 : ℕ := 500000000000000
+/-- π·10²⁰, below and above -/
+def PLN : ℕ := 314159265358979323846
+def PUN : ℕ := 314159265358979323847
+/-- γ·10¹⁰, below and above -/
+def GLN : ℕ := 8274992907
+def GUN : ℕ := 8274993018
+/-- the Taylor remainder, rounded up at scale `10¹⁵` -/
+def ERRD : ℕ := 2262000
+
+/-- floor and ceiling of `a / b` for naturals -/
+def ndiv (a b : ℕ) : ℕ := a / b
+def ndivc (a b : ℕ) : ℕ := (a + b - 1) / b
+
+/-- `cos (T / DZ)` by the twelve-term Taylor polynomial: positive and negative parts of the
+numerator over `3628800 · DZ¹⁰`. -/
+def cosP (T : ℕ) : ℕ := 3628800 * DZ^10 + 151200 * T^4 * DZ^6 + 90 * T^8 * DZ^2
+def cosN (T : ℕ) : ℕ := 1814400 * T^2 * DZ^8 + 5040 * T^6 * DZ^4 + T^10
+def sinP (T : ℕ) : ℕ := 39916800 * T * DZ^10 + 332640 * T^5 * DZ^6 + 110 * T^9 * DZ^2
+def sinN (T : ℕ) : ℕ := 6652800 * T^3 * DZ^8 + 7920 * T^7 * DZ^4 + T^11
+/-- lower / upper bounds of the polynomial values at scale `DZ` -/
+def cosLo (T : ℕ) : ℕ := ndiv (cosP T - cosN T) (3628800 * DZ^9)
+def cosHi (T : ℕ) : ℕ := ndivc (cosP T - cosN T) (3628800 * DZ^9)
+def sinLo (T : ℕ) : ℕ := ndiv (sinP T - sinN T) (39916800 * DZ^10)
+def sinHi (T : ℕ) : ℕ := ndivc (sinP T - sinN T) (39916800 * DZ^10)
+
+/-- floor / ceiling division of an integer by `DZ` -/
+def zfdiv (z : ℤ) : ℤ := if 0 ≤ z then ((ndiv z.toNat DZ : ℕ) : ℤ) else -((ndivc (-z).toNat DZ : ℕ) : ℤ)
+def zcdiv (z : ℤ) : ℤ := if 0 ≤ z then ((ndivc z.toNat DZ : ℕ) : ℤ) else -((ndiv (-z).toNat DZ : ℕ) : ℤ)
+
+def imulZZ (e : ℤ) (I : ℤ × ℤ) : ℤ × ℤ := if 0 ≤ e then (e * I.1, e * I.2) else (e * I.2, e * I.1)
+def iaddZ (I J : ℤ × ℤ) : ℤ × ℤ := (I.1 + J.1, I.2 + J.2)
+def isubZ (I J : ℤ × ℤ) : ℤ × ℤ := (I.1 - J.2, I.2 - J.1)
+
+namespace CellN
+/-- lower/upper integer bounds (scale `DZ`) of the cell's endpoints -/
+def LLO (c : CellN) : ℕ := ndiv (c.LN * DZ) SC
+def UHI (c : CellN) : ℕ := ndivc (c.UN * DZ) SC
+def AD (c : CellN) : ℕ := c.k * DZ2
+def RLO (c : CellN) : ℕ := if c.side then c.LLO - c.AD else c.AD - c.UHI
+def RHI (c : CellN) : ℕ := if c.side then c.UHI - c.AD else c.AD - c.LLO
+def TLZ (c : CellN) : ℕ := ndiv (PLN * c.RLO) 100000000000000000000
+def TUZ (c : CellN) : ℕ := ndivc (PUN * c.RHI) 100000000000000000000
+def CLZ (c : CellN) : ℤ := (cosLo c.TUZ : ℤ) - ERRD
+def CUZ (c : CellN) : ℤ := (cosHi c.TLZ : ℤ) + ERRD
+def SLZ (c : CellN) : ℤ := (sinLo c.TLZ : ℤ) - ERRD
+def SUZ (c : CellN) : ℤ := (sinHi c.TUZ : ℤ) + ERRD
+def cAZ (c : CellN) : ℤ := (csA c.k).1
+def sAZ (c : CellN) : ℤ := (csA c.k).2
+def CXZ (c : CellN) : ℤ × ℤ :=
+  if c.side then isubZ (imulZZ c.cAZ (c.CLZ, c.CUZ)) (imulZZ c.sAZ (c.SLZ, c.SUZ))
+  else iaddZ (imulZZ c.cAZ (c.CLZ, c.CUZ)) (imulZZ c.sAZ (c.SLZ, c.SUZ))
+def SXZ (c : CellN) : ℤ × ℤ :=
+  if c.side then iaddZ (imulZZ c.sAZ (c.CLZ, c.CUZ)) (imulZZ c.cAZ (c.SLZ, c.SUZ))
+  else isubZ (imulZZ c.sAZ (c.CLZ, c.CUZ)) (imulZZ c.cAZ (c.SLZ, c.SUZ))
+def BLZ (c : CellN) : ℕ := ndiv (PLN * c.LLO) 100000000000000000000
+def BUZ (c : CellN) : ℕ := ndivc (PUN * c.UHI) 100000000000000000000
+def P2LZ (c : CellN) : ℕ := ndiv (2 * GLN * c.BLZ) 10000000000
+def P2UZ (c : CellN) : ℕ := ndivc (2 * GUN * c.BUZ) 10000000000
+def TLOZ (c : CellN) : ℤ := zfdiv (min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1))
+def THIZ (c : CellN) : ℤ := zcdiv (max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2))
+def NLOZ (c : CellN) : ℤ := max 0 (max (c.CXZ.1 - c.THIZ) (c.TLOZ - c.CXZ.2))
+def DHIZ (c : CellN) : ℤ := ((ndivc (2 * c.BUZ * c.BUZ) DZ : ℕ) : ℤ) - DZ
+/-- the integer check -/
+def okZ (c : CellN) : Bool :=
+  decide (c.LN ≤ c.UN) && decide (c.TUZ ≤ DZ)
+    && (if c.side then decide (c.k * SC ≤ 2 * c.LN) else decide (2 * c.UN ≤ c.k * SC))
+    && decide (cosN c.TUZ ≤ cosP c.TUZ) && decide (cosN c.TLZ ≤ cosP c.TLZ)
+    && decide (sinN c.TLZ ≤ sinP c.TLZ) && decide (sinN c.TUZ ≤ sinP c.TUZ)
+    && decide (DZ * DZ < 2 * c.BLZ * c.BLZ) && decide (0 < c.DHIZ)
+    && decide ((c.WN : ℤ) * c.DHIZ * c.DHIZ ≤ c.NLOZ * c.NLOZ * SW)
+end CellN
+-- ZDEFS-END
+
+inductive CTN
+  | nil
+  | node (l : CTN) (c : CellN) (r : CTN)
+
+namespace CTN
+def toList : CTN → List CellN
+  | nil => []
+  | node l c r => l.toList ++ c :: r.toList
+def allOk : CTN → Bool
+  | nil => true
+  | node l c r => l.allOk && c.okZ && r.allOk
+def find : CTN → ℕ → ℕ → Option CellN
+  | nil, _, _ => none
+  | node l c r, a, b =>
+      bif Nat.blt a c.LN then l.find a b
+      else bif Nat.blt c.LN a then r.find a b
+      else bif Nat.blt b c.UN then l.find a b
+      else bif Nat.blt c.UN b then r.find a b
+      else some c
+end CTN
+
+def piecesN : ℕ → ℕ → ℕ → List (ℕ × ℕ)
+  | 0, a, hi => [(a, hi)]
+  | fuel + 1, a, hi =>
+      let q := ((a >>> 13) + 1) <<< 13
+      bif Nat.blt q hi then (a, q) :: piecesN fuel q hi else [(a, hi)]
+
+def lookupAllN (t : CTN) : List (ℕ × ℕ) → Option (List CellN)
+  | [] => some []
+  | (a, b) :: rest =>
+      match t.find a b, lookupAllN t rest with
+      | some c, some cs => some (c :: cs)
+      | _, _ => none
+
+def chainOKN : ℕ → ℕ → List CellN → Bool
+  | lo, hi, [] => Nat.ble hi lo
+  | lo, hi, c :: rest => Nat.ble c.LN lo && chainOKN c.UN hi rest
+
+def chainWN : List CellN → ℕ
+  | [] => 0
+  | c :: rest => bif rest.isEmpty then c.WN else bif Nat.ble c.WN (chainWN rest) then c.WN else chainWN rest
+
+def piecesN' (lo hi : ℕ) : List (ℕ × ℕ) := piecesN 64 lo hi
+
+def termWNcore (t : CTN) (lo hi : ℕ) (ps : List (ℕ × ℕ)) : ℕ :=
+  match lookupAllN t ps with
+  | some cs => if chainOKN lo hi cs then chainWN cs else 0
+  | none => 0
+
+def termWN (t : CTN) (lo hi : ℕ) : ℕ := termWNcore t lo hi (piecesN' lo hi)
+
+end Zeta23Ext.Bridge.ThreePoint
+
+namespace Zeta23Ext.Bridge.ThreePoint.SixW15A
+
+def SA : ℕ := 100000000
+def cN : ℕ := 304544
+
+structure Box where
+  (l0 u0 l1 u1 l2 u2 l3 u3 l4 u4 : ℕ)
+  deriving DecidableEq
+
+def Box.widthArg (b : Box) : ℕ :=
+  bif Nat.ble (b.u1 - b.l1) (b.u0 - b.l0) && Nat.ble (b.u2 - b.l2) (b.u0 - b.l0) && Nat.ble (b.u3 - b.l3) (b.u0 - b.l0) && Nat.ble (b.u4 - b.l4) (b.u0 - b.l0) then 0
+  else bif Nat.ble (b.u2 - b.l2) (b.u1 - b.l1) && Nat.ble (b.u3 - b.l3) (b.u1 - b.l1) && Nat.ble (b.u4 - b.l4) (b.u1 - b.l1) then 1
+  else bif Nat.ble (b.u3 - b.l3) (b.u2 - b.l2) && Nat.ble (b.u4 - b.l4) (b.u2 - b.l2) then 2
+  else bif Nat.ble (b.u4 - b.l4) (b.u3 - b.l3) then 3
+  else 4
+def Box.mid (b : Box) : ℕ → ℕ
+  | 0 => (b.l0 + b.u0) / 2
+  | 1 => (b.l1 + b.u1) / 2
+  | 2 => (b.l2 + b.u2) / 2
+  | 3 => (b.l3 + b.u3) / 2
+  | _ => (b.l4 + b.u4) / 2
+def Box.setHi (b : Box) (ax : ℕ) (q : ℕ) : Box :=
+  match ax with
+  | 0 => { b with u0 := q }
+  | 1 => { b with u1 := q }
+  | 2 => { b with u2 := q }
+  | 3 => { b with u3 := q }
+  | _ => { b with u4 := q }
+def Box.setLo (b : Box) (ax : ℕ) (q : ℕ) : Box :=
+  match ax with
+  | 0 => { b with l0 := q }
+  | 1 => { b with l1 := q }
+  | 2 => { b with l2 := q }
+  | 3 => { b with l3 := q }
+  | _ => { b with l4 := q }
+
+def leafCheck (tb : CTN) (b : Box) : Bool :=
+  Nat.ble (cN * SC * SW) ((25232 * b.l0 + 42025 * b.l1 + 46137 * b.l2 + 42044 * b.l3 + 24559 * b.l4) * SW + (25715100 * termWN tb (b.l0) (b.u0) + 61242800 * termWN tb (b.l0 + b.l1) (b.u0 + b.u1) + 40905100 * termWN tb (b.l0 + b.l1 + b.l2) (b.u0 + b.u1 + b.u2) + 104929600 * termWN tb (b.l0 + b.l1 + b.l2 + b.l3) (b.u0 + b.u1 + b.u2 + b.u3) + 200000000 * termWN tb (b.l0 + b.l1 + b.l2 + b.l3 + b.l4) (b.u0 + b.u1 + b.u2 + b.u3 + b.u4) + 48318100 * termWN tb (b.l1) (b.u1) + 40072400 * termWN tb (b.l1 + b.l2) (b.u1 + b.u2) + 119746800 * termWN tb (b.l1 + b.l2 + b.l3) (b.u1 + b.u2 + b.u3) + 95070300 * termWN tb (b.l1 + b.l2 + b.l3 + b.l4) (b.u1 + b.u2 + b.u3 + b.u4) + 52857300 * termWN tb (b.l2) (b.u2) + 35189000 * termWN tb (b.l2 + b.l3) (b.u2 + b.u3) + 39348000 * termWN tb (b.l2 + b.l3 + b.l4) (b.u2 + b.u3 + b.u4) + 48170700 * termWN tb (b.l3) (b.u3) + 63495600 * termWN tb (b.l3 + b.l4) (b.u3 + b.u4) + 24938600 * termWN tb (b.l4) (b.u4)) * SC)
+
+/-- the bisection axis stored in the three bits after a split marker -/
+def axOf (bits pos : ℕ) : ℕ := (bits >>> (pos + 1)) &&& 7
+
+def walk (tb : CTN) (bits : ℕ) : ℕ → ℕ → Box → Option ℕ
+  | 0, _, _ => none
+  | fuel + 1, pos, b =>
+      bif bits.testBit pos then
+        let ax := axOf bits pos
+        let q := b.mid ax
+        match walk tb bits fuel (pos + 4) (b.setHi ax q) with
+        | none => none
+        | some pos' => walk tb bits fuel pos' (b.setLo ax q)
+      else bif leafCheck tb b then some (pos + 1) else none
+
+/-- per-gap one-dimensional cover: segments `(a, b, clear)` in scaled coordinates; a clear
+segment's cell must satisfy `aAdj · W ≥ c`, i.e. `aAdjN * WN ≥ cN * SW`. -/
+def coverCheck (tb : CTN) (aAdjN : ℕ) : ℕ → ℕ → List (ℕ × ℕ × Bool) → Bool
+  | pos, S, [] => decide (S ≤ pos)
+  | pos, S, (a, b, cl) :: rest =>
+      decide (a = pos) && decide (a ≤ b)
+        && (!cl || (match tb.find a b with | some c => decide (cN * SW ≤ aAdjN * c.WN) | none => false))
+        && coverCheck tb aAdjN b S rest
+
+def badOf (cover : List (ℕ × ℕ × Bool)) : List (ℕ × ℕ) :=
+  cover.filterMap fun s => if s.2.2 then none else some (s.1, s.2.1)
+
+def boxOf (bd0 bd1 bd2 bd3 bd4 : List (ℕ × ℕ)) (i0 i1 i2 i3 i4 : ℕ) : Box :=
+  ⟨(bd0.getD i0 (0, 0)).1, (bd0.getD i0 (0, 0)).2, (bd1.getD i1 (0, 0)).1, (bd1.getD i1 (0, 0)).2, (bd2.getD i2 (0, 0)).1, (bd2.getD i2 (0, 0)).2, (bd3.getD i3 (0, 0)).1, (bd3.getD i3 (0, 0)).2, (bd4.getD i4 (0, 0)).1, (bd4.getD i4 (0, 0)).2⟩
+
+end Zeta23Ext.Bridge.ThreePoint.SixW15A
+
+end SixW15ADefs
+
+noncomputable section
+
+open Real
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+/-! ### Soundness of the natural-number cell table (through the rational cell) -/
+
+theorem SC_pos : (0:ℚ) < SC := by norm_num [SC]
+theorem SW_pos : (0:ℚ) < SW := by norm_num [SW]
+
+-- ZLEMMAS-BEGIN
+/-! ### rounding lemmas -/
+
+theorem DZ_pos : (0:ℝ) < DZ := by norm_num [DZ]
+theorem DZ_ne : (DZ:ℝ) ≠ 0 := by norm_num [DZ]
+
+theorem ndiv_le (a b : ℕ) (hb : 0 < b) : ((ndiv a b : ℕ) : ℝ) ≤ (a : ℝ) / b := by
+  unfold ndiv
+  rw [le_div_iff₀ (by exact_mod_cast hb)]
+  exact_mod_cast Nat.div_mul_le_self a b
+
+theorem le_ndivc (a b : ℕ) (hb : 0 < b) : (a : ℝ) / b ≤ ((ndivc a b : ℕ) : ℝ) := by
+  unfold ndivc
+  rw [div_le_iff₀ (by exact_mod_cast hb)]
+  have h : a ≤ ((a + b - 1) / b) * b := by
+    have := Nat.lt_div_mul_add (a := a + b - 1) hb
+    omega
+  exact_mod_cast h
+
+theorem zfdiv_le (z : ℤ) : ((zfdiv z : ℤ) : ℝ) ≤ (z : ℝ) / DZ := by
+  unfold zfdiv
+  split_ifs with h
+  · have hz : (((z.toNat : ℕ) : ℤ) : ℝ) = (z : ℝ) := by rw [Int.toNat_of_nonneg h]
+    rw [Int.cast_natCast, ← hz, Int.cast_natCast]
+    exact ndiv_le _ _ (by norm_num [DZ])
+  · push_neg at h
+    have hz : ((((-z).toNat : ℕ) : ℤ) : ℝ) = ((-z : ℤ) : ℝ) := by rw [Int.toNat_of_nonneg (by linarith)]
+    rw [Int.cast_neg, Int.cast_natCast]
+    rw [Int.cast_natCast, Int.cast_neg] at hz
+    rw [show (z : ℝ) = -(((-z).toNat : ℕ) : ℝ) by linarith, neg_div]
+    exact neg_le_neg (le_ndivc _ _ (by norm_num [DZ]))
+
+theorem le_zcdiv (z : ℤ) : (z : ℝ) / DZ ≤ ((zcdiv z : ℤ) : ℝ) := by
+  unfold zcdiv
+  split_ifs with h
+  · have hz : (((z.toNat : ℕ) : ℤ) : ℝ) = (z : ℝ) := by rw [Int.toNat_of_nonneg h]
+    rw [Int.cast_natCast, ← hz, Int.cast_natCast]
+    exact le_ndivc _ _ (by norm_num [DZ])
+  · push_neg at h
+    have hz : ((((-z).toNat : ℕ) : ℤ) : ℝ) = ((-z : ℤ) : ℝ) := by rw [Int.toNat_of_nonneg (by linarith)]
+    rw [Int.cast_neg, Int.cast_natCast]
+    rw [Int.cast_natCast, Int.cast_neg] at hz
+    rw [show (z : ℝ) = -(((-z).toNat : ℕ) : ℝ) by linarith, neg_div]
+    exact neg_le_neg (ndiv_le _ _ (by norm_num [DZ]))
+
+/-! ### the Taylor polynomials at scale `DZ` -/
+
+theorem taylorCos_eq (T : ℕ) (h : cosN T ≤ cosP T) :
+    taylorCos ((T : ℝ) / DZ) = ((cosP T - cosN T : ℕ) : ℝ) / (3628800 * (DZ : ℝ)^10) := by
+  rw [Nat.cast_sub h]
+  unfold taylorCos cosP cosN
+  push_cast
+  have hD := DZ_ne
+  field_simp
+  ring
+
+theorem taylorSin_eq (T : ℕ) (h : sinN T ≤ sinP T) :
+    taylorSin ((T : ℝ) / DZ) = ((sinP T - sinN T : ℕ) : ℝ) / (39916800 * (DZ : ℝ)^11) := by
+  rw [Nat.cast_sub h]
+  unfold taylorSin sinP sinN
+  push_cast
+  have hD := DZ_ne
+  field_simp
+  ring
+
+theorem cosLo_le (T : ℕ) (h : cosN T ≤ cosP T) :
+    ((cosLo T : ℕ) : ℝ) / DZ ≤ taylorCos ((T : ℝ) / DZ) := by
+  rw [taylorCos_eq T h]
+  unfold cosLo
+  have := ndiv_le (cosP T - cosN T) (3628800 * DZ^9) (by norm_num [DZ])
+  rw [div_le_div_iff₀ DZ_pos (by norm_num [DZ])]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((ndiv (cosP T - cosN T) (3628800 * DZ ^ 9) : ℕ) : ℝ) * (3628800 * (DZ:ℝ) ^ 10)
+      = (((ndiv (cosP T - cosN T) (3628800 * DZ ^ 9) : ℕ) : ℝ)) * (3628800 * (DZ:ℝ)^9) * DZ := by ring
+    _ ≤ ((cosP T - cosN T : ℕ) : ℝ) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [le_div_iff₀ (by norm_num [DZ])] at this
+        exact this
+
+theorem le_cosHi (T : ℕ) (h : cosN T ≤ cosP T) :
+    taylorCos ((T : ℝ) / DZ) ≤ ((cosHi T : ℕ) : ℝ) / DZ := by
+  rw [taylorCos_eq T h]
+  unfold cosHi
+  have := le_ndivc (cosP T - cosN T) (3628800 * DZ^9) (by norm_num [DZ])
+  rw [div_le_div_iff₀ (by norm_num [DZ]) DZ_pos]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((cosP T - cosN T : ℕ) : ℝ) * DZ
+      ≤ ((ndivc (cosP T - cosN T) (3628800 * DZ ^ 9) : ℕ) : ℝ) * (3628800 * (DZ:ℝ)^9) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [div_le_iff₀ (by norm_num [DZ])] at this
+        exact this
+    _ = _ := by ring
+
+theorem sinLo_le (T : ℕ) (h : sinN T ≤ sinP T) :
+    ((sinLo T : ℕ) : ℝ) / DZ ≤ taylorSin ((T : ℝ) / DZ) := by
+  rw [taylorSin_eq T h]
+  unfold sinLo
+  have := ndiv_le (sinP T - sinN T) (39916800 * DZ^10) (by norm_num [DZ])
+  rw [div_le_div_iff₀ DZ_pos (by norm_num [DZ])]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((ndiv (sinP T - sinN T) (39916800 * DZ ^ 10) : ℕ) : ℝ) * (39916800 * (DZ:ℝ) ^ 11)
+      = (((ndiv (sinP T - sinN T) (39916800 * DZ ^ 10) : ℕ) : ℝ)) * (39916800 * (DZ:ℝ)^10) * DZ := by ring
+    _ ≤ ((sinP T - sinN T : ℕ) : ℝ) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [le_div_iff₀ (by norm_num [DZ])] at this
+        exact this
+
+theorem le_sinHi (T : ℕ) (h : sinN T ≤ sinP T) :
+    taylorSin ((T : ℝ) / DZ) ≤ ((sinHi T : ℕ) : ℝ) / DZ := by
+  rw [taylorSin_eq T h]
+  unfold sinHi
+  have := le_ndivc (sinP T - sinN T) (39916800 * DZ^10) (by norm_num [DZ])
+  rw [div_le_div_iff₀ (by norm_num [DZ]) DZ_pos]
+  push_cast at this ⊢
+  have hD : (0:ℝ) < DZ := DZ_pos
+  calc ((sinP T - sinN T : ℕ) : ℝ) * DZ
+      ≤ ((ndivc (sinP T - sinN T) (39916800 * DZ ^ 10) : ℕ) : ℝ) * (39916800 * (DZ:ℝ)^10) * DZ := by
+        apply mul_le_mul_of_nonneg_right _ hD.le
+        rw [div_le_iff₀ (by norm_num [DZ])] at this
+        exact this
+    _ = _ := by ring
+
+theorem ERRD_ge : taylorErr ≤ (ERRD : ℝ) / DZ := by norm_num [taylorErr, ERRD, DZ]
+
+/-! ### interval operations at scale `DZ` -/
+
+theorem imulZZ_sound (e : ℤ) (I : ℤ × ℤ) {f : ℝ} (h1 : (I.1 : ℝ) / DZ ≤ f) (h2 : f ≤ (I.2 : ℝ) / DZ) :
+    ((imulZZ e I).1 : ℝ) / DZ ≤ (e : ℝ) * f ∧ (e : ℝ) * f ≤ ((imulZZ e I).2 : ℝ) / DZ := by
+  unfold imulZZ
+  have hD := DZ_pos
+  split_ifs with he
+  · have he' : (0:ℝ) ≤ e := by exact_mod_cast he
+    simp only; push_cast
+    constructor
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_left h1 he'
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_left h2 he'
+  · have he' : (e:ℝ) ≤ 0 := by push_neg at he; exact_mod_cast he.le
+    simp only; push_cast
+    constructor
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonpos_left h2 he'
+    · rw [mul_div_assoc]; exact mul_le_mul_of_nonpos_left h1 he'
+
+theorem iaddZ_sound (I J : ℤ × ℤ) {f g : ℝ} (hI : (I.1:ℝ) / DZ ≤ f ∧ f ≤ (I.2:ℝ) / DZ)
+    (hJ : (J.1:ℝ) / DZ ≤ g ∧ g ≤ (J.2:ℝ) / DZ) :
+    ((iaddZ I J).1 : ℝ) / DZ ≤ f + g ∧ f + g ≤ ((iaddZ I J).2 : ℝ) / DZ := by
+  unfold iaddZ; simp only; push_cast; rw [add_div, add_div]
+  constructor <;> linarith [hI.1, hI.2, hJ.1, hJ.2]
+
+theorem isubZ_sound (I J : ℤ × ℤ) {f g : ℝ} (hI : (I.1:ℝ) / DZ ≤ f ∧ f ≤ (I.2:ℝ) / DZ)
+    (hJ : (J.1:ℝ) / DZ ≤ g ∧ g ≤ (J.2:ℝ) / DZ) :
+    ((isubZ I J).1 : ℝ) / DZ ≤ f - g ∧ f - g ≤ ((isubZ I J).2 : ℝ) / DZ := by
+  unfold isubZ; simp only; push_cast; rw [sub_div, sub_div]
+  constructor <;> linarith [hI.1, hI.2, hJ.1, hJ.2]
+
+/-! ### the integer cell check is sound -/
+
+theorem PLN_le : ((PLN : ℕ) : ℝ) / 100000000000000000000 ≤ Real.pi := by
+  have h := pi_lo; norm_num [PLN] at h ⊢; linarith
+theorem PUN_ge : Real.pi ≤ ((PUN : ℕ) : ℝ) / 100000000000000000000 := by
+  have h := pi_hi; norm_num [PUN] at h ⊢; linarith
+theorem GLN_le : ((GLN : ℕ) : ℝ) / 10000000000 ≤ gam := by
+  have h := gam_bounds.1; norm_num [GLN] at h ⊢; linarith
+theorem GUN_ge : gam ≤ ((GUN : ℕ) : ℝ) / 10000000000 := by
+  have h := gam_bounds.2; norm_num [GUN] at h ⊢; linarith
+
+/-- `ndiv a b / DZ ≤ (a / b) / DZ` packaged with a product bound: if `a = p * q` with
+`p / P ≤ A` and `q / DZ ≤ B` (all nonnegative) then `ndiv (p*q) P / DZ ≤ A * B`. -/
+theorem ndiv_prod_le (p q P : ℕ) (hP : 0 < P) {A B : ℝ} (hA : ((p : ℕ) : ℝ) / P ≤ A)
+    (hB : ((q : ℕ) : ℝ) / DZ ≤ B) (hA0 : 0 ≤ ((p : ℕ) : ℝ) / P) (hB0 : 0 ≤ ((q : ℕ) : ℝ) / DZ) :
+    ((ndiv (p * q) P : ℕ) : ℝ) / DZ ≤ A * B := by
+  have h := ndiv_le (p * q) P hP
+  have hD := DZ_pos
+  calc ((ndiv (p * q) P : ℕ) : ℝ) / DZ ≤ (((p * q : ℕ) : ℝ) / P) / DZ :=
+        div_le_div_of_nonneg_right h hD.le
+    _ = (((p : ℕ) : ℝ) / P) * (((q : ℕ) : ℝ) / DZ) := by push_cast; field_simp
+    _ ≤ A * B := mul_le_mul hA hB hB0 (hA0.trans hA)
+
+theorem le_ndivc_prod (p q P : ℕ) (hP : 0 < P) {A B : ℝ} (hA : A ≤ ((p : ℕ) : ℝ) / P)
+    (hB : B ≤ ((q : ℕ) : ℝ) / DZ) (hA0 : 0 ≤ A) (hB0 : 0 ≤ B) :
+    A * B ≤ ((ndivc (p * q) P : ℕ) : ℝ) / DZ := by
+  have h := le_ndivc (p * q) P hP
+  have hD := DZ_pos
+  calc A * B ≤ (((p : ℕ) : ℝ) / P) * (((q : ℕ) : ℝ) / DZ) := mul_le_mul hA hB hB0 (hA0.trans hA)
+    _ = (((p * q : ℕ) : ℝ) / P) / DZ := by push_cast; field_simp
+    _ ≤ ((ndivc (p * q) P : ℕ) : ℝ) / DZ := div_le_div_of_nonneg_right h hD.le
+
+set_option maxHeartbeats 4000000 in
+theorem cellN_soundZ (c : CellN) (h : c.okZ = true) (x : ℝ)
+    (hx1 : (c.LN : ℝ) / SC ≤ x) (hx2 : x ≤ (c.UN : ℝ) / SC) : (c.WN : ℝ) / SW ≤ wfun x := by
+  simp only [CellN.okZ, Bool.and_eq_true, decide_eq_true_eq] at h
+  obtain ⟨⟨⟨⟨⟨⟨⟨⟨⟨hLU, hTU⟩, hside⟩, hcP1⟩, hcP2⟩, hsP1⟩, hsP2⟩, hB⟩, hD⟩, hW⟩ := h
+  have hsideT : c.side = true → c.k * SC ≤ 2 * c.LN := fun hs => by simpa [hs] using hside
+  have hsideF : c.side = false → 2 * c.UN ≤ c.k * SC := fun hs => by simpa [hs] using hside
+  have hD0 := DZ_pos
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hSW : (0:ℝ) < SW := by norm_num [SW]
+  have nd0 : ∀ a : ℕ, (0:ℝ) ≤ (a : ℝ) / DZ := fun a => div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+  have nP0 : ∀ a : ℕ, (0:ℝ) ≤ (a : ℝ) / 100000000000000000000 :=
+    fun a => div_nonneg (Nat.cast_nonneg _) (by norm_num)
+  have nG0 : ∀ a : ℕ, (0:ℝ) ≤ (a : ℝ) / 10000000000 :=
+    fun a => div_nonneg (Nat.cast_nonneg _) (by norm_num)
+  -- endpoints at scale DZ
+  have hLLO : ((c.LLO : ℕ) : ℝ) / DZ ≤ (c.LN : ℝ) / SC := by
+    have := ndiv_le (c.LN * DZ) SC (by norm_num [SC])
+    unfold CellN.LLO
+    push_cast at this ⊢
+    rw [div_le_iff₀ hD0]
+    calc ((ndiv (c.LN * DZ) SC : ℕ) : ℝ) ≤ (c.LN : ℝ) * DZ / SC := this
+      _ = (c.LN : ℝ) / SC * DZ := by ring
+  have hUHI : (c.UN : ℝ) / SC ≤ ((c.UHI : ℕ) : ℝ) / DZ := by
+    have := le_ndivc (c.UN * DZ) SC (by norm_num [SC])
+    unfold CellN.UHI
+    push_cast at this ⊢
+    rw [le_div_iff₀ hD0]
+    calc (c.UN : ℝ) / SC * DZ = (c.UN : ℝ) * DZ / SC := by ring
+      _ ≤ _ := this
+  have hAD : ((c.AD : ℕ) : ℝ) / DZ = (c.k : ℝ) / 2 := by
+    unfold CellN.AD; simp only [DZ, DZ2]; push_cast; ring
+  have hL0 : (0:ℝ) ≤ (c.LN : ℝ) / SC := div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+  have hx0 : 0 ≤ x := hL0.trans hx1
+  have hLNUN : (c.LN : ℝ) / SC ≤ (c.UN : ℝ) / SC :=
+    div_le_div_of_nonneg_right (by exact_mod_cast hLU) hSC.le
+  have hkF : c.side = false → (c.UN : ℝ) / SC ≤ (c.k : ℝ) / 2 := fun hs => by
+    have : (2 * c.UN : ℝ) ≤ (c.k * SC : ℝ) := by exact_mod_cast hsideF hs
+    rw [div_le_div_iff₀ hSC (by norm_num)]; linarith
+  have hkT : c.side = true → (c.k : ℝ) / 2 ≤ (c.LN : ℝ) / SC := fun hs => by
+    have : (c.k * SC : ℝ) ≤ (2 * c.LN : ℝ) := by exact_mod_cast hsideT hs
+    rw [div_le_div_iff₀ (by norm_num) hSC]; linarith
+  -- the reduced offset r and the integer bounds RLO ≤ r ≤ RHI
+  set r : ℝ := if c.side then x - (c.k : ℝ) / 2 else (c.k : ℝ) / 2 - x with hr
+  have hr0 : 0 ≤ r := by
+    simp only [hr]
+    cases hsd : c.side
+    · simp only [Bool.false_eq_true, if_false]; linarith [hkF hsd]
+    · simp only [if_true]; linarith [hkT hsd]
+  have hRLO : ((c.RLO : ℕ) : ℝ) / DZ ≤ r := by
+    unfold CellN.RLO
+    cases hsd : c.side
+    · simp only [Bool.false_eq_true, if_false]
+      simp only [hr, hsd, Bool.false_eq_true, if_false]
+      rcases le_or_gt c.UHI c.AD with hle | hlt
+      · rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+      · rw [Nat.sub_eq_zero_of_le hlt.le]; simp only [Nat.cast_zero, zero_div]
+        linarith [hkF hsd]
+    · simp only [if_true]
+      simp only [hr, hsd, if_true]
+      rcases le_or_gt c.AD c.LLO with hle | hlt
+      · rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+      · rw [Nat.sub_eq_zero_of_le hlt.le]; simp only [Nat.cast_zero, zero_div]
+        linarith [hkT hsd]
+  have hRHI : r ≤ ((c.RHI : ℕ) : ℝ) / DZ := by
+    unfold CellN.RHI
+    cases hsd : c.side
+    · simp only [Bool.false_eq_true, if_false]
+      simp only [hr, hsd, Bool.false_eq_true, if_false]
+      have hle : c.LLO ≤ c.AD := by
+        have h1 : ((c.LLO : ℕ) : ℝ) / DZ ≤ (c.k : ℝ) / 2 := by linarith [hkF hsd]
+        rw [← hAD] at h1
+        have := (div_le_div_iff_of_pos_right hD0).mp h1
+        exact_mod_cast this
+      rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+    · simp only [if_true]
+      simp only [hr, hsd, if_true]
+      have hle : c.AD ≤ c.UHI := by
+        have h1 : (c.k : ℝ) / 2 ≤ ((c.UHI : ℕ) : ℝ) / DZ := by linarith [hkT hsd]
+        rw [← hAD] at h1
+        have := (div_le_div_iff_of_pos_right hD0).mp h1
+        exact_mod_cast this
+      rw [Nat.cast_sub hle, sub_div, hAD]; linarith
+  -- θ = π r at scale DZ
+  have hTL : ((c.TLZ : ℕ) : ℝ) / DZ ≤ Real.pi * r := by
+    unfold CellN.TLZ
+    exact ndiv_prod_le PLN c.RLO _ (by norm_num) PLN_le hRLO (nP0 _) (nd0 _)
+  have hTUr : Real.pi * r ≤ ((c.TUZ : ℕ) : ℝ) / DZ := by
+    unfold CellN.TUZ
+    exact le_ndivc_prod PUN c.RHI _ (by norm_num) PUN_ge hRHI Real.pi_pos.le hr0
+  have hTU1 : ((c.TUZ : ℕ) : ℝ) / DZ ≤ 1 := by
+    rw [div_le_one hD0]; exact_mod_cast hTU
+  have hTL0 : (0:ℝ) ≤ ((c.TLZ : ℕ) : ℝ) / DZ := nd0 _
+  have hθ0 : (0:ℝ) ≤ Real.pi * r := mul_nonneg Real.pi_pos.le hr0
+  have hθ1 : Real.pi * r ≤ 1 := hTUr.trans hTU1
+  -- Taylor enclosures at the integer endpoints
+  have hc1 : ((c.CLZ : ℤ) : ℝ) / DZ ≤ Real.cos (Real.pi * r) := by
+    have h := cos_lower hθ0 hTUr hTU1
+    have h1 := cosLo_le c.TUZ hcP1
+    have h2 := ERRD_ge
+    unfold CellN.CLZ; push_cast; rw [sub_div]
+    linarith
+  have hc2 : Real.cos (Real.pi * r) ≤ ((c.CUZ : ℤ) : ℝ) / DZ := by
+    have h := cos_upper hTL0 hTL hθ1
+    have h1 := le_cosHi c.TLZ hcP2
+    have h2 := ERRD_ge
+    unfold CellN.CUZ; push_cast; rw [add_div]
+    linarith
+  have hs1 : ((c.SLZ : ℤ) : ℝ) / DZ ≤ Real.sin (Real.pi * r) := by
+    have h := sin_lower hTL0 hTL hθ1
+    have h1 := sinLo_le c.TLZ hsP1
+    have h2 := ERRD_ge
+    unfold CellN.SLZ; push_cast; rw [sub_div]
+    linarith
+  have hs2 : Real.sin (Real.pi * r) ≤ ((c.SUZ : ℤ) : ℝ) / DZ := by
+    have h := sin_upper hθ0 hTUr hTU1
+    have h1 := le_sinHi c.TUZ hsP2
+    have h2 := ERRD_ge
+    unfold CellN.SUZ; push_cast; rw [add_div]
+    linarith
+  -- the shift to the anchor
+  have hcs := cos_sin_half c.k
+  have hCX : ((c.CXZ).1 : ℝ) / DZ ≤ Real.cos (Real.pi * x) ∧ Real.cos (Real.pi * x) ≤ ((c.CXZ).2 : ℝ) / DZ := by
+    cases hsd : c.side
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) - Real.pi * r := by
+        simp only [hr, hsd, Bool.false_eq_true, if_false]; ring
+      rw [ex, Real.cos_sub, hcs.1, hcs.2]
+      simp only [CellN.CXZ, hsd, Bool.false_eq_true, if_false]
+      exact iaddZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) + Real.pi * r := by
+        simp only [hr, hsd, if_true]; ring
+      rw [ex, Real.cos_add, hcs.1, hcs.2]
+      simp only [CellN.CXZ, hsd, if_true]
+      exact isubZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+  have hSX : ((c.SXZ).1 : ℝ) / DZ ≤ Real.sin (Real.pi * x) ∧ Real.sin (Real.pi * x) ≤ ((c.SXZ).2 : ℝ) / DZ := by
+    cases hsd : c.side
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) - Real.pi * r := by
+        simp only [hr, hsd, Bool.false_eq_true, if_false]; ring
+      rw [ex, Real.sin_sub, hcs.1, hcs.2]
+      simp only [CellN.SXZ, hsd, Bool.false_eq_true, if_false]
+      exact isubZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+    · have ex : Real.pi * x = Real.pi * ((c.k:ℝ) / 2) + Real.pi * r := by
+        simp only [hr, hsd, if_true]; ring
+      rw [ex, Real.sin_add, hcs.1, hcs.2]
+      simp only [CellN.SXZ, hsd, if_true]
+      exact iaddZ_sound _ _ (imulZZ_sound _ _ hc1 hc2) (imulZZ_sound _ _ hs1 hs2)
+  -- π x and 2 γ π x
+  have hb1 : ((c.BLZ : ℕ) : ℝ) / DZ ≤ Real.pi * x := by
+    unfold CellN.BLZ
+    exact ndiv_prod_le PLN c.LLO _ (by norm_num) PLN_le (hLLO.trans hx1) (nP0 _) (nd0 _)
+  have hb2 : Real.pi * x ≤ ((c.BUZ : ℕ) : ℝ) / DZ := by
+    unfold CellN.BUZ
+    exact le_ndivc_prod PUN c.UHI _ (by norm_num) PUN_ge (hx2.trans hUHI) Real.pi_pos.le hx0
+  have hBL0 : (0:ℝ) ≤ ((c.BLZ : ℕ) : ℝ) / DZ := nd0 _
+  have hπx0 : (0:ℝ) ≤ Real.pi * x := hBL0.trans hb1
+  have hgam0 : (0:ℝ) ≤ gam := (nG0 GLN).trans GLN_le
+  have hp1 : ((c.P2LZ : ℕ) : ℝ) / DZ ≤ 2 * gam * (Real.pi * x) := by
+    unfold CellN.P2LZ
+    exact ndiv_prod_le (2 * GLN) c.BLZ 10000000000 (by norm_num) (A := 2 * gam) (B := Real.pi * x)
+      (by push_cast; have := GLN_le; linarith) hb1 (nG0 _) hBL0
+  have hp2 : 2 * gam * (Real.pi * x) ≤ ((c.P2UZ : ℕ) : ℝ) / DZ := by
+    unfold CellN.P2UZ
+    exact le_ndivc_prod (2 * GUN) c.BUZ 10000000000 (by norm_num) (A := 2 * gam) (B := Real.pi * x)
+      (by push_cast; have := GUN_ge; linarith) hb2 (by linarith) hπx0
+  have hP2L0 : (0:ℝ) ≤ ((c.P2LZ : ℕ) : ℝ) / DZ := nd0 _
+  -- the product 2 γ π x · sin (π x)
+  have hT1 : ((c.TLOZ : ℤ) : ℝ) / DZ ≤ 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) := by
+    have hz := zfdiv_le (min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1))
+    have hmA : ((min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1) : ℤ) : ℝ)
+        ≤ (((c.P2LZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) := by exact_mod_cast min_le_left _ _
+    have hmB : ((min ((c.P2LZ : ℤ) * c.SXZ.1) ((c.P2UZ : ℤ) * c.SXZ.1) : ℤ) : ℝ)
+        ≤ (((c.P2UZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) := by exact_mod_cast min_le_right _ _
+    have eA : (((c.P2LZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2LZ : ℕ) : ℝ) / DZ * ((((c.SXZ).1 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    have eB : (((c.P2UZ : ℤ) * c.SXZ.1 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2UZ : ℕ) : ℝ) / DZ * ((((c.SXZ).1 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    unfold CellN.TLOZ
+    refine (div_le_div_of_nonneg_right hz hD0.le).trans (prod_lo hP2L0 hp1 hp2 hSX.1 ?_ ?_)
+    · rw [← eA]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmA hD0.le) hD0.le
+    · rw [← eB]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmB hD0.le) hD0.le
+  have hT2 : 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) ≤ ((c.THIZ : ℤ) : ℝ) / DZ := by
+    have hz := le_zcdiv (max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2))
+    have hmA : (((c.P2LZ : ℤ) * c.SXZ.2 : ℤ) : ℝ)
+        ≤ ((max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2) : ℤ) : ℝ) := by exact_mod_cast le_max_left _ _
+    have hmB : (((c.P2UZ : ℤ) * c.SXZ.2 : ℤ) : ℝ)
+        ≤ ((max ((c.P2LZ : ℤ) * c.SXZ.2) ((c.P2UZ : ℤ) * c.SXZ.2) : ℤ) : ℝ) := by exact_mod_cast le_max_right _ _
+    have eA : (((c.P2LZ : ℤ) * c.SXZ.2 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2LZ : ℕ) : ℝ) / DZ * ((((c.SXZ).2 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    have eB : (((c.P2UZ : ℤ) * c.SXZ.2 : ℤ) : ℝ) / DZ / DZ
+        = ((c.P2UZ : ℕ) : ℝ) / DZ * ((((c.SXZ).2 : ℤ) : ℝ) / DZ) := by push_cast; ring
+    unfold CellN.THIZ
+    refine (prod_hi hP2L0 hp1 hp2 hSX.2 ?_ ?_).trans (div_le_div_of_nonneg_right hz hD0.le)
+    · rw [← eA]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmA hD0.le) hD0.le
+    · rw [← eB]; exact div_le_div_of_nonneg_right (div_le_div_of_nonneg_right hmB hD0.le) hD0.le
+  -- the numerator and the denominator
+  set N : ℝ := Real.cos (Real.pi * x) - 2 * gam * (Real.pi * x) * Real.sin (Real.pi * x) with hNdef
+  have hN : ((c.NLOZ : ℤ) : ℝ) / DZ ≤ |N| := by
+    have hCX1 := (div_le_iff₀ hD0).mp hCX.1
+    have hCX2 := (le_div_iff₀ hD0).mp hCX.2
+    have hT1' := (div_le_iff₀ hD0).mp hT1
+    have hT2' := (le_div_iff₀ hD0).mp hT2
+    have ha1 := mul_le_mul_of_nonneg_right (le_abs_self N) hD0.le
+    have ha2 := mul_le_mul_of_nonneg_right (neg_le_abs N) hD0.le
+    rw [div_le_iff₀ hD0]
+    unfold CellN.NLOZ
+    rw [Int.cast_max, Int.cast_max, Int.cast_zero]
+    refine max_le (mul_nonneg (abs_nonneg _) hD0.le) (max_le ?_ ?_)
+    · push_cast; rw [hNdef] at ha1; linarith
+    · push_cast; rw [hNdef] at ha2; linarith
+  have hNLO0 : (0:ℝ) ≤ ((c.NLOZ : ℤ) : ℝ) / DZ := by
+    unfold CellN.NLOZ; rw [Int.cast_max, Int.cast_zero]
+    exact div_nonneg (le_max_left _ _) hD0.le
+  have hD' : (0:ℝ) < ((c.DHIZ : ℤ) : ℝ) / DZ := by
+    have : (0:ℝ) < ((c.DHIZ : ℤ) : ℝ) := by exact_mod_cast hD
+    exact div_pos this hD0
+  have hD0' : (1:ℝ) < 2 * (Real.pi * x)^2 := by
+    have h1 : ((DZ * DZ : ℕ) : ℝ) < ((2 * c.BLZ * c.BLZ : ℕ) : ℝ) := by exact_mod_cast hB
+    push_cast at h1
+    have h2 : ((c.BLZ : ℕ) : ℝ) / DZ * (((c.BLZ : ℕ) : ℝ) / DZ) ≤ (Real.pi * x) * (Real.pi * x) :=
+      mul_le_mul hb1 hb1 hBL0 hπx0
+    have h3 : (1:ℝ) < 2 * (((c.BLZ : ℕ) : ℝ) / DZ * (((c.BLZ : ℕ) : ℝ) / DZ)) := by
+      rw [div_mul_div_comm, ← mul_div_assoc, lt_div_iff₀ (mul_pos hD0 hD0)]
+      linarith
+    rw [pow_two]; linarith
+  have hDD : 2 * (Real.pi * x)^2 - 1 ≤ ((c.DHIZ : ℤ) : ℝ) / DZ := by
+    have h1 := le_ndivc (2 * c.BUZ * c.BUZ) DZ (by norm_num [DZ])
+    push_cast at h1
+    have h2 : (Real.pi * x) * (Real.pi * x) ≤ ((c.BUZ : ℕ) : ℝ) / DZ * (((c.BUZ : ℕ) : ℝ) / DZ) :=
+      mul_le_mul hb2 hb2 hπx0 (hπx0.trans hb2)
+    have h3 : 2 * (((c.BUZ : ℕ) : ℝ) / DZ * (((c.BUZ : ℕ) : ℝ) / DZ))
+        = 2 * (c.BUZ : ℝ) * (c.BUZ : ℝ) / DZ / DZ := by ring
+    have h4 := div_le_div_of_nonneg_right h1 hD0.le
+    unfold CellN.DHIZ
+    push_cast
+    rw [sub_div, div_self DZ_ne, pow_two]
+    linarith
+  have hfin := wfun_ge x (((c.NLOZ : ℤ) : ℝ) / DZ) (((c.DHIZ : ℤ) : ℝ) / DZ) hNLO0 hD' hD0' hDD hN
+  have hWr : ((c.WN : ℕ) : ℝ) * ((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ)
+      ≤ ((c.NLOZ : ℤ) : ℝ) * ((c.NLOZ : ℤ) : ℝ) * ((SW : ℕ) : ℝ) := by exact_mod_cast hW
+  have hDHpos : (0:ℝ) < ((c.DHIZ : ℤ) : ℝ) := by exact_mod_cast hD
+  have e : (((c.NLOZ : ℤ) : ℝ) / DZ / (((c.DHIZ : ℤ) : ℝ) / DZ))^2
+      = (((c.NLOZ : ℤ) : ℝ) * ((c.NLOZ : ℤ) : ℝ)) / (((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ)) := by
+    rw [div_div_div_cancel_right₀ DZ_ne]; ring
+  have hle : ((c.WN : ℕ) : ℝ) / SW
+      ≤ (((c.NLOZ : ℤ) : ℝ) * ((c.NLOZ : ℤ) : ℝ)) / (((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ)) := by
+    rw [div_le_div_iff₀ hSW (mul_pos hDHpos hDHpos)]
+    calc ((c.WN : ℕ) : ℝ) * (((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ))
+        = ((c.WN : ℕ) : ℝ) * ((c.DHIZ : ℤ) : ℝ) * ((c.DHIZ : ℤ) : ℝ) := by ring
+      _ ≤ _ := hWr
+  rw [← e] at hle
+  exact hle.trans hfin
+-- ZLEMMAS-END
+
+theorem CTN.find_sound : ∀ (t : CTN) (a b : ℕ) (c : CellN), t.find a b = some c →
+    c ∈ t.toList ∧ c.LN = a ∧ c.UN = b := by
+  intro t
+  induction t with
+  | nil => intro a b c h; simp [CTN.find] at h
+  | node l c0 r ihl ihr =>
+    intro a b c h
+    simp only [CTN.find, Bool.cond_eq_ite, Nat.blt_eq] at h
+    split_ifs at h with h1 h2 h3 h4
+    · obtain ⟨hm, hL, hU⟩ := ihl a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · obtain ⟨hm, hL, hU⟩ := ihr a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · obtain ⟨hm, hL, hU⟩ := ihl a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · obtain ⟨hm, hL, hU⟩ := ihr a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · simp only [Option.some.injEq] at h
+      subst h
+      exact ⟨by simp [CTN.toList], le_antisymm (not_lt.mp h1) (not_lt.mp h2),
+        le_antisymm (not_lt.mp h3) (not_lt.mp h4)⟩
+
+theorem CTN.allOk_sound : ∀ (t : CTN), t.allOk = true → ∀ c ∈ t.toList, c.okZ = true := by
+  intro t
+  induction t with
+  | nil => intro _ c hc; simp [CTN.toList] at hc
+  | node l c0 r ihl ihr =>
+    intro h c hc
+    simp only [CTN.allOk, Bool.and_eq_true] at h
+    simp only [CTN.toList, List.mem_append, List.mem_cons] at hc
+    rcases hc with hc | hc | hc
+    · exact ihl h.1.1 c hc
+    · subst hc; exact h.1.2
+    · exact ihr h.2 c hc
+
+theorem lookupAllN_sound (t : CTN) : ∀ (ps : List (ℕ × ℕ)) (cs : List CellN),
+    lookupAllN t ps = some cs → ∀ c ∈ cs, c ∈ t.toList := by
+  intro ps
+  induction ps with
+  | nil => intro cs h; simp [lookupAllN] at h; subst h; simp
+  | cons ab rest ih =>
+    intro cs h
+    obtain ⟨a, b⟩ := ab
+    cases hf : t.find a b with
+    | none => simp [lookupAllN, hf] at h
+    | some c =>
+      cases hr : lookupAllN t rest with
+      | none => simp [lookupAllN, hf, hr] at h
+      | some cs' =>
+        simp only [lookupAllN, hf, hr, Option.some.injEq] at h
+        subst h
+        intro d hd
+        simp only [List.mem_cons] at hd
+        rcases hd with hd | hd
+        · subst hd; exact (CTN.find_sound t a b d hf).1
+        · exact ih cs' hr d hd
+
+/-- a natural-number cell's bound holds on its interval, read in real coordinates -/
+theorem cellN_sound (c : CellN) (hok : c.okZ = true) (x : ℝ)
+    (h1 : (c.LN : ℝ) / SC ≤ x) (h2 : x ≤ (c.UN : ℝ) / SC) : (c.WN : ℝ) / SW ≤ wfun x :=
+  cellN_soundZ c hok x h1 h2
+
+theorem chainOKN_sound (t : CTN) (hok : t.allOk = true) :
+    ∀ (cs : List CellN), (∀ c ∈ cs, c ∈ t.toList) → ∀ (lo hi : ℕ), chainOKN lo hi cs = true →
+      ∀ e : ℝ, (lo : ℝ) / SC ≤ e → e ≤ (hi : ℝ) / SC → (chainWN cs : ℝ) / SW ≤ wfun e := by
+  intro cs
+  induction cs with
+  | nil =>
+    intro _ lo hi _ e _ _
+    simp only [chainWN, Nat.cast_zero, zero_div]; exact wfun_nonneg e
+  | cons c rest ih =>
+    intro hmem lo hi h e he1 he2
+    simp only [chainOKN, Bool.and_eq_true, Nat.ble_eq] at h
+    obtain ⟨hL, hrest⟩ := h
+    have hcok := CTN.allOk_sound t hok c (hmem c (List.mem_cons_self ..))
+    have hL' : (c.LN : ℝ) / SC ≤ e :=
+      le_trans (div_le_div_of_nonneg_right (by exact_mod_cast hL) (by norm_num [SC])) he1
+    simp only [chainWN, Bool.cond_eq_ite, Nat.ble_eq]
+    split_ifs with hempty hle
+    · have hU : hi ≤ c.UN := by
+        rw [List.isEmpty_iff.mp hempty] at hrest
+        simpa [chainOKN, Nat.ble_eq] using hrest
+      exact cellN_sound c hcok e hL' (he2.trans (div_le_div_of_nonneg_right (by exact_mod_cast hU) (by norm_num [SC])))
+    · rcases le_total e ((c.UN : ℝ) / SC) with hU | hU
+      · exact cellN_sound c hcok e hL' hU
+      · exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast hle) (by norm_num [SW]))
+          (ih (fun d hd => hmem d (List.mem_cons_of_mem _ hd)) _ _ hrest e hU he2)
+    · rcases le_total e ((c.UN : ℝ) / SC) with hU | hU
+      · exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast (not_le.mp hle).le) (by norm_num [SW]))
+          (cellN_sound c hcok e hL' hU)
+      · exact ih (fun d hd => hmem d (List.mem_cons_of_mem _ hd)) _ _ hrest e hU he2
+
+theorem termWN_sound_gen (t : CTN) (hok : t.allOk = true) (lo hi : ℕ) (ps : List (ℕ × ℕ)) (e : ℝ)
+    (he1 : (lo : ℝ) / SC ≤ e) (he2 : e ≤ (hi : ℝ) / SC) :
+    (termWNcore t lo hi ps : ℝ) / SW ≤ wfun e := by
+  unfold termWNcore
+  split
+  · rename_i cs hcs
+    split_ifs with hch
+    · exact chainOKN_sound t hok cs (lookupAllN_sound t _ cs hcs) lo hi hch e he1 he2
+    · simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg e
+  · simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg e
+
+theorem termWN_sound (t : CTN) (hok : t.allOk = true) (lo hi : ℕ) (e : ℝ)
+    (he1 : (lo : ℝ) / SC ≤ e) (he2 : e ≤ (hi : ℝ) / SC) : (termWN t lo hi : ℝ) / SW ≤ wfun e :=
+  termWN_sound_gen t hok lo hi (piecesN' lo hi) e he1 he2
+
+end Zeta23Ext.Bridge.ThreePoint
+
+namespace Zeta23Ext.Bridge.ThreePoint.SixW15A
+
+open Zeta23Ext.Bridge.ThreePoint
+
+/-- the weighted functional on the gaps, in real form -/
+def G (g0 g1 g2 g3 g4 : ℝ) : ℝ :=
+  (25232 / (SA:ℝ)) * g0 + (42025 / (SA:ℝ)) * g1 + (46137 / (SA:ℝ)) * g2 + (42044 / (SA:ℝ)) * g3 + (24559 / (SA:ℝ)) * g4
+    + (25715100 / (SA:ℝ)) * wfun (g0) + (61242800 / (SA:ℝ)) * wfun (g0 + g1) + (40905100 / (SA:ℝ)) * wfun (g0 + g1 + g2) + (104929600 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) + (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) + (48318100 / (SA:ℝ)) * wfun (g1) + (40072400 / (SA:ℝ)) * wfun (g1 + g2) + (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) + (95070300 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) + (52857300 / (SA:ℝ)) * wfun (g2) + (35189000 / (SA:ℝ)) * wfun (g2 + g3) + (39348000 / (SA:ℝ)) * wfun (g2 + g3 + g4) + (48170700 / (SA:ℝ)) * wfun (g3) + (63495600 / (SA:ℝ)) * wfun (g3 + g4) + (24938600 / (SA:ℝ)) * wfun (g4)
+
+def Box.mem (b : Box) (g0 g1 g2 g3 g4 : ℝ) : Prop :=
+  (b.l0 : ℝ) / SC ≤ g0 ∧ g0 ≤ (b.u0 : ℝ) / SC ∧ (b.l1 : ℝ) / SC ≤ g1 ∧ g1 ≤ (b.u1 : ℝ) / SC ∧ (b.l2 : ℝ) / SC ≤ g2 ∧ g2 ≤ (b.u2 : ℝ) / SC ∧ (b.l3 : ℝ) / SC ≤ g3 ∧ g3 ≤ (b.u3 : ℝ) / SC ∧ (b.l4 : ℝ) / SC ≤ g4 ∧ g4 ≤ (b.u4 : ℝ) / SC
+
+set_option maxHeartbeats 4000000 in
+theorem leaf_sound (tb : CTN) (hok : tb.allOk = true) (b : Box) (h : leafCheck tb b = true)
+    (g0 g1 g2 g3 g4 : ℝ) (hm : b.mem g0 g1 g2 g3 g4) : (cN : ℝ) / SA ≤ G g0 g1 g2 g3 g4 := by
+  obtain ⟨h01, h02, h11, h12, h21, h22, h31, h32, h41, h42⟩ := hm
+  have w0 := termWN_sound tb hok (b.l0) (b.u0) (g0) (by push_cast; (try simp only [add_div]); linarith [h01]) (by push_cast; (try simp only [add_div]); linarith [h02])
+  have w1 := termWN_sound tb hok (b.l0 + b.l1) (b.u0 + b.u1) (g0 + g1) (by push_cast; (try simp only [add_div]); linarith [h01, h11]) (by push_cast; (try simp only [add_div]); linarith [h02, h12])
+  have w2 := termWN_sound tb hok (b.l0 + b.l1 + b.l2) (b.u0 + b.u1 + b.u2) (g0 + g1 + g2) (by push_cast; (try simp only [add_div]); linarith [h01, h11, h21]) (by push_cast; (try simp only [add_div]); linarith [h02, h12, h22])
+  have w3 := termWN_sound tb hok (b.l0 + b.l1 + b.l2 + b.l3) (b.u0 + b.u1 + b.u2 + b.u3) (g0 + g1 + g2 + g3) (by push_cast; (try simp only [add_div]); linarith [h01, h11, h21, h31]) (by push_cast; (try simp only [add_div]); linarith [h02, h12, h22, h32])
+  have w4 := termWN_sound tb hok (b.l0 + b.l1 + b.l2 + b.l3 + b.l4) (b.u0 + b.u1 + b.u2 + b.u3 + b.u4) (g0 + g1 + g2 + g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h01, h11, h21, h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h02, h12, h22, h32, h42])
+  have w5 := termWN_sound tb hok (b.l1) (b.u1) (g1) (by push_cast; (try simp only [add_div]); linarith [h11]) (by push_cast; (try simp only [add_div]); linarith [h12])
+  have w6 := termWN_sound tb hok (b.l1 + b.l2) (b.u1 + b.u2) (g1 + g2) (by push_cast; (try simp only [add_div]); linarith [h11, h21]) (by push_cast; (try simp only [add_div]); linarith [h12, h22])
+  have w7 := termWN_sound tb hok (b.l1 + b.l2 + b.l3) (b.u1 + b.u2 + b.u3) (g1 + g2 + g3) (by push_cast; (try simp only [add_div]); linarith [h11, h21, h31]) (by push_cast; (try simp only [add_div]); linarith [h12, h22, h32])
+  have w8 := termWN_sound tb hok (b.l1 + b.l2 + b.l3 + b.l4) (b.u1 + b.u2 + b.u3 + b.u4) (g1 + g2 + g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h11, h21, h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h12, h22, h32, h42])
+  have w9 := termWN_sound tb hok (b.l2) (b.u2) (g2) (by push_cast; (try simp only [add_div]); linarith [h21]) (by push_cast; (try simp only [add_div]); linarith [h22])
+  have w10 := termWN_sound tb hok (b.l2 + b.l3) (b.u2 + b.u3) (g2 + g3) (by push_cast; (try simp only [add_div]); linarith [h21, h31]) (by push_cast; (try simp only [add_div]); linarith [h22, h32])
+  have w11 := termWN_sound tb hok (b.l2 + b.l3 + b.l4) (b.u2 + b.u3 + b.u4) (g2 + g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h21, h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h22, h32, h42])
+  have w12 := termWN_sound tb hok (b.l3) (b.u3) (g3) (by push_cast; (try simp only [add_div]); linarith [h31]) (by push_cast; (try simp only [add_div]); linarith [h32])
+  have w13 := termWN_sound tb hok (b.l3 + b.l4) (b.u3 + b.u4) (g3 + g4) (by push_cast; (try simp only [add_div]); linarith [h31, h41]) (by push_cast; (try simp only [add_div]); linarith [h32, h42])
+  have w14 := termWN_sound tb hok (b.l4) (b.u4) (g4) (by push_cast; (try simp only [add_div]); linarith [h41]) (by push_cast; (try simp only [add_div]); linarith [h42])
+  simp only [leafCheck, Nat.ble_eq] at h
+  have hq := (Nat.cast_le (α := ℝ)).mpr h
+  push_cast at hq
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hSW : (0:ℝ) < SW := by norm_num [SW]
+  have hSA : (0:ℝ) < SA := by norm_num [SA]
+  have hpos : (0:ℝ) < SC * SW := by positivity
+  set L : ℝ := 25232 * ((b.l0 : ℝ) / SC) + 42025 * ((b.l1 : ℝ) / SC) + 46137 * ((b.l2 : ℝ) / SC) + 42044 * ((b.l3 : ℝ) / SC) + 24559 * ((b.l4 : ℝ) / SC) with hL
+  set Wt : ℝ := 25715100 * ((termWN tb (b.l0) (b.u0) : ℝ) / SW) + 61242800 * ((termWN tb (b.l0 + b.l1) (b.u0 + b.u1) : ℝ) / SW) + 40905100 * ((termWN tb (b.l0 + b.l1 + b.l2) (b.u0 + b.u1 + b.u2) : ℝ) / SW) + 104929600 * ((termWN tb (b.l0 + b.l1 + b.l2 + b.l3) (b.u0 + b.u1 + b.u2 + b.u3) : ℝ) / SW) + 200000000 * ((termWN tb (b.l0 + b.l1 + b.l2 + b.l3 + b.l4) (b.u0 + b.u1 + b.u2 + b.u3 + b.u4) : ℝ) / SW) + 48318100 * ((termWN tb (b.l1) (b.u1) : ℝ) / SW) + 40072400 * ((termWN tb (b.l1 + b.l2) (b.u1 + b.u2) : ℝ) / SW) + 119746800 * ((termWN tb (b.l1 + b.l2 + b.l3) (b.u1 + b.u2 + b.u3) : ℝ) / SW) + 95070300 * ((termWN tb (b.l1 + b.l2 + b.l3 + b.l4) (b.u1 + b.u2 + b.u3 + b.u4) : ℝ) / SW) + 52857300 * ((termWN tb (b.l2) (b.u2) : ℝ) / SW) + 35189000 * ((termWN tb (b.l2 + b.l3) (b.u2 + b.u3) : ℝ) / SW) + 39348000 * ((termWN tb (b.l2 + b.l3 + b.l4) (b.u2 + b.u3 + b.u4) : ℝ) / SW) + 48170700 * ((termWN tb (b.l3) (b.u3) : ℝ) / SW) + 63495600 * ((termWN tb (b.l3 + b.l4) (b.u3 + b.u4) : ℝ) / SW) + 24938600 * ((termWN tb (b.l4) (b.u4) : ℝ) / SW) with hWt
+  have e : (L + Wt) * (SC * SW) = (25232 * (b.l0 : ℝ) + 42025 * (b.l1 : ℝ) + 46137 * (b.l2 : ℝ) + 42044 * (b.l3 : ℝ) + 24559 * (b.l4 : ℝ)) * SW + (25715100 * (termWN tb (b.l0) (b.u0) : ℝ) + 61242800 * (termWN tb (b.l0 + b.l1) (b.u0 + b.u1) : ℝ) + 40905100 * (termWN tb (b.l0 + b.l1 + b.l2) (b.u0 + b.u1 + b.u2) : ℝ) + 104929600 * (termWN tb (b.l0 + b.l1 + b.l2 + b.l3) (b.u0 + b.u1 + b.u2 + b.u3) : ℝ) + 200000000 * (termWN tb (b.l0 + b.l1 + b.l2 + b.l3 + b.l4) (b.u0 + b.u1 + b.u2 + b.u3 + b.u4) : ℝ) + 48318100 * (termWN tb (b.l1) (b.u1) : ℝ) + 40072400 * (termWN tb (b.l1 + b.l2) (b.u1 + b.u2) : ℝ) + 119746800 * (termWN tb (b.l1 + b.l2 + b.l3) (b.u1 + b.u2 + b.u3) : ℝ) + 95070300 * (termWN tb (b.l1 + b.l2 + b.l3 + b.l4) (b.u1 + b.u2 + b.u3 + b.u4) : ℝ) + 52857300 * (termWN tb (b.l2) (b.u2) : ℝ) + 35189000 * (termWN tb (b.l2 + b.l3) (b.u2 + b.u3) : ℝ) + 39348000 * (termWN tb (b.l2 + b.l3 + b.l4) (b.u2 + b.u3 + b.u4) : ℝ) + 48170700 * (termWN tb (b.l3) (b.u3) : ℝ) + 63495600 * (termWN tb (b.l3 + b.l4) (b.u3 + b.u4) : ℝ) + 24938600 * (termWN tb (b.l4) (b.u4) : ℝ)) * SC := by
+    rw [hL, hWt]; field_simp; try ring
+  have hq' : (cN : ℝ) ≤ L + Wt := by
+    refine le_of_mul_le_mul_right ?_ hpos
+    calc (cN : ℝ) * (SC * SW) = (cN : ℝ) * SC * SW := by ring
+      _ ≤ _ := hq
+      _ = (L + Wt) * (SC * SW) := e.symm
+  unfold G
+  rw [div_le_iff₀ hSA]
+  have eG : ((25232 / (SA:ℝ)) * g0 + (42025 / (SA:ℝ)) * g1 + (46137 / (SA:ℝ)) * g2 + (42044 / (SA:ℝ)) * g3 + (24559 / (SA:ℝ)) * g4
+      + (25715100 / (SA:ℝ)) * wfun (g0) + (61242800 / (SA:ℝ)) * wfun (g0 + g1) + (40905100 / (SA:ℝ)) * wfun (g0 + g1 + g2) + (104929600 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) + (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) + (48318100 / (SA:ℝ)) * wfun (g1) + (40072400 / (SA:ℝ)) * wfun (g1 + g2) + (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) + (95070300 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) + (52857300 / (SA:ℝ)) * wfun (g2) + (35189000 / (SA:ℝ)) * wfun (g2 + g3) + (39348000 / (SA:ℝ)) * wfun (g2 + g3 + g4) + (48170700 / (SA:ℝ)) * wfun (g3) + (63495600 / (SA:ℝ)) * wfun (g3 + g4) + (24938600 / (SA:ℝ)) * wfun (g4)) * SA
+      = 25232 * g0 + 42025 * g1 + 46137 * g2 + 42044 * g3 + 24559 * g4 + 25715100 * wfun (g0) + 61242800 * wfun (g0 + g1) + 40905100 * wfun (g0 + g1 + g2) + 104929600 * wfun (g0 + g1 + g2 + g3) + 200000000 * wfun (g0 + g1 + g2 + g3 + g4) + 48318100 * wfun (g1) + 40072400 * wfun (g1 + g2) + 119746800 * wfun (g1 + g2 + g3) + 95070300 * wfun (g1 + g2 + g3 + g4) + 52857300 * wfun (g2) + 35189000 * wfun (g2 + g3) + 39348000 * wfun (g2 + g3 + g4) + 48170700 * wfun (g3) + 63495600 * wfun (g3 + g4) + 24938600 * wfun (g4) := by
+    field_simp; try ring
+  rw [eG]
+  rw [hL, hWt] at hq'
+  linarith [hq', mul_le_mul_of_nonneg_left h01 (by positivity : (0:ℝ) ≤ 25232), mul_le_mul_of_nonneg_left h11 (by positivity : (0:ℝ) ≤ 42025), mul_le_mul_of_nonneg_left h21 (by positivity : (0:ℝ) ≤ 46137), mul_le_mul_of_nonneg_left h31 (by positivity : (0:ℝ) ≤ 42044), mul_le_mul_of_nonneg_left h41 (by positivity : (0:ℝ) ≤ 24559), mul_le_mul_of_nonneg_left w0 (by positivity : (0:ℝ) ≤ 25715100), mul_le_mul_of_nonneg_left w1 (by positivity : (0:ℝ) ≤ 61242800), mul_le_mul_of_nonneg_left w2 (by positivity : (0:ℝ) ≤ 40905100), mul_le_mul_of_nonneg_left w3 (by positivity : (0:ℝ) ≤ 104929600), mul_le_mul_of_nonneg_left w4 (by positivity : (0:ℝ) ≤ 200000000), mul_le_mul_of_nonneg_left w5 (by positivity : (0:ℝ) ≤ 48318100), mul_le_mul_of_nonneg_left w6 (by positivity : (0:ℝ) ≤ 40072400), mul_le_mul_of_nonneg_left w7 (by positivity : (0:ℝ) ≤ 119746800), mul_le_mul_of_nonneg_left w8 (by positivity : (0:ℝ) ≤ 95070300), mul_le_mul_of_nonneg_left w9 (by positivity : (0:ℝ) ≤ 52857300), mul_le_mul_of_nonneg_left w10 (by positivity : (0:ℝ) ≤ 35189000), mul_le_mul_of_nonneg_left w11 (by positivity : (0:ℝ) ≤ 39348000), mul_le_mul_of_nonneg_left w12 (by positivity : (0:ℝ) ≤ 48170700), mul_le_mul_of_nonneg_left w13 (by positivity : (0:ℝ) ≤ 63495600), mul_le_mul_of_nonneg_left w14 (by positivity : (0:ℝ) ≤ 24938600)]
+
+theorem Box.setHi_mem (b : Box) (ax : ℕ) (q : ℕ) (g0 g1 g2 g3 g4 : ℝ) (hm : b.mem g0 g1 g2 g3 g4)
+    (hle : match ax with | 0 => g0 ≤ (q : ℝ) / SC | 1 => g1 ≤ (q : ℝ) / SC | 2 => g2 ≤ (q : ℝ) / SC | 3 => g3 ≤ (q : ℝ) / SC | _ => g4 ≤ (q : ℝ) / SC) :
+    (b.setHi ax q).mem g0 g1 g2 g3 g4 := by
+  obtain ⟨h01, h02, h11, h12, h21, h22, h31, h32, h41, h42⟩ := hm
+  match ax with
+  | 0 => exact ⟨h01, hle, h11, h12, h21, h22, h31, h32, h41, h42⟩
+  | 1 => exact ⟨h01, h02, h11, hle, h21, h22, h31, h32, h41, h42⟩
+  | 2 => exact ⟨h01, h02, h11, h12, h21, hle, h31, h32, h41, h42⟩
+  | 3 => exact ⟨h01, h02, h11, h12, h21, h22, h31, hle, h41, h42⟩
+  | n + 4 => exact ⟨h01, h02, h11, h12, h21, h22, h31, h32, h41, hle⟩
+
+theorem Box.setLo_mem (b : Box) (ax : ℕ) (q : ℕ) (g0 g1 g2 g3 g4 : ℝ) (hm : b.mem g0 g1 g2 g3 g4)
+    (hge : match ax with | 0 => (q : ℝ) / SC ≤ g0 | 1 => (q : ℝ) / SC ≤ g1 | 2 => (q : ℝ) / SC ≤ g2 | 3 => (q : ℝ) / SC ≤ g3 | _ => (q : ℝ) / SC ≤ g4) :
+    (b.setLo ax q).mem g0 g1 g2 g3 g4 := by
+  obtain ⟨h01, h02, h11, h12, h21, h22, h31, h32, h41, h42⟩ := hm
+  match ax with
+  | 0 => exact ⟨hge, h02, h11, h12, h21, h22, h31, h32, h41, h42⟩
+  | 1 => exact ⟨h01, h02, hge, h12, h21, h22, h31, h32, h41, h42⟩
+  | 2 => exact ⟨h01, h02, h11, h12, hge, h22, h31, h32, h41, h42⟩
+  | 3 => exact ⟨h01, h02, h11, h12, h21, h22, hge, h32, h41, h42⟩
+  | n + 4 => exact ⟨h01, h02, h11, h12, h21, h22, h31, h32, hge, h42⟩
+
+theorem walk_split (tb : CTN) (bits fuel pos : ℕ) (b : Box) (pos1 pos' : ℕ)
+    (hbit : bits.testBit pos = true)
+    (h1 : walk tb bits fuel (pos + 4) (b.setHi (axOf bits pos) (b.mid (axOf bits pos))) = some pos1)
+    (h2 : walk tb bits fuel pos1 (b.setLo (axOf bits pos) (b.mid (axOf bits pos))) = some pos') :
+    walk tb bits (fuel + 1) pos b = some pos' := by
+  simp only [walk, hbit, cond_true, h1]
+  exact h2
+
+theorem walk_sound (tb : CTN) (hok : tb.allOk = true) (bits : ℕ) :
+    ∀ (fuel pos : ℕ) (b : Box) (pos' : ℕ), walk tb bits fuel pos b = some pos' →
+      ∀ g0 g1 g2 g3 g4 : ℝ, b.mem g0 g1 g2 g3 g4 → (cN : ℝ) / SA ≤ G g0 g1 g2 g3 g4 := by
+  intro fuel
+  induction fuel with
+  | zero => intro pos b pos' h; simp [walk] at h
+  | succ fuel ih =>
+    intro pos b pos' h g0 g1 g2 g3 g4 hm
+    simp only [walk, Bool.cond_eq_ite] at h
+    split_ifs at h with hbit hleaf
+    · split at h
+      · exact absurd h (by simp)
+      · rename_i pos1 h1
+        have hlo := ih (pos + 4) (b.setHi (axOf bits pos) (b.mid (axOf bits pos))) pos1 h1 g0 g1 g2 g3 g4
+        have hhi := ih pos1 (b.setLo (axOf bits pos) (b.mid (axOf bits pos))) pos' h g0 g1 g2 g3 g4
+        set ax := axOf bits pos with hax
+        set q := b.mid ax with hq
+        match ax, hlo, hhi with
+        | 0, hlo, hhi =>
+          rcases le_total g0 ((q : ℝ) / SC) with hs | hs
+          · exact hlo (Box.setHi_mem b 0 q g0 g1 g2 g3 g4 hm hs)
+          · exact hhi (Box.setLo_mem b 0 q g0 g1 g2 g3 g4 hm hs)
+        | 1, hlo, hhi =>
+          rcases le_total g1 ((q : ℝ) / SC) with hs | hs
+          · exact hlo (Box.setHi_mem b 1 q g0 g1 g2 g3 g4 hm hs)
+          · exact hhi (Box.setLo_mem b 1 q g0 g1 g2 g3 g4 hm hs)
+        | 2, hlo, hhi =>
+          rcases le_total g2 ((q : ℝ) / SC) with hs | hs
+          · exact hlo (Box.setHi_mem b 2 q g0 g1 g2 g3 g4 hm hs)
+          · exact hhi (Box.setLo_mem b 2 q g0 g1 g2 g3 g4 hm hs)
+        | 3, hlo, hhi =>
+          rcases le_total g3 ((q : ℝ) / SC) with hs | hs
+          · exact hlo (Box.setHi_mem b 3 q g0 g1 g2 g3 g4 hm hs)
+          · exact hhi (Box.setLo_mem b 3 q g0 g1 g2 g3 g4 hm hs)
+        | n + 4, hlo, hhi =>
+          rcases le_total g4 ((q : ℝ) / SC) with hs | hs
+          · exact hlo (Box.setHi_mem b (n + 4) q g0 g1 g2 g3 g4 hm hs)
+          · exact hhi (Box.setLo_mem b (n + 4) q g0 g1 g2 g3 g4 hm hs)
+    · exact leaf_sound tb hok b hleaf g0 g1 g2 g3 g4 hm
+
+theorem cover_sound (tb : CTN) (hok : tb.allOk = true) (aAdjN : ℕ) :
+    ∀ (cover : List (ℕ × ℕ × Bool)) (pos S : ℕ), coverCheck tb aAdjN pos S cover = true →
+      ∀ v : ℝ, (pos : ℝ) / SC ≤ v → v < (S : ℝ) / SC →
+        (cN : ℝ) / SA ≤ ((aAdjN : ℝ) / SA) * wfun v ∨
+          ∃ s ∈ cover, s.2.2 = false ∧ (s.1 : ℝ) / SC ≤ v ∧ v ≤ (s.2.1 : ℝ) / SC := by
+  intro cover
+  induction cover with
+  | nil =>
+    intro pos S h v hv1 hv2
+    simp only [coverCheck, decide_eq_true_eq] at h
+    have : (S : ℝ) / SC ≤ (pos : ℝ) / SC := div_le_div_of_nonneg_right (by exact_mod_cast h) (by norm_num [SC])
+    exact absurd (lt_of_le_of_lt (this.trans hv1) hv2) (lt_irrefl _)
+  | cons s rest ih =>
+    intro pos S h v hv1 hv2
+    obtain ⟨a, b, cl⟩ := s
+    simp only [coverCheck, Bool.and_eq_true, decide_eq_true_eq, Bool.or_eq_true, Bool.not_eq_eq_eq_not,
+      Bool.not_true] at h
+    obtain ⟨⟨⟨hpos, hab⟩, hcl⟩, hrest⟩ := h
+    rcases le_total v ((b : ℝ) / SC) with hvb | hvb
+    · rcases hcl with hcl | hcl
+      · right
+        exact ⟨(a, b, cl), List.mem_cons_self .., hcl, by rw [hpos]; exact hv1, hvb⟩
+      · left
+        split at hcl
+        · rename_i c hfind
+          obtain ⟨hmem, hL, hU⟩ := CTN.find_sound tb a b c hfind
+          have hcok := CTN.allOk_sound tb hok c hmem
+          have hW := cellN_sound c hcok v (by rw [hL, hpos]; exact hv1) (by rw [hU]; exact hvb)
+          have hq := (Nat.cast_le (α := ℝ)).mpr (decide_eq_true_eq.mp hcl)
+          push_cast at hq
+          have hSA : (0:ℝ) < SA := by norm_num [SA]
+          have hSW : (0:ℝ) < SW := by norm_num [SW]
+          rw [div_le_iff₀ hSA]
+          have hm2 : (aAdjN : ℝ) * ((c.WN : ℝ) / SW) ≤ (aAdjN : ℝ) * wfun v :=
+            mul_le_mul_of_nonneg_left hW (by positivity)
+          have e : (aAdjN : ℝ) / SA * wfun v * SA = (aAdjN : ℝ) * wfun v := by field_simp
+          rw [e]
+          calc (cN : ℝ) = (cN : ℝ) * SW / SW := by field_simp
+            _ ≤ (aAdjN : ℝ) * c.WN / SW := by apply div_le_div_of_nonneg_right _ hSW.le; linarith
+            _ = (aAdjN : ℝ) * ((c.WN : ℝ) / SW) := by ring
+            _ ≤ _ := hm2
+        · exact absurd hcl (by simp)
+    · rcases ih b S hrest v hvb hv2 with h | ⟨s', hs', he, h1, h2⟩
+      · left; exact h
+      · right; exact ⟨s', List.mem_cons_of_mem _ hs', he, h1, h2⟩
+
+theorem badOf_mem {cover : List (ℕ × ℕ × Bool)} {s : ℕ × ℕ × Bool} (hs : s ∈ cover)
+    (he : s.2.2 = false) : (s.1, s.2.1) ∈ badOf cover := by
+  simp only [badOf, List.mem_filterMap]
+  exact ⟨s, hs, by simp [he]⟩
+
+set_option maxHeartbeats 4000000 in
+theorem of_check (tb : CTN) (hok : tb.allOk = true) (bits fuel : ℕ)
+    (cover0 cover1 cover2 cover3 cover4 : List (ℕ × ℕ × Bool)) (S0 S1 S2 S3 S4 : ℕ)
+    (hS0 : cN * SC ≤ 25232 * S0) (hS1 : cN * SC ≤ 42025 * S1) (hS2 : cN * SC ≤ 46137 * S2) (hS3 : cN * SC ≤ 42044 * S3) (hS4 : cN * SC ≤ 24559 * S4)
+    (hcov0 : coverCheck tb 25715100 (SC / 2) S0 cover0 = true) (hcov1 : coverCheck tb 48318100 (SC / 2) S1 cover1 = true) (hcov2 : coverCheck tb 52857300 (SC / 2) S2 cover2 = true) (hcov3 : coverCheck tb 48170700 (SC / 2) S3 cover3 = true) (hcov4 : coverCheck tb 24938600 (SC / 2) S4 cover4 = true)
+    (hwin : cN * 100 ≤ 19 * 24938600)
+    (hrun : ∀ i0 i1 i2 i3 i4, i0 < (badOf cover0).length → i1 < (badOf cover1).length → i2 < (badOf cover2).length → i3 < (badOf cover3).length → i4 < (badOf cover4).length →
+      ∃ pos pos', walk tb bits fuel pos (boxOf (badOf cover0) (badOf cover1) (badOf cover2) (badOf cover3) (badOf cover4) i0 i1 i2 i3 i4) = some pos') :
+    ∀ g0 g1 g2 g3 g4 : ℝ, 0 ≤ g0 → 0 ≤ g1 → 0 ≤ g2 → 0 ≤ g3 → 0 ≤ g4 → (cN : ℝ) / SA ≤ G g0 g1 g2 g3 g4 := by
+  intro g0 g1 g2 g3 g4 hg0 hg1 hg2 hg3 hg4
+  have hw := fun v : ℝ => wfun_nonneg v
+  have hSA : (0:ℝ) < SA := by norm_num [SA]
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hhalf : ((SC / 2 : ℕ) : ℝ) / SC = 1/2 := by norm_num [SC]
+  set Lin : ℝ := (25232 / (SA:ℝ)) * g0 + (42025 / (SA:ℝ)) * g1 + (46137 / (SA:ℝ)) * g2 + (42044 / (SA:ℝ)) * g3 + (24559 / (SA:ℝ)) * g4 with hLin
+  set Wt : ℝ := (25715100 / (SA:ℝ)) * wfun (g0) + (61242800 / (SA:ℝ)) * wfun (g0 + g1) + (40905100 / (SA:ℝ)) * wfun (g0 + g1 + g2) + (104929600 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) + (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) + (48318100 / (SA:ℝ)) * wfun (g1) + (40072400 / (SA:ℝ)) * wfun (g1 + g2) + (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) + (95070300 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) + (52857300 / (SA:ℝ)) * wfun (g2) + (35189000 / (SA:ℝ)) * wfun (g2 + g3) + (39348000 / (SA:ℝ)) * wfun (g2 + g3 + g4) + (48170700 / (SA:ℝ)) * wfun (g3) + (63495600 / (SA:ℝ)) * wfun (g3 + g4) + (24938600 / (SA:ℝ)) * wfun (g4) with hWt
+  have hG : G g0 g1 g2 g3 g4 = Lin + Wt := by unfold G; rw [hLin, hWt]; ring
+  have hb00 : (0:ℝ) ≤ (25232 / (SA:ℝ)) * g0 := mul_nonneg (by positivity) hg0
+  have hb10 : (0:ℝ) ≤ (42025 / (SA:ℝ)) * g1 := mul_nonneg (by positivity) hg1
+  have hb20 : (0:ℝ) ≤ (46137 / (SA:ℝ)) * g2 := mul_nonneg (by positivity) hg2
+  have hb30 : (0:ℝ) ≤ (42044 / (SA:ℝ)) * g3 := mul_nonneg (by positivity) hg3
+  have hb40 : (0:ℝ) ≤ (24559 / (SA:ℝ)) * g4 := mul_nonneg (by positivity) hg4
+  have ha00 : (0:ℝ) ≤ (25715100 / (SA:ℝ)) * wfun (g0) := mul_nonneg (by positivity) (hw _)
+  have ha10 : (0:ℝ) ≤ (61242800 / (SA:ℝ)) * wfun (g0 + g1) := mul_nonneg (by positivity) (hw _)
+  have ha20 : (0:ℝ) ≤ (40905100 / (SA:ℝ)) * wfun (g0 + g1 + g2) := mul_nonneg (by positivity) (hw _)
+  have ha30 : (0:ℝ) ≤ (104929600 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) := mul_nonneg (by positivity) (hw _)
+  have ha40 : (0:ℝ) ≤ (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha50 : (0:ℝ) ≤ (48318100 / (SA:ℝ)) * wfun (g1) := mul_nonneg (by positivity) (hw _)
+  have ha60 : (0:ℝ) ≤ (40072400 / (SA:ℝ)) * wfun (g1 + g2) := mul_nonneg (by positivity) (hw _)
+  have ha70 : (0:ℝ) ≤ (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) := mul_nonneg (by positivity) (hw _)
+  have ha80 : (0:ℝ) ≤ (95070300 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha90 : (0:ℝ) ≤ (52857300 / (SA:ℝ)) * wfun (g2) := mul_nonneg (by positivity) (hw _)
+  have ha100 : (0:ℝ) ≤ (35189000 / (SA:ℝ)) * wfun (g2 + g3) := mul_nonneg (by positivity) (hw _)
+  have ha110 : (0:ℝ) ≤ (39348000 / (SA:ℝ)) * wfun (g2 + g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha120 : (0:ℝ) ≤ (48170700 / (SA:ℝ)) * wfun (g3) := mul_nonneg (by positivity) (hw _)
+  have ha130 : (0:ℝ) ≤ (63495600 / (SA:ℝ)) * wfun (g3 + g4) := mul_nonneg (by positivity) (hw _)
+  have ha140 : (0:ℝ) ≤ (24938600 / (SA:ℝ)) * wfun (g4) := mul_nonneg (by positivity) (hw _)
+  have hLin0 : 0 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb20, hb30, hb40]
+  have hWt0 : 0 ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have hbL0 : (25232 / (SA:ℝ)) * g0 ≤ Lin := by rw [hLin]; linarith [hb10, hb20, hb30, hb40]
+  have hbL1 : (42025 / (SA:ℝ)) * g1 ≤ Lin := by rw [hLin]; linarith [hb00, hb20, hb30, hb40]
+  have hbL2 : (46137 / (SA:ℝ)) * g2 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb30, hb40]
+  have hbL3 : (42044 / (SA:ℝ)) * g3 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb20, hb40]
+  have hbL4 : (24559 / (SA:ℝ)) * g4 ≤ Lin := by rw [hLin]; linarith [hb00, hb10, hb20, hb30]
+  have haW0 : (25715100 / (SA:ℝ)) * wfun (g0) ≤ Wt := by rw [hWt]; linarith [ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW1 : (61242800 / (SA:ℝ)) * wfun (g0 + g1) ≤ Wt := by rw [hWt]; linarith [ha00, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW2 : (40905100 / (SA:ℝ)) * wfun (g0 + g1 + g2) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW3 : (104929600 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW4 : (200000000 / (SA:ℝ)) * wfun (g0 + g1 + g2 + g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW5 : (48318100 / (SA:ℝ)) * wfun (g1) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW6 : (40072400 / (SA:ℝ)) * wfun (g1 + g2) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha70, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW7 : (119746800 / (SA:ℝ)) * wfun (g1 + g2 + g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha80, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW8 : (95070300 / (SA:ℝ)) * wfun (g1 + g2 + g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha90, ha100, ha110, ha120, ha130, ha140]
+  have haW9 : (52857300 / (SA:ℝ)) * wfun (g2) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha100, ha110, ha120, ha130, ha140]
+  have haW10 : (35189000 / (SA:ℝ)) * wfun (g2 + g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha110, ha120, ha130, ha140]
+  have haW11 : (39348000 / (SA:ℝ)) * wfun (g2 + g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha120, ha130, ha140]
+  have haW12 : (48170700 / (SA:ℝ)) * wfun (g3) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha130, ha140]
+  have haW13 : (63495600 / (SA:ℝ)) * wfun (g3 + g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha140]
+  have haW14 : (24938600 / (SA:ℝ)) * wfun (g4) ≤ Wt := by rw [hWt]; linarith [ha00, ha10, ha20, ha30, ha40, ha50, ha60, ha70, ha80, ha90, ha100, ha110, ha120, ha130]
+  -- gap 0: beyond the cutoff the pressure alone pays
+  by_cases hcut0 : (S0 : ℝ) / SC ≤ g0
+  · have h1 : (cN : ℝ) / SA ≤ (25232 / (SA:ℝ)) * g0 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS0; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (25232 / (SA:ℝ)) * g0 * SA = 25232 * g0 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 25232 * S0 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 25232 * ((S0 : ℝ) / SC) := by ring
+        _ ≤ 25232 * g0 := mul_le_mul_of_nonneg_left hcut0 (by norm_num)
+    rw [hG]; linarith [h1, hbL0, hWt0]
+  push_neg at hcut0
+  rcases le_total g0 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin0 | hwin0
+  · have hw19 := wfun_window g0 hg0 (by rw [hhalf] at hwin0; exact hwin0)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (25715100 / (SA:ℝ)) * wfun g0 := by
+      rw [div_le_iff₀ hSA]
+      have e : (25715100 / (SA:ℝ)) * wfun g0 * SA = 25715100 * wfun g0 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 25715100)
+      linarith [hq, hm]
+    rw [hG]; linarith [h1, haW0, hLin0]
+  rcases cover_sound tb hok _ cover0 (SC / 2) S0 hcov0 g0 hwin0 hcut0 with hclear0 | ⟨s0, hs0, he0, hb01, hb02⟩
+  · rw [hG]; linarith [hclear0, haW0, hLin0]
+  obtain ⟨i0, hi0, hsi0⟩ := List.mem_iff_getElem.mp (badOf_mem hs0 he0)
+  have hb01' : (((badOf cover0).getD i0 (0, 0)).1 : ℝ) / SC ≤ g0 := by
+    rw [List.getD_eq_getElem _ _ hi0, hsi0]; exact hb01
+  have hb02' : g0 ≤ (((badOf cover0).getD i0 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi0, hsi0]; exact hb02
+  -- gap 1: beyond the cutoff the pressure alone pays
+  by_cases hcut1 : (S1 : ℝ) / SC ≤ g1
+  · have h1 : (cN : ℝ) / SA ≤ (42025 / (SA:ℝ)) * g1 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS1; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (42025 / (SA:ℝ)) * g1 * SA = 42025 * g1 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 42025 * S1 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 42025 * ((S1 : ℝ) / SC) := by ring
+        _ ≤ 42025 * g1 := mul_le_mul_of_nonneg_left hcut1 (by norm_num)
+    rw [hG]; linarith [h1, hbL1, hWt0]
+  push_neg at hcut1
+  rcases le_total g1 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin1 | hwin1
+  · have hw19 := wfun_window g1 hg1 (by rw [hhalf] at hwin1; exact hwin1)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (48318100 / (SA:ℝ)) * wfun g1 := by
+      rw [div_le_iff₀ hSA]
+      have e : (48318100 / (SA:ℝ)) * wfun g1 * SA = 48318100 * wfun g1 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 48318100)
+      linarith [hq, hm]
+    rw [hG]; linarith [h1, haW5, hLin0]
+  rcases cover_sound tb hok _ cover1 (SC / 2) S1 hcov1 g1 hwin1 hcut1 with hclear1 | ⟨s1, hs1, he1, hb11, hb12⟩
+  · rw [hG]; linarith [hclear1, haW5, hLin0]
+  obtain ⟨i1, hi1, hsi1⟩ := List.mem_iff_getElem.mp (badOf_mem hs1 he1)
+  have hb11' : (((badOf cover1).getD i1 (0, 0)).1 : ℝ) / SC ≤ g1 := by
+    rw [List.getD_eq_getElem _ _ hi1, hsi1]; exact hb11
+  have hb12' : g1 ≤ (((badOf cover1).getD i1 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi1, hsi1]; exact hb12
+  -- gap 2: beyond the cutoff the pressure alone pays
+  by_cases hcut2 : (S2 : ℝ) / SC ≤ g2
+  · have h1 : (cN : ℝ) / SA ≤ (46137 / (SA:ℝ)) * g2 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS2; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (46137 / (SA:ℝ)) * g2 * SA = 46137 * g2 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 46137 * S2 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 46137 * ((S2 : ℝ) / SC) := by ring
+        _ ≤ 46137 * g2 := mul_le_mul_of_nonneg_left hcut2 (by norm_num)
+    rw [hG]; linarith [h1, hbL2, hWt0]
+  push_neg at hcut2
+  rcases le_total g2 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin2 | hwin2
+  · have hw19 := wfun_window g2 hg2 (by rw [hhalf] at hwin2; exact hwin2)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (52857300 / (SA:ℝ)) * wfun g2 := by
+      rw [div_le_iff₀ hSA]
+      have e : (52857300 / (SA:ℝ)) * wfun g2 * SA = 52857300 * wfun g2 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 52857300)
+      linarith [hq, hm]
+    rw [hG]; linarith [h1, haW9, hLin0]
+  rcases cover_sound tb hok _ cover2 (SC / 2) S2 hcov2 g2 hwin2 hcut2 with hclear2 | ⟨s2, hs2, he2, hb21, hb22⟩
+  · rw [hG]; linarith [hclear2, haW9, hLin0]
+  obtain ⟨i2, hi2, hsi2⟩ := List.mem_iff_getElem.mp (badOf_mem hs2 he2)
+  have hb21' : (((badOf cover2).getD i2 (0, 0)).1 : ℝ) / SC ≤ g2 := by
+    rw [List.getD_eq_getElem _ _ hi2, hsi2]; exact hb21
+  have hb22' : g2 ≤ (((badOf cover2).getD i2 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi2, hsi2]; exact hb22
+  -- gap 3: beyond the cutoff the pressure alone pays
+  by_cases hcut3 : (S3 : ℝ) / SC ≤ g3
+  · have h1 : (cN : ℝ) / SA ≤ (42044 / (SA:ℝ)) * g3 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS3; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (42044 / (SA:ℝ)) * g3 * SA = 42044 * g3 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 42044 * S3 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 42044 * ((S3 : ℝ) / SC) := by ring
+        _ ≤ 42044 * g3 := mul_le_mul_of_nonneg_left hcut3 (by norm_num)
+    rw [hG]; linarith [h1, hbL3, hWt0]
+  push_neg at hcut3
+  rcases le_total g3 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin3 | hwin3
+  · have hw19 := wfun_window g3 hg3 (by rw [hhalf] at hwin3; exact hwin3)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (48170700 / (SA:ℝ)) * wfun g3 := by
+      rw [div_le_iff₀ hSA]
+      have e : (48170700 / (SA:ℝ)) * wfun g3 * SA = 48170700 * wfun g3 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 48170700)
+      linarith [hq, hm]
+    rw [hG]; linarith [h1, haW12, hLin0]
+  rcases cover_sound tb hok _ cover3 (SC / 2) S3 hcov3 g3 hwin3 hcut3 with hclear3 | ⟨s3, hs3, he3, hb31, hb32⟩
+  · rw [hG]; linarith [hclear3, haW12, hLin0]
+  obtain ⟨i3, hi3, hsi3⟩ := List.mem_iff_getElem.mp (badOf_mem hs3 he3)
+  have hb31' : (((badOf cover3).getD i3 (0, 0)).1 : ℝ) / SC ≤ g3 := by
+    rw [List.getD_eq_getElem _ _ hi3, hsi3]; exact hb31
+  have hb32' : g3 ≤ (((badOf cover3).getD i3 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi3, hsi3]; exact hb32
+  -- gap 4: beyond the cutoff the pressure alone pays
+  by_cases hcut4 : (S4 : ℝ) / SC ≤ g4
+  · have h1 : (cN : ℝ) / SA ≤ (24559 / (SA:ℝ)) * g4 := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS4; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : (24559 / (SA:ℝ)) * g4 * SA = 24559 * g4 := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ 24559 * S4 / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = 24559 * ((S4 : ℝ) / SC) := by ring
+        _ ≤ 24559 * g4 := mul_le_mul_of_nonneg_left hcut4 (by norm_num)
+    rw [hG]; linarith [h1, hbL4, hWt0]
+  push_neg at hcut4
+  rcases le_total g4 ((SC / 2 : ℕ) / (SC : ℝ)) with hwin4 | hwin4
+  · have hw19 := wfun_window g4 hg4 (by rw [hhalf] at hwin4; exact hwin4)
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ (24938600 / (SA:ℝ)) * wfun g4 := by
+      rw [div_le_iff₀ hSA]
+      have e : (24938600 / (SA:ℝ)) * wfun g4 * SA = 24938600 * wfun g4 := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ 24938600)
+      linarith [hq, hm]
+    rw [hG]; linarith [h1, haW14, hLin0]
+  rcases cover_sound tb hok _ cover4 (SC / 2) S4 hcov4 g4 hwin4 hcut4 with hclear4 | ⟨s4, hs4, he4, hb41, hb42⟩
+  · rw [hG]; linarith [hclear4, haW14, hLin0]
+  obtain ⟨i4, hi4, hsi4⟩ := List.mem_iff_getElem.mp (badOf_mem hs4 he4)
+  have hb41' : (((badOf cover4).getD i4 (0, 0)).1 : ℝ) / SC ≤ g4 := by
+    rw [List.getD_eq_getElem _ _ hi4, hsi4]; exact hb41
+  have hb42' : g4 ≤ (((badOf cover4).getD i4 (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi4, hsi4]; exact hb42
+  obtain ⟨pos, pos', hwalk⟩ := hrun i0 i1 i2 i3 i4 hi0 hi1 hi2 hi3 hi4
+  exact walk_sound tb hok bits fuel pos _ pos' hwalk g0 g1 g2 g3 g4 ⟨hb01', hb02', hb11', hb12', hb21', hb22', hb31', hb32', hb41', hb42'⟩
+
+end Zeta23Ext.Bridge.ThreePoint.SixW15A
+
+end
+
+/-! ###### certificate data `SixW15A`: 11109 cells, 14487 leaves (axis-coded walk) ###### -/
+
+namespace Zeta23Ext.Bridge.ThreePoint.SixW15AData
+
+open Zeta23Ext.Bridge.ThreePoint Zeta23Ext.Bridge.ThreePoint.SixW15A
+
+set_option maxRecDepth 100000
+local notation "N" => CTN.node
+local notation "E" => CTN.nil
+
+noncomputable def tab0 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨16384,24576,331038177865⟩ E) ⟨24576,28672,242869129569⟩ E) ⟨28672,30720,122761883704⟩ (N (N E ⟨30720,31744,69269436296⟩ E) ⟨30720,31872,62652449971⟩ E)) ⟨30720,32768,27393363819⟩ (N (N (N E ⟨31744,32512,36843158376⟩ E) ⟨31744,32576,34548539408⟩ E) ⟨31744,32768,28203622388⟩ (N E ⟨31872,32448,39350240729⟩ E))) ⟨31872,32768,28267587364⟩ (N (N (N (N E ⟨32448,32768,28450417775⟩ E) ⟨32512,32768,28460062200⟩ E) ⟨32576,32768,28467564926⟩ (N (N E ⟨32768,32992,21788669253⟩ E) ⟨32768,33024,20912356297⟩ E)) ⟨32768,33280,14596526138⟩ (N (N (N E ⟨32768,33408,11891897536⟩ E) ⟨32992,33408,11891897536⟩ E) ⟨33024,33600,8384490092⟩ (N E ⟨33024,34176,1626727581⟩ E)))) ⟨33280,33664,7358852099⟩ (N (N (N (N (N E ⟨33280,34048,2658307323⟩ E) ⟨33408,33824,5101426618⟩ E) ⟨33408,34240,1207853390⟩ (N (N E ⟨33600,34176,1626727581⟩ E) ⟨33664,34048,2658307323⟩ E)) ⟨33824,34240,1207853390⟩ (N (N (N E ⟨34656,35072,840527⟩ E) ⟨34752,35328,76228626⟩ E) ⟨34816,35584,189390231⟩ (N E ⟨34816,36352,173234703⟩ E))) ⟨34816,37888,145808985⟩ (N (N (N (N E ⟨35072,35904,1151561664⟩ E) ⟨35072,36736,1046595949⟩ E) ⟨35072,38400,870430129⟩ (N (N E ⟨35328,35904,2982576597⟩ E) ⟨35328,36480,2790908306⟩ E)) ⟨35328,37632,2451923401⟩ (N (N (N E ⟨35328,39936,1916013694⟩ E) ⟨35584,36352,5416703501⟩ E) ⟨35904,36480,9732001830⟩ (N E ⟨35904,36736,9452356006⟩ E))))) ⟨36352,37888,15563604115⟩ (N (N (N (N (N (N E ⟨36480,37632,18591409084⟩ E) ⟨36736,38400,22408627075⟩ E) ⟨37632,39936,40016092176⟩ (N (N E ⟨37888,38016,58284410507⟩ E) ⟨38016,38144,62313805310⟩ E)) ⟨38144,38400,65509628502⟩ (N (N (N E ⟨38400,38912,71849923330⟩ E) ⟨38912,40960,75832144115⟩ E) ⟨39936,40448,124701346738⟩ (N E ⟨40448,40960,143033504697⟩ E))) ⟨40960,43008,138814108272⟩ (N (N (N (N E ⟨40960,49152,80226784524⟩ E) ⟨43008,45056,198611196246⟩ E) ⟨45056,49152,205420959916⟩ (N (N E ⟨49152,53248,198637449669⟩ E) ⟨49152,57344,86044756753⟩ E)) ⟨53248,55296,180021136485⟩ (N (N (N E ⟨55296,57344,129277608381⟩ E) ⟨57344,57856,126832062122⟩ E) ⟨57344,59392,81450895201⟩ (N E ⟨57856,60540,56104174470⟩ E)))) ⟨57856,60604,54744524444⟩ (N (N (N (N (N E ⟨57856,63224,14490230268⟩ E) ⟨57856,63352,13248302275⟩ E) ⟨59392,60416,63653684247⟩ (N (N E ⟨60416,62080,32801554392⟩ E) ⟨60416,62144,31761760685⟩ E)) ⟨60416,63744,11699544709⟩ (N (N (N E ⟨60416,63872,10561059564⟩ E) ⟨60540,61882,36353090489⟩ E) ⟨60540,63224,17122242272⟩ (N E ⟨60604,61978,34808283285⟩ E))) ⟨60604,63352,15757039412⟩ (N (N (N (N E ⟨61882,63224,18266655065⟩ E) ⟨61978,63352,16837648072⟩ E) ⟨62080,63744,12731502888⟩ (N E ⟨62144,63008,21197196115⟩ E)) ⟨62144,63872,11542172995⟩ (N (N (N E ⟨62464,65280,2408056665⟩ E) ⟨62464,65536,1506819731⟩ E) ⟨63008,63872,11958745632⟩ (N E ⟨63224,63895,11832935104⟩ E)))))) ⟨63224,64566,6357569415⟩ (N (N (N (N (N (N (N E ⟨63224,65536,1565943956⟩ E) ⟨63352,64039,10546933738⟩ E) ⟨63352,64726,5348283391⟩ (N (N E ⟨63352,65536,1574380871⟩ E) ⟨63616,65536,1590346721⟩ E)) ⟨63744,64160,9616293499⟩ (N (N (N E ⟨63744,64576,6405326128⟩ E) ⟨63744,65408,2041289663⟩ E) ⟨63872,64304,8457379249⟩ (N E ⟨63872,64736,5380608052⟩ E))) ⟨63872,65536,1603951009⟩ (N (N (N (N E ⟨63895,64566,6505110531⟩ E) ⟨64039,64726,5470768786⟩ E) ⟨64160,64576,6486530866⟩ (N (N E ⟨64304,64736,5447824625⟩ E) ⟨64448,65536,1627636972⟩ E)) ⟨64566,65237,2786489703⟩ (N (N (N E ⟨64566,65536,1631286091⟩ E) ⟨64576,64992,3983824195⟩ E) ⟨64576,65408,2086096939⟩ (N E ⟨64726,65413,2072780895⟩ E)))) ⟨64726,65536,1635572606⟩ (N (N (N (N (N E ⟨64736,65168,3110902549⟩ E) ⟨64736,65536,1635815150⟩ E) ⟨64992,65408,2099820129⟩ (N (N E ⟨65168,65536,1643428677⟩ E) ⟨65237,65536,1644124289⟩ E)) ⟨65408,65536,1645228303⟩ (N (N (N E ⟨65413,65536,1645247283⟩ E) ⟨65536,65600,1436255057⟩ E) ⟨65536,65824,817796385⟩ (N E ⟨65536,65908,631150126⟩ E))) ⟨65536,66100,296183929⟩ (N (N (N (N E ⟨65536,66240,131485341⟩ E) ⟨65536,66432,13164037⟩ E) ⟨65600,66032,400308901⟩ (N (N E ⟨65600,66464,5411364⟩ E) ⟨65824,66240,131485341⟩ E)) ⟨66032,66464,5411364⟩ (N (N (N E ⟨66560,68928,2144977⟩ E) ⟨66560,69760,2043342⟩ E) ⟨66560,71296,1871060⟩ (N E ⟨66560,72960,1704455⟩ E))))) ⟨66579,67250,5267032⟩ (N (N (N (N (N (N E ⟨66592,67584,7751317⟩ E) ⟨66624,68224,15751742⟩ E) ⟨66688,67872,42441413⟩ (N (N E ⟨66688,68288,41404619⟩ E) ⟨66688,69056,39572543⟩ E)) ⟨66688,69888,37700926⟩ (N (N (N E ⟨66752,68352,79129267⟩ E) ⟨66752,68736,77355470⟩ E) ⟨66787,67474,110700553⟩ (N E ⟨66816,70016,117345383⟩ E))) ⟨66816,71552,107486576⟩ (N (N (N (N E ⟨66816,73216,97948609⟩ E) ⟨66816,73728,95228999⟩ E) ⟨66848,67840,164002603⟩ (N (N E ⟨66944,69760,245844939⟩ E) ⟨67008,68000,362028761⟩ E)) ⟨67008,68416,353201598⟩ (N (N (N E ⟨67072,68736,444465767⟩ E) ⟨67072,69056,436190422⟩ E) ⟨67072,69888,415560422⟩ (N E ⟨67072,70400,403470914⟩ E)))) ⟨67072,71040,388971858⟩ (N (N (N (N (N E ⟨67072,72704,354216357⟩ E) ⟨67072,73728,334751802⟩ E) ⟨67104,67904,523183766⟩ (N (N E ⟨67104,68288,511377759⟩ E) ⟨67250,67921,820332143⟩ E)) ⟨67250,68592,788334247⟩ (N (N (N E ⟨67264,68256,835637430⟩ E) ⟨67264,68672,815339532⟩ E) ⟨67264,69248,788243580⟩ (N E ⟨67328,68192,991130713⟩ E))) ⟨67328,69056,941896883⟩ (N (N (N (N E ⟨67328,70784,852286103⟩ E) ⟨67328,73728,722853285⟩ E) ⟨67392,69760,1054752212⟩ (N E ⟨67424,68416,1227463388⟩ E)) ⟨67456,68640,1299696151⟩ (N (N (N E ⟨67456,69056,1268304108⟩ E) ⟨67456,71424,1106621505⟩ E) ⟨67474,68848,1334354826⟩ (N E ⟨67488,68288,1420479279⟩ E))))))) ⟨67520,68320,1514303517⟩ (N (N (N (N (N (N (N (N E ⟨67520,68704,1480342169⟩ E) ⟨67520,69120,1444620480⟩ E) ⟨67520,69888,1381464137⟩ (N (N E ⟨67584,68576,1691264844⟩ E) ⟨67584,68992,1650376680⟩ E)) ⟨67584,69568,1595784993⟩ (N (N (N E ⟨67584,70400,1520862133⟩ E) ⟨67680,68672,2003471324⟩ E) ⟨67840,69248,2517166723⟩ (N E ⟨67872,69056,2672385180⟩ E))) ⟨67904,68704,2860864534⟩ (N (N (N (N E ⟨67904,69888,2669775839⟩ E) ⟨67921,68592,2952065098⟩ E) ⟨67936,69120,2924410492⟩ (N (N E ⟨68000,68992,3223080944⟩ E) ⟨68096,70080,3437242548⟩ E)) ⟨68096,70912,3277032161⟩ (N (N (N E ⟨68096,71296,3206246751⟩ E) ⟨68096,72064,3070329399⟩ E) ⟨68096,73728,2799744336⟩ (N E ⟨68160,69568,3838928819⟩ E)))) ⟨68192,69056,4113772714⟩ (N (N (N (N (N E ⟨68224,69824,4088246003⟩ E) ⟨68224,70592,3911307061⟩ E) ⟨68224,71040,3812514736⟩ (N (N E ⟨68224,71424,3730312206⟩ E) ⟨68224,72960,3422887433⟩ E)) ⟨68288,69888,4390031577⟩ (N (N (N E ⟨68352,71552,4290708233⟩ E) ⟨68416,70400,4912999674⟩ E) ⟨68480,73216,4485350389⟩ (N E ⟨68592,69934,6044893012⟩ E))) ⟨68592,71276,5597633759⟩ (N (N (N (N E ⟨68592,73728,4882398868⟩ E) ⟨68736,70400,6746069797⟩ E) ⟨68736,71552,6317518618⟩ (N (N E ⟨68736,72704,5922529203⟩ E) ⟨68848,71596,6966292538⟩ E)) ⟨68848,73728,6187227555⟩ (N (N (N E ⟨68928,70912,7756885020⟩ E) ⟨68992,70592,8332703272⟩ E) ⟨69056,70784,8681119975⟩ (N E ⟨69056,71424,8370847260⟩ E))))) ⟨69248,72064,9364788646⟩ (N (N (N (N (N (N E ⟨69376,73728,9372677031⟩ E) ⟨69760,72960,12627844833⟩ E) ⟨69760,73728,12104668324⟩ (N (N E ⟨69888,72704,13853481102⟩ E) ⟨69888,73728,13092218008⟩ E)) ⟨69934,71276,15427701477⟩ (N (N (N E ⟨70400,73728,17420620864⟩ E) ⟨70784,73728,21055464219⟩ E) ⟨71276,73728,26181050867⟩ (N E ⟨71596,73728,29785550033⟩ E))) ⟨73728,73960,57736288205⟩ (N (N (N (N E ⟨73728,73984,57660655940⟩ E) ⟨73728,74240,56861581616⟩ E) ⟨73728,74344,56540921948⟩ (N (N E ⟨73728,75008,54546146546⟩ E) ⟨73728,76288,50943335175⟩ E)) ⟨73728,78336,45776641928⟩ (N (N (N E ⟨73728,79328,43510134591⟩ E) ⟨73728,79840,42395280650⟩ E) ⟨73960,79328,46130130415⟩ (N E ⟨73984,74240,60643085590⟩ E)))) ⟨74240,74496,63602331360⟩ (N (N (N (N (N E ⟨74240,74752,62727040513⟩ E) ⟨74344,79840,49264488826⟩ E) ⟨74496,74752,66530373098⟩ (N (N E ⟨74752,75776,66621352329⟩ E) ⟨75776,77824,73216762336⟩ E)) ⟨77824,81920,81183335634⟩ (N (N (N E ⟨79328,81920,95435097263⟩ E) ⟨79840,81920,99708153753⟩ E) ⟨81920,86016,79111303097⟩ (N E ⟨81920,90064,38860075235⟩ E))) ⟨81920,90112,38423148027⟩ (N (N (N (N E ⟨86016,88064,68661704304⟩ E) ⟨88064,88576,67628919902⟩ E) ⟨88064,89088,61427731673⟩ (N E ⟨88576,88832,65677920649⟩ E)) ⟨88832,88960,64676607906⟩ (N (N (N E ⟨88832,89088,63103400105⟩ E) ⟨88960,89088,63381401765⟩ E) ⟨89088,89344,60519493235⟩ (N E ⟨89088,90112,51392597158⟩ E)))))) ⟨89344,89600,57931894547⟩ (N (N (N (N (N (N (N E ⟨89600,90112,52311507142⟩ E) ⟨90064,90112,53137584618⟩ E) ⟨90112,90832,44898239526⟩ (N (N E ⟨90112,92748,25713477686⟩ E) ⟨90112,93712,17965572406⟩ E)) ⟨90112,93728,17848583852⟩ (N (N (N E ⟨90112,95432,7621693323⟩ E) ⟨90112,95612,6800702072⟩ E) ⟨90112,95676,6520655021⟩ (N E ⟨90112,97824,608823085⟩ E))) ⟨90112,98296,165286845⟩ (N (N (N (N E ⟨90112,98304,160224349⟩ E) ⟨90832,93580,19477292869⟩ E) ⟨90832,96328,4182766391⟩ (N (N E ⟨91136,96896,2510874330⟩ E) ⟨92160,96960,2488359274⟩ E)) ⟨92160,97152,2005828299⟩ (N (N (N E ⟨92160,98304,221539557⟩ E) ⟨92284,96632,3461637059⟩ E) ⟨92284,98296,231189510⟩ (N E ⟨92348,96760,3078815243⟩ E)))) ⟨92348,98304,226834761⟩ (N (N (N (N (N E ⟨92748,94090,16885861029⟩ E) ⟨92748,95432,8536991830⟩ E) ⟨92928,98304,242596132⟩ (N (N E ⟨93440,97472,1427192342⟩ E) ⟨93580,94954,11498381159⟩ E)) ⟨93580,96328,4748454477⟩ (N (N (N E ⟨93712,95768,7158732196⟩ E) ⟨93712,97824,824867816⟩ E) ⟨93728,94888,11958562382⟩ (N E ⟨93728,96048,5905315798⟩ E))) ⟨93728,98304,262627654⟩ (N (N (N (N E ⟨93824,97152,2185018972⟩ E) ⟨93824,98304,264878549⟩ E) ⟨93888,97152,2191291061⟩ (N (N E ⟨93888,98304,266359493⟩ E) ⟨93948,96954,2728728717⟩ E)) ⟨93948,98296,274562977⟩ (N (N (N E ⟨94012,97050,2470133859⟩ E) ⟨94012,98304,269183140⟩ E) ⟨94090,95432,8948919475⟩ (N E ⟨94592,97472,1509069493⟩ E))))) ⟨94592,98304,281547652⟩ (N (N (N (N (N (N E ⟨94888,96048,6141282325⟩ E) ⟨94954,95641,8087907822⟩ E) ⟨94954,96328,4984518345⟩ (N (N E ⟨94968,97142,2315486609⟩ E) ⟨94968,97974,660457891⟩ E)) ⟨95096,97302,1924051839⟩ (N (N (N E ⟨95096,98134,463889602⟩ E) ⟨95168,97184,2222401197⟩ E) ⟨95168,98048,569141180⟩ (N E ⟨95290,97464,1568994808⟩ E))) ⟨95290,98296,301693756⟩ (N (N (N (N E ⟨95386,97592,1311222496⟩ E) ⟨95386,98304,296016137⟩ E) ⟨95424,97824,899130967⟩ (N (N E ⟨95424,98304,296632190⟩ E) ⟨95432,96103,5998708048⟩ E)) ⟨95432,96774,3441937205⟩ (N (N (N E ⟨95432,98116,492729421⟩ E) ⟨95488,97984,662577731⟩ E) ⟨95488,98304,297653366⟩ (N E ⟨95616,98304,299633480⟩ E)))) ⟨95641,96328,5088395683⟩ (N (N (N (N (N E ⟨95744,97760,1017344218⟩ E) ⟨95768,96796,3404954463⟩ E) ⟨95768,97824,911071643⟩ (N (N E ⟨95800,97974,684960813⟩ E) ⟨95928,98134,482050048⟩ E)) ⟨96032,98048,590452852⟩ (N (N (N E ⟨96048,96628,4004866175⟩ E) ⟨96048,97208,2223049757⟩ E) ⟨96048,98304,305689821⟩ (N E ⟨96103,96774,3509574532⟩ E))) ⟨96122,98296,314108631⟩ (N (N (N (N E ⟨96218,98304,307801662⟩ E) ⟨96288,97920,775774854⟩ E) ⟨96288,98304,308625792⟩ (N E ⟨96310,98304,308879290⟩ E)) ⟨96320,97984,683366334⟩ (N (N (N E ⟨96320,98304,308993641⟩ E) ⟨96328,97015,2776039722⟩ E) ⟨96328,97702,1140980626⟩ (N E ⟨96470,98304,310643051⟩ E))))))))
+
+noncomputable def tab1 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨96628,97208,2257837150⟩ E) ⟨96632,97719,1119360397⟩ E) ⟨96632,98135,492628661⟩ (N (N E ⟨96632,98304,312284618⟩ E) ⟨96760,98279,337583423⟩ E)) ⟨96760,98304,313477975⟩ (N (N (N E ⟨96774,97445,1684190154⟩ E) ⟨96774,98116,517581649⟩ E) ⟨96796,97824,940202692⟩ (N E ⟨96896,97904,813574295⟩ E))) ⟨96896,98304,314644752⟩ (N (N (N (N E ⟨97015,97702,1161337579⟩ E) ⟨97048,98135,497944572⟩ E) ⟨97056,98304,315882938⟩ (N (N E ⟨97142,98304,316487997⟩ E) ⟨97152,98304,316555598⟩ E)) ⟨97184,98304,316768058⟩ (N (N (N E ⟨97208,97788,1010656676⟩ E) ⟨97208,98304,316923535⟩ E) ⟨97302,98304,317500505⟩ (N E ⟨97303,98304,317506369⟩ E)))) ⟨97328,98304,317651080⟩ (N (N (N (N (N E ⟨97445,98116,525188127⟩ E) ⟨97447,98304,318290256⟩ E) ⟨97464,98304,318374856⟩ (N (N E ⟨97472,98304,318414087⟩ E) ⟨97568,98304,318855792⟩ E)) ⟨97584,98304,318924188⟩ (N (N (N E ⟨97702,98304,319382434⟩ E) ⟨97719,98304,319441743⟩ E) ⟨97760,98304,319577821⟩ (N E ⟨97788,98304,319665093⟩ E))) ⟨97824,98304,319770546⟩ (N (N (N (N E ⟨97863,98304,319876207⟩ E) ⟨97904,98304,319977661⟩ E) ⟨97984,98304,320147185⟩ (N (N E ⟨98016,98304,320204460⟩ E) ⟨98116,98304,320344615⟩ E)) ⟨98304,98336,290120585⟩ (N (N (N E ⟨98304,98352,275526942⟩ E) ⟨98304,98368,261313260⟩ E) ⟨98304,98389,243234019⟩ (N E ⟨98304,98390,242389409⟩ E))))) ⟨98304,98400,234024811⟩ (N (N (N (N (N (N E ⟨98304,98424,214554052⟩ E) ⟨98304,98480,172435688⟩ E) ⟨98304,98484,169604524⟩ (N (N E ⟨98304,98550,126296827⟩ E) ⟨98304,98624,85361675⟩ E)) ⟨98304,98645,75208942⟩ (N (N (N E ⟨98304,98676,61402067⟩ E) ⟨98304,98688,56434938⟩ E) ⟨98304,98768,28693336⟩ (N E ⟨98304,98784,24264110⟩ E))) ⟨98304,98787,23475084⟩ (N (N (N (N E ⟨98304,98806,18781711⟩ E) ⟨98304,98816,16522152⟩ E) ⟨98304,98821,15446813⟩ (N (N E ⟨98304,98832,13208758⟩ E) ⟨98304,98852,9589082⟩ E)) ⟨98304,98880,5494867⟩ (N (N (N E ⟨98304,98912,2204075⟩ E) ⟨98304,98940,537295⟩ E) ⟨98304,98966,1257⟩ (N E ⟨98304,98967,74⟩ E)))) ⟨98994,101168,468860⟩ (N (N (N (N (N E ⟨98994,102000,453669⟩ E) ⟨99008,101760,1065102⟩ E) ⟨99008,102528,1033382⟩ (N (N E ⟨99056,100064,5420886⟩ E) ⟨99061,100148,6029627⟩ E)) ⟨99072,102336,6903573⟩ (N (N (N E ⟨99072,103872,6502204⟩ E) ⟨99072,104576,6328014⟩ E) ⟨99072,105600,6084936⟩ (N E ⟨99072,106496,5881758⟩ E))) ⟨99076,100450,8019845⟩ (N (N (N (N E ⟨99076,101824,7593446⟩ E) ⟨99128,101302,16962014⟩ E) ⟨99136,101312,18688523⟩ (N E ⟨99155,100658,23754795⟩ E)) ⟨99200,100208,37207097⟩ (N (N (N E ⟨99200,100640,36568936⟩ E) ⟨99200,101216,35739208⟩ E) ⟨99200,101632,35154574⟩ (N E ⟨99200,102080,34538288⟩ E)))))) ⟨99200,102720,33681141⟩ (N (N (N (N (N (N (N E ⟨99200,103232,33014516⟩ E) ⟨99200,103552,32606248⟩ E) ⟨99200,104960,30883143⟩ (N (N E ⟨99200,106240,29414489⟩ E) ⟨99200,106496,29131321⟩ E)) ⟨99216,100416,42159602⟩ (N (N (N E ⟨99218,101424,41155299⟩ E) ⟨99218,102256,39825264⟩ E) ⟨99222,100309,44413468⟩ (N E ⟨99232,100064,48452755⟩ E))) ⟨99232,100480,47651021⟩ (N (N (N (N E ⟨99237,100340,49751082⟩ E) ⟨99264,100080,60873351⟩ E) ⟨99264,101280,58024299⟩ (N (N E ⟨99264,101696,57075718⟩ E) ⟨99264,102464,55374913⟩ E)) ⟨99264,103296,53603320⟩ (N (N (N E ⟨99312,100512,80822934⟩ E) ⟨99316,100403,83077338⟩ E) ⟨99316,100819,81707323⟩ (N E ⟨99316,101490,79556547⟩ E)))) ⟨99316,102322,76987137⟩ (N (N (N (N (N E ⟨99316,103664,73057653⟩ E) ⟨99328,101504,85097663⟩ E) ⟨99328,101760,84240066⟩ (N (N E ⟨99328,102080,83183222⟩ E) ⟨99328,102848,80713683⟩ E)) ⟨99328,103680,78140978⟩ (N (N (N E ⟨99344,100352,97202257⟩ E) ⟨99363,100882,105042296⟩ E) ⟨99382,100485,117255365⟩ (N E ⟨99392,101824,116623709⟩ E))) ⟨99392,102144,115161513⟩ (N (N (N (N E ⟨99392,102592,113152760⟩ E) ⟨99392,102912,111744728⟩ E) ⟨99392,103424,109537168⟩ (N (N E ⟨99456,101088,159168281⟩ E) ⟨99456,101216,158360372⟩ E)) ⟨99456,101632,155769859⟩ (N (N (N E ⟨99458,100800,162331072⟩ E) ⟨99477,100564,176861276⟩ E) ⟨99477,100980,173949356⟩ (N E ⟨99488,100496,185114570⟩ E))))) ⟨99488,100928,181948659⟩ (N (N (N (N (N (N E ⟨99488,101504,177832088⟩ E) ⟨99508,100611,198758717⟩ E) ⟨99508,101027,195487797⟩ (N (N E ⟨99508,101714,190232138⟩ E) ⟨99508,102546,184101672⟩ E)) ⟨99508,103920,174508846⟩ (N (N (N E ⟨99520,101696,198950885⟩ E) ⟨99528,100688,213148695⟩ E) ⟨99552,101184,227340587⟩ (N E ⟨99552,101952,220532053⟩ E))) ⟨99584,103104,234616700⟩ (N (N (N (N E ⟨99584,103936,227156804⟩ E) ⟨99584,105088,217310842⟩ E) ⟨99584,106496,205990782⟩ (N (N E ⟨99632,100640,300633146⟩ E) ⟨99638,101141,300061667⟩ E)) ⟨99638,101812,292188160⟩ (N (N (N E ⟨99638,102644,282781007⟩ E) ⟨99648,100480,317384433⟩ E) ⟨99648,100848,312752430⟩ (N E ⟨99648,101280,307422268⟩ E)))) ⟨99648,101312,307031980⟩ (N (N (N (N (N E ⟨99648,101824,300870864⟩ E) ⟨99648,102144,297098627⟩ E) ⟨99648,102400,294123368⟩ (N (N E ⟨99653,101172,313321039⟩ E) ⟨99680,101696,331662148⟩ E)) ⟨99712,101472,365519148⟩ (N (N (N E ⟨99712,101888,359554950⟩ E) ⟨99712,102464,351496418⟩ E) ⟨99712,103232,341099989⟩ (N E ⟨99712,104064,330267653⟩ E))) ⟨99712,105216,315969717⟩ (N (N (N (N E ⟨99732,100819,395673743⟩ E) ⟨99744,101376,399317400⟩ E) ⟨99744,102144,387380859⟩ (N E ⟨99776,100784,443428349⟩ E)) ⟨99776,101216,435866312⟩ (N (N (N E ⟨99776,101792,426032834⟩ E) ⟨99776,102528,413868282⟩ E) ⟨99776,102656,411797282⟩ (N E ⟨99776,103808,393729601⟩ E))))))) ⟨99798,102836,431597944⟩ (N (N (N (N (N (N (N (N E ⟨99826,102000,476766646⟩ E) ⟨99840,104704,443359438⟩ E) ⟨99840,105344,432630731⟩ (N (N E ⟨99840,106496,414124897⟩ E) ⟨99872,101632,537318409⟩ E)) ⟨99880,101936,540396104⟩ (N (N (N E ⟨99893,100980,577473953⟩ E) ⟨99904,102080,566159933⟩ E) ⟨99920,100928,613152145⟩ (N E ⟨99924,101027,615912991⟩ E))) ⟨99960,104308,583459524⟩ (N (N (N (N E ⟨99968,104000,600057572⟩ E) ⟨99968,104832,581140820⟩ E) ⟨99968,106368,548136874⟩ (N (N E ⟨99968,106496,545493685⟩ E) ⟨99987,101074,698997029⟩ E)) ⟨99987,101490,687546529⟩ (N (N (N E ⟨100032,102464,721760793⟩ E) ⟨100032,102784,712768220⟩ E) ⟨100032,103552,691751310⟩ (N E ⟨100050,102256,752672926⟩ E)))) ⟨100064,101504,795673983⟩ (N (N (N (N (N E ⟨100064,102080,777773714⟩ E) ⟨100080,101280,826540041⟩ E) ⟨100088,104500,739400704⟩ (N (N E ⟨100096,101696,836749589⟩ E) ⟨100096,102112,823126377⟩ E)) ⟨100096,102528,809779573⟩ (N (N (N E ⟨100096,102848,799696668⟩ E) ⟨100096,103296,785843041⟩ E) ⟨100096,104128,760902277⟩ (N E ⟨100096,104448,751573889⟩ E))) ⟨100096,104960,736944104⟩ (N (N (N (N E ⟨100128,101504,891979818⟩ E) ⟨100128,101888,878538549⟩ E) ⟨100148,101235,933119696⟩ (N (N E ⟨100148,101651,917858272⟩ E) ⟨100148,102322,893894114⟩ E)) ⟨100160,102592,902676954⟩ (N (N (N E ⟨100160,102912,891444374⟩ E) ⟨100160,103680,865191378⟩ E) ⟨100195,101714,990490154⟩ (N E ⟨100208,101216,1031903613⟩ E))))) ⟨100224,102400,1010514521⟩ (N (N (N (N (N (N E ⟨100224,103424,970885066⟩ E) ⟨100224,103488,968473356⟩ E) ⟨100224,105088,910544466⟩ (N (N E ⟨100224,106496,863112789⟩ E) ⟨100288,102048,1132472430⟩ E)) ⟨100288,102464,1114098133⟩ (N (N (N E ⟨100309,101812,1179989487⟩ E) ⟨100320,101952,1192957427⟩ E) ⟨100336,104684,1098356621⟩ (N E ⟨100336,106348,1030891070⟩ E))) ⟨100336,106496,1025144869⟩ (N (N (N (N E ⟨100340,101859,1233289191⟩ E) ⟨100340,102546,1200401497⟩ E) ⟨100352,101792,1258439559⟩ (N (N E ⟨100352,102368,1230208260⟩ E) ⟨100352,103232,1189330625⟩ E)) ⟨100352,103872,1160142263⟩ (N (N (N E ⟨100352,104384,1137434544⟩ E) ⟨100352,104704,1123524283⟩ E) ⟨100352,105856,1075176801⟩ (N E ⟨100352,106112,1064788573⟩ E)))) ⟨100403,101490,1369873080⟩ (N (N (N (N (N E ⟨100416,102816,1324044746⟩ E) ⟨100416,103680,1280238729⟩ E) ⟨100416,103936,1267608622⟩ (N (N E ⟨100416,105216,1206745625⟩ E) ⟨100450,101824,1442577755⟩ E)) ⟨100470,102644,1435031260⟩ (N (N (N E ⟨100480,102144,1483181829⟩ E) ⟨100480,102240,1477589962⟩ E) ⟨100480,102656,1453661183⟩ (N E ⟨100480,103232,1421323803⟩ E))) ⟨100480,103808,1389881531⟩ (N (N (N (N E ⟨100480,105472,1303810317⟩ E) ⟨100480,105984,1278676770⟩ E) ⟨100480,106496,1254146509⟩ (N E ⟨100512,101888,1562791894⟩ E)) ⟨100512,102112,1549052433⟩ (N (N (N E ⟨100512,102144,1547102011⟩ E) ⟨100512,102528,1523934906⟩ E) ⟨100544,102720,1576334175⟩ (N E ⟨100544,103296,1541289642⟩ E)))))) ⟨100544,104064,1496066047⟩ (N (N (N (N (N (N (N E ⟨100564,101651,1686362061⟩ E) ⟨100592,105004,1532860579⟩ E) ⟨100592,106496,1448348361⟩ (N (N E ⟨100608,103872,1633069640⟩ E) ⟨100608,106496,1477240831⟩ E)) ⟨100640,102656,1780222889⟩ (N (N (N E ⟨100658,102832,1806559499⟩ E) ⟨100658,103664,1748967538⟩ E) ⟨100688,103008,1858923806⟩ (N E ⟨100704,102464,1934679827⟩ E))) ⟨100736,105088,1813173215⟩ (N (N (N (N E ⟨100800,102142,2183712163⟩ E) ⟨100800,103484,2072061744⟩ E) ⟨100800,103552,2066596714⟩ (N (N E ⟨100800,104832,1967010743⟩ E) ⟨100800,105600,1910134415⟩ E)) ⟨100800,106168,1869388740⟩ (N (N (N E ⟨100800,106496,1846354451⟩ E) ⟨100819,102322,2213842817⟩ E) ⟨100864,102880,2273327253⟩ (N E ⟨100864,103040,2259167630⟩ E)))) ⟨100864,103296,2236740986⟩ (N (N (N (N (N E ⟨100864,103616,2209097958⟩ E) ⟨100864,104384,2144478419⟩ E) ⟨100864,105216,2077120175⟩ (N (N E ⟨100882,103088,2298265595⟩ E) ⟨100882,103920,2225178484⟩ E)) ⟨100896,102656,2371961056⟩ (N (N (N E ⟨100928,102528,2464244179⟩ E) ⟨100928,103360,2385455058⟩ E) ⟨100928,104128,2315505441⟩ (N E ⟨100928,104960,2242598207⟩ E))) ⟨100980,103154,2534862090⟩ (N (N (N (N E ⟨100980,103986,2454302038⟩ E) ⟨100980,105328,2330992945⟩ E) ⟨100980,106496,2229922484⟩ (N E ⟨101027,102546,2719369395⟩ E)) ⟨101056,102816,2767610962⟩ (N (N (N E ⟨101056,103232,2723042108⟩ E) ⟨101120,103296,2886454083⟩ E) ⟨101120,106496,2553301322⟩ (N E ⟨101172,104210,2923150439⟩ E))))) ⟨101172,105584,2773213133⟩ (N (N (N (N (N (N E ⟨101172,106496,2678982505⟩ E) ⟨101184,104704,2899610072⟩ E) ⟨101216,103232,3159276748⟩ (N (N E ⟨101248,103424,3226207768⟩ E) ⟨101248,104000,3154970160⟩ E)) ⟨101248,104768,3063020264⟩ (N (N (N E ⟨101248,105600,2967159653⟩ E) ⟨101248,106496,2868085299⟩ E) ⟨101280,103296,3334493771⟩ (N E ⟨101280,103680,3285118703⟩ E))) ⟨101312,104064,3327380729⟩ (N (N (N (N E ⟨101376,105728,3295566036⟩ E) ⟨101376,106496,3201075113⟩ E) ⟨101440,103616,3767517279⟩ (N (N E ⟨101472,103232,3924302267⟩ E) ⟨101490,103664,3914900861⟩ E)) ⟨101504,104384,3850045846⟩ (N (N (N E ⟨101504,105856,3639312697⟩ E) ⟨101504,106368,3569411550⟩ E) ⟨101504,106496,3552199377⟩ (N E ⟨101632,103808,4345781435⟩ E)))) ⟨101632,104384,4250176222⟩ (N (N (N (N (N E ⟨101632,106496,3921374948⟩ E) ⟨101696,104128,4501766648⟩ E) ⟨101696,105216,4317534691⟩ (N (N E ⟨101714,103920,4598367711⟩ E) ⟨101760,104960,4567600534⟩ E)) ⟨101760,106496,4308506924⟩ (N (N (N E ⟨101812,103986,4920754322⟩ E) ⟨101824,104000,4959771060⟩ E) ⟨101824,104572,4851604973⟩ (N E ⟨101824,106496,4508773694⟩ E))) ⟨101888,106496,4713488648⟩ (N (N (N (N E ⟨101936,106048,4953154248⟩ E) ⟨101952,105216,5167807049⟩ E) ⟨102000,106348,5110885390⟩ (N E ⟨102016,104768,5485293606⟩ E)) ⟨102016,106496,5136201722⟩ (N (N (N E ⟨102080,105600,5539120202⟩ E) ⟨102080,106112,5432471714⟩ E) ⟨102142,103484,6250344236⟩ (N E ⟨102144,105472,5797344305⟩ E))))))))
+
+noncomputable def tab2 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨102208,104384,6289821688⟩ E) ⟨102256,106496,5976118346⟩ E) ⟨102322,105328,6499637230⟩ (N (N E ⟨102400,106496,6509369379⟩ E) ⟨102528,106496,7001589868⟩ E)) ⟨102546,105584,7320929975⟩ (N (N (N E ⟨102644,106496,7462322818⟩ E) ⟨102656,106496,7510774532⟩ E) ⟨102784,106496,8036735203⟩ (N E ⟨102836,106496,8255153353⟩ E))) ⟨102912,106496,8579272269⟩ (N (N (N (N E ⟨103008,106496,8996926832⟩ E) ⟨103020,106496,9049776332⟩ E) ⟨103340,106496,10510947160⟩ (N (N E ⟨103424,106496,10910796006⟩ E) ⟨103484,106168,11340201862⟩ E)) ⟨103552,106496,11532825879⟩ (N (N (N E ⟨103664,106496,12089533415⟩ E) ⟨103920,106496,13404539922⟩ E) ⟨104192,106496,14864417181⟩ (N E ⟨104572,106496,17006445976⟩ E)))) ⟨104960,106496,19308445686⟩ (N (N (N (N (N E ⟨105472,106496,22506452254⟩ E) ⟨105704,106496,24009450743⟩ E) ⟨106048,106496,26292713610⟩ (N (N E ⟨106088,106496,26562119161⟩ E) ⟨106112,106496,26724131235⟩ E)) ⟨106168,106496,27103215591⟩ (N (N (N E ⟨106496,106624,29210021225⟩ E) ⟨106496,106668,29161623821⟩ E) ⟨106496,106752,29069507059⟩ (N E ⟨106496,106880,28929837604⟩ E))) ⟨106496,106992,28808314968⟩ (N (N (N (N E ⟨106496,107248,28532938299⟩ E) ⟨106496,107264,28515836841⟩ E) ⟨106496,107320,28456082639⟩ (N (N E ⟨106496,107520,28243949556⟩ E) ⟨106496,107648,28109222210⟩ E)) ⟨106496,108032,27709835999⟩ (N (N (N E ⟨106496,108288,27447518209⟩ E) ⟨106496,108416,27317524415⟩ E) ⟨106496,108544,27188299995⟩ (N E ⟨106496,108672,27059839487⟩ E))))) ⟨106496,108800,26932137472⟩ (N (N (N (N (N (N E ⟨106496,108928,26805188577⟩ E) ⟨106496,109032,26702593465⟩ E) ⟨106496,109312,26428807555⟩ (N (N E ⟨106496,109416,26328010758⟩ E) ⟨106496,109568,26181555955⟩ E)) ⟨106496,109824,25937191605⟩ (N (N (N E ⟨106496,109952,25816079498⟩ E) ⟨106496,110592,25221021330⟩ E) ⟨106496,110720,25104076101⟩ (N E ⟨106496,111360,24529420755⟩ E))) ⟨106496,111536,24374283198⟩ (N (N (N (N E ⟨106496,111616,24304171983⟩ E) ⟨106496,112128,23861384437⟩ E) ⟨106496,112360,23664070407⟩ (N (N E ⟨106496,112744,23341945754⟩ E) ⟨106496,112816,23282159409⟩ E)) ⟨106496,112896,23215954651⟩ (N (N (N E ⟨106496,114176,22188015873⟩ E) ⟨106496,114688,21792819594⟩ E) ⟨107320,112816,27894203484⟩ (N E ⟨107648,114688,27861269372⟩ E)))) ⟨111072,114688,45457472084⟩ (N (N (N (N (N E ⟨111536,114688,47509172966⟩ E) ⟨111584,114688,47713980868⟩ E) ⟨112816,114688,52419279185⟩ (N (N E ⟨114688,116224,52971284238⟩ E) ⟨114688,117728,47167361783⟩ E)) ⟨114688,118240,44887967968⟩ (N (N (N E ⟨114688,118312,44557455791⟩ E) ⟨114688,122272,24648331854⟩ E) ⟨114688,122496,23530782628⟩ (N E ⟨114688,122880,21644686635⟩ E))) ⟨118272,122880,24202232921⟩ (N (N (N (N E ⟨118312,122880,24231042862⟩ E) ⟨120832,122880,26035399071⟩ E) ⟨121344,122880,26396659657⟩ (N E ⟨121728,122880,26665741080⟩ E)) ⟨121808,122880,26721577863⟩ (N (N (N E ⟨122272,122880,27043789676⟩ E) ⟨122496,122880,27198271347⟩ E) ⟨122576,122880,27253264256⟩ (N E ⟨122880,123808,22147604092⟩ E)))))) ⟨122880,124956,16151750382⟩ (N (N (N (N (N (N (N E ⟨122880,126208,10538428373⟩ E) ⟨122880,126608,8977146292⟩ E) ⟨122880,126988,7605001289⟩ (N (N E ⟨122880,127096,7235190293⟩ E) ⟨122880,127224,6808597004⟩ E)) ⟨122880,127616,5581931705⟩ (N (N (N E ⟨122880,127640,5510767516⟩ E) ⟨122880,127820,4991621461⟩ E) ⟨122880,127868,4857540297⟩ (N E ⟨122880,127932,4681627002⟩ E))) ⟨122880,128464,3346442993⟩ (N (N (N (N E ⟨122880,128652,2929030315⟩ E) ⟨122880,129232,1820297442⟩ E) ⟨122880,130428,375476713⟩ (N (N E ⟨122880,130492,329343855⟩ E) ⟨122880,130504,321038381⟩ E)) ⟨122880,130552,288901182⟩ (N (N (N E ⟨122880,130680,211650114⟩ E) ⟨122880,130720,190016331⟩ E) ⟨122880,130944,90715316⟩ (N E ⟨122880,131072,50445805⟩ E)))) ⟨123640,128052,4478212490⟩ (N (N (N (N (N E ⟨123640,129780,1062010192⟩ E) ⟨123768,128244,3996467573⟩ E) ⟨123768,129972,836962056⟩ (N (N E ⟨123808,125182,15439293191⟩ E) ⟨123808,126556,9426588321⟩ E)) ⟨123808,129304,1774501676⟩ (N (N (N E ⟨124028,131072,61460790⟩ E) ⟨124160,130944,107477872⟩ E) ⟨124240,128652,3084021192⟩ (N E ⟨124288,131072,63900346⟩ E))) ⟨124412,128824,2730383297⟩ (N (N (N (N E ⟨124412,130552,327264114⟩ E) ⟨124448,129072,2239434579⟩ E) ⟨124448,131072,65385376⟩ (N (N E ⟨124476,128952,2474944039⟩ E) ⟨124476,130680,244920728⟩ E)) ⟨124492,128840,2704807073⟩ (N (N (N E ⟨124492,130504,363897539⟩ E) ⟨124956,126298,10778047436⟩ E) ⟨124956,127640,5882181459⟩ (N E ⟨125136,129484,1573424591⟩ E))))) ⟨125136,131072,71593540⟩ (N (N (N (N (N (N E ⟨125182,126556,9783734389⟩ E) ⟨125184,131072,72014168⟩ E) ⟨125324,128362,3898017251⟩ (N (N E ⟨125324,129736,1209581981⟩ E) ⟨125324,131072,73230433⟩ E)) ⟨125368,129780,1151523021⟩ (N (N (N E ⟨125456,129176,2124985266⟩ E) ⟨125456,130840,172053248⟩ E) ⟨125472,129328,1853619494⟩ (N E ⟨125472,130864,160251988⟩ E))) ⟨125496,129972,912272514⟩ (N (N (N (N E ⟨125904,130316,558882680⟩ E) ⟨126140,129210,2110559248⟩ E) ⟨126140,130552,365293037⟩ (N (N E ⟨126156,129162,2201896510⟩ E) ⟨126156,130504,402692822⟩ E)) ⟨126204,129306,1940054470⟩ (N (N (N E ⟨126204,130680,276471509⟩ E) ⟨126208,128528,3582671188⟩ E) ⟨126208,130848,177878185⟩ (N E ⟨126298,127640,6100155782⟩ E)))) ⟨126324,130736,242929144⟩ (N (N (N (N (N E ⟨126516,130992,113656390⟩ E) ⟨126556,127930,5242173173⟩ E) ⟨126556,129304,1965609435⟩ (N (N E ⟨126608,130720,257064201⟩ E) ⟨126698,129736,1274066330⟩ E)) ⟨126752,130216,681014163⟩ (N (N (N E ⟨126752,131072,84551849⟩ E) ⟨126768,131072,84665722⟩ E) ⟨126800,131072,84892501⟩ (N E ⟨126988,129194,2196398730⟩ E))) ⟨126988,130026,901534051⟩ (N (N (N (N E ⟨126988,131072,86198362⟩ E) ⟨127008,129704,1334081843⟩ E) ⟨127096,129302,2001369989⟩ (N E ⟨127096,130166,743824252⟩ E)) ⟨127096,131072,86927634⟩ (N (N (N E ⟨127120,130840,192858386⟩ E) ⟨127176,130182,728588253⟩ E) ⟨127176,131072,87457766⟩ (N E ⟨127224,129462,1727293546⟩ E))))))) ⟨127224,130326,582414218⟩ (N (N (N (N (N (N (N (N E ⟨127482,130552,389557869⟩ E) ⟨127498,129672,1402616746⟩ E) ⟨127498,130504,428503626⟩ (N (N E ⟨127512,131072,89587803⟩ E) ⟨127578,129816,1195292976⟩ E)) ⟨127578,130680,296846845⟩ (N (N (N E ⟨127616,130144,782093825⟩ E) ⟨127616,131008,115705527⟩ E) ⟨127640,128982,2666109124⟩ (N E ⟨127640,130324,593401922⟩ E))) ⟨127820,130026,926645378⟩ (N (N (N (N E ⟨127912,130224,701489509⟩ E) ⟨127912,131072,91911106⟩ E) ⟨127930,129304,2043263807⟩ (N (N E ⟨127960,129495,1706402844⟩ E) ⟨127960,130166,765926575⟩ E)) ⟨128052,131072,92667319⟩ (N (N (N E ⟨128072,130278,648393764⟩ E) ⟨128072,131072,92772878⟩ E) ⟨128088,129639,1477101510⟩ (N E ⟨128088,130326,600419120⟩ E)))) ⟨128168,130096,851368949⟩ (N (N (N (N (N E ⟨128168,130864,189743459⟩ E) ⟨128244,131072,93654831⟩ E) ⟨128330,130504,441590588⟩ (N (N E ⟨128362,129881,1130769507⟩ E) ⟨128362,130568,389701776⟩ E)) ⟨128362,131072,94232767⟩ (N (N (N E ⟨128438,129973,1010402635⟩ E) ⟨128438,130644,332790175⟩ E) ⟨128438,131072,94593148⟩ (N E ⟨128442,130680,307070972⟩ E))) ⟨128480,130176,766337070⟩ (N (N (N (N E ⟨128480,131008,121068939⟩ E) ⟨128518,130692,299498690⟩ E) ⟨128518,131072,94962366⟩ (N (N E ⟨128528,130848,201488252⟩ E) ⟨128570,131072,95196746⟩ E)) ⟨128598,130149,799446031⟩ (N (N (N E ⟨128598,130836,208871425⟩ E) ⟨128631,130166,780743583⟩ E) ⟨128775,129894,1124529355⟩ (N E ⟨128775,130326,612571119⟩ E))))) ⟨128824,130359,580734408⟩ (N (N (N (N (N (N E ⟨128824,131030,113330538⟩ E) ⟨128840,130343,596689196⟩ E) ⟨128840,131014,120273884⟩ (N (N E ⟨128904,131072,96595161⟩ E) ⟨128936,130864,195348198⟩ E)) ⟨128952,130503,450636249⟩ (N (N (N E ⟨128952,131072,96780705⟩ E) ⟨128982,130324,617852909⟩ E) ⟨129049,130568,397767483⟩ (N E ⟨129064,131072,97198350⟩ E))) ⟨129072,130804,231274325⟩ (N (N (N (N E ⟨129072,131072,97227358⟩ E) ⟨129109,130644,339622409⟩ E) ⟨129176,131036,112262503⟩ (N (N E ⟨129194,131072,97656065⟩ E) ⟨129207,130326,619180477⟩ E)) ⟨129280,130976,139483549⟩ (N (N (N E ⟨129285,130836,213507757⟩ E) ⟨129302,130405,543206001⟩ E) ⟨129302,130837,213021617⟩ (N E ⟨129302,131072,98014026⟩ E)))) ⟨129304,130678,316496761⟩ (N (N (N (N (N E ⟨129312,130576,393982325⟩ E) ⟨129312,131008,124932872⟩ E) ⟨129328,130676,318122421⟩ (N (N E ⟨129328,131072,98097161⟩ E) ⟨129344,131040,111187747⟩ E)) ⟨129350,131072,98166581⟩ (N (N (N E ⟨129462,130581,391358277⟩ E) ⟨129462,131013,123259018⟩ E) ⟨129495,131030,115946918⟩ (N E ⟨129511,130598,378302463⟩ E))) ⟨129511,131014,122984215⟩ (N (N (N (N E ⟨129639,130758,263961504⟩ E) ⟨129639,131072,98999214⟩ E) ⟨129652,130808,232336759⟩ (N E ⟨129652,131072,99033182⟩ E)) ⟨129734,130837,215290995⟩ (N (N (N E ⟨129736,131072,99245381⟩ E) ⟨129744,130592,384932355⟩ E) ⟨129744,131008,126404598⟩ (N E ⟨129780,131072,99351484⟩ E)))))) ⟨129894,131013,124581014⟩ (N (N (N (N (N (N (N E ⟨129908,131072,99640327⟩ E) ⟨129927,131014,124219446⟩ E) ⟨129972,131072,99773646⟩ (N (N E ⟨129973,131072,99775670⟩ E) ⟨130071,131072,99965234⟩ E)) ⟨130096,131072,100010796⟩ (N (N (N E ⟨130144,131072,100095080⟩ E) ⟨130149,131072,100103618⟩ E) ⟨130160,131008,127464677⟩ (N E ⟨130166,131072,100132305⟩ E))) ⟨130176,131024,120346737⟩ (N (N (N (N E ⟨130176,131072,100148933⟩ E) ⟨130182,131072,100158823⟩ E) ⟨130228,131072,100232453⟩ (N (N E ⟨130232,131072,100238673⟩ E) ⟨130326,131072,100376396⟩ E)) ⟨130405,131072,100479598⟩ (N (N (N E ⟨130576,131072,100663638⟩ E) ⟨130592,131072,100678099⟩ E) ⟨131072,131076,99276454⟩ (N E ⟨131072,131110,86076446⟩ E)))) ⟨131072,131122,81643464⟩ (N (N (N (N (N E ⟨131072,131148,72442612⟩ E) ⟨131072,131190,58746422⟩ E) ⟨131072,131232,46489813⟩ (N (N E ⟨131072,131255,40387174⟩ E) ⟨131072,131256,40131616⟩ E)) ⟨131072,131268,37128430⟩ (N (N (N E ⟨131072,131269,36883456⟩ E) ⟨131072,131315,26494034⟩ E) ⟨131072,131324,24662527⟩ (N E ⟨131072,131346,20462462⟩ E))) ⟨131072,131376,15368120⟩ (N (N (N (N E ⟨131072,131384,14132891⟩ E) ⟨131072,131388,13534729⟩ E) ⟨131072,131392,12949532⟩ (N E ⟨131072,131400,11818026⟩ E)) ⟨131072,131408,10738357⟩ (N (N (N E ⟨131072,131424,8734460⟩ E) ⟨131072,131440,6937709⟩ E) ⟨131072,131444,6520871⟩ (N E ⟨131072,131445,6418683⟩ E))))) ⟨131072,131448,6116970⟩ (N (N (N (N (N (N E ⟨131072,131508,1609284⟩ E) ⟨131072,131512,1412060⟩ E) ⟨131072,131523,936196⟩ (N (N E ⟨131072,131524,897771⟩ E) ⟨131576,135318,8137⟩ E)) ⟨131576,136118,7946⟩ (N (N (N E ⟨131576,136150,7939⟩ E) ⟨131576,137460,7640⟩ E) ⟨131576,139060,7293⟩ (N E ⟨131584,132992,62700⟩ E))) ⟨131584,133408,61919⟩ (N (N (N (N E ⟨131584,133824,61150⟩ E) ⟨131584,135168,58747⟩ E) ⟨131584,135936,57427⟩ (N (N E ⟨131584,136768,56038⟩ E) ⟨131584,138752,52892⟩ E)) ⟨131584,139264,52116⟩ (N (N (N E ⟨131616,133008,771550⟩ E) ⟨131616,133392,762677⟩ E) ⟨131616,133824,752846⟩ (N E ⟨131616,134400,739985⟩ E)))) ⟨131616,135168,723260⟩ (N (N (N (N (N E ⟨131624,135344,999791⟩ E) ⟨131624,137008,951961⟩ E) ⟨131640,134614,1735796⟩ (N (N E ⟨131648,133576,2231703⟩ E) ⟨131648,134344,2180955⟩ E)) ⟨131648,135504,2107010⟩ (N (N (N E ⟨131652,133858,2449683⟩ E) ⟨131666,133008,3460643⟩ E) ⟨131670,133141,3744145⟩ (N E ⟨131670,133525,3701129⟩ E))) ⟨131685,133188,4961913⟩ (N (N (N (N E ⟨131692,137832,4873526⟩ E) ⟨131700,133251,6346024⟩ E) ⟨131700,133938,6216430⟩ (N E ⟨131700,134802,6058111⟩ E)) ⟨131700,136176,5816583⟩ (N (N (N E ⟨131701,133236,6447983⟩ E) ⟨131704,136278,6165394⟩ E) ⟨131704,137652,5922200⟩ (N E ⟨131704,139124,5674822⟩ E))))))))
+
+noncomputable def tab3 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨131712,134496,7307488⟩ E) ⟨131712,135264,7142447⟩ E) ⟨131712,136128,6962309⟩ (N (N E ⟨131712,137280,6730872⟩ E) ⟨131712,138816,6437051⟩ E)) ⟨131712,139264,6354389⟩ (N (N (N E ⟨131744,133568,11322883⟩ E) ⟨131747,132850,11976262⟩ E) ⟨131760,133376,13598607⟩ (N E ⟨131760,133536,13533351⟩ E))) ⟨131760,133792,13429754⟩ (N (N (N (N E ⟨131764,134035,13904145⟩ E) ⟨131764,134706,13628347⟩ E) ⟨131764,135474,13321024⟩ (N (N E ⟨131767,133622,14519572⟩ E) ⟨131776,136128,14746045⟩ E)) ⟨131776,136960,14389955⟩ (N (N (N E ⟨131797,133316,19497310⟩ E) ⟨131808,133056,21615453⟩ E) ⟨131808,133472,21346411⟩ (N E ⟨131808,133584,21274693⟩ E)))) ⟨131808,133888,21081544⟩ (N (N (N (N (N E ⟨131808,134016,21000874⟩ E) ⟨131808,134336,20800883⟩ E) ⟨131808,134592,20642603⟩ (N (N E ⟨131824,133856,24055442⟩ E) ⟨131828,134770,24155585⟩ E)) ⟨131830,133317,25624583⟩ (N (N (N E ⟨131830,133701,25330574⟩ E) ⟨131832,139264,21843389⟩ E) ⟨131836,133184,26936529⟩ (N E ⟨131840,133072,27851942⟩ E))) ⟨131840,133248,27704630⟩ (N (N (N (N E ⟨131840,133456,27531788⟩ E) ⟨131840,133536,27465670⟩ E) ⟨131840,133664,27360293⟩ (N (N E ⟨131840,134080,27021293⟩ E) ⟨131840,134656,26560533⟩ E)) ⟨131840,135488,25912200⟩ (N (N (N E ⟨131840,136320,25283541⟩ E) ⟨131840,137472,24444246⟩ E) ⟨131840,139136,23292494⟩ (N E ⟨131840,139264,23206737⟩ E))))) ⟨131846,134020,28294285⟩ (N (N (N (N (N (N E ⟨131846,134852,27600386⟩ E) ⟨131856,133472,30899197⟩ E) ⟨131856,133888,30515799⟩ (N (N E ⟨131861,134132,31368948⟩ E) ⟨131872,133568,34377065⟩ E)) ⟨131872,134400,33531164⟩ (N (N (N E ⟨131877,133428,35681741⟩ E) ⟨131892,135602,36810321⟩ E) ⟨131894,134964,37983679⟩ (N E ⟨131904,133600,42058702⟩ E))) ⟨131904,133680,41957807⟩ (N (N (N (N E ⟨131904,134112,41418170⟩ E) ⟨131904,134144,41378544⟩ E) ⟨131904,134688,40712087⟩ (N (N E ⟨131904,135456,39793895⟩ E) ⟨131904,135488,39756202⟩ E)) ⟨131904,136320,38791672⟩ (N (N (N E ⟨131904,136832,38212641⟩ E) ⟨131904,137472,37503970⟩ E) ⟨131911,133782,43611953⟩ (N E ⟨131925,133780,47291511⟩ E)))) ⟨131925,134196,46706065⟩ (N (N (N (N (N E ⟨131936,134464,49266914⟩ E) ⟨131940,133027,52574198⟩ E) ⟨131940,133043,52548834⟩ (N (N E ⟨131942,133461,52457332⟩ E) ⟨131942,134148,51387763⟩ E)) ⟨131952,133728,54890345⟩ (N (N (N E ⟨131955,133074,56868524⟩ E) ⟨131956,134243,55194746⟩ E) ⟨131956,134930,54075873⟩ (N E ⟨131956,135698,52858454⟩ E))) ⟨131960,133116,58289907⟩ (N (N (N (N E ⟨131964,133696,58469708⟩ E) ⟨131968,134976,57431681⟩ E) ⟨131968,135552,56458842⟩ (N E ⟨131968,136320,55193558⟩ E)) ⟨131968,136448,54986139⟩ (N (N (N E ⟨131968,136896,54267805⟩ E) ⟨131968,137152,53862596⟩ E) ⟨131968,137984,52571534⟩ (N E ⟨131986,133521,65565082⟩ E)))))) ⟨131986,134192,64259582⟩ (N (N (N (N (N (N (N E ⟨132000,133392,70350547⟩ E) ⟨132000,133408,70316700⟩ E) ⟨132000,133824,69443791⟩ (N (N E ⟨132020,134994,73480647⟩ E) ⟨132022,133877,76652029⟩ E)) ⟨132022,134293,75703801⟩ (N (N (N E ⟨132022,134964,74205032⟩ E) ⟨132024,134720,75412316⟩ E) ⟨132034,134208,80002871⟩ (N E ⟨132048,133440,86909521⟩ E))) ⟨132048,133824,85913262⟩ (N (N (N (N E ⟨132052,133426,88415465⟩ E) ⟨132052,134800,84854825⟩ E) ⟨132054,133525,88889857⟩ (N (N E ⟨132054,135156,84663743⟩ E) ⟨132064,133924,91519521⟩ E)) ⟨132080,137964,86610382⟩ (N (N (N E ⟨132080,139264,83412540⟩ E) ⟨132084,135826,93670631⟩ E) ⟨132086,133941,99849381⟩ (N E ⟨132086,134357,98614778⟩ E)))) ⟨132086,135028,96663346⟩ (N (N (N (N (N E ⟨132086,135796,94488714⟩ E) ⟨132096,133872,103993583⟩ E) ⟨132096,134304,102657994⟩ (N (N E ⟨132096,134560,101876651⟩ E) ⟨132096,134880,100910403⟩ E)) ⟨132096,135328,99576831⟩ (N (N (N E ⟨132096,136160,97158154⟩ E) ⟨132096,137024,94723717⟩ E) ⟨132096,137664,92969468⟩ (N E ⟨132096,138560,90581218⟩ E))) ⟨132096,139200,88922174⟩ (N (N (N (N E ⟨132096,139264,88758367⟩ E) ⟨132101,133972,105673948⟩ E) ⟨132101,134388,104367628⟩ (N (N E ⟨132128,135360,112027258⟩ E) ⟨132160,133984,130565134⟩ E)) ⟨132160,134400,128951258⟩ (N (N (N E ⟨132160,134624,128092580⟩ E) ⟨132160,134976,126757627⟩ E) ⟨132160,135808,123670788⟩ (N E ⟨132160,137088,119103089⟩ E))))) ⟨132160,138624,113896799⟩ (N (N (N (N (N (N E ⟨132160,139264,111811675⟩ E) ⟨132168,136516,124442896⟩ E) ⟨132176,133792,138578043⟩ (N (N E ⟨132179,133714,140288931⟩ E) ⟨132182,134053,140250052⟩ E)) ⟨132182,134469,138517354⟩ (N (N (N E ⟨132182,135156,135714107⟩ E) ⟨132192,133584,146948461⟩ E) ⟨132192,133808,145963952⟩ (N E ⟨132192,133968,145265779⟩ E))) ⟨132192,134224,144157367⟩ (N (N (N (N E ⟨132192,134400,143401466⟩ E) ⟨132192,134656,142310800⟩ E) ⟨132192,134976,140962017⟩ (N (N E ⟨132192,135744,137789588⟩ E) ⟨132194,135232,140800533⟩ E)) ⟨132195,133698,147870258⟩ (N (N (N E ⟨132210,134448,151651444⟩ E) ⟨132214,133701,157034906⟩ E) ⟨132224,133456,163173439⟩ (N E ⟨132224,133472,163094971⟩ E)))) ⟨132224,133888,161071284⟩ (N (N (N (N (N E ⟨132224,134304,159078906⟩ E) ⟨132224,134688,157267075⟩ E) ⟨132224,134720,157117257⟩ (N (N E ⟨132224,135552,153283889⟩ E) ⟨132224,135808,152127981⟩ E)) ⟨132224,136288,149989887⟩ (N (N (N E ⟨132224,136384,149566787⟩ E) ⟨132224,137152,146235168⟩ E) ⟨132224,137216,145961743⟩ (N E ⟨132224,138880,139071867⟩ E))) ⟨132224,139264,137540034⟩ (N (N (N (N E ⟨132240,134016,168446782⟩ E) ⟨132246,133733,172954793⟩ E) ⟨132246,134533,168865225⟩ (N E ⟨132246,135220,165449427⟩ E)) ⟨132246,135988,161732558⟩ (N (N (N E ⟨132256,133488,179453920⟩ E) ⟨132256,133664,178507735⟩ E) ⟨132256,133872,177397547⟩ (N E ⟨132256,134080,176295982⟩ E))))))) ⟨132256,134288,175202959⟩ (N (N (N (N (N (N (N (N E ⟨132256,134720,172959785⟩ E) ⟨132256,135488,169059892⟩ E) ⟨132260,134952,173790077⟩ (N (N E ⟨132272,133504,187880050⟩ E) ⟨132272,133888,185727380⟩ E)) ⟨132274,135984,175507300⟩ (N (N (N E ⟨132274,136816,171264679⟩ E) ⟨132280,136692,174847611⟩ E) ⟨132288,133904,194245360⟩ (N E ⟨132288,134320,191842920⟩ E))) ⟨132288,134496,190837697⟩ (N (N (N (N E ⟨132288,134752,189387284⟩ E) ⟨132288,135296,186350654⟩ E) ⟨132288,135520,185117990⟩ (N (N E ⟨132288,135872,183201478⟩ E) ⟨132288,136352,180627868⟩ E)) ⟨132288,136640,179105392⟩ (N (N (N E ⟨132288,137216,176108286⟩ E) ⟨132288,137472,174796383⟩ E) ⟨132288,139264,165947180⟩ (N E ⟨132320,135552,201892860⟩ E)))) ⟨132336,134112,219870410⟩ (N (N (N (N (N E ⟨132336,139264,189012513⟩ E) ⟨132341,133812,224776864⟩ E) ⟨132341,134196,222207363⟩ (N (N E ⟨132352,135360,220842983⟩ E) ⟨132352,135936,217112671⟩ E)) ⟨132352,137280,208710389⟩ (N (N (N E ⟨132352,138816,199599621⟩ E) ⟨132352,139264,197036445⟩ E) ⟨132356,134530,228695035⟩ (N E ⟨132372,134578,237813514⟩ E))) ⟨132384,134160,248101361⟩ (N (N (N (N E ⟨132384,134592,244921823⟩ E) ⟨132384,135168,240761295⟩ E) ⟨132387,133938,251610074⟩ (N (N E ⟨132400,136256,242449039⟩ E) ⟨132402,136944,238752305⟩ E)) ⟨132408,136150,247944775⟩ (N (N (N E ⟨132408,136884,242653998⟩ E) ⟨132416,133824,270818384⟩ E) ⟨132416,134240,267466885⟩ (N E ⟨132416,134344,266637129⟩ E))))) ⟨132416,134656,264167102⟩ (N (N (N (N (N (N E ⟨132416,136000,253848462⟩ E) ⟨132416,136768,248178122⟩ E) ⟨132416,137344,244029038⟩ (N (N E ⟨132416,137600,242212861⟩ E) ⟨132416,138880,233381371⟩ E)) ⟨132416,139264,230810749⟩ (N (N (N E ⟨132432,133824,281218144⟩ E) ⟨132432,137824,249878334⟩ E) ⟨132435,134706,275823781⟩ (N E ⟨132438,134293,281194094⟩ E))) ⟨132464,134670,295053942⟩ (N (N (N (N E ⟨132464,135534,287579967⟩ E) ⟨132464,136876,276434406⟩ E) ⟨132464,138604,262866711⟩ (N (N E ⟨132464,139264,257905061⟩ E) ⟨132468,139264,260231189⟩ E)) ⟨132480,133872,313149472⟩ (N (N (N E ⟨132480,134256,309571356⟩ E) ⟨132480,134688,305606882⟩ E) ⟨132480,135264,300419169⟩ (N E ⟨132480,136032,293672343⟩ E)))) ⟨132480,136896,286307105⟩ (N (N (N (N (N E ⟨132480,136960,285770772⟩ E) ⟨132480,137408,282051412⟩ E) ⟨132480,138048,276842435⟩ (N (N E ⟨132480,138112,276328179⟩ E) ⟨132480,138496,273267608⟩ E)) ⟨132480,138944,269750329⟩ (N (N (N E ⟨132480,139264,267272605⟩ E) ⟨132484,134690,308296324⟩ E) ⟨132484,135522,300772810⟩ (N E ⟨132484,136896,288843910⟩ E))) ⟨132498,136240,303605877⟩ (N (N (N (N E ⟨132498,137072,296280329⟩ E) ⟨132502,134357,323829602⟩ E) ⟨132504,136224,307711834⟩ (N E ⟨132517,134004,337945747⟩ E)) ⟨132517,134388,334088103⟩ (N (N (N E ⟨132528,134304,342797936⟩ E) ⟨132528,134840,337363557⟩ E) ⟨132532,135474,333860136⟩ (N E ⟨132536,134848,342972146⟩ E)))))) ⟨132536,136000,331464707⟩ (N (N (N (N (N (N (N E ⟨132544,134856,348625893⟩ E) ⟨132544,135552,341499699⟩ E) ⟨132544,136892,328285369⟩ (N (N E ⟨132544,138556,312753432⟩ E) ⟨132544,139264,306424115⟩ E)) ⟨132552,136016,342437812⟩ (N (N (N E ⟨132564,134802,363757668⟩ E) ⟨132576,133968,382039186⟩ E) ⟨132576,134400,377136168⟩ (N E ⟨132576,134784,372843836⟩ E))) ⟨132576,135360,366519255⟩ (N (N (N (N E ⟨132576,136128,358293741⟩ E) ⟨132596,134451,391771257⟩ E) ⟨132596,134867,386945483⟩ (N (N E ⟨132596,135538,379317208⟩ E) ⟨132596,136306,370815567⟩ E)) ⟨132596,137138,361872643⟩ (N (N (N E ⟨132596,138480,348008765⟩ E) ⟨132598,134469,393097595⟩ E) ⟨132608,134224,403769928⟩ (N E ⟨132608,136000,383028239⟩ E)))) ⟨132608,136960,372370826⟩ (N (N (N (N (N E ⟨132608,137792,363432875⟩ E) ⟨132608,138624,354761639⟩ E) ⟨132608,139264,348266970⟩ (N (N E ⟨132624,134240,416186400⟩ E) ⟨132624,134400,414202128⟩ E)) ⟨132624,134656,411051840⟩ (N (N (N E ⟨132626,137200,382774402⟩ E) ⟨132629,134148,421324177⟩ E) ⟨132630,134117,422516358⟩ (N E ⟨132640,133872,433741905⟩ E))) ⟨132640,133888,433533978⟩ (N (N (N (N E ⟨132640,134304,428171360⟩ E) ⟨132640,134720,422891453⟩ E) ⟨132643,134930,422630291⟩ (N E ⟨132656,133888,446671253⟩ E)) ⟨132657,134192,443445344⟩ (N (N (N E ⟨132660,139264,384246896⟩ E) ⟨132662,134533,443023378⟩ E) ⟨132672,134288,454532817⟩ (N E ⟨132672,134448,452366496⟩ E))))) ⟨132672,134880,446581595⟩ (N (N (N (N (N (N E ⟨132672,134912,446156775⟩ E) ⟨132672,135456,439011560⟩ E) ⟨132672,135488,438595726⟩ (N (N E ⟨132672,136064,431194266⟩ E) ⟨132672,136320,427954896⟩ E)) ⟨132672,137728,410672362⟩ (N (N (N E ⟨132672,138240,404604837⟩ E) ⟨132672,139264,392802446⟩ E) ⟨132678,134852,451861637⟩ (N E ⟨132688,134720,461912681⟩ E))) ⟨132693,134548,468471951⟩ (N (N (N (N E ⟨132693,134964,462705543⟩ E) ⟨132704,133936,486565677⟩ E) ⟨132704,134320,481008723⟩ (N (N E ⟨132704,134400,479861032⟩ E) ⟨132720,134336,494519394⟩ E)) ⟨132720,134752,488422779⟩ (N (N (N E ⟨132720,137196,454442395⟩ E) ⟨132720,138924,432188580⟩ E) ⟨132720,139264,427971621⟩ (N E ⟨132724,135698,478233063⟩ E)))) ⟨132724,138608,439211072⟩ (N (N (N (N (N E ⟨132724,139264,430970783⟩ E) ⟨132725,134196,500944490⟩ E) ⟨132736,134976,498850742⟩ (N (N E ⟨132736,136128,482128877⟩ E) ⟨132736,136320,479410445⟩ E)) ⟨132736,137920,457486189⟩ (N (N (N E ⟨132736,138752,446580948⟩ E) ⟨132757,135028,516286241⟩ E) ⟨132768,134544,533585719⟩ (N E ⟨132768,134976,526767038⟩ E))) ⟨132768,135552,517844095⟩ (N (N (N (N E ⟨132768,136320,506238838⟩ E) ⟨132774,135812,519067487⟩ E) ⟨132788,134659,549764297⟩ (N E ⟨132788,135075,543002832⟩ E)) ⟨132788,135762,532062769⟩ (N (N (N E ⟨132788,136530,520157153⟩ E) ⟨132788,137362,507632960⟩ E) ⟨132788,138736,487764359⟩ (N E ⟨132790,136500,522336592⟩ E))))))))
+
+noncomputable def tab4 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨132800,137152,520928691⟩ E) ⟨132800,137856,510338701⟩ E) ⟨132800,137984,508442271⟩ (N (N E ⟨132808,135504,553990503⟩ E) ⟨132816,134592,576626566⟩ E)) ⟨132832,134240,597862628⟩ (N (N (N E ⟨132832,134656,590486698⟩ E) ⟨132850,135056,600358774⟩ E) ⟨132850,135920,585194190⟩ (N E ⟨132854,135125,602900845⟩ E))) ⟨132854,135796,591037755⟩ (N (N (N (N E ⟨132864,134256,628438861⟩ E) ⟨132864,135328,608703368⟩ E) ⟨132864,135456,606399010⟩ (N (N E ⟨132864,135872,598984808⟩ E) ⟨132864,136416,589459545⟩ E)) ⟨132864,137280,574717227⟩ (N (N (N E ⟨132864,138496,554741196⟩ E) ⟨132864,139264,542571166⟩ E) ⟨132866,135040,615837994⟩ (N E ⟨132866,135872,600847966⟩ E)))) ⟨132869,134740,624253358⟩ (N (N (N (N (N E ⟨132869,135156,616580371⟩ E) ⟨132896,136616,615510774⟩ E) ⟨132896,138280,586332142⟩ (N (N E ⟨132896,139264,569889733⟩ E) ⟨132901,134388,662478264⟩ E)) ⟨132912,134688,667534784⟩ (N (N (N E ⟨132916,138864,594121313⟩ E) ⟨132916,139264,587305762⟩ E) ⟨132918,137460,620691117⟩ (N E ⟨132928,135936,658800327⟩ E))) ⟨132928,136160,654463077⟩ (N (N (N (N E ⟨132933,135220,677898345⟩ E) ⟨132950,136692,665463864⟩ E) ⟨132950,137524,649459828⟩ (N (N E ⟨132960,134736,715387397⟩ E) ⟨132960,135168,706258477⟩ E)) ⟨132960,135744,694312030⟩ (N (N (N E ⟨132960,136192,685194673⟩ E) ⟨132960,137024,668656196⟩ E) ⟨132984,138868,655936975⟩ (N E ⟨132992,134816,747104221⟩ E))))) ⟨132992,135232,737926385⟩ (N (N (N (N (N (N E ⟨132992,135808,725450150⟩ E) ⟨132992,136640,707890986⟩ E) ⟨132992,137472,690860185⟩ (N (N E ⟨132992,138176,676848108⟩ E) ⟨132992,139008,660743480⟩ E)) ⟨132992,139264,655884850⟩ (N (N (N E ⟨133008,135692,744502096⟩ E) ⟨133008,138376,688241636⟩ E) ⟨133008,139264,670806273⟩ (N E ⟨133012,134867,767214920⟩ E))) ⟨133014,135301,759502587⟩ (N (N (N (N E ⟨133014,135988,744226017⟩ E) ⟨133024,135488,765858291⟩ E) ⟨133040,134656,802483171⟩ (N (N E ⟨133056,134304,828796562⟩ E) ⟨133056,134720,818576427⟩ E)) ⟨133056,134832,815851823⟩ (N (N (N E ⟨133056,135264,805448294⟩ E) ⟨133056,135520,799361491⟩ E) ⟨133056,135552,798604692⟩ (N E ⟨133056,135840,791833662⟩ E)))) ⟨133056,136384,779238697⟩ (N (N (N (N (N E ⟨133056,136608,774125415⟩ E) ⟨133056,136640,773398376⟩ E) ⟨133056,137216,760456517⟩ (N (N E ⟨133056,137472,754791564⟩ E) ⟨133064,137476,762893197⟩ E)) ⟨133074,136176,803232081⟩ (N (N (N E ⟨133078,137652,773352393⟩ E) ⟨133088,134320,864649867⟩ E) ⟨133088,137152,795219611⟩ (N E ⟨133104,134880,868448145⟩ E))) ⟨133106,136816,822338708⟩ (N (N (N (N E ⟨133109,134964,871966381⟩ E) ⟨133112,139060,776446514⟩ E) ⟨133112,139264,771894260⟩ (N E ⟨133120,135296,875862275⟩ E)) ⟨133120,135584,868422152⟩ (N (N (N E ⟨133120,135712,865140810⟩ E) ⟨133120,136128,854582992⟩ E) ⟨133120,136352,848964744⟩ (N E ⟨133120,136704,840229078⟩ E)))))) ⟨133120,137472,821556320⟩ (N (N (N (N (N (N (N E ⟨133120,138304,801909404⟩ E) ⟨133120,139136,782846616⟩ E) ⟨133120,139264,779964392⟩ (N (N E ⟨133136,134752,908698536⟩ E) ⟨133152,135360,910853484⟩ E)) ⟨133152,135616,903975018⟩ (N (N (N E ⟨133152,136384,883725771⟩ E) ⟨133152,137216,862425114⟩ E) ⟨133168,135488,925943726⟩ (N E ⟨133184,136768,909697132⟩ E))) ⟨133184,138576,863012440⟩ (N (N (N (N E ⟨133184,139264,846037011⟩ E) ⟨133188,137536,893925345⟩ E) ⟨133188,139200,851824915⟩ (N (N E ⟨133200,134976,978329376⟩ E) ⟨133204,135075,980271819⟩ E)) ⟨133236,137648,944919642⟩ (N (N (N E ⟨133236,139264,901698480⟩ E) ⟨133240,139264,906053519⟩ E) ⟨133248,134656,1046999565⟩ (N E ⟨133248,135024,1035598074⟩ E)))) ⟨133248,135456,1022411138⟩ (N (N (N (N (N E ⟨133248,135488,1021442706⟩ E) ⟨133248,136032,1005153526⟩ E) ⟨133248,137600,959986155⟩ (N (N E ⟨133248,138816,926695276⟩ E) ⟨133248,139264,914795035⟩ E)) ⟨133267,135122,1056212021⟩ (N (N (N E ⟨133267,135538,1043266268⟩ E) ⟨133280,135872,1048974831⟩ E) ⟨133285,135156,1077750328⟩ (N E ⟨133288,137008,1024072962⟩ E))) ⟨133316,135522,1105183716⟩ (N (N (N (N E ⟨133328,135534,1120095271⟩ E) ⟨133330,137072,1072969121⟩ E) ⟨133344,135552,1140056468⟩ (N (N E ⟨133344,136128,1120826646⟩ E) ⟨133344,136896,1095813526⟩ E)) ⟨133364,135635,1163156018⟩ (N (N (N E ⟨133364,136306,1140354466⟩ E) ⟨133392,135168,1216616750⟩ E) ⟨133408,135232,1235814744⟩ (N E ⟨133426,134800,1276515723⟩ E))))) ⟨133428,135699,1245614855⟩ (N (N (N (N (N (N E ⟨133428,136370,1221208289⟩ E) ⟨133428,137138,1194002951⟩ E) ⟨133428,137904,1167619341⟩ (N (N E ⟨133428,139264,1122547815⟩ E) ⟨133440,136992,1214714744⟩ E)) ⟨133440,137024,1213577129⟩ (N (N (N E ⟨133440,137792,1186669770⟩ E) ⟨133440,137856,1184461327⟩ E) ⟨133440,138624,1158356720⟩ (N E ⟨133440,139008,1145574253⟩ E))) ⟨133440,139264,1137150528⟩ (N (N (N (N E ⟨133475,135762,1307237706⟩ E) ⟨133488,135264,1344887569⟩ E) ⟨133504,136320,1325493849⟩ (N (N E ⟨133504,137088,1295954558⟩ E) ⟨133504,137984,1262524966⟩ E)) ⟨133504,139136,1221112853⟩ (N (N (N E ⟨133504,139264,1216617055⟩ E) ⟨133525,135796,1375626540⟩ E) ⟨133536,135712,1394660283⟩ (N E ⟨133536,135744,1393341760⟩ E)))) ⟨133536,136128,1377640430⟩ (N (N (N (N (N E ⟨133536,136320,1369872751⟩ E) ⟨133556,135843,1417775830⟩ E) ⟨133556,136530,1389371819⟩ (N (N E ⟨133568,135808,1436500049⟩ E) ⟨133568,137920,1350268023⟩ E)) ⟨133568,137980,1347914199⟩ (N (N (N E ⟨133568,138752,1318081261⟩ E) ⟨133568,139264,1298750327⟩ E) ⟨133616,139264,1362097342⟩ (N E ⟨133620,136594,1477865436⟩ E))) ⟨133620,137362,1444995991⟩ (N (N (N (N E ⟨133622,137332,1449094105⟩ E) ⟨133632,135840,1528842988⟩ E) ⟨133632,137984,1435752141⟩ (N E ⟨133632,138048,1433083882⟩ E)) ⟨133632,138112,1430421821⟩ (N (N (N E ⟨133632,138560,1411959527⟩ E) ⟨133632,139200,1386098725⟩ E) ⟨133632,139264,1383545347⟩ (N E ⟨133680,135456,1619331385⟩ E))))))) ⟨133680,138304,1489650854⟩ (N (N (N (N (N (N (N (N E ⟨133680,139264,1448885146⟩ E) ⟨133683,135538,1620012892⟩ E) ⟨133688,136000,1605637963⟩ (N (N E ⟨133696,135872,1623943057⟩ E) ⟨133696,136288,1604148427⟩ E)) ⟨133696,136704,1584654656⟩ (N (N (N E ⟨133696,138320,1511682896⟩ E) ⟨133696,138624,1498428639⟩ E) ⟨133696,139264,1470996705⟩ (N E ⟨133698,135872,1627007243⟩ E))) ⟨133701,135988,1626032453⟩ (N (N (N (N E ⟨133712,138336,1533864418⟩ E) ⟨133714,135920,1649284853⟩ E) ⟨133728,137280,1605519338⟩ (N (N E ⟨133728,139264,1515716701⟩ E) ⟨133744,139264,1538324947⟩ E)) ⟨133760,138944,1575570569⟩ (N (N (N E ⟨133760,139264,1561098561⟩ E) ⟨133782,137524,1675069351⟩ E) ⟨133792,137024,1715155652⟩ (N E ⟨133806,136876,1744421151⟩ E)))) ⟨133824,136032,1817202469⟩ (N (N (N (N (N E ⟨133824,136608,1786658581⟩ E) ⟨133824,136640,1784980596⟩ E) ⟨133824,137472,1742036624⟩ (N (N E ⟨133824,139008,1666095930⟩ E) ⟨133824,139264,1653844664⟩ E)) ⟨133858,136896,1825557454⟩ (N (N (N E ⟨133888,136352,1903975621⟩ E) ⟨133888,136384,1902184080⟩ E) ⟨133888,136896,1873804091⟩ (N E ⟨133888,137216,1856335274⟩ E))) ⟨133888,137472,1842506671⟩ (N (N (N (N E ⟨133888,138880,1768710122⟩ E) ⟨133888,139264,1749228337⟩ E) ⟨133920,136384,1955119362⟩ (N (N E ⟨133920,137472,1893781209⟩ E) ⟨133938,136880,1956507832⟩ E)) ⟨133938,137648,1913082997⟩ (N (N (N E ⟨133938,138480,1867390970⟩ E) ⟨133952,136128,2023966768⟩ E) ⟨133952,137536,1942117880⟩ (N E ⟨133952,138304,1899216342⟩ E))))) ⟨133952,138880,1867815890⟩ (N (N (N (N (N (N E ⟨133952,139136,1854068651⟩ E) ⟨133984,137216,2013403101⟩ E) ⟨134000,139264,1922474841⟩ (N (N E ⟨134008,139264,1935156779⟩ E) ⟨134016,137568,2046013453⟩ E)) ⟨134016,138432,1995267134⟩ (N (N (N E ⟨134016,138944,1965937216⟩ E) ⟨134016,139264,1947879594⟩ E) ⟨134035,136306,2156185537⟩ (N E ⟨134080,139264,2051131731⟩ E))) ⟨134099,136370,2265298619⟩ (N (N (N (N E ⟨134112,136288,2294161861⟩ E) ⟨134112,136704,2266282978⟩ E) ⟨134112,136896,2253558749⟩ (N (N E ⟨134132,138674,2173648088⟩ E) ⟨134132,139264,2136943856⟩ E)) ⟨134136,139264,2143615933⟩ (N (N (N E ⟨134144,139264,2156990541⟩ E) ⟨134148,138560,2208129316⟩ E) ⟨134148,139264,2163693069⟩ (N E ⟨134162,137904,2275051555⟩ E)))) ⟨134162,138736,2220814206⟩ (N (N (N (N (N E ⟨134192,138604,2281147024⟩ E) ⟨134196,137138,2387812871⟩ E) ⟨134208,137792,2364100186⟩ (N (N E ⟨134208,138556,2312241003⟩ E) ⟨134208,139264,2265447257⟩ E)) ⟨134243,136530,2518399235⟩ (N (N (N E ⟨134260,139264,2355474918⟩ E) ⟨134272,137856,2475365938⟩ E) ⟨134272,138624,2420810796⟩ (N E ⟨134272,139264,2376492688⟩ E))) ⟨134304,137856,2534206708⟩ (N (N (N (N E ⟨134324,138898,2494813197⟩ E) ⟨134324,139264,2468616629⟩ E) ⟨134336,137728,2603401114⟩ (N E ⟨134376,139264,2562437838⟩ E)) ⟨134388,137362,2730895123⟩ (N (N (N E ⟨134388,139264,2584329339⟩ E) ⟨134400,136608,2815613683⟩ E) ⟨134400,139264,2606310863⟩ (N E ⟨134448,138924,2721691938⟩ E)))))) ⟨134452,139264,2702602693⟩ (N (N (N (N (N (N (N E ⟨134464,137472,2870378285⟩ E) ⟨134528,139264,2846363239⟩ E) ⟨134560,138280,2991865569⟩ (N (N E ⟨134580,139264,2946787818⟩ E) ⟨134592,139008,2992202361⟩ E)) ⟨134592,139264,2970199867⟩ (N (N (N E ⟨134656,139136,3108004162⟩ E) ⟨134656,139264,3096561355⟩ E) ⟨134706,137648,3350273710⟩ (N E ⟨134720,138304,3316186198⟩ E))) ⟨134752,139264,3290811149⟩ (N (N (N (N E ⟨134760,139264,3307252513⟩ E) ⟨134764,139264,3315487799⟩ E) ⟨134770,138480,3404081078⟩ (N (N E ⟨134784,139136,3369214663⟩ E) ⟨134784,139200,3363005254⟩ E)) ⟨134784,139264,3356810152⟩ (N (N (N E ⟨134800,137548,3562910225⟩ E) ⟨134800,139264,3390042950⟩ E) ⟨134852,139200,3505578450⟩ (N E ⟨134880,138432,3645102712⟩ E)))) ⟨134912,139264,3627008003⟩ (N (N (N (N (N E ⟨134952,139264,3713468245⟩ E) ⟨134964,139264,3739593216⟩ E) ⟨134976,139264,3765804281⟩ (N (N E ⟨134994,138736,3863707790⟩ E) ⟨135040,138624,3979907456⟩ E)) ⟨135084,139264,4005562410⟩ (N (N (N E ⟨135104,139264,4050720899⟩ E) ⟨135148,139264,4150899686⟩ E) ⟨135152,139264,4160063320⟩ (N E ⟨135156,139264,4169236350⟩ E))) ⟨135168,139264,4196811774⟩ (N (N (N (N E ⟨135228,139264,4335953225⟩ E) ⟨135232,139264,4345304050⟩ E) ⟨135280,139264,4458239724⟩ (N (N E ⟨135296,139264,4496181990⟩ E) ⟨135408,139264,4765910148⟩ E)) ⟨135424,139264,4805029944⟩ (N (N (N E ⟨135468,139264,4913361425⟩ E) ⟨135474,139264,4928219142⟩ E) ⟨135488,139264,4962966511⟩ (N E ⟨135504,139264,5002813647⟩ E))))) ⟨135552,139264,5123221857⟩ (N (N (N (N (N (N E ⟨135664,139264,5409194802⟩ E) ⟨135668,139264,5419537237⟩ E) ⟨135680,139264,5450617679⟩ (N (N E ⟨135692,138376,5624258188⟩ E) ⟨135698,139264,5497387576⟩ E)) ⟨135744,139264,5617721592⟩ (N (N (N E ⟨135808,139264,5787071159⟩ E) ⟨135812,139264,5797729633⟩ E) ⟨135860,139264,5926307948⟩ (N E ⟨135872,139264,5958647136⟩ E))) ⟨135920,139264,6088778417⟩ (N (N (N (N E ⟨135936,139264,6132429910⟩ E) ⟨136000,139264,6308399481⟩ E) ⟨136016,139264,6352731183⟩ (N (N E ⟨136176,139264,6803423869⟩ E) ⟨136192,139264,6849223449⟩ E)) ⟨136316,139264,7208600993⟩ (N (N (N E ⟨136320,139264,7220323464⟩ E) ⟨136448,139264,7599659374⟩ E) ⟨136704,139264,8382305677⟩ (N E ⟨136816,139264,8734456341⟩ E)))) ⟨136896,139264,8989516069⟩ (N (N (N (N (N E ⟨136960,139264,9195640158⟩ E) ⟨137216,139264,10038053565⟩ E) ⟨137448,139264,10825193196⟩ (N (N E ⟨137472,139264,10907852980⟩ E) ⟨137548,139264,11171087318⟩ E)) ⟨137728,139264,11803265435⟩ (N (N (N E ⟨137792,139264,12030905505⟩ E) ⟨137832,139264,12173921802⟩ E) ⟨137836,139264,12188254433⟩ (N E ⟨137856,139264,12260001552⟩ E))) ⟨137912,139264,12461631464⟩ (N (N (N (N E ⟨138156,139264,13352401972⟩ E) ⟨138376,139264,14171581030⟩ E) ⟨138556,139264,14852189218⟩ (N E ⟨138944,139264,16347424240⟩ E)) ⟨139064,139264,16816763875⟩ (N (N (N E ⟨139264,139316,17578910843⟩ E) ⟨139264,139376,17548575280⟩ E) ⟨139264,139392,17540496856⟩ (N E ⟨139264,139456,17508229636⟩ E))))))))
+
+noncomputable def tab5 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨139264,139584,17443917607⟩ E) ⟨139264,139628,17421878604⟩ E) ⟨139264,139632,17419876786⟩ (N (N E ⟨139264,139644,17413873056⟩ E) ⟨139264,139648,17411872388⟩ E)) ⟨139264,139776,17348002527⟩ (N (N (N E ⟨139264,139820,17326114956⟩ E) ⟨139264,139888,17292356600⟩ E) ⟨139264,140016,17229034327⟩ (N E ⟨139264,140032,17221139448⟩ E))) ⟨139264,140144,17166001795⟩ (N (N (N (N E ⟨139264,140160,17158143022⟩ E) ⟨139264,140224,17126752890⟩ E) ⟨139264,140272,17103257415⟩ (N (N E ⟨139264,140288,17095434549⟩ E) ⟨139264,140296,17091524795⟩ E)) ⟨139264,140336,17071992787⟩ (N (N (N E ⟨139264,140400,17040799606⟩ E) ⟨139264,140416,17033012451⟩ E) ⟨139264,140544,16970875159⟩ (N E ⟨139264,140624,16932183286⟩ E)))) ⟨139264,140672,16909021113⟩ (N (N (N (N (N E ⟨139264,140800,16847448766⟩ E) ⟨139264,140896,16801453444⟩ E) ⟨139264,140928,16786156578⟩ (N (N E ⟨139264,141056,16725143020⟩ E) ⟨139264,141120,16694740252⟩ E)) ⟨139264,141164,16673878437⟩ (N (N (N E ⟨139264,141184,16664406573⟩ E) ⟨139264,141240,16637921129⟩ E) ⟨139264,141288,16615261211⟩ (N E ⟨139264,141312,16603945726⟩ E))) ⟨139264,141440,16543758980⟩ (N (N (N (N E ⟨139264,141484,16523132823⟩ E) ⟨139264,141552,16491319254⟩ E) ⟨139264,141672,16435364317⟩ (N (N E ⟨139264,141696,16424201838⟩ E) ⟨139264,141808,16372235461⟩ E)) ⟨139264,141824,16364828489⟩ (N (N (N E ⟨139264,141884,16337089643⟩ E) ⟨139264,141952,16305723334⟩ E) ⟨139264,142064,16254225185⟩ (N E ⟨139264,142080,16246884921⟩ E))))) ⟨139264,142392,16104574861⟩ (N (N (N (N (N (N E ⟨139264,142572,16023181821⟩ E) ⟨139264,142592,16014169939⟩ E) ⟨139264,142832,15906520205⟩ (N (N E ⟨139264,142848,15899375782⟩ E) ⟨139264,142944,15856593418⟩ E)) ⟨139264,143088,15792689464⟩ (N (N (N E ⟨139264,143104,15785608923⟩ E) ⟨139264,143232,15729107282⟩ E) ⟨139264,143360,15672858345⟩ (N E ⟨139264,143616,15561113166⟩ E))) ⟨139264,143744,15505614239⟩ (N (N (N (N E ⟨139264,143848,15460703539⟩ E) ⟨139264,143872,15450362643⟩ E) ⟨139264,144000,15395357056⟩ (N (N E ⟨139264,144128,15340596165⟩ E) ⟨139264,144232,15296282214⟩ E)) ⟨139264,144236,15294581031⟩ (N (N (N E ⟨139264,144256,15286078662⟩ E) ⟨139264,144384,15231803251⟩ E) ⟨139264,144448,15204755927⟩ (N E ⟨139264,144512,15177768643⟩ E)))) ⟨139264,144556,15159249630⟩ (N (N (N (N (N E ⟨139264,144568,15154203895⟩ E) ⟨139264,144640,15123973555⟩ E) ⟨139264,144768,15070416714⟩ (N (N E ⟨139264,144880,15023748919⟩ E) ⟨139264,144896,15017096854⟩ E)) ⟨139264,145136,14917756482⟩ (N (N (N E ⟨139264,145152,14911163054⟩ E) ⟨139264,145408,14806162186⟩ E) ⟨139264,145536,14754008520⟩ (N E ⟨139264,145664,14702084403⟩ E))) ⟨139264,145720,14679439475⟩ (N (N (N (N E ⟨139264,145792,14650388624⟩ E) ⟨139264,145920,14598919978⟩ E) ⟨139264,146656,14307323494⟩ (N E ⟨139264,146688,14294811379⟩ E)) ⟨139264,146920,14204506596⟩ (N (N (N E ⟨139264,146944,14195205494⟩ E) ⟨139264,147072,14145728051⟩ E) ⟨139264,147168,14108761445⟩ (N E ⟨139264,147200,14096466096⟩ E)))))) ⟨139264,147304,14056598649⟩ (N (N (N (N (N (N (N E ⟨139264,147456,13998584151⟩ E) ⟨139392,147456,14402771777⟩ E) ⟨140296,145792,18107522110⟩ (N (N E ⟨143280,147456,26555312413⟩ E) ⟨143744,147456,27820300340⟩ E)) ⟨144560,147456,29852336640⟩ (N (N (N E ⟨144768,147456,30325936625⟩ E) ⟨145792,147456,32356805476⟩ E) ⟨146944,147456,33969258923⟩ (N E ⟨147456,147584,34309130482⟩ E))) ⟨147456,147968,33876836922⟩ (N (N (N (N E ⟨147456,148224,33541516667⟩ E) ⟨147456,148608,32970465137⟩ E) ⟨147456,148736,32762527531⟩ (N (N E ⟨147456,149936,30419630429⟩ E) ⟨147456,150016,30240113596⟩ E)) ⟨147456,150248,29704611913⟩ (N (N (N E ⟨147456,150528,29030101448⟩ E) ⟨147456,150632,28772093049⟩ E) ⟨147456,151216,27254306961⟩ (N E ⟨147456,151288,27059663693⟩ E)))) ⟨147456,151296,27037941846⟩ (N (N (N (N (N E ⟨147456,152064,24872928246⟩ E) ⟨147456,153568,20310965624⟩ E) ⟨147456,154080,18710837552⟩ (N (N E ⟨147456,154480,17459341625⟩ E) ⟨147456,154624,17009903431⟩ E)) ⟨147456,155392,14637876662⟩ (N (N (N E ⟨147456,155616,13958000492⟩ E) ⟨147456,155648,13861447354⟩ E) ⟨149504,155648,14582540172⟩ (N E ⟨150016,155648,14764143575⟩ E))) ⟨150056,155648,14778338584⟩ (N (N (N (N E ⟨150480,155648,14928818458⟩ E) ⟨151248,155648,15201138791⟩ E) ⟨151288,155648,15215302554⟩ (N (N E ⟨151552,155648,15308711174⟩ E) ⟨152312,155648,15576687041⟩ E)) ⟨152440,155648,15621648341⟩ (N (N (N E ⟨152576,155648,15669355463⟩ E) ⟨153344,155648,15937321714⟩ E) ⟨153384,155648,15951202994⟩ (N E ⟨153472,155648,15981712824⟩ E))))) ⟨153552,155648,16009413693⟩ (N (N (N (N (N (N E ⟨153936,155648,16141882826⟩ E) ⟨154016,155648,16169372002⟩ E) ⟨154128,155648,16207790642⟩ (N (N E ⟨154144,155648,16213272601⟩ E) ⟨154320,155648,16273465500⟩ E)) ⟨154480,155648,16328008463⟩ (N (N (N E ⟨154704,155648,16404071343⟩ E) ⟨155384,155648,16632681460⟩ E) ⟨155512,155648,16675300310⟩ (N E ⟨155552,155648,16688590372⟩ E))) ⟨155648,156128,15055097072⟩ (N (N (N (N E ⟨155648,156712,13094851951⟩ E) ⟨155648,156784,12859034356⟩ E) ⟨155648,157164,11638396600⟩ (N (N E ⟨155648,158880,6731105836⟩ E) ⟨155648,159304,5697463721⟩ E)) ⟨155648,159848,4488267008⟩ (N (N (N E ⟨155648,159964,4248032345⟩ E) ⟨155648,160028,4118191710⟩ E) ⟨155648,160076,4022079525⟩ (N E ⟨155648,160200,3778849012⟩ E)))) ⟨155648,160672,2920630997⟩ (N (N (N (N (N E ⟨155648,160800,2706598375⟩ E) ⟨155648,160896,2551366758⟩ E) ⟨155648,160908,2532282763⟩ (N (N E ⟨155648,161040,2327064683⟩ E) ⟨155648,161592,1562953401⟩ E)) ⟨155648,161628,1518420333⟩ (N (N (N E ⟨155648,161696,1436078251⟩ E) ⟨155648,161720,1407570987⟩ E) ⟨155648,161804,1310075146⟩ (N E ⟨155648,162040,1055138091⟩ E))) ⟨155648,162112,982932448⟩ (N (N (N (N E ⟨155648,162208,890706929⟩ E) ⟨155648,162320,788952566⟩ E) ⟨155648,162576,579938940⟩ (N E ⟨155648,162636,535680826⟩ E)) ⟨155648,162684,501563617⟩ (N (N (N E ⟨155648,162688,498772193⟩ E) ⟨155648,162712,482190484⟩ E) ⟨155648,162748,457853833⟩ (N E ⟨155648,162760,449884421⟩ E))))))) ⟨155648,162868,381367472⟩ (N (N (N (N (N (N (N (N E ⟨155648,162944,336605342⟩ E) ⟨155648,163060,273764269⟩ E) ⟨155648,163252,184225501⟩ (N (N E ⟨155648,163328,153739518⟩ E) ⟨155648,163468,104890089⟩ E)) ⟨155648,163656,54086008⟩ (N (N (N E ⟨155648,163840,20615427⟩ E) ⟨155984,161932,1182802510⟩ E) ⟨156028,163704,46060394⟩ (N E ⟨156092,162168,944899590⟩ E))) ⟨156156,163640,61241851⟩ (N (N (N (N E ⟨156192,163840,22761939⟩ E) ⟨156220,162232,888416880⟩ E) ⟨156220,163768,34648972⟩ (N (N E ⟨156236,163656,57974267⟩ E) ⟨156620,161032,2406446775⟩ E)) ⟨156620,162760,471861935⟩ (N (N (N E ⟨156700,161048,2386927665⟩ E) ⟨156700,162712,506982941⟩ E) ⟨156784,159532,5316586541⟩ (N E ⟨156784,162280,862410075⟩ E)))) ⟨156928,163840,25624568⟩ (N (N (N (N (N E ⟨156952,161956,1196526169⟩ E) ⟨157068,163016,321266994⟩ E) ⟨157080,162148,999691119⟩ (N (N E ⟨157164,159848,4656863911⟩ E) ⟨157216,160254,3824653465⟩ E)) ⟨157216,161628,1596690809⟩ (N (N (N E ⟨157240,163252,204695050⟩ E) ⟨157344,161692,1522145098⟩ E) ⟨157344,163356,161975313⟩ (N E ⟨157392,163532,100099113⟩ E))) ⟨157452,160554,3276246397⟩ (N (N (N (N E ⟨157452,161928,1247319128⟩ E) ⟨157452,163656,65643485⟩ E) ⟨157472,163120,271330424⟩ (N (N E ⟨157520,163468,122121734⟩ E) ⟨157648,163596,82932175⟩ E)) ⟨157692,162362,814615617⟩ (N (N (N E ⟨157692,163704,55424951⟩ E) ⟨157756,162458,731631366⟩ E) ⟨157756,163768,41920382⟩ (N E ⟨157756,163832,30065678⟩ E))))) ⟨157884,163832,30540193⟩ (N (N (N (N (N (N E ⟨157900,163784,39384948⟩ E) ⟨157948,163840,29415363⟩ E) ⟨157952,163344,173038990⟩ (N (N E ⟨158300,162712,541236561⟩ E) ⟨158348,161418,1933454174⟩ E)) ⟨158348,162760,507288359⟩ (N (N (N E ⟨158364,161370,2002630407⟩ E) ⟨158364,162712,542505923⟩ E) ⟨158590,161628,1658895943⟩ (N E ⟨158604,163178,256238613⟩ E))) ⟨158826,161064,2493552969⟩ (N (N (N (N E ⟨158826,161928,1298049156⟩ E) ⟨158880,163292,204638671⟩ E) ⟨159008,163356,177901668⟩ (N (N E ⟨159034,163704,62050407⟩ E) ⟨159130,163832,34838719⟩ E)) ⟨159180,162282,930524565⟩ (N (N (N E ⟨159180,163656,75189846⟩ E) ⟨159248,163840,33742546⟩ E) ⟨159272,162934,404615693⟩ (N E ⟨159304,161510,1848680848⟩ E)))) ⟨159304,162374,845637400⟩ (N (N (N (N (N E ⟨159304,163716,60290931⟩ E) ⟨159356,163840,34068889⟩ E) ⟨159384,163732,56781713⟩ (N (N E ⟨159400,161934,1310384600⟩ E) ⟨159420,163840,34259564⟩ E)) ⟨159436,163840,34306912⟩ (N (N (N E ⟨159484,163840,34448183⟩ E) ⟨159532,160906,2796565758⟩ E) ⟨159532,162280,941454607⟩ (N E ⟨159690,161928,1326727110⟩ E))) ⟨159690,162760,530810871⟩ (N (N (N (N E ⟨159706,161880,1384344033⟩ E) ⟨159706,162712,567084046⟩ E) ⟨159848,161190,2347190265⟩ (N E ⟨159848,162532,715700068⟩ E)) ⟨159964,162170,1064653931⟩ (N (N (N E ⟨159964,163002,370938460⟩ E) ⟨160168,162374,865123121⟩ E) ⟨160200,162438,806105692⟩ (N E ⟨160200,163302,211550071⟩ E)))))) ⟨160268,163840,36581420⟩ (N (N (N (N (N (N (N E ⟨160272,163840,36591418⟩ E) ⟨160376,163382,177350961⟩ E) ⟨160376,163840,36848052⟩ (N (N E ⟨160538,162712,580206422⟩ E) ⟨160554,162792,520052877⟩ E)) ⟨160554,163656,81196264⟩ (N (N (N E ⟨160560,163094,322552785⟩ E) ⟨160614,163116,310527495⟩ E) ⟨160646,162852,478139693⟩ (N E ⟨160774,163308,212917245⟩ E))) ⟨160778,163720,64686094⟩ (N (N (N (N E ⟨160796,163002,380132340⟩ E) ⟨160906,162280,972747913⟩ E) ⟨161032,163238,248685973⟩ (N (N E ⟨161032,163840,38314108⟩ E) ⟨161048,163222,256949320⟩ E)) ⟨161048,163840,38346457⟩ (N (N (N E ⟨161064,163302,217635920⟩ E) ⟨161190,162532,739240914⟩ E) ⟨161208,163543,119544890⟩ (N E ⟨161208,163840,38660719⟩ E)))) ⟨161240,163543,119672598⟩ (N (N (N (N (N E ⟨161240,163840,38721542⟩ E) ⟨161336,163687,75069928⟩ E) ⟨161338,163544,119706954⟩ (N (N E ⟨161368,163687,75159066⟩ E) ⟨161418,163656,84097564⟩ E)) ⟨161510,163716,67737620⟩ (N (N (N E ⟨161574,163812,45083213⟩ E) ⟨161642,163840,39426844⟩ E) ⟨161718,163840,39547745⟩ (N E ⟨161878,163840,39789100⟩ E))) ⟨161879,163798,48660107⟩ (N (N (N (N E ⟨161879,163840,39790552⟩ E) ⟨161880,163840,39792003⟩ E) ⟨161896,163840,39815127⟩ (N E ⟨161911,163840,39836642⟩ E)) ⟨161928,163840,39860833⟩ (N (N (N E ⟨161988,163840,39944577⟩ E) ⟨162023,163840,39992247⟩ E) ⟨162055,163840,40035067⟩ (N E ⟨162280,163654,86841469⟩ E))))) ⟨162295,163798,49283846⟩ (N (N (N (N (N (N E ⟨162438,163840,40490397⟩ E) ⟨162532,163840,40585856⟩ E) ⟨162711,163840,40749670⟩ (N (N E ⟨163840,163856,37992713⟩ E) ⟨163840,163872,34887405⟩ E)) ⟨163840,163874,34508579⟩ (N (N (N E ⟨163840,163888,31914883⟩ E) ⟨163840,163929,24903544⟩ E) ⟨163840,163942,22862290⟩ (N E ⟨163840,163958,20470104⟩ E))) ⟨163840,163960,20180399⟩ (N (N (N (N E ⟨163840,163978,17666198⟩ E) ⟨163840,163989,16212258⟩ E) ⟨163840,164010,13610303⟩ (N (N E ⟨163840,164021,12338349⟩ E) ⟨163840,164026,11780857⟩ E)) ⟨163840,164053,8993528⟩ (N (N (N E ⟨163840,164054,8897523⟩ E) ⟨163840,164096,5331210⟩ E) ⟨163840,164102,4896000⟩ (N E ⟨163840,164118,3826145⟩ E)))) ⟨163840,164122,3579290⟩ (N (N (N (N (N E ⟨163840,164128,3224460⟩ E) ⟨163840,164166,1407589⟩ E) ⟨163840,164194,544145⟩ (N (N E ⟨163840,164197,475533⟩ E) ⟨163840,164214,174066⟩ E)) ⟨163840,164229,31302⟩ (N (N (N E ⟨164246,166933,8518⟩ E) ⟨164248,166940,15200⟩ E) ⟨164248,169632,14256⟩ (N E ⟨164248,171296,13709⟩ E))) ⟨164254,166788,46959⟩ (N (N (N (N E ⟨164256,166692,61529⟩ E) ⟨164256,167268,60684⟩ E) ⟨164256,168100,59489⟩ (N E ⟨164256,169128,58053⟩ E)) ⟨164256,170280,56495⟩ (N (N (N E ⟨164272,166772,246408⟩ E) ⟨164272,167352,243003⟩ E) ⟨164272,168632,235695⟩ (N E ⟨164272,169792,229308⟩ E))))))))
+
+noncomputable def tab6 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨164276,166200,316302⟩ E) ⟨164276,166778,311931⟩ E) ⟨164276,169280,293861⟩ (N (N E ⟨164278,168052,337167⟩ E) ⟨164280,166204,390578⟩ E)) ⟨164280,166780,385200⟩ (N (N (N E ⟨164280,167360,379877⟩ E) ⟨164280,167399,379523⟩ E) ⟨164280,168086,373344⟩ (N E ⟨164280,168854,366585⟩ E))) ⟨164280,169686,359435⟩ (N (N (N (N E ⟨164288,166784,554902⟩ E) ⟨164288,167136,550233⟩ E) ⟨164288,167552,544778⟩ (N (N E ⟨164288,168416,533664⟩ E) ⟨164288,169280,522831⟩ E)) ⟨164288,170172,511934⟩ (N (N (N E ⟨164288,170816,504243⟩ E) ⟨164288,171708,493828⟩ E) ⟨164288,172032,490111⟩ (N E ⟨164293,166180,686603⟩ E)))) ⟨164293,166612,679496⟩ (N (N (N (N (N E ⟨164294,167236,694920⟩ E) ⟨164294,168004,682276⟩ E) ⟨164308,165811,1141001⟩ (N (N E ⟨164308,166227,1129599⟩ E) ⟨164310,166613,1186022⟩ E)) ⟨164310,167284,1167070⟩ (N (N (N E ⟨164310,168052,1145841⟩ E) ⟨164320,166160,1566528⟩ E) ⟨164320,166592,1550310⟩ (N E ⟨164320,167168,1529012⟩ E))) ⟨164320,167936,1501180⟩ (N (N (N (N E ⟨164320,168000,1498890⟩ E) ⟨164320,168704,1473979⟩ E) ⟨164320,169536,1445203⟩ (N (N E ⟨164322,166560,1630134⟩ E) ⟨164322,167424,1596679⟩ E)) ⟨164326,167300,1761649⟩ (N (N (N E ⟨164336,165760,2278561⟩ E) ⟨164336,167096,2206419⟩ E) ⟨164336,170412,2039323⟩ (N E ⟨164336,172032,1963447⟩ E))))) ⟨164340,168882,2294444⟩ (N (N (N (N (N (N E ⟨164340,169714,2249696⟩ E) ⟨164340,171888,2137820⟩ E) ⟨164352,166192,3070179⟩ (N (N E ⟨164352,166624,3038400⟩ E) ⟨164352,166960,3013968⟩ E)) ⟨164352,167200,2996666⟩ (N (N (N E ⟨164352,167392,2982915⟩ E) ⟨164352,167968,2942130⟩ E) ⟨164352,168544,2902040⟩ (N E ⟨164352,169408,2843177⟩ E))) ⟨164352,171072,2733959⟩ (N (N (N (N E ⟨164352,171520,2705454⟩ E) ⟨164352,171584,2701413⟩ E) ⟨164352,172032,2673331⟩ (N (N E ⟨164356,166227,3290859⟩ E) ⟨164374,166693,4343759⟩ E)) ⟨164374,166725,4340418⟩ (N (N (N E ⟨164374,167380,4272745⟩ E) ⟨164374,167412,4269472⟩ E) ⟨164374,168244,4185482⟩ (N E ⟨164376,168724,4262549⟩ E)))) ⟨164376,168788,4256075⟩ (N (N (N (N (N E ⟨164376,170452,4091993⟩ E) ⟨164376,172032,3943452⟩ E) ⟨164380,167392,4663059⟩ (N (N E ⟨164380,168224,4571316⟩ E) ⟨164384,166016,5099581⟩ E)) ⟨164384,166448,5046742⟩ (N (N (N E ⟨164384,166880,4994585⟩ E) ⟨164384,166912,4990748⟩ E) ⟨164384,167232,4952584⟩ (N E ⟨164384,167424,4929861⟩ E))) ⟨164384,167744,4892278⟩ (N (N (N (N E ⟨164384,168000,4862469⟩ E) ⟨164384,168064,4855052⟩ E) ⟨164390,166677,5446481⟩ (N E ⟨164390,167364,5357430⟩ E)) ⟨164390,168132,5260025⟩ (N (N (N E ⟨164390,168964,5156988⟩ E) ⟨164400,166080,6287592⟩ E) ⟨164400,169920,5737187⟩ (N E ⟨164400,172032,5460093⟩ E)))))) ⟨164402,167376,6248235⟩ (N (N (N (N (N (N (N E ⟨164402,167408,6243449⟩ E) ⟨164402,168144,6134641⟩ E) ⟨164402,168240,6120624⟩ (N (N E ⟨164402,169008,6009918⟩ E) ⟨164402,169072,6000806⟩ E)) ⟨164404,172032,5736847⟩ (N (N (N E ⟨164406,167109,6603095⟩ E) ⟨164407,166678,6752516⟩ E) ⟨164407,167094,6685392⟩ (N E ⟨164416,166096,7606800⟩ E))) ⟨164416,166656,7504874⟩ (N (N (N (N E ⟨164416,166944,7453119⟩ E) ⟨164416,167072,7430260⟩ E) ⟨164416,167456,7362208⟩ (N (N E ⟨164416,167488,7356573⟩ E) ⟨164416,167776,7306093⟩ E)) ⟨164416,168032,7261585⟩ (N (N (N E ⟨164416,168064,7256045⟩ E) ⟨164416,168800,7130080⟩ E) ⟨164416,168896,7113852⟩ (N E ⟨164416,169472,7017448⟩ E)))) ⟨164416,169728,6975126⟩ (N (N (N (N (N E ⟨164416,171136,6747977⟩ E) ⟨164416,171648,6667676⟩ E) ⟨164416,172032,6608234⟩ (N (N E ⟨164432,166624,8940261⟩ E) ⟨164432,170080,8234151⟩ E)) ⟨164444,167136,9970961⟩ (N (N (N E ⟨164444,167968,9774489⟩ E) ⟨164448,166640,10490570⟩ E) ⟨164448,166976,10406221⟩ (N E ⟨164448,167056,10386263⟩ E))) ⟨164448,167488,10279313⟩ (N (N (N (N E ⟨164448,167808,10200978⟩ E) ⟨164448,168064,10138847⟩ E) ⟨164448,168832,9955271⟩ (N (N E ⟨164448,169664,9761062⟩ E) ⟨164453,166324,11085710⟩ E)) ⟨164458,166960,11436733⟩ (N (N (N E ⟨164464,170476,11108245⟩ E) ⟨164464,172012,10716044⟩ E) ⟨164464,172032,10711052⟩ (N E ⟨164468,168242,12133881⟩ E))))) ⟨164468,169536,11766959⟩ (N (N (N (N (N (N E ⟨164468,170674,11455673⟩ E) ⟨164468,172016,11101699⟩ E) ⟨164468,172032,11097562⟩ (N (N E ⟨164469,165972,12925604⟩ E) ⟨164469,166388,12796570⟩ E)) ⟨164470,166789,12784798⟩ (N (N (N E ⟨164470,167476,12575905⟩ E) ⟨164470,168244,12347409⟩ E) ⟨164471,166758,12905984⟩ (N E ⟨164476,166656,13504640⟩ E))) ⟨164480,166112,14151218⟩ (N (N (N (N E ⟨164480,166976,13860022⟩ E) ⟨164480,167520,13680516⟩ E) ⟨164480,167744,13607447⟩ (N (N E ⟨164480,167840,13576281⟩ E) ⟨164480,168096,13493607⟩ E)) ⟨164480,168864,13249335⟩ (N (N (N E ⟨164480,169216,13139226⟩ E) ⟨164480,169472,13059864⟩ E) ⟨164480,169536,13040118⟩ (N E ⟨164480,169984,12902932⟩ E)))) ⟨164480,170816,12652911⟩ (N (N (N (N (N E ⟨164480,171200,12539561⟩ E) ⟨164480,171648,12408920⟩ E) ⟨164480,172032,12298293⟩ (N (N E ⟨164482,168192,13688416⟩ E) ⟨164482,169024,13420374⟩ E)) ⟨164488,168900,14136641⟩ (N (N (N E ⟨164499,166802,16212699⟩ E) ⟨164500,166435,16483200⟩ E) ⟨164501,167188,16312626⟩ (N E ⟨164501,167604,16150961⟩ E))) ⟨164504,170528,15418356⟩ (N (N (N (N E ⟨164512,168896,17011626⟩ E) ⟨164512,169728,16679886⟩ E) ⟨164528,171584,17905733⟩ (N E ⟨164532,169106,19512425⟩ E)) ⟨164532,169938,19132386⟩ (N (N (N E ⟨164532,170770,18761558⟩ E) ⟨164532,172032,18216063⟩ E) ⟨164534,169908,19409541⟩ (N E ⟨164534,170740,19033275⟩ E))))))) ⟨164544,170624,20407884⟩ (N (N (N (N (N (N (N (N E ⟨164544,172032,19746721⟩ E) ⟨164548,166435,23143895⟩ E) ⟨164549,166404,23312082⟩ (N (N E ⟨164549,166420,23303101⟩ E) ⟨164551,166838,23370115⟩ E)) ⟨164551,167254,23138023⟩ (N (N (N E ⟨164552,169126,22271362⟩ E) ⟨164552,172032,20801560⟩ E) ⟨164563,166482,25428509⟩ (N E ⟨164563,166898,25175436⟩ E))) ⟨164564,166738,25429405⟩ (N (N (N (N E ⟨164565,167668,25022831⟩ E) ⟨164576,166768,27331819⟩ E) ⟨164576,166816,27300313⟩ (N (N E ⟨164576,166848,27279334⟩ E) ⟨164576,167232,27029154⟩ E)) ⟨164580,166786,27975560⟩ (N (N (N E ⟨164592,166016,30550387⟩ E) ⟨164592,166784,29990464⟩ E) ⟨164592,167200,29692528⟩ (N E ⟨164595,166466,30739043⟩ E)))) ⟨164595,166898,30421397⟩ (N (N (N (N (N E ⟨164596,168338,29557928⟩ E) ⟨164596,169202,28957673⟩ E) ⟨164596,170544,28055236⟩ (N (N E ⟨164596,172032,27095347⟩ E) ⟨164598,167701,30349256⟩ E)) ⟨164598,168372,29867425⟩ (N (N (N E ⟨164608,166032,33383585⟩ E) ⟨164608,166448,33050442⟩ E) ⟨164608,166880,32708874⟩ (N E ⟨164608,168288,31625823⟩ E))) ⟨164608,169152,30983385⟩ (N (N (N (N E ⟨164608,169344,30842843⟩ E) ⟨164608,169824,30494960⟩ E) ⟨164608,170304,30151971⟩ (N (N E ⟨164608,170688,29881047⟩ E) ⟨164608,171904,29042964⟩ E)) ⟨164608,172032,28956464⟩ (N (N (N E ⟨164616,167590,33573179⟩ E) ⟨164626,167632,35350893⟩ E) ⟨164626,168400,34709185⟩ (N E ⟨164626,168496,34629999⟩ E))))) ⟨164626,169264,34004576⟩ (N (N (N (N (N (N E ⟨164626,169328,33953098⟩ E) ⟨164629,166516,36877794⟩ E) ⟨164636,167072,37712491⟩ (N (N E ⟨164640,166912,38627830⟩ E) ⟨164640,167332,38240717⟩ E)) ⟨164640,167488,38098169⟩ (N (N (N E ⟨164640,167680,37923636⟩ E) ⟨164640,168164,37488083⟩ E) ⟨164640,168256,37406001⟩ (N E ⟨164640,169644,36194472⟩ E))) ⟨164640,170024,35871373⟩ (N (N (N (N E ⟨164640,171688,34498290⟩ E) ⟨164640,172032,34222676⟩ E) ⟨164645,166580,39918858⟩ (N (N E ⟨164648,168496,38698675⟩ E) ⟨164648,170672,36758952⟩ E)) ⟨164648,172032,35608173⟩ (N (N (N E ⟨164656,167736,40969999⟩ E) ⟨164656,168504,40226748⟩ E) ⟨164656,169656,39143200⟩ (N E ⟨164656,170816,38088754⟩ E)))) ⟨164660,166584,42932945⟩ (N (N (N (N (N E ⟨164660,168466,41042789⟩ E) ⟨164660,170898,38751710⟩ E) ⟨164660,172032,37738144⟩ (N (N E ⟨164662,166933,42981636⟩ E) ⟨164662,167349,42555021⟩ E)) ⟨164662,167765,42133689⟩ (N (N (N E ⟨164662,168436,41465020⟩ E) ⟨164662,169204,40715891⟩ E) ⟨164662,170036,39923332⟩ (N E ⟨164662,170868,39149971⟩ E))) ⟨164664,166588,43752153⟩ (N (N (N (N E ⟨164664,166844,43483719⟩ E) ⟨164664,167164,43151067⟩ E) ⟨164664,167424,42883126⟩ (N E ⟨164664,167744,42556204⟩ E)) ⟨164664,168512,41784213⟩ (N (N (N E ⟨164668,166592,44579050⟩ E) ⟨164672,166878,45106844⟩ E) ⟨164672,167742,44182883⟩ (N E ⟨164672,167744,44180772⟩ E)))))) ⟨164672,167752,44172328⟩ (N (N (N (N (N (N (N E ⟨164672,168520,43371058⟩ E) ⟨164672,169084,42794176⟩ E) ⟨164672,169664,42210900⟩ (N (N E ⟨164672,169672,42202924⟩ E) ⟨164672,170176,41704248⟩ E)) ⟨164672,170368,41516215⟩ (N (N (N E ⟨164672,170812,41085434⟩ E) ⟨164672,170832,41066161⟩ E) ⟨164672,171008,40897048⟩ (N E ⟨164672,171200,40713553⟩ E))) ⟨164672,171904,40049483⟩ (N (N (N (N E ⟨164672,172032,39930202⟩ E) ⟨164676,166914,45908141⟩ E) ⟨164676,167778,44967968⟩ (N (N E ⟨164676,169152,43521871⟩ E) ⟨164676,172032,40674687⟩ E)) ⟨164677,167380,45606974⟩ (N (N (N E ⟨164677,167796,45155508⟩ E) ⟨164680,169254,44218896⟩ E) ⟨164680,170628,42809086⟩ (N E ⟨164682,167216,46842559⟩ E)))) ⟨164692,166563,49765232⟩ (N (N (N (N (N E ⟨164692,166995,49251275⟩ E) ⟨164692,167666,48466067⟩ E) ⟨164694,170100,46152582⟩ (N (N E ⟨164694,170932,45258888⟩ E) ⟨164704,168320,50288836⟩ E)) ⟨164704,169088,49379670⟩ (N (N (N E ⟨164707,167026,52542959⟩ E) ⟨164724,166227,57542485⟩ E) ⟨164724,166643,56968927⟩ (N E ⟨164724,167059,56402499⟩ E))) ⟨164724,167730,55503622⟩ (N (N (N (N E ⟨164724,168562,54413798⟩ E) ⟨164724,169394,53350602⟩ E) ⟨164724,170736,51689839⟩ (N E ⟨164724,172032,50146920⟩ E)) ⟨164725,166612,57247793⟩ (N (N (N E ⟨164726,168500,54946422⟩ E) ⟨164728,167488,56754436⟩ E) ⟨164728,168256,55723320⟩ (N E ⟨164728,172032,50981156⟩ E))))) ⟨164736,166928,59427261⟩ (N (N (N (N (N (N E ⟨164736,167344,58837398⟩ E) ⟨164736,167392,58769808⟩ E) ⟨164736,167776,58232576⟩ (N (N E ⟨164736,167808,58188084⟩ E) ⟨164736,168352,57438189⟩ E)) ⟨164736,168384,57394454⟩ (N (N (N E ⟨164736,169120,56399966⟩ E) ⟨164736,169216,56271844⟩ E) ⟨164736,169952,55301567⟩ (N E ⟨164736,170048,55176556⟩ E))) ⟨164736,170816,54189086⟩ (N (N (N (N E ⟨164736,170880,54107798⟩ E) ⟨164736,171968,52748947⟩ E) ⟨164741,167860,59296259⟩ (N (N E ⟨164752,166592,63846095⟩ E) ⟨164752,169100,60134854⟩ E)) ⟨164752,170764,57820695⟩ (N (N (N E ⟨164752,172032,56131647⟩ E) ⟨164758,167877,63372940⟩ E) ⟨164758,168564,62344145⟩ (N E ⟨164759,167862,63641234⟩ E)))) ⟨164768,168384,65058432⟩ (N (N (N (N (N E ⟨164768,169152,63882691⟩ E) ⟨164771,167122,67815790⟩ E) ⟨164784,166624,72041939⟩ (N (N E ⟨164784,166976,71435194⟩ E) ⟨164784,167392,70726345⟩ E)) ⟨164788,166659,73046404⟩ (N (N (N E ⟨164788,167091,72292441⟩ E) ⟨164788,167762,71140548⟩ E) ⟨164788,168530,69850160⟩ (N E ⟨164788,168562,69797032⟩ E))) ⟨164788,169394,68433261⟩ (N (N (N (N E ⟨164788,169426,68381477⟩ E) ⟨164788,170736,66302986⟩ E) ⟨164788,172032,64323871⟩ (N E ⟨164790,169332,69036137⟩ E)) ⟨164800,169184,71827047⟩ (N (N (N E ⟨164800,170304,69952638⟩ E) ⟨164800,170880,69012469⟩ E) ⟨164800,172032,67179058⟩ (N E ⟨164803,166690,77052939⟩ E))))))))
+
+noncomputable def tab7 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨164804,166659,77385257⟩ E) ⟨164804,167075,76615909⟩ E) ⟨164804,167746,75395011⟩ (N (N E ⟨164804,168514,74027324⟩ E) ⟨164804,169346,72580489⟩ E)) ⟨164804,170688,70320483⟩ (N (N (N E ⟨164808,172032,69117095⟩ E) ⟨164816,166448,81132764⟩ E) ⟨164816,166880,80294278⟩ (N E ⟨164822,167109,81530794⟩ E))) ⟨164822,167525,80722410⟩ (N (N (N (N E ⟨164822,167941,79924024⟩ E) ⟨164822,168628,78627031⟩ E) ⟨164822,169396,77208118⟩ (N (N E ⟨164822,170228,75706906⟩ E) ⟨164822,171060,74242017⟩ E)) ⟨164823,167094,81841366⟩ (N (N (N E ⟨164823,167926,80228331⟩ E) ⟨164832,166512,85582797⟩ E) ⟨164832,166656,85286807⟩ (N E ⟨164832,167072,84438889⟩ E)))) ⟨164832,167268,84043043⟩ (N (N (N (N (N E ⟨164832,167488,83601486⟩ E) ⟨164832,168512,81584001⟩ E) ⟨164848,166944,89351199⟩ (N (N E ⟨164852,167352,89652485⟩ E) ⟨164856,166780,92086322⟩ E)) ⟨164856,172032,81326433⟩ (N (N (N E ⟨164860,167360,92000316⟩ E) ⟨164864,166672,94745794⟩ E) ⟨164864,167056,93875959⟩ (N E ⟨164864,167136,93696002⟩ E))) ⟨164864,167712,92412965⟩ (N (N (N (N E ⟨164864,172032,83458205⟩ E) ⟨164880,167072,98727240⟩ E) ⟨164880,167488,97748135⟩ (N (N E ⟨164884,166771,100693626⟩ E) ⟨164884,167203,99654993⟩ E)) ⟨164884,167890,98030717⟩ (N (N (N E ⟨164885,166388,101942497⟩ E) ⟨164885,167188,100001505⟩ E) ⟨164885,167220,99924831⟩ (N E ⟨164886,168692,96776109⟩ E))))) ⟨164896,167168,103500547⟩ (N (N (N (N (N (N E ⟨164896,167744,102083520⟩ E) ⟨164896,168512,100231674⟩ E) ⟨164896,168576,100079257⟩ (N (N E ⟨164896,169964,96843880⟩ E) ⟨164896,170920,94691313⟩ E)) ⟨164896,172032,92262208⟩ (N (N (N E ⟨164901,167172,105078564⟩ E) ⟨164903,168022,103590007⟩ E) ⟨164912,170304,100828171⟩ (N E ⟨164916,167267,109665241⟩ E))) ⟨164916,167954,107878487⟩ (N (N (N (N E ⟨164916,168786,105763074⟩ E) ⟨164916,169618,103699279⟩ E) ⟨164916,170992,100400063⟩ (N (N E ⟨164916,172032,97989758⟩ E) ⟨164917,167604,109107153⟩ E)) ⟨164918,167124,110695692⟩ (N (N (N E ⟨164920,168694,107255985⟩ E) ⟨164928,167200,113786810⟩ E) ⟨164928,167536,112874973⟩ (N E ⟨164928,167776,112229251⟩ E)))) ⟨164928,167968,111715996⟩ (N (N (N (N (N E ⟨164928,168544,110193742⟩ E) ⟨164928,168576,110109935⟩ E) ⟨164928,169408,107958664⟩ (N (N E ⟨164928,169664,107307328⟩ E) ⟨164928,170240,105859694⟩ E)) ⟨164928,171008,103967291⟩ (N (N (N E ⟨164928,171984,101622983⟩ E) ⟨164928,172032,101509403⟩ E) ⟨164932,168674,111138422⟩ (N E ⟨164932,170816,105657698⟩ E))) ⟨164932,172032,102696473⟩ (N (N (N (N E ⟨164950,169524,114678513⟩ E) ⟨164960,168000,122287516⟩ E) ⟨164960,168640,120438176⟩ (N E ⟨164967,167254,126927501⟩ E)) ⟨164967,168086,124428224⟩ (N (N (N E ⟨164979,166898,132289339⟩ E) ⟨164980,167299,131378942⟩ E) ⟨164980,167986,129238818⟩ (N E ⟨164980,168754,126897713⟩ E)))))) ⟨164980,169618,124327000⟩ (N (N (N (N (N (N (N E ⟨164980,170928,120552228⟩ E) ⟨164980,170992,120371509⟩ E) ⟨164980,172032,117481749⟩ (N (N E ⟨164981,167284,131782620⟩ E) ⟨164982,169588,125090509⟩ E)) ⟨164984,169526,125952125⟩ (N (N (N E ⟨164984,172032,118758900⟩ E) ⟨164992,166816,137268293⟩ E) ⟨164992,167232,135904882⟩ (N E ⟨164992,167600,134712877⟩ E))) ⟨164992,167648,134558363⟩ (N (N (N (N E ⟨164992,168032,133330199⟩ E) ⟨164992,168064,133228486⟩ E) ⟨164992,169152,129827243⟩ (N (N E ⟨164992,169376,129140517⟩ E) ⟨164992,170496,125774218⟩ E)) ⟨164992,172032,121333996⟩ (N (N (N E ⟨164998,169540,130707529⟩ E) ⟨165004,172032,125248627⟩ E) ⟨165008,167200,141875498⟩ (N E ⟨165016,169888,135886242⟩ E)))) ⟨165024,166448,150561849⟩ (N (N (N (N (N E ⟨165024,167216,147809478⟩ E) ⟨165024,167632,146344871⟩ E) ⟨165024,168064,144843090⟩ (N (N E ⟨165024,168640,142870564⟩ E) ⟨165024,170240,137564873⟩ E)) ⟨165027,166898,150086799⟩ (N (N (N E ⟨165028,167776,147338455⟩ E) ⟨165032,170416,139814749⟩ E) ⟨165032,172032,134625406⟩ (N E ⟨165040,166880,155167988⟩ E))) ⟨165040,168888,147905370⟩ (N (N (N (N E ⟨165046,168052,153154576⟩ E) ⟨165046,169716,147224762⟩ E) ⟨165048,168854,151008832⟩ (N (N E ⟨165048,170048,146804178⟩ E) ⟨165056,167552,158875835⟩ E)) ⟨165056,167816,157876522⟩ (N (N (N E ⟨165056,168096,156825218⟩ E) ⟨165056,168584,155013782⟩ E) ⟨165056,169416,151985346⟩ (N E ⟨165056,170576,147885417⟩ E))))) ⟨165058,167264,160762494⟩ (N (N (N (N (N (N E ⟨165058,168128,157476993⟩ E) ⟨165061,167380,161497976⟩ E) ⟨165061,167412,161374294⟩ (N (N E ⟨165062,168004,159496350⟩ E) ⟨165074,167248,167196119⟩ E)) ⟨165074,168080,163903812⟩ (N (N (N E ⟨165077,167364,167937390⟩ E) ⟨165078,167349,168400580⟩ E) ⟨165078,167765,166733264⟩ (N E ⟨165078,168052,165594998⟩ E))) ⟨165088,168100,169388624⟩ (N (N (N (N E ⟨165088,170304,160772817⟩ E) ⟨165093,167796,172645881⟩ E) ⟨165112,169686,172525387⟩ (N (N E ⟨165112,172032,163288490⟩ E) ⟨165120,168160,182193218⟩ E)) ⟨165120,168736,179713455⟩ (N (N (N E ⟨165120,169504,176472385⟩ E) ⟨165120,169664,175806386⟩ E) ⟨165120,170336,173043275⟩ (N E ⟨165120,171200,169570007⟩ E)))) ⟨165120,171456,168557666⟩ (N (N (N (N (N E ⟨165120,172032,166307388⟩ E) ⟨165124,166995,189052961⟩ E) ⟨165140,166643,197643796⟩ (N (N E ⟨165140,167059,195678675⟩ E) ⟨165142,169780,184228481⟩ E)) ⟨165152,167344,199579387⟩ (N (N (N E ⟨165152,167424,199197461⟩ E) ⟨165152,167808,197376883⟩ E) ⟨165152,168000,196474397⟩ (N E ⟨165152,168416,194536645⟩ E))) ⟨165152,169280,190587854⟩ (N (N (N (N E ⟨165152,169536,189437131⟩ E) ⟨165152,172032,178660457⟩ E) ⟨165157,167476,201143722⟩ (N E ⟨165158,167445,201733589⟩ E)) ⟨165158,168132,198450256⟩ (N (N (N E ⟨165168,167360,206585936⟩ E) ⟨165168,167776,204540685⟩ E) ⟨165170,168144,203629991⟩ (N E ⟨165172,168275,203872080⟩ E))))))) ⟨165172,168946,200646340⟩ (N (N (N (N (N (N (N (N E ⟨165172,169714,197032216⟩ E) ⟨165172,170546,193208297⟩ E) ⟨165172,171184,190338716⟩ (N (N E ⟨165172,172032,186606590⟩ E) ⟨165174,169780,197573199⟩ E)) ⟨165176,171124,192250851⟩ (N (N (N E ⟨165184,167456,213302108⟩ E) ⟨165184,168032,210386786⟩ E) ⟨165184,168224,209426098⟩ (N E ⟨165184,168800,206576757⟩ E))) ⟨165184,168864,206263164⟩ (N (N (N (N E ⟨165184,169728,202087352⟩ E) ⟨165184,170704,197496580⟩ E) ⟨165184,171264,194921360⟩ (N (N E ⟨165184,172032,191457522⟩ E) ⟨165186,167424,214373740⟩ E)) ⟨165192,171076,199123650⟩ (N (N (N E ⟨165200,167392,220954443⟩ E) ⟨165206,168244,219227048⟩ E) ⟨165206,169908,210748538⟩ (N E ⟨165212,168224,222072845⟩ E)))) ⟨165216,167408,228316129⟩ (N (N (N (N (N E ⟨165216,167744,226488776⟩ E) ⟨165216,167824,226056391⟩ E) ⟨165216,167900,225646580⟩ (N (N E ⟨165216,168064,224765412⟩ E) ⟨165216,168256,223739262⟩ E)) ⟨165216,168832,220695760⟩ (N (N (N E ⟨165216,169408,217703853⟩ E) ⟨165216,170584,211751228⟩ E) ⟨165216,172032,204698608⟩ (N E ⟨165220,167075,232041386⟩ E))) ⟨165220,167091,231952348⟩ (N (N (N (N E ⟨165222,168196,226830933⟩ E) ⟨165222,168964,222727081⟩ E) ⟨165234,168240,232181934⟩ (N (N E ⟨165234,169072,227636701⟩ E) ⟨165235,167122,238951316⟩ E)) ⟨165236,169010,228892620⟩ (N (N (N E ⟨165238,167525,238089381⟩ E) ⟨165238,167941,235734555⟩ E) ⟨165238,168244,234037692⟩ (N E ⟨165240,167164,241123163⟩ E))))) ⟨165240,172032,214920817⟩ (N (N (N (N (N (N E ⟨165244,167424,241552561⟩ E) ⟨165244,167744,239711066⟩ E) ⟨165248,167056,245643689⟩ (N (N E ⟨165248,167072,245549421⟩ E) ⟨165248,167488,243114241⟩ E)) ⟨165248,167744,241630670⟩ (N (N (N E ⟨165248,167776,241446021⟩ E) ⟨165248,167904,240709186⟩ E) ⟨165248,168320,238333809⟩ (N E ⟨165248,168608,236706472⟩ E))) ⟨165248,168864,235271600⟩ (N (N (N (N E ⟨165248,168896,235093006⟩ E) ⟨165248,169728,230508509⟩ E) ⟨165248,169792,230160505⟩ (N (N E ⟨165248,169984,229120428⟩ E) ⟨165248,170464,226545833⟩ E)) ⟨165248,170560,226035262⟩ (N (N (N E ⟨165248,171328,222002062⟩ E) ⟨165248,171392,221670039⟩ E) ⟨165248,172032,218383722⟩ (N E ⟨165266,167569,251413424⟩ E)))) ⟨165266,168240,247418811⟩ (N (N (N (N (N E ⟨165266,169008,242943643⟩ E) ⟨165269,168372,248091138⟩ E) ⟨165276,167968,253921167⟩ (N (N E ⟨165280,167808,256870844⟩ E) ⟨165280,168320,253753684⟩ E)) ⟨165280,168896,250303206⟩ (N (N (N E ⟨165280,169472,246911199⟩ E) ⟨165280,169664,245793318⟩ E) ⟨165284,169128,250854284⟩ (N E ⟨165296,167488,266893339⟩ E))) ⟨165300,169842,254295888⟩ (N (N (N (N E ⟨165300,170674,249364307⟩ E) ⟨165304,171316,247503382⟩ E) ⟨165312,167504,274961550⟩ (N E ⟨165312,167920,272241698⟩ E)) ⟨165312,168352,269452751⟩ (N (N (N E ⟨165312,168384,269247586⟩ E) ⟨165312,168672,267409870⟩ E) ⟨165312,168896,265991368⟩ (N E ⟨165312,168928,265789494⟩ E)))))) ⟨165312,169696,261001479⟩ (N (N (N (N (N (N (N E ⟨165312,170528,255935538⟩ E) ⟨165312,170816,254210634⟩ E) ⟨165312,171392,250804215⟩ (N (N E ⟨165312,171648,249308580⟩ E) ⟨165312,172032,247085977⟩ E)) ⟨165314,169024,266178378⟩ (N (N (N E ⟨165316,167203,279027538⟩ E) ⟨165320,172032,250798626⟩ E) ⟨165324,172032,252665356⟩ (N E ⟨165333,167604,285189623⟩ E))) ⟨165333,168020,282370277⟩ (N (N (N (N E ⟨165333,168436,279585698⟩ E) ⟨165334,169972,270092006⟩ E) ⟨165344,167840,289339706⟩ (N (N E ⟨165344,168608,284093919⟩ E) ⟨165344,169472,278333763⟩ E)) ⟨165344,169536,277912920⟩ (N (N (N E ⟨165344,169728,276655155⟩ E) ⟨165360,167552,299869136⟩ E) ⟨165360,167968,296903753⟩ (N E ⟨165363,167666,300661752⟩ E)))) ⟨165364,168483,295388053⟩ (N (N (N (N (N E ⟨165364,169170,290609869⟩ E) ⟨165364,169938,285382165⟩ E) ⟨165364,170770,279850826⟩ (N (N E ⟨165366,170740,281048346⟩ E) ⟨165368,171380,277853197⟩ E)) ⟨165368,172032,273657154⟩ (N (N (N E ⟨165376,169536,294306471⟩ E) ⟨165376,171456,281319677⟩ E) ⟨165376,171520,280899255⟩ (N E ⟨165376,172032,277564003⟩ E))) ⟨165384,169860,296203282⟩ (N (N (N (N E ⟨165394,168400,312029755⟩ E) ⟨165395,167730,317606408⟩ E) ⟨165396,169744,303297403⟩ (N E ⟨165396,171408,291669037⟩ E)) ⟨165408,167232,328711158⟩ (N (N (N E ⟨165408,167648,325454353⟩ E) ⟨165408,168064,322237797⟩ E) ⟨165408,170280,305757670⟩ (N E ⟨165424,168032,331405289⟩ E))))) ⟨165424,168504,327700560⟩ (N (N (N (N (N (N E ⟨165424,171584,304755516⟩ E) ⟨165424,172032,301587550⟩ E) ⟨165428,169234,324258245⟩ (N (N E ⟨165430,168117,334104412⟩ E) ⟨165430,168533,330811556⟩ E)) ⟨165430,169204,325585297⟩ (N (N (N E ⟨165432,168512,332093436⟩ E) ⟨165432,169792,322173406⟩ E) ⟨165436,167938,338935636⟩ (N E ⟨165440,167248,346889877⟩ E))) ⟨165440,167632,343716125⟩ (N (N (N (N E ⟨165440,167712,343059503⟩ E) ⟨165440,168520,336514750⟩ E) ⟨165440,170176,323582017⟩ (N (N E ⟨165440,171600,312954696⟩ E) ⟨165440,172032,309817247⟩ E)) ⟨165444,169856,328215330⟩ (N (N (N E ⟨165444,171584,315168206⟩ E) ⟨165445,168564,338978006⟩ E) ⟨165456,167648,352834327⟩ (N E ⟨165456,168064,349347168⟩ E)))) ⟨165456,172032,318157845⟩ (N (N (N (N (N E ⟨165458,169328,340131921⟩ E) ⟨165459,167762,353617643⟩ E) ⟨165460,168498,348039779⟩ (N (N E ⟨165460,169202,342272550⟩ E) ⟨165460,169872,336894423⟩ E)) ⟨165472,167744,361376892⟩ (N (N (N E ⟨165472,168164,357773235⟩ E) ⟨165472,168996,350766267⟩ E) ⟨165472,169088,350002035⟩ (N E ⟨165472,169152,349471624⟩ E))) ⟨165472,170688,337037997⟩ (N (N (N (N E ⟨165472,172032,326609328⟩ E) ⟨165474,170048,343265201⟩ E) ⟨165475,167746,363126536⟩ (N E ⟨165488,172032,335171679⟩ E)) ⟨165490,168496,365433537⟩ (N (N (N E ⟨165490,169264,358833753⟩ E) ⟨165492,170066,353230824⟩ E) ⟨165492,170898,346389537⟩ (N E ⟨165494,167765,374247200⟩ E))))))))
+
+noncomputable def tab8 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨165494,169268,361106093⟩ E) ⟨165494,170036,354613983⟩ E) ⟨165494,170868,347744705⟩ (N (N E ⟨165496,168256,371073514⟩ E) ⟨165496,171572,343156739⟩ E)) ⟨165496,172032,339494425⟩ (N (N (N E ⟨165504,168112,377120482⟩ E) ⟨165504,168544,373261517⟩ E) ⟨165504,169120,368192716⟩ (N E ⟨165504,172032,343844881⟩ E))) ⟨165509,167796,382995165⟩ (N (N (N (N E ⟨165509,168212,379213249⟩ E) ⟨165509,168628,375477916⟩ E) ⟨165526,170932,365220320⟩ (N (N E ⟨165528,171552,361082965⟩ E) ⟨165536,167742,400027081⟩ E)) ⟨165536,169152,386830029⟩ (N (N (N E ⟨165540,167778,402160760⟩ E) ⟨165556,168530,404826508⟩ E) ⟨165556,168562,404518596⟩ (N E ⟨165556,169394,396614670⟩ E)))) ⟨165568,168176,415751352⟩ (N (N (N (N (N E ⟨165568,168224,415276130⟩ E) ⟨165568,168608,411498704⟩ E) ⟨165568,168640,411185862⟩ (N (N E ⟨165568,169152,406220595⟩ E) ⟨165568,169184,405912761⟩ E)) ⟨165568,169216,405605220⟩ (N (N (N E ⟨165568,169728,400723951⟩ E) ⟨165568,169952,398611504⟩ E) ⟨165568,170048,397710433⟩ (N E ⟨165568,170880,390006867⟩ E))) ⟨165568,172032,379645803⟩ (N (N (N (N E ⟨165571,167890,420495319⟩ E) ⟨165572,167843,421601854⟩ E) ⟨165572,168514,414914049⟩ (N (N E ⟨165584,167776,429939680⟩ E) ⟨165590,168293,428480632⟩ E)) ⟨165590,168709,424262032⟩ (N (N (N E ⟨165590,169396,417408324⟩ E) ⟨165600,167792,440095447⟩ E) ⟨165600,168208,435749586⟩ (N E ⟨165600,168640,431293225⟩ E))))) ⟨165600,169216,425439685⟩ (N (N (N (N (N (N E ⟨165600,169984,417788628⟩ E) ⟨165600,170816,409693130⟩ E) ⟨165603,167954,440337761⟩ (N (N E ⟨165618,169280,436143020⟩ E) ⟨165632,167824,460750274⟩ E)) ⟨165632,169248,445409555⟩ (N (N (N E ⟨165632,170016,437400865⟩ E) ⟨165632,171136,426041536⟩ E) ⟨165632,171328,424131421⟩ (N E ⟨165632,171968,417841225⟩ E))) ⟨165632,172032,417218641⟩ (N (N (N (N E ⟨165636,168578,455157497⟩ E) ⟨165636,169346,446941254⟩ E) ⟨165636,172032,419625740⟩ (N (N E ⟨165648,168256,466596838⟩ E) ⟨165652,169394,456750998⟩ E)) ⟨165652,169426,456405369⟩ (N (N (N E ⟨165654,167941,474138996⟩ E) ⟨165654,168773,464840786⟩ E) ⟨165654,169460,457334381⟩ (N E ⟨165654,170228,449121486⟩ E)))) ⟨165654,171060,440431220⟩ (N (N (N (N (N E ⟨165664,167488,486118915⟩ E) ⟨165664,167904,481309888⟩ E) ⟨165664,168320,476560206⟩ (N (N E ⟨165664,170048,457446981⟩ E) ⟨165664,170880,448586330⟩ E)) ⟨165664,172032,436669023⟩ (N (N (N E ⟨165667,167986,482399896⟩ E) ⟨165668,170024,460286841⟩ E) ⟨165682,171056,458131587⟩ (N E ⟨165682,171888,449309528⟩ E))) ⟨165696,168736,493365267⟩ (N (N (N (N E ⟨165696,170172,476891099⟩ E) ⟨165696,171392,463432251⟩ E) ⟨165696,171900,457968306⟩ (N E ⟨165696,172032,456561745⟩ E)) ⟨165728,167920,525449200⟩ (N (N (N E ⟨165728,168000,524447129⟩ E) ⟨165728,168576,517302311⟩ E) ⟨165744,168352,531334784⟩ (N E ⟨165744,169486,517230078⟩ E)))))) ⟨165744,170350,506796804⟩ (N (N (N (N (N (N (N E ⟨165744,171692,491107741⟩ E) ⟨165744,171756,490374810⟩ E) ⟨165744,172032,487229667⟩ (N (N E ⟨165748,168754,529089264⟩ E) ⟨165748,168786,528687373⟩ E)) ⟨165748,169618,518370895⟩ (N (N (N E ⟨165749,168020,539129233⟩ E) ⟨165749,168436,533812640⟩ E) ⟨165752,172032,492437631⟩ (N E ⟨165760,168032,546877779⟩ E))) ⟨165760,168800,536974018⟩ (N (N (N (N E ⟨165760,170304,518220314⟩ E) ⟨165760,170496,515885565⟩ E) ⟨165760,171456,504407133⟩ (N (N E ⟨165760,172032,497673197⟩ E) ⟨165764,168738,540605025⟩ E)) ⟨165764,169506,530855515⟩ (N (N (N E ⟨165764,170338,520540357⟩ E) ⟨165764,171712,504048109⟩ E) ⟨165776,167968,559328457⟩ (N E ⟨165792,167984,570847036⟩ E)))) ⟨165792,168400,565216456⟩ (N (N (N (N (N E ⟨165792,168832,559442626⟩ E) ⟨165792,169408,551858427⟩ E) ⟨165808,169656,560024763⟩ (N (N E ⟨165808,171328,538441842⟩ E) ⟨165810,172016,531218491⟩ E)) ⟨165816,169664,565657656⟩ (N (N (N E ⟨165816,170816,550523902⟩ E) ⟨165824,167632,599695556⟩ E) ⟨165824,167648,599466210⟩ (N E ⟨165824,168064,593541520⟩ E))) ⟨165824,168480,587689871⟩ (N (N (N (N E ⟨165824,168584,586238245⟩ E) ⟨165824,168896,581910185⟩ E) ⟨165824,169672,571317536⟩ (N (N E ⟨165824,170816,556137435⟩ E) ⟨165824,171328,549507036⟩ E)) ⟨165824,171708,544649852⟩ (N (N (N E ⟨165824,172032,540550799⟩ E) ⟨165832,170832,561568494⟩ E) ⟨165840,172032,551545877⟩ (N E ⟨165843,168946,595272499⟩ E))))) ⟨165844,169618,586609684⟩ (N (N (N (N (N (N E ⟨165845,168132,608424871⟩ E) ⟨165846,168533,603396311⟩ E) ⟨165856,167664,623736697⟩ (N (N E ⟨165856,168048,618044162⟩ E) ⟨165856,168464,611950366⟩ E)) ⟨165856,168896,605701506⟩ (N (N (N E ⟨165856,170240,586764147⟩ E) ⟨165872,167680,635926493⟩ E) ⟨165872,168064,630123260⟩ (N E ⟨165876,172032,576687623⟩ E))) ⟨165880,172032,579515563⟩ (N (N (N (N E ⟨165888,168080,642313929⟩ E) ⟨165888,168496,635982041⟩ E) ⟨165888,168928,629489014⟩ (N (N E ⟨165888,169416,622253688⟩ E) ⟨165888,169472,621430071⟩ E)) ⟨165888,169504,620960045⟩ (N (N (N E ⟨165888,170272,609811603⟩ E) ⟨165888,171104,598015091⟩ E) ⟨165888,171968,586065323⟩ (N E ⟨165888,172032,585192084⟩ E)))) ⟨165892,171840,590678050⟩ (N (N (N (N (N E ⟨165892,172032,588040663⟩ E) ⟨165906,168080,656443232⟩ E) ⟨165906,170480,620184259⟩ (N (N E ⟨165906,171312,608201607⟩ E) ⟨165906,172032,598064850⟩ E)) ⟨165912,171296,612826061⟩ (N (N (N E ⟨165920,171944,609421555⟩ E) ⟨165920,172032,608173262⟩ E) ⟨165922,168128,668365625⟩ (N E ⟨165925,168212,669413873⟩ E))) ⟨165925,168628,662820001⟩ (N (N (N (N E ⟨165926,170500,634887121⟩ E) ⟨165936,168128,679553542⟩ E) ⟨165936,168544,672856456⟩ (N E ⟨165936,172032,619828826⟩ E)) ⟨165937,168240,678542840⟩ (N (N (N E ⟨165938,170544,643303652⟩ E) ⟨165940,169714,657553209⟩ E) ⟨165952,170112,660650349⟩ (N E ⟨165952,170336,657175545⟩ E))))))) ⟨165952,171836,634486220⟩ (N (N (N (N (N (N (N (N E ⟨165952,172032,631594310⟩ E) ⟨165984,168224,716970261⟩ E) ⟨165984,168640,709908451⟩ (N (N E ⟨165984,170368,681489276⟩ E) ⟨165984,171200,668313559⟩ E)) ⟨165990,168964,709329504⟩ (N (N (N E ⟨166000,168608,723558305⟩ E) ⟨166000,172012,667860883⟩ E) ⟨166000,172032,667549791⟩ (N E ⟨166004,168691,725422123⟩ E))) ⟨166004,169107,718296801⟩ (N (N (N (N E ⟨166004,169778,706987216⟩ E) ⟨166004,170546,694314612⟩ E) ⟨166004,171378,680904825⟩ (N (N E ⟨166004,172032,670590673⟩ E) ⟨166006,168709,726758830⟩ E)) ⟨166014,169084,726868076⟩ (N (N (N E ⟨166016,167824,750678474⟩ E) ⟨166016,168208,743833924⟩ E) ⟨166016,168864,732320692⟩ (N E ⟨166016,171072,695170427⟩ E)))) ⟨166016,172032,679754458⟩ (N (N (N (N (N E ⟨166032,168224,757020483⟩ E) ⟨166032,168640,749564199⟩ E) ⟨166034,169008,744705610⟩ (N (N E ⟨166034,172032,693615791⟩ E) ⟨166040,170452,724569245⟩ E)) ⟨166048,169664,744731331⟩ (N (N (N E ⟨166048,169728,743606568⟩ E) ⟨166050,169152,755476403⟩ E) ⟨166051,169170,755989609⟩ (N E ⟨166054,170628,732855986⟩ E))) ⟨166066,170736,740710512⟩ (N (N (N (N E ⟨166068,172032,720176725⟩ E) ⟨166080,168320,796326976⟩ E) ⟨166080,168608,790889677⟩ (N (N E ⟨166080,168688,789387561⟩ E) ⟨166080,169120,781337498⟩ E)) ⟨166080,169152,780745290⟩ (N (N (N E ⟨166080,169696,770763090⟩ E) ⟨166080,169728,770180886⟩ E) ⟨166080,170560,755234758⟩ (N E ⟨166080,170816,750709054⟩ E))))) ⟨166080,171136,745099507⟩ (N (N (N (N (N (N E ⟨166080,171392,740649566⟩ E) ⟨166080,172032,729669240⟩ E) ⟨166088,172032,736031785⟩ (N (N E ⟨166101,169204,797695273⟩ E) ⟨166112,168608,818653031⟩ E)) ⟨166112,168640,818030649⟩ (N (N (N E ⟨166112,169472,802054403⟩ E) ⟨166112,171328,767797599⟩ E) ⟨166120,172032,761755430⟩ (N E ⟨166130,169872,809870985⟩ E))) ⟨166130,170736,793571512⟩ (N (N (N (N E ⟨166132,169938,810324023⟩ E) ⟨166132,172032,771514533⟩ E) ⟨166144,169184,835394153⟩ (N (N E ⟨166144,169216,834761213⟩ E) ⟨166144,169312,832865988⟩ E)) ⟨166144,169728,824715253⟩ (N (N (N E ⟨166144,169760,824092413⟩ E) ⟨166144,170528,809319167⟩ E) ⟨166144,171200,796663325⟩ (N E ⟨166144,171648,788363405⟩ E)))) ⟨166144,172032,781335090⟩ (N (N (N (N (N E ⟨166146,169856,823956127⟩ E) ⟨166146,170688,807978385⟩ E) ⟨166162,170800,819446311⟩ (N (N E ⟨166165,168436,869226686⟩ E) ⟨166165,169268,852230189⟩ E)) ⟨166176,168784,871947779⟩ (N (N (N E ⟨166176,169216,863060823⟩ E) ⟨166176,169792,851386989⟩ E) ⟨166176,170560,836127296⟩ (N E ⟨166176,171392,819979896⟩ E))) ⟨166176,172032,807823477⟩ (N (N (N (N E ⟨166192,172032,821231318⟩ E) ⟨166196,168899,887630111⟩ E) ⟨166196,169315,878922243⟩ (N E ⟨166196,170002,864774258⟩ E)) ⟨166196,170770,849293623⟩ (N (N (N E ⟨166196,171602,832911953⟩ E) ⟨166196,172032,824600314⟩ E) ⟨166208,168400,909272005⟩ (N E ⟨166208,169472,886439905⟩ E)))))) ⟨166208,170944,856243734⟩ (N (N (N (N (N (N (N E ⟨166208,171200,851124265⟩ E) ⟨166208,172032,834748172⟩ E) ⟨166216,170576,870705491⟩ (N (N E ⟨166216,172032,841547457⟩ E) ⟨166224,168416,923762476⟩ E)) ⟨166224,168832,914674212⟩ (N (N (N E ⟨166224,172032,848373970⟩ E) ⟨166232,172032,855227704⟩ E) ⟨166240,168048,946983261⟩ (N E ⟨166240,168064,946621999⟩ E))) ⟨166240,168480,937289376⟩ (N (N (N (N E ⟨166240,168896,928071525⟩ E) ⟨166243,168514,939342437⟩ E) ⟨166256,168064,961822580⟩ (N (N E ⟨166258,169264,936639688⟩ E) ⟨166262,170036,923361243⟩ E)) ⟨166272,168464,967877361⟩ (N (N (N E ⟨166272,171488,901271248⟩ E) ⟨166272,171776,895231022⟩ E) ⟨166272,171968,891232311⟩ (N E ⟨166272,172032,889904373⟩ E)))) ⟨166277,169396,951374059⟩ (N (N (N (N (N E ⟨166288,168896,973130747⟩ E) ⟨166290,170992,928009254⟩ E) ⟨166304,168112,1006987312⟩ (N (N E ⟨166304,168496,997821484⟩ E) ⟨166304,172032,918134784⟩ E)) ⟨166312,172032,925260241⟩ (N (N (N E ⟨166320,168512,1012953193⟩ E) ⟨166320,168928,1002993107⟩ E) ⟨166324,172032,935999278⟩ (N E ⟨166326,170868,963659951⟩ E))) ⟨166336,169952,994097904⟩ (N (N (N (N E ⟨166336,172032,946799311⟩ E) ⟨166340,172032,950412871⟩ E) ⟨166341,168628,1030644353⟩ (N (N E ⟨166341,169460,1010514313⟩ E) ⟨166352,168544,1043534876⟩ E)) ⟨166354,170992,986803866⟩ (N (N (N E ⟨166360,172032,968582237⟩ E) ⟨166368,168560,1058984436⟩ E) ⟨166368,168976,1048574696⟩ (N E ⟨166368,169408,1037899657⟩ E))))) ⟨166368,169984,1023876774⟩ (N (N (N (N (N (N E ⟨166388,169394,1057825527⟩ E) ⟨166388,172032,994303521⟩ E) ⟨166400,168208,1100208595⟩ (N (N E ⟨166400,168640,1088956889⟩ E) ⟨166400,169056,1078257588⟩ E)) ⟨166400,169472,1067689418⟩ (N (N (N E ⟨166400,170016,1054064168⟩ E) ⟨166400,170048,1053269473⟩ E) ⟨166400,170812,1034516658⟩ (N E ⟨166400,170880,1032867868⟩ E))) ⟨166400,171616,1015230677⟩ (N (N (N (N E ⟨166400,171712,1012958027⟩ E) ⟨166400,172032,1005428326⟩ E) ⟨166404,169346,1074840674⟩ (N (N E ⟨166404,170880,1036691220⟩ E) ⟨166404,172032,1009150106⟩ E)) ⟨166416,170764,1051059309⟩ (N (N (N E ⟨166420,169107,1096960024⟩ E) ⟨166422,170228,1070253477⟩ E) ⟨166432,169040,1110812531⟩ (N E ⟨166432,169472,1099508149⟩ E)))) ⟨166432,170048,1084658468⟩ (N (N (N (N (N E ⟨166432,170816,1065246820⟩ E) ⟨166448,168640,1137811049⟩ E) ⟨166464,168656,1153890654⟩ (N (N E ⟨166464,169072,1142554434⟩ E) ⟨166464,169504,1130929220⟩ E)) ⟨166464,170048,1116499651⟩ (N (N (N E ⟨166464,170080,1115658043⟩ E) ⟨166464,170848,1095695338⟩ E) ⟨166464,171200,1086695096⟩ (N E ⟨166464,171968,1067376886⟩ E))) ⟨166464,172032,1065786491⟩ (N (N (N (N E ⟨166468,172032,1069616173⟩ E) ⟨166486,171060,1111895828⟩ E) ⟨166496,170880,1126540471⟩ (N E ⟨166496,172032,1096612389⟩ E)) ⟨166504,172032,1104386127⟩ (N (N (N E ⟨166508,172032,1108283078⟩ E) ⟨166512,169120,1190941271⟩ E) ⟨166514,171888,1117886207⟩ (N E ⟨166516,172032,1116097138⟩ E))))))))
+
+noncomputable def tab9 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨166532,169506,1200927010⟩ E) ⟨166544,170956,1172778186⟩ E) ⟨166544,172032,1143657861⟩ (N (N E ⟨166560,169728,1223933552⟩ E) ⟨166560,172032,1159554438⟩ E)) ⟨166580,172032,1179575939⟩ (N (N (N E ⟨166584,172032,1183600328⟩ E) ⟨166592,172032,1191669187⟩ E) ⟨166596,170338,1244084667⟩ (N E ⟨166596,171600,1207822375⟩ E))) ⟨166596,172032,1195713652⟩ (N (N (N (N E ⟨166608,169216,1290480074⟩ E) ⟨166608,170350,1256395910⟩ E) ⟨166612,169315,1291798181⟩ (N (N E ⟨166640,168832,1337599979⟩ E) ⟨166648,172032,1248899872⟩ E)) ⟨166656,168480,1366815887⟩ (N (N (N E ⟨166656,168896,1353373821⟩ E) ⟨166656,169696,1327985083⟩ E) ⟨166656,169728,1326981976⟩ (N E ⟨166656,170272,1310073213⟩ E)))) ⟨166656,172032,1257182497⟩ (N (N (N (N (N E ⟨166675,169362,1359569403⟩ E) ⟨166675,169778,1346268072⟩ E) ⟨166688,168496,1402591460⟩ (N (N E ⟨166696,172032,1298995399⟩ E) ⟨166708,172032,1311669048⟩ E)) ⟨166720,169760,1396878347⟩ (N (N (N E ⟨166720,169888,1392665325⟩ E) ⟨166720,171104,1353423455⟩ E) ⟨166720,172032,1324402519⟩ (N E ⟨166736,168928,1443018170⟩ E))) ⟨166738,171312,1366388081⟩ (N (N (N (N E ⟨166738,172032,1343614804⟩ E) ⟨166752,169792,1431918568⟩ E) ⟨166752,170368,1412615711⟩ (N (N E ⟨166752,171136,1387381887⟩ E) ⟨166752,171968,1360678006⟩ E)) ⟨166764,172032,1371603053⟩ (N (N (N E ⟨166772,170546,1429101938⟩ E) ⟨166776,172032,1384615138⟩ E) ⟨166784,168976,1497086952⟩ (N E ⟨166784,172032,1393322965⟩ E))))) ⟨166788,171856,1403431755⟩ (N (N (N (N (N (N E ⟨166800,169408,1500452387⟩ E) ⟨166816,169056,1531887832⟩ E) ⟨166816,169472,1516873562⟩ (N (N E ⟨166816,171200,1456441535⟩ E) ⟨166828,172032,1441688754⟩ E)) ⟨166834,169872,1523572103⟩ (N (N (N E ⟨166836,170610,1499629590⟩ E) ⟨166836,171378,1472879133⟩ E) ⟨166836,172032,1450568379⟩ (N E ⟨166848,172032,1463937278⟩ E))) ⟨166864,169472,1573618499⟩ (N (N (N (N E ⟨166880,169072,1607912761⟩ E) ⟨166883,170002,1576506677⟩ E) ⟨166892,172032,1513463656⟩ (N (N E ⟨166896,169504,1610788659⟩ E) ⟨166896,172032,1518005516⟩ E)) ⟨166900,172032,1522553945⟩ (N (N (N E ⟨166904,172032,1527108941⟩ E) ⟨166912,170528,1591260121⟩ E) ⟨166912,170560,1590064029⟩ (N E ⟨166912,171392,1559356504⟩ E)))) ⟨166912,171648,1550057503⟩ (N (N (N (N (N E ⟨166912,172032,1536238631⟩ E) ⟨166944,169984,1650356323⟩ E) ⟨166944,170560,1628133845⟩ (N (N E ⟨166952,172032,1582280537⟩ E) ⟨166960,172032,1591567510⟩ E)) ⟨166964,170770,1644020903⟩ (N (N (N E ⟨166968,170816,1647041605⟩ E) ⟨166972,172032,1605547021⟩ E) ⟨166976,170048,1686838787⟩ (N E ⟨166976,172032,1610219932⟩ E))) ⟨166978,170688,1664048009⟩ (N (N (N (N E ⟨166994,170736,1681521542⟩ E) ⟨167008,170048,1726247115⟩ E) ⟨167008,171392,1672635536⟩ (N E ⟨167024,172032,1666803952⟩ E)) ⟨167028,171602,1688410322⟩ (N (N (N E ⟨167028,172032,1671561655⟩ E) ⟨167040,170080,1764761232⟩ E) ⟨167040,172032,1685873815⟩ (N E ⟨167060,171408,1734938876⟩ E)))))) ⟨167084,172032,1738852136⟩ (N (N (N (N (N (N (N E ⟨167086,171692,1755138500⟩ E) ⟨167091,169778,1842191082⟩ E) ⟨167104,172032,1763192653⟩ (N (N E ⟨167112,172032,1772974185⟩ E) ⟨167124,172032,1787694995⟩ E)) ⟨167136,170304,1876891573⟩ (N (N (N E ⟨167136,172032,1802473973⟩ E) ⟨167138,171712,1818460090⟩ E) ⟨167152,172032,1822269667⟩ (N E ⟨167168,172032,1842168548⟩ E))) ⟨167172,171584,1866562487⟩ (N (N (N (N E ⟨167200,170816,1936550252⟩ E) ⟨167200,172032,1882275352⟩ E) ⟨167212,172032,1897421469⟩ (N (N E ⟨167216,172032,1902483014⟩ E) ⟨167232,170848,1976752112⟩ E)) ⟨167232,170880,1975269053⟩ (N (N (N E ⟨167232,171712,1937193231⟩ E) ⟨167232,171968,1925662582⟩ E) ⟨167232,172032,1922793340⟩ (N E ⟨167248,172032,1943206196⟩ E)))) ⟨167264,172032,1963721449⟩ (N (N (N (N (N E ⟨167280,172032,1984338961⟩ E) ⟨167296,170880,2059779446⟩ E) ⟨167296,171680,2021583900⟩ (N (N E ⟨167296,172032,2005058599⟩ E) ⟨167300,172032,2010254450⟩ E)) ⟨167328,172032,2046803700⟩ (N (N (N E ⟨167346,172032,2070464177⟩ E) ⟨167356,172032,2083664436⟩ E) ⟨167360,172032,2088955639⟩ (N E ⟨167408,172032,2152943896⟩ E))) ⟨167424,171900,2181174558⟩ (N (N (N (N E ⟨167424,172032,2174475502⟩ E) ⟨167428,172032,2179874167⟩ E) ⟨167436,171784,2203391833⟩ (N (N E ⟨167436,172032,2190690399⟩ E) ⟨167488,172032,2261608976⟩ E)) ⟨167504,172032,2283643367⟩ (N (N (N E ⟨167520,171136,2354537999⟩ E) ⟨167536,172032,2328012323⟩ E) ⟨167540,172032,2333586536⟩ (N E ⟨167552,172032,2350346583⟩ E))))) ⟨167556,172032,2355945725⟩ (N (N (N (N (N (N E ⟨167570,172032,2375591733⟩ E) ⟨167584,171968,2398888254⟩ E) ⟨167584,172032,2395313904⟩ (N (N E ⟨167604,171378,2460897316⟩ E) ⟨167616,172032,2440678588⟩ E)) ⟨167664,172032,2509467912⟩ (N (N (N E ⟨167668,172032,2515240450⟩ E) ⟨167680,172032,2532594994⟩ E) ⟨167732,172032,2608436646⟩ (N E ⟨167736,172032,2614313502⟩ E))) ⟨167744,172032,2626085552⟩ (N (N (N (N E ⟨167760,172032,2649702926⟩ E) ⟨167776,170524,2769428566⟩ E) ⟨167776,172032,2673417863⟩ (N (N E ⟨167796,172032,2703198475⟩ E) ⟨167808,172032,2721139749⟩ E)) ⟨167860,172032,2799515217⟩ (N (N (N E ⟨167872,172032,2817746826⟩ E) ⟨167876,172032,2823836078⟩ E) ⟨167900,170584,2959052590⟩ (N E ⟨167920,172032,2891214590⟩ E)))) ⟨167936,172032,2915895760⟩ (N (N (N (N (N E ⟨167968,172032,2965544913⟩ E) ⟨167976,172032,2978016823⟩ E) ⟨167988,172032,2996769313⟩ (N (N E ⟨168000,172032,3015575285⟩ E) ⟨168052,172032,3097683969⟩ E)) ⟨168060,172032,3110404683⟩ (N (N (N E ⟨168064,172032,3116773877⟩ E) ⟨168080,172032,3142309504⟩ E) ⟨168128,172032,3219479764⟩ (N E ⟨168132,172032,3225948656⟩ E))) ⟨168178,172032,3300759773⟩ (N (N (N (N E ⟨168184,172032,3310574428⟩ E) ⟨168192,172032,3323680930⟩ E) ⟨168208,172032,3349963424⟩ (N E ⟨168224,172032,3376338416⟩ E)) ⟨168244,172032,3409436929⟩ (N (N (N E ⟨168256,172032,3429365103⟩ E) ⟨168312,172032,3523045458⟩ E) ⟨168320,172032,3536519776⟩ (N E ⟨168384,172032,3645132190⟩ E))))))) ⟨168444,172032,3748268700⟩ (N (N (N (N (N (N (N (N E ⟨168448,172032,3755189350⟩ E) ⟨168496,172032,3838672377⟩ E) ⟨168512,172032,3866678014⟩ (N (N E ⟨168560,172032,3951225841⟩ E) ⟨168576,172032,3979584708⟩ E)) ⟨168640,172032,4093895715⟩ (N (N (N E ⟨168688,172032,4180542169⟩ E) ⟨168696,172032,4195058863⟩ E) ⟨168816,172032,4415377260⟩ (N E ⟨168960,172032,4686019082⟩ E))) ⟨169008,172032,4777723307⟩ (N (N (N (N E ⟨169024,172032,4808454914⟩ E) ⟨169072,172032,4901136959⟩ E) ⟨169088,172032,4932192574⟩ (N (N E ⟨169100,172032,4955537057⟩ E) ⟨169152,172032,5057216511⟩ E)) ⟨169192,172032,5136002667⟩ (N (N (N E ⟨169216,172032,5183510966⟩ E) ⟨169264,172032,5279055973⟩ E) ⟨169292,172032,5335113738⟩ (N E ⟨169472,172032,5701071046⟩ E)))) ⟨169576,172032,5916821880⟩ (N (N (N (N (N E ⟨169580,172032,5925181669⟩ E) ⟨169600,172032,5967048477⟩ E) ⟨169656,172032,6084873485⟩ (N (N E ⟨169728,172032,6237642433⟩ E) ⟨169744,172032,6271784321⟩ E)) ⟨169836,172032,6469443565⟩ (N (N (N E ⟨169856,172032,6512712553⟩ E) ⟨169872,172032,6547403934⟩ E) ⟨169900,172032,6608275905⟩ (N E ⟨169964,172032,6748178940⟩ E))) ⟨170044,172032,6924535414⟩ (N (N (N (N E ⟨170092,172032,7031123470⟩ E) ⟨170120,172032,7093564025⟩ E) ⟨170156,172032,7174127681⟩ (N (N E ⟨170224,172032,7327160686⟩ E) ⟨170284,172032,7463105406⟩ E)) ⟨170300,172032,7499500159⟩ (N (N (N E ⟨170412,172032,7755914000⟩ E) ⟨170480,172032,7912973200⟩ E) ⟨170524,172032,8015141234⟩ (N E ⟨170584,172032,8155133328⟩ E))))) ⟨170688,172032,8399577859⟩ (N (N (N (N (N (N E ⟨170736,172032,8513144844⟩ E) ⟨170764,172032,8579604990⟩ E) ⟨170808,172032,8684354096⟩ (N (N E ⟨170992,172032,9126382320⟩ E) ⟨171132,172032,9466795949⟩ E)) ⟨171952,172032,11519220240⟩ (N (N (N E ⟨172032,172036,11722665085⟩ E) ⟨172032,172076,11711748847⟩ E) ⟨172032,172080,11710657922⟩ (N E ⟨172032,172096,11706295495⟩ E))) ⟨172032,172144,11693220399⟩ (N (N (N (N E ⟨172032,172160,11688866092⟩ E) ⟨172032,172210,11675271945⟩ E) ⟨172032,172224,11671469127⟩ (N (N E ⟨172032,172240,11667124946⟩ E) ⟨172032,172272,11658442647⟩ E)) ⟨172032,172276,11657357928⟩ (N (N (N E ⟨172032,172288,11654104527⟩ E) ⟨172032,172292,11653020313⟩ E) ⟨172032,172328,11643268056⟩ (N E ⟨172032,172336,11641102274⟩ E)))) ⟨172032,172352,11636772221⟩ (N (N (N (N (N E ⟨172032,172400,11623794141⟩ E) ⟨172032,172416,11619472136⟩ E) ⟨172032,172428,11616231951⟩ (N (N E ⟨172032,172434,11614612283⟩ E) ⟨172032,172464,11606518174⟩ E)) ⟨172032,172468,11605439493⟩ (N (N (N E ⟨172032,172480,11602204200⟩ E) ⟨172032,172532,11588197625⟩ E) ⟨172032,172544,11584968342⟩ (N E ⟨172032,172584,11574212188⟩ E))) ⟨172032,172608,11567764490⟩ (N (N (N (N E ⟨172032,172620,11564542325⟩ E) ⟨172032,172656,11554882562⟩ E) ⟨172032,172660,11553809878⟩ (N E ⟨172032,172672,11550592573⟩ E)) ⟨172032,172712,11539876309⟩ (N (N (N E ⟨172032,172720,11537734549⟩ E) ⟨172032,172724,11536663855⟩ E) ⟨172032,172736,11533452519⟩ (N E ⟨172032,172796,11517412594⟩ E)))))) ⟨172032,172800,11516344258⟩ (N (N (N (N (N (N (N E ⟨172032,172852,11502467156⟩ E) ⟨172032,172896,11490741322⟩ E) ⟨172032,172928,11482222831⟩ (N (N E ⟨172032,173036,11453531158⟩ E) ⟨172032,173056,11448227727⟩ E)) ⟨172032,173120,11431277372⟩ (N (N (N E ⟨172032,173136,11427044687⟩ E) ⟨172032,173152,11422813962⟩ E) ⟨172032,173184,11414358387⟩ (N E ⟨172032,173200,11410133534⟩ E))) ⟨172032,173248,11397470704⟩ (N (N (N (N E ⟨172032,173272,11391145878⟩ E) ⟨172032,173312,11380614252⟩ E) ⟨172032,173352,11370094798⟩ (N (N E ⟨172032,173372,11364839631⟩ E) ⟨172032,173376,11363788962⟩ E)) ⟨172032,173420,11352239616⟩ (N (N (N E ⟨172032,173448,11344897674⟩ E) ⟨172032,173496,11332325296⟩ E) ⟨172032,173552,11317679533⟩ (N E ⟨172032,173568,11313499377⟩ E)))) ⟨172032,173608,11303057431⟩ (N (N (N (N (N E ⟨172032,173632,11296798048⟩ E) ⟨172032,173648,11292627533⟩ E) ⟨172032,173680,11284292279⟩ (N (N E ⟨172032,173740,11268684402⟩ E) ⟨172032,173760,11263487775⟩ E)) ⟨172032,173808,11251028094⟩ (N (N (N E ⟨172032,173824,11246878697⟩ E) ⟨172032,173872,11234441982⟩ E) ⟨172032,173888,11230300232⟩ (N E ⟨172032,173904,11226160392⟩ E))) ⟨172032,173936,11217886434⟩ (N (N (N (N E ⟨172032,173940,11216852725⟩ E) ⟨172032,173952,11213752314⟩ E) ⟨172032,174016,11197234876⟩ (N E ⟨172032,174064,11184866758⟩ E)) ⟨172032,174080,11180747848⟩ (N (N (N E ⟨172032,174092,11177659911⟩ E) ⟨172032,174132,11167374485⟩ E) ⟨172032,174144,11164291166⟩ (N E ⟨172032,174192,11151968527⟩ E))))) ⟨172032,174196,11150942408⟩ (N (N (N (N (N (N E ⟨172032,174208,11147864760⟩ E) ⟨172032,174272,11131468566⟩ E) ⟨172032,174320,11119191205⟩ (N (N E ⟨172032,174336,11115102515⟩ E) ⟨172032,174388,11101827249⟩ E)) ⟨172032,174448,11086534260⟩ (N (N (N E ⟨172032,174460,11083478824⟩ E) ⟨172032,174464,11082460580⟩ E) ⟨172032,174528,11066184563⟩ (N E ⟨172032,174572,11055012137⟩ E))) ⟨172032,174580,11052982302⟩ (N (N (N (N E ⟨172032,174592,11049938424⟩ E) ⟨172032,174640,11037773389⟩ E) ⟨172032,174648,11035747512⟩ (N (N E ⟨172032,174700,11022590636⟩ E) ⟨172032,174708,11020568242⟩ E)) ⟨172032,174720,11017535522⟩ (N (N (N E ⟨172032,174764,11006424471⟩ E) ⟨172032,174772,11004405786⟩ E) ⟨172032,174780,11002387564⟩ (N E ⟨172032,174784,11001378626⟩ E)))) ⟨172032,174848,10985251347⟩ (N (N (N (N (N E ⟨172032,174892,10974180989⟩ E) ⟨172032,174900,10972169696⟩ E) ⟨172032,174912,10969153620⟩ (N (N E ⟨172032,174960,10957099678⟩ E) ⟨172032,174976,10953085379⟩ E)) ⟨172032,175040,10937046560⟩ (N (N (N E ⟨172032,175084,10926036905⟩ E) ⟨172032,175104,10921037098⟩ E) ⟨172032,175216,10893090986⟩ (N E ⟨172032,175360,10857291534⟩ E))) ⟨172032,175368,10855306993⟩ (N (N (N (N E ⟨172032,175408,10845391085⟩ E) ⟨172032,175424,10841427894⟩ E) ⟨172032,175440,10837466513⟩ (N E ⟨172032,175472,10829549181⟩ E)) ⟨172032,175488,10825593226⟩ (N (N (N E ⟨172032,175616,10794010555⟩ E) ⟨172032,175664,10782196763⟩ E) ⟨172032,175744,10762543015⟩ (N E ⟨172032,175860,10734124582⟩ E))))))))
+
+noncomputable def tab10 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨172032,175952,10711652519⟩ E) ⟨172032,175968,10707750341⟩ E) ⟨172032,176000,10699951317⟩ (N (N E ⟨172032,176052,10687293045⟩ E) ⟨172032,176056,10686320108⟩ E)) ⟨172032,176064,10684374565⟩ (N (N (N E ⟨172032,176104,10674653494⟩ E) ⟨172032,176128,10668826159⟩ E) ⟨172032,176192,10653306036⟩ (N E ⟨172032,176224,10645556561⟩ E))) ⟨172032,176236,10642652325⟩ (N (N (N (N E ⟨172032,176240,10641684467⟩ E) ⟨172032,176256,10637814134⟩ E) ⟨172032,176384,10606914747⟩ (N (N E ⟨172032,176444,10592469296⟩ E) ⟨172032,176448,10591507141⟩ E)) ⟨172032,176488,10581891597⟩ (N (N (N E ⟨172032,176492,10580930643⟩ E) ⟨172032,176496,10579969798⟩ E) ⟨172032,176512,10576127510⟩ (N E ⟨172032,176556,10565570210⟩ E)))) ⟨172032,176576,10560775794⟩ (N (N (N (N (N E ⟨172032,176624,10549280290⟩ E) ⟨172032,176640,10545451932⟩ E) ⟨172032,176700,10531111056⟩ (N (N E ⟨172032,176748,10519655909⟩ E) ⟨172032,176768,10514887529⟩ E)) ⟨172032,176776,10512980935⟩ (N (N (N E ⟨172032,176812,10504406605⟩ E) ⟨172032,176880,10488234494⟩ E) ⟨172032,176896,10484433817⟩ (N E ⟨172032,176944,10473042115⟩ E))) ⟨172032,177024,10454090316⟩ (N (N (N (N E ⟨172032,177068,10443685104⟩ E) ⟨172032,177088,10438959744⟩ E) ⟨172032,177136,10427629782⟩ (N (N E ⟨172032,177152,10423856546⟩ E) ⟨172032,177208,10410663655⟩ E)) ⟨172032,177264,10397491637⟩ (N (N (N E ⟨172032,177280,10393732032⟩ E) ⟨172032,177392,10367462333⟩ E) ⟨172032,177520,10337541399⟩ (N E ⟨172032,177524,10336608111⟩ E))))) ⟨172032,177532,10334741851⟩ (N (N (N (N (N (N E ⟨172032,177644,10308658394⟩ E) ⟨172032,177648,10307728366⟩ E) ⟨172032,177664,10304009300⟩ (N (N E ⟨172032,177716,10291933918⟩ E) ⟨172032,177760,10281730106⟩ E)) ⟨172032,177900,10249347478⟩ (N (N (N E ⟨172032,177920,10244731805⟩ E) ⟨172032,177964,10234586470⟩ E) ⟨172032,178112,10200553317⟩ (N E ⟨172032,178176,10185880112⟩ E))) ⟨172032,178220,10175807591⟩ (N (N (N (N E ⟨172032,178304,10156612794⟩ E) ⟨172032,178560,10098392940⟩ E) ⟨172032,178688,10069439501⟩ (N (N E ⟨172032,178696,10067633360⟩ E) ⟨172032,178736,10058608728⟩ E)) ⟨172032,178864,10029797800⟩ (N (N (N E ⟨172032,178920,10017225470⟩ E) ⟨172032,178944,10011843362⟩ E) ⟨172032,179072,9983199771⟩ (N E ⟨172032,179128,9970700425⟩ E)))) ⟨172032,179176,9960002271⟩ (N (N (N (N (N E ⟨172032,179200,9954658577⟩ E) ⟨172032,179296,9933319616⟩ E) ⟨172032,179304,9931543952⟩ (N (N E ⟨172032,179308,9930656269⟩ E) ⟨172032,179328,9926219341⟩ E)) ⟨172032,179384,9913809125⟩ (N (N (N E ⟨172032,179432,9903187235⟩ E) ⟨172032,179456,9897881626⟩ E) ⟨172032,179560,9874931686⟩ (N E ⟨172032,179564,9874050325⟩ E))) ⟨172032,179584,9869644998⟩ (N (N (N (N E ⟨172032,179628,9859961925⟩ E) ⟨172032,179776,9827478646⟩ E) ⟨172032,179816,9818722360⟩ (N E ⟨172032,179840,9813473271⟩ E)) ⟨172032,179884,9803859051⟩ (N (N (N E ⟨172032,179952,9789023866⟩ E) ⟨172032,180096,9757700727⟩ E) ⟨172032,180144,9747287538⟩ (N E ⟨172032,180208,9733424893⟩ E)))))) ⟨172032,180224,9729963084⟩ (N (N (N (N (N (N (N E ⟨172040,180224,9746965609⟩ E) ⟨172776,180224,11326866252⟩ E) ⟨173160,180224,12157431795⟩ (N (N E ⟨173272,178768,12809255123⟩ E) ⟨175488,180224,17009071115⟩ E)) ⟨175952,180224,17886733706⟩ (N (N (N E ⟨176304,180224,18521822193⟩ E) ⟨177536,180224,20491807052⟩ E) ⟨178768,180224,21984511907⟩ (N E ⟨179152,180224,22337328602⟩ E))) ⟨179920,180224,22868790503⟩ (N (N (N (N E ⟨180224,180272,22987588925⟩ E) ⟨180224,180280,22983326253⟩ E) ⟨180224,180288,22979037516⟩ (N (N E ⟨180224,180464,22878121236⟩ E) ⟨180224,180480,22868327409⟩ E)) ⟨180224,180608,22786289547⟩ (N (N (N E ⟨180224,180720,22709166408⟩ E) ⟨180224,180832,22627108834⟩ E) ⟨180224,180976,22514435475⟩ (N E ⟨180224,180992,22501422485⟩ E)))) ⟨180224,181248,22279969817⟩ (N (N (N (N (N E ⟨180224,181376,22160024998⟩ E) ⟨180224,181992,21500116735⟩ E) ⟨180224,182016,21471725482⟩ (N (N E ⟨180224,182144,21317030601⟩ E) ⟨180224,182248,21187331923⟩ E)) ⟨180224,182272,21156897754⟩ (N (N (N E ⟨180224,182376,21022860560⟩ E) ⟨180224,182400,20991435527⟩ E) ⟨180224,182456,20917398287⟩ (N E ⟨180224,182528,20820755150⟩ E))) ⟨180224,182632,20678313545⟩ (N (N (N (N E ⟨180224,182656,20644970417⟩ E) ⟨180224,182760,20498467029⟩ E) ⟨180224,182848,20371977659⟩ (N (N E ⟨180224,182912,20278555381⟩ E) ⟨180224,183144,19930060922⟩ E)) ⟨180224,183280,19718814380⟩ (N (N (N E ⟨180224,183296,19693633166⟩ E) ⟨180224,183536,19307857762⟩ E) ⟨180224,183552,19281613785⟩ (N E ⟨180224,183608,19189255598⟩ E))))) ⟨180224,183680,19069370752⟩ (N (N (N (N (N (N E ⟨180224,183808,18853148956⟩ E) ⟨180224,183936,18633083148⟩ E) ⟨180224,184192,18181966454⟩ (N (N E ⟨180224,184384,17834563394⟩ E) ⟨180224,184544,17539508005⟩ E)) ⟨180224,184704,17239701561⟩ (N (N (N E ⟨180224,184800,17057654073⟩ E) ⟨180224,184832,16996624543⟩ E) ⟨180224,185056,16564793006⟩ (N E ⟨180224,185312,16062093940⟩ E))) ⟨180224,185320,16046238927⟩ (N (N (N (N E ⟨180224,185344,15998623519⟩ E) ⟨180224,185472,15743435378⟩ E) ⟨180224,185704,15275966012⟩ (N (N E ⟨180224,185776,15129706508⟩ E) ⟨180224,185856,14966594275⟩ E)) ⟨180224,186088,14490317855⟩ (N (N (N E ⟨180224,186368,13910072854⟩ E) ⟨180224,186472,13693333712⟩ E) ⟨180224,186624,13375620595⟩ (N E ⟨180224,186688,13241564962⟩ E)))) ⟨180224,186976,12636852777⟩ (N (N (N (N (N E ⟨180224,187008,12569561193⟩ E) ⟨180224,187056,12468602409⟩ E) ⟨180224,187136,12300299849⟩ (N (N E ⟨180224,187488,11560055244⟩ E) ⟨180224,187824,10855942113⟩ E)) ⟨180224,187904,10688945415⟩ (N (N (N E ⟨180224,188416,9629227507⟩ E) ⟨180736,188416,9730938999⟩ E) ⟨181800,188416,9943520182⟩ (N E ⟨182224,188416,10028506045⟩ E))) ⟨182688,188416,10121569207⟩ (N (N (N (N E ⟨183032,188416,10190553534⟩ E) ⟨184224,188416,10428970411⟩ E) ⟨184520,188416,10487903100⟩ (N E ⟨185416,188416,10665250754⟩ E)) ⟨185552,188416,10692004442⟩ (N (N (N E ⟨185680,188416,10717138745⟩ E) ⟨185760,188416,10732824357⟩ E) ⟨186064,188416,10792257141⟩ (N E ⟨186144,188416,10807849829⟩ E))))))) ⟨186224,188416,10823421840⟩ (N (N (N (N (N (N (N (N E ⟨186320,188416,10842080322⟩ E) ⟨186360,188416,10849845525⟩ E) ⟨186448,188416,10866909622⟩ (N (N E ⟨186688,188416,10913308617⟩ E) ⟨187296,188416,11029869377⟩ E)) ⟨187680,188416,11102692862⟩ (N (N (N E ⟨187728,188416,11111749530⟩ E) ⟨188056,188416,11173348504⟩ E) ⟨188236,188416,11206932078⟩ (N E ⟨188364,188416,11230715130⟩ E))) ⟨188416,188648,10703590170⟩ (N (N (N (N E ⟨188416,189032,9827983555⟩ E) ⟨188416,189104,9665847445⟩ E) ⟨188416,189688,8378970143⟩ (N (N E ⟨188416,189760,8224162898⟩ E) ⟨188416,189952,7815921159⟩ E)) ⟨188416,190464,6762594557⟩ (N (N (N E ⟨188416,191232,5292329246⟩ E) ⟨188416,191456,4891156123⟩ E) ⟨188416,191512,4792942938⟩ (N E ⟨188416,191856,4208503414⟩ E)))) ⟨188416,191968,4025402962⟩ (N (N (N (N (N E ⟨188416,192056,3884075859⟩ E) ⟨188416,192236,3602065857⟩ E) ⟨188416,192284,3528487292⟩ (N (N E ⟨188416,192880,2673581588⟩ E) ⟨188416,193176,2290591866⟩ E)) ⟨188416,193792,1585530720⟩ (N (N (N E ⟨188416,193800,1577206465⟩ E) ⟨188416,193884,1491105504⟩ E) ⟨188416,194016,1360628775⟩ (N E ⟨188416,194248,1145674799⟩ E))) ⟨188416,194528,910796146⟩ (N (N (N (N E ⟨188416,194560,885669736⟩ E) ⟨188416,194600,854758010⟩ E) ⟨188416,194696,782821429⟩ (N (N E ⟨188416,194780,722486608⟩ E) ⟨188416,194844,678153243⟩ E)) ⟨188416,194892,645832146⟩ (N (N (N E ⟨188416,194920,627345943⟩ E) ⟨188416,194968,596285838⟩ E) ⟨188416,195184,466370894⟩ (N E ⟨188416,195552,282126683⟩ E))))) ⟨188416,195724,211987719⟩ (N (N (N (N (N (N E ⟨188416,195848,167705408⟩ E) ⟨188416,195912,146902746⟩ E) ⟨188416,196368,38832875⟩ (N (N E ⟨188416,196444,27610655⟩ E) ⟨188416,196512,19198372⟩ E)) ⟨188416,196608,9929527⟩ (N (N (N E ⟨188444,195864,162627172⟩ E) ⟨188528,192940,2600124669⟩ E) ⟨188528,194604,854605634⟩ (N E ⟨188680,196608,10431959⟩ E))) ⟨188696,196608,10462381⟩ (N (N (N (N E ⟨188808,196608,10675179⟩ E) ⟨188828,194968,604638393⟩ E) ⟨188908,193256,2216727955⟩ (N (N E ⟨188908,194920,637638845⟩ E) ⟨188960,194908,646694258⟩ E)) ⟨189068,195144,500738748⟩ (N (N (N E ⟨189088,196508,21474097⟩ E) ⟨189160,196484,24641540⟩ E) ⟨189196,195208,465995707⟩ (N E ⟨189196,196608,11409088⟩ E)))) ⟨189552,195564,290664070⟩ (N (N (N (N (N E ⟨189760,192508,3282502877⟩ E) ⟨189760,195256,447917952⟩ E) ⟨189900,195912,158980535⟩ (N (N E ⟨190056,195124,529364540⟩ E) ⟨190092,196040,120872767⟩ E)) ⟨190108,195992,135158220⟩ (N (N (N E ⟨190192,194604,895633242⟩ E) ⟨190428,194904,678441207⟩ E) ⟨190428,196608,13665979⟩ (N E ⟨190496,195070,570035870⟩ E))) ⟨190572,194920,670112585⟩ (N (N (N (N E ⟨190624,196572,17720917⟩ E) ⟨190732,195370,399554016⟩ E) ⟨190732,195434,366485944⟩ (N E ⟨190732,196608,14195591⟩ E)) ⟨190840,196608,14380346⟩ (N (N (N E ⟨190924,196608,14522728⟩ E) ⟨191276,195688,254399069⟩ E) ⟨191512,195924,166375311⟩ (N E ⟨191564,196234,78055014⟩ E)))))) ⟨191592,195940,161481021⟩ (N (N (N (N (N (N (N E ⟨191628,196234,78308182⟩ E) ⟨191644,196186,89925937⟩ E) ⟨191870,196444,37795360⟩ (N (N E ⟨192056,194740,827990647⟩ E) ⟨192106,195880,185550021⟩ E)) ⟨192106,196608,16383451⟩ (N (N (N E ⟨192156,196608,16455500⟩ E) ⟨192236,196584,19223037⟩ E) ⟨192508,195256,484592607⟩ (N E ⟨192584,195590,309062020⟩ E))) ⟨192584,196326,61348390⟩ (N (N (N (N E ⟨192584,196422,43157808⟩ E) ⟨192680,196608,17173262⟩ E) ⟨192940,195978,156223418⟩ (N (N E ⟨192970,196608,17539522⟩ E) ⟨192986,196608,17559055⟩ E)) ⟨193176,196278,73392287⟩ (N (N (N E ⟨193240,196310,66488771⟩ E) ⟨193256,196262,77287526⟩ E) ⟨193416,196422,44899262⟩ (N E ⟨193448,196422,44959736⟩ E)))) ⟨193770,196608,18424759⟩ (N (N (N (N (N E ⟨193834,196608,18487203⟩ E) ⟨193926,196608,18574707⟩ E) ⟨194312,196608,18912217⟩ (N (N E ⟨196608,196632,17101590⟩ E) ⟨196608,196663,13845390⟩ E)) ⟨196608,196696,10757353⟩ (N (N (N E ⟨196608,196736,7536840⟩ E) ⟨196608,196744,6961417⟩ E) ⟨196608,196748,6682287⟩ (N E ⟨196608,196750,6544867⟩ E))) ⟨196608,196768,5372431⟩ (N (N (N (N E ⟨196608,196772,5127615⟩ E) ⟨196608,196808,3181467⟩ E) ⟨196608,196840,1839977⟩ (N E ⟨196608,196876,767374⟩ E)) ⟨196608,196880,676712⟩ (N (N (N E ⟨196608,196916,117204⟩ E) ⟨196608,196932,16628⟩ E) ⟨196608,196936,5716⟩ (N E ⟨196608,196940,495⟩ E))))) ⟨196950,198869,11868⟩ (N (N (N (N (N (N E ⟨196950,198885,11865⟩ E) ⟨196950,199301,11766⟩ E) ⟨196950,199717,11668⟩ (N (N E ⟨196950,200133,11571⟩ E) ⟨196950,200820,11413⟩ E)) ⟨196950,201652,11226⟩ (N (N (N E ⟨196950,202388,11063⟩ E) ⟨196950,202484,11042⟩ E) ⟨196950,203252,10876⟩ (N E ⟨196950,203316,10862⟩ E))) ⟨196951,199286,14765⟩ (N (N (N (N E ⟨196951,200086,14530⟩ E) ⟨196951,200118,14520⟩ E) ⟨196960,201308,54735⟩ (N (N E ⟨196960,202496,53460⟩ E) ⟨196960,202972,52960⟩ E)) ⟨196960,204800,51091⟩ (N (N (N E ⟨196964,204800,75826⟩ E) ⟨196966,200772,97473⟩ E) ⟨196966,202372,94423⟩ (N E ⟨196980,203056,231238⟩ E)))) ⟨196980,204800,223451⟩ (N (N (N (N (N E ⟨196982,198901,278106⟩ E) ⟨196982,199701,273670⟩ E) ⟨196982,200133,271311⟩ (N (N E ⟨196982,200820,267613⟩ E) ⟨196982,201588,263552⟩ E)) ⟨196982,201908,261883⟩ (N (N (N E ⟨196984,204660,273280⟩ E) ⟨196984,204800,272532⟩ E) ⟨196986,201052,321850⟩ (N E ⟨196986,203512,306549⟩ E))) ⟨196992,204224,389680⟩ (N (N (N (N E ⟨196992,204800,385309⟩ E) ⟨196996,199970,494045⟩ E) ⟨196996,200738,486518⟩ (N E ⟨196996,201602,478220⟩ E)) ⟨196996,202944,465679⟩ (N (N (N E ⟨196997,199284,519506⟩ E) ⟨196998,198917,542450⟩ E) ⟨196998,199301,538275⟩ (N E ⟨197012,199954,828274⟩ E))))))))
+
+noncomputable def tab11 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨197012,201554,802251⟩ E) ⟨197012,202896,781208⟩ E) ⟨197014,199317,887338⟩ (N (N E ⟨197014,199733,879958⟩ E) ⟨197014,200165,872376⟩ E)) ⟨197014,200709,862944⟩ (N (N (N E ⟨197014,200852,860485⟩ E) ⟨197014,201620,847432⟩ E) ⟨197014,202740,828836⟩ (N E ⟨197014,203316,819471⟩ E))) ⟨197015,200278,894649⟩ (N (N (N (N E ⟨197032,204800,1241610⟩ E) ⟨197044,204800,1593589⟩ E) ⟨197045,198964,1824384⟩ (N (N E ⟨197045,199380,1809185⟩ E) ⟨197045,199796,1794144⟩ E)) ⟨197048,200327,1879798⟩ (N (N (N E ⟨197048,204800,1720673⟩ E) ⟨197056,204800,1989481⟩ E) ⟨197060,200098,2338988⟩ (N E ⟨197060,200930,2300435⟩ E)))) ⟨197062,200100,2418671⟩ (N (N (N (N (N E ⟨197064,204800,2277812⟩ E) ⟨197068,204800,2429300⟩ E) ⟨197077,198980,3129260⟩ (N (N E ⟨197077,199364,3105187⟩ E) ⟨197078,201349,3028672⟩ E)) ⟨197079,199382,3196550⟩ (N (N (N E ⟨197082,203640,3066944⟩ E) ⟨197088,201280,3494398⟩ E) ⟨197088,201856,3454630⟩ (N E ⟨197092,199811,3798000⟩ E))) ⟨197092,200098,3776228⟩ (N (N (N (N E ⟨197092,200866,3718728⟩ E) ⟨197093,199380,3882166⟩ E) ⟨197093,199796,3849890⟩ (N (N E ⟨197095,200246,3916940⟩ E) ⟨197095,200278,3914434⟩ E)) ⟨197104,204800,4012450⟩ (N (N (N E ⟨197108,199864,4645226⟩ E) ⟨197108,200440,4591989⟩ E) ⟨197108,201010,4540055⟩ (N E ⟨197108,201874,4462725⟩ E))))) ⟨197110,200789,4670511⟩ (N (N (N (N (N (N E ⟨197111,199814,4819262⟩ E) ⟨197111,200230,4779283⟩ E) ⟨197112,200918,4769955⟩ (N (N E ⟨197112,200950,4766913⟩ E) ⟨197112,201367,4727497⟩ E)) ⟨197112,201782,4688673⟩ (N (N (N E ⟨197112,203446,4536951⟩ E) ⟨197112,204788,4419038⟩ E) ⟨197112,204800,4418001⟩ (N E ⟨197120,199328,5398003⟩ E))) ⟨197120,200192,5305291⟩ (N (N (N (N E ⟨197120,201344,5184750⟩ E) ⟨197120,201920,5125764⟩ E) ⟨197120,204416,4879645⟩ (N (N E ⟨197120,204800,4843103⟩ E) ⟨197128,200902,5710822⟩ E)) ⟨197128,204676,5300602⟩ (N (N (N E ⟨197136,204800,5751973⟩ E) ⟨197139,200274,6486464⟩ E) ⟨197139,200306,6482315⟩ (N E ⟨197140,202202,6305748⟩ E)))) ⟨197140,203024,6204110⟩ (N (N (N (N (N E ⟨197140,203544,6140871⟩ E) ⟨197140,204560,6019619⟩ E) ⟨197140,204800,5991415⟩ (N (N E ⟨197142,202100,6446696⟩ E) ⟨197144,200950,6728216⟩ E)) ⟨197144,201750,6621990⟩ (N (N (N E ⟨197152,199824,7436819⟩ E) ⟨197152,200256,7372768⟩ E) ⟨197152,201920,7132405⟩ (N E ⟨197152,202688,7024775⟩ E))) ⟨197159,200310,7863668⟩ (N (N (N (N E ⟨197159,200438,7843573⟩ E) ⟨197164,200434,8209646⟩ E) ⟨197168,199424,8681915⟩ (N E ⟨197168,204800,7804477⟩ E)) ⟨197172,204800,8083058⟩ (N (N (N E ⟨197173,199476,9060675⟩ E) ⟨197174,199461,9142013⟩ E) ⟨197174,202868,8542402⟩ (N E ⟨197174,203700,8403510⟩ E)))))) ⟨197176,201431,8941248⟩ (N (N (N (N (N (N (N E ⟨197176,202102,8822938⟩ E) ⟨197176,204788,8368497⟩ E) ⟨197176,204800,8366533⟩ (N (N E ⟨197184,199440,9950990⟩ E) ⟨197184,199856,9868285⟩ E)) ⟨197184,200288,9783305⟩ (N (N (N E ⟨197184,200368,9767669⟩ E) ⟨197184,200416,9758302⟩ E) ⟨197184,201952,9464405⟩ (N E ⟨197184,203552,9169936⟩ E))) ⟨197184,204416,9015683⟩ (N (N (N (N E ⟨197184,204800,8948168⟩ E) ⟨197188,203136,9553447⟩ E) ⟨197188,204672,9269510⟩ (N (N E ⟨197188,204800,9246328⟩ E) ⟨197190,199477,10442633⟩ E)) ⟨197190,199893,10355857⟩ (N (N (N E ⟨197192,200998,10293696⟩ E) ⟨197192,201734,10144096⟩ E) ⟨197192,204740,9560598⟩ (N E ⟨197200,204800,10170188⟩ E)))) ⟨197204,203152,10832875⟩ (N (N (N (N (N E ⟨197204,204688,10510938⟩ E) ⟨197205,199556,11725169⟩ E) ⟨197205,200884,11417769⟩ (N (N E ⟨197206,199125,11917254⟩ E) ⟨197206,199541,11818049⟩ E)) ⟨197206,199957,11719875⟩ (N (N (N E ⟨197208,201782,11472896⟩ E) ⟨197212,200480,12131002⟩ E) ⟨197216,199424,12760170⟩ (N E ⟨197216,199856,12650051⟩ E))) ⟨197216,200288,12541117⟩ (N (N (N (N E ⟨197216,201632,12209628⟩ E) ⟨197216,201728,12186371⟩ E) ⟨197216,202496,12002302⟩ (N (N E ⟨197216,202560,11987120⟩ E) ⟨197216,204800,11470563⟩ E)) ⟨197221,199572,13190849⟩ (N (N (N E ⟨197221,199988,13081288⟩ E) ⟨197222,199125,13405438⟩ E) ⟨197228,204800,12497280⟩ (N E ⟨197236,199939,14540021⟩ E))))) ⟨197236,200371,14414863⟩ (N (N (N (N (N (N E ⟨197236,201042,14223122⟩ E) ⟨197236,204800,13206257⟩ E) ⟨197238,199525,14861413⟩ (N (N E ⟨197240,201078,14602347⟩ E) ⟨197240,201110,14593043⟩ E)) ⟨197240,201511,14477076⟩ (N (N (N E ⟨197240,201942,14353714⟩ E) ⟨197240,202198,14281064⟩ E) ⟨197240,203510,13915861⟩ (N E ⟨197240,203606,13889600⟩ E))) ⟨197240,204800,13568097⟩ (N (N (N (N E ⟨197248,203616,14642599⟩ E) ⟨197248,203712,14614981⟩ E) ⟨197248,204544,14378330⟩ (N (N E ⟨197248,204800,14306480⟩ E) ⟨197253,199172,16522845⟩ E)) ⟨197253,199556,16395861⟩ (N (N (N E ⟨197254,199957,16369340⟩ E) ⟨197254,200260,16270362⟩ E) ⟨197256,201062,16217953⟩ (N E ⟨197256,201830,15972182⟩ E)))) ⟨197256,202662,15711163⟩ (N (N (N (N (N E ⟨197264,199904,17454274⟩ E) ⟨197269,199572,18120951⟩ E) ⟨197269,199588,18115133⟩ (N (N E ⟨197269,199988,17970442⟩ E) ⟨197270,199557,18237478⟩ E)) ⟨197270,200965,17731045⟩ (N (N (N E ⟨197272,201110,17896233⟩ E) ⟨197272,201116,17894094⟩ E) ⟨197272,203808,16966045⟩ (N E ⟨197272,204800,16639286⟩ E))) ⟨197280,204800,17456117⟩ (N (N (N (N E ⟨197282,200288,19311924⟩ E) ⟨197286,199973,19894210⟩ E) ⟨197286,199989,19887835⟩ (N E ⟨197296,202808,19913135⟩ E)) ⟨197296,203960,19466461⟩ (N (N (N E ⟨197296,204800,19148638⟩ E) ⟨197300,200051,21513607⟩ E) ⟨197300,200467,21335345⟩ (N E ⟨197300,201106,21065106⟩ E))))))) ⟨197300,201138,21051686⟩ (N (N (N (N (N (N (N (N E ⟨197300,201874,20745950⟩ E) ⟨197300,201970,20706482⟩ E) ⟨197300,202802,20368326⟩ (N (N E ⟨197302,202228,20831811⟩ E) ⟨197302,203828,20184533⟩ E)) ⟨197304,201575,21338683⟩ (N (N (N E ⟨197304,202262,21049859⟩ E) ⟨197304,204800,20024334⟩ E) ⟨197312,200384,22828242⟩ (N E ⟨197312,200960,22567290⟩ E))) ⟨197312,201728,22225127⟩ (N (N (N (N E ⟨197312,202592,21847912⟩ E) ⟨197312,203456,21478667⟩ E) ⟨197312,204608,20998393⟩ (N (N E ⟨197312,204800,20919657⟩ E) ⟨197316,199603,23692488⟩ E)) ⟨197320,204800,21834610⟩ (N (N (N E ⟨197328,199584,25247846⟩ E) ⟨197332,199619,25756077⟩ E) ⟨197332,200035,25542201⟩ (N E ⟨197332,201138,24985775⟩ E)))) ⟨197332,201906,24607277⟩ (N (N (N (N (N E ⟨197332,202738,24205292⟩ E) ⟨197332,203800,23704035⟩ E) ⟨197334,199637,26011699⟩ (N (N E ⟨197334,203060,24299405⟩ E) ⟨197334,203892,23904688⟩ E)) ⟨197336,200599,25776842⟩ (N (N (N E ⟨197336,201942,25097044⟩ E) ⟨197344,202880,25646808⟩ E) ⟨197347,200498,27292301⟩ (N E ⟨197347,200530,27274861⟩ E))) ⟨197350,199653,28170979⟩ (N (N (N (N E ⟨197350,200069,27937090⟩ E) ⟨197350,200356,27777143⟩ E) ⟨197350,200388,27759380⟩ (N (N E ⟨197350,201220,27302493⟩ E) ⟨197352,201764,27274477⟩ E)) ⟨197352,203428,26391817⟩ (N (N (N E ⟨197352,204800,25690771⟩ E) ⟨197356,200658,28428729⟩ E) ⟨197360,199568,29620404⟩ (N E ⟨197360,200000,29364965⟩ E))))) ⟨197360,201272,28628666⟩ (N (N (N (N (N (N E ⟨197364,203058,28165184⟩ E) ⟨197364,203890,27707668⟩ E) ⟨197366,199285,30651276⟩ (N (N E ⟨197366,199301,30641421⟩ E) ⟨197366,199717,30386573⟩ E)) ⟨197366,200133,30134369⟩ (N (N (N E ⟨197366,200340,30009849⟩ E) ⟨197366,201108,29553445⟩ E) ⟨197366,201940,29068758⟩ (N E ⟨197366,203060,28431881⟩ E))) ⟨197368,203670,28358210⟩ (N (N (N (N E ⟨197368,204800,27736695⟩ E) ⟨197374,201412,30495083⟩ E) ⟨197376,200992,31036758⟩ (N (N E ⟨197376,202720,29990601⟩ E) ⟨197376,203584,29484057⟩ E)) ⟨197376,204736,28825188⟩ (N (N (N E ⟨197376,204800,28789126⟩ E) ⟨197380,201154,31510151⟩ E) ⟨197380,201922,31032856⟩ (N E ⟨197380,202754,30525942⟩ E)))) ⟨197380,204800,29322710⟩ (N (N (N (N (N E ⟨197381,201076,31703534⟩ E) ⟨197382,199301,32999678⟩ E) ⟨197392,204800,30952938⟩ (N (N E ⟨197397,200532,34430405⟩ E) ⟨197398,199701,35162068⟩ E)) ⟨197408,200480,36154484⟩ (N (N (N E ⟨197408,200512,36131379⟩ E) ⟨197408,201056,35741395⟩ E) ⟨197408,201088,35718619⟩ (N E ⟨197408,201600,35356660⟩ E))) ⟨197408,201920,35132763⟩ (N (N (N (N E ⟨197408,204800,33195364⟩ E) ⟨197413,199700,37516513⟩ E) ⟨197414,200133,37350705⟩ (N E ⟨197424,200108,38971284⟩ E)) ⟨197424,202792,36946064⟩ (N (N (N E ⟨197424,204800,35516421⟩ E) ⟨197428,200147,39590562⟩ E) ⟨197428,200579,39250128⟩ (N E ⟨197428,201266,38716247⟩ E)))))) ⟨197428,204800,36108973⟩ (N (N (N (N (N (N (N E ⟨197429,199716,40098574⟩ E) ⟨197429,200132,39765761⟩ E) ⟨197429,200564,39423795⟩ (N (N E ⟨197430,199349,40561321⟩ E) ⟨197430,199733,40249868⟩ E)) ⟨197430,200693,39484219⟩ (N (N (N E ⟨197430,201109,39158096⟩ E) ⟨197431,200694,39645585⟩ E) ⟨197432,202358,38513054⟩ (N E ⟨197432,204800,36706441⟩ E))) ⟨197440,200544,41243304⟩ (N (N (N (N E ⟨197440,200672,41138033⟩ E) ⟨197440,201088,40798215⟩ E) ⟨197440,201120,40772221⟩ (N (N E ⟨197440,201632,40359116⟩ E) ⟨197440,201664,40333471⟩ E)) ⟨197440,201952,40103581⟩ (N (N (N E ⟨197440,202240,39875327⟩ E) ⟨197440,202976,39299349⟩ E) ⟨197440,203452,38932375⟩ (N E ⟨197440,203904,38587861⟩ E)))) ⟨197440,204800,37916125⟩ (N (N (N (N (N E ⟨197442,200448,41655417⟩ E) ⟨197442,201280,40970021⟩ E) ⟨197446,199749,42921697⟩ (N (N E ⟨197446,200165,42565511⟩ E) ⟨197446,201220,41678635⟩ E)) ⟨197461,199364,45870711⟩ (N (N (N E ⟨197461,199380,45855969⟩ E) ⟨197461,199796,45474730⟩ E) ⟨197461,200212,45097446⟩ (N E ⟨197461,200628,44724068⟩ E))) ⟨197462,202420,43325839⟩ (N (N (N (N E ⟨197462,204020,41980891⟩ E) ⟨197464,200743,45139484⟩ E) ⟨197468,200736,45841150⟩ (N E ⟨197468,201312,45318049⟩ E)) ⟨197468,202144,44575564⟩ (N (N (N E ⟨197472,200240,47005328⟩ E) ⟨197472,200576,46690725⟩ E) ⟨197472,201152,46157506⟩ (N E ⟨197472,201984,45400671⟩ E))))) ⟨197472,202240,45170925⟩ (N (N (N (N (N (N E ⟨197472,203840,43767473⟩ E) ⟨197474,200448,47164637⟩ E) ⟨197474,201216,46447719⟩ (N (N E ⟨197488,204800,45587265⟩ E) ⟨197492,200248,50616303⟩ E)) ⟨197492,200259,50605168⟩ (N (N (N E ⟨197492,200675,50186287⟩ E) ⟨197492,200824,50037311⟩ E) ⟨197492,201330,49535500⟩ (N E ⟨197492,201362,49503977⟩ E))) ⟨197492,202098,48785819⟩ (N (N (N (N E ⟨197492,202194,48693110⟩ E) ⟨197492,202418,48477642⟩ E) ⟨197492,203026,47898782⟩ (N (N E ⟨197492,204800,46258495⟩ E) ⟨197493,200196,50853633⟩ E)) ⟨197493,200628,50416456⟩ (N (N (N E ⟨197494,202068,49170945⟩ E) ⟨197496,200252,51352040⟩ E) ⟨197496,201751,49840788⟩ (N E ⟨197496,203190,48441988⟩ E)))) ⟨197496,204800,46934644⟩ (N (N (N (N (N E ⟨197500,200256,52093042⟩ E) ⟨197500,200832,51497181⟩ E) ⟨197504,200576,52506657⟩ (N (N E ⟨197504,201152,51907019⟩ E) ⟨197504,201696,51348537⟩ E)) ⟨197504,201920,51120758⟩ (N (N (N E ⟨197504,202016,51023525⟩ E) ⟨197504,203648,49405401⟩ E) ⟨197504,203712,49343262⟩ (N E ⟨197504,204800,48301700⟩ E))) ⟨197508,202082,51685698⟩ (N (N (N (N E ⟨197508,202914,50842089⟩ E) ⟨197508,203746,50015625⟩ E) ⟨197509,199412,54706915⟩ (N E ⟨197509,199796,54286976⟩ E)) ⟨197524,199827,57165676⟩ (N (N (N E ⟨197524,200243,56691471⟩ E) ⟨197524,200675,56204222⟩ E) ⟨197524,201362,55440094⟩ (N E ⟨197524,202130,54601185⟩ E))))))))
+
+noncomputable def tab12 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨197525,199812,57379803⟩ E) ⟨197525,200660,56414675⟩ E) ⟨197525,201204,55806211⟩ (N (N E ⟨197526,202100,55010292⟩ E) ⟨197526,202932,54112498⟩ E)) ⟨197526,203252,53772076⟩ (N (N (N E ⟨197526,204084,52899427⟩ E) ⟨197527,200230,57293107⟩ E) ⟨197528,204800,52520949⟩ (N E ⟨197532,203936,54150578⟩ E))) ⟨197534,201604,57088934⟩ (N (N (N (N E ⟨197536,203072,55829662⟩ E) ⟨197541,200228,60074402⟩ E) ⟨197548,204800,56172309⟩ (N (N E ⟨197552,199760,62890923⟩ E) ⟨197552,204800,56917346⟩ E)) ⟨197556,201594,61429249⟩ (N (N (N E ⟨197556,203282,59411520⟩ E) ⟨197556,204114,58447491⟩ E) ⟨197558,204084,58864058⟩ (N E ⟨197558,204800,58044128⟩ E)))) ⟨197560,202518,61103859⟩ (N (N (N (N (N E ⟨197560,203636,59771244⟩ E) ⟨197568,204800,59946710⟩ E) ⟨197573,200724,66016755⟩ (N (N E ⟨197575,200854,66264447⟩ E) ⟨197576,203588,62970277⟩ E)) ⟨197576,204800,61490925⟩ (N (N (N E ⟨197584,199840,69560898⟩ E) ⟨197584,200256,68983909⟩ E) ⟨197589,199892,70576636⟩ (N E ⟨197589,201844,67882283⟩ E))) ⟨197590,200725,69625825⟩ (N (N (N (N E ⟨197590,200869,69426116⟩ E) ⟨197590,201285,68853187⟩ E) ⟨197590,201396,68701315⟩ (N (N E ⟨197591,200854,69661709⟩ E) ⟨197592,202268,67940743⟩ E)) ⟨197600,199856,73053181⟩ (N (N (N E ⟨197600,200416,72239000⟩ E) ⟨197600,200832,71641514⟩ E) ⟨197600,202016,69974472⟩ (N E ⟨197602,201376,71301596⟩ E))))) ⟨197602,202240,70089331⟩ (N (N (N (N (N (N E ⟨197602,202304,70000563⟩ E) ⟨197603,199938,73600806⟩ E) ⟨197604,201952,70919039⟩ (N (N E ⟨197604,203616,68626047⟩ E) ⟨197605,199908,74092058⟩ E)) ⟨197605,200324,73477693⟩ (N (N (N E ⟨197605,200756,72846424⟩ E) ⟨197606,199893,74338407⟩ E) ⟨197616,200288,75994540⟩ (N E ⟨197616,200384,75848818⟩ E))) ⟨197616,200800,75221376⟩ (N (N (N (N E ⟨197616,204800,69507379⟩ E) ⟨197622,199541,78522136⟩ E) ⟨197622,199957,77869842⟩ (N (N E ⟨197622,200757,76634362⟩ E) ⟨197622,200789,76585454⟩ E)) ⟨197622,201428,75616951⟩ (N (N (N E ⟨197622,201460,75568854⟩ E) ⟨197622,201877,74945571⟩ E) ⟨197622,202292,74331646⟩ (N E ⟨197622,203124,73119661⟩ E)))) ⟨197624,201895,75360834⟩ (N (N (N (N (N E ⟨197624,203350,73224210⟩ E) ⟨197624,204800,71169751⟩ E) ⟨197632,204000,74002844⟩ (N (N E ⟨197632,204800,72851820⟩ E) ⟨197636,204800,73700240⟩ E)) ⟨197637,199556,82005355⟩ (N (N (N E ⟨197637,199572,81979025⟩ E) ⟨197637,199988,81298119⟩ E) ⟨197637,200404,80624271⟩ (N E ⟨197637,200820,79957391⟩ E))) ⟨197638,201412,79248128⟩ (N (N (N (N E ⟨197648,199856,84118212⟩ E) ⟨197648,200288,83393840⟩ E) ⟨197652,202064,81412715⟩ (N E ⟨197652,202128,81309515⟩ E)) ⟨197652,203792,78682822⟩ (N (N (N E ⟨197654,202260,81555430⟩ E) ⟨197654,203060,80276102⟩ E) ⟨197656,203604,79867983⟩ (N E ⟨197664,200932,86108356⟩ E)))))) ⟨197664,201280,85513599⟩ (N (N (N (N (N (N (N E ⟨197664,201508,85126714⟩ E) ⟨197664,201856,84540414⟩ E) ⟨197664,202340,83733355⟩ (N (N E ⟨197664,204200,80720077⟩ E) ⟨197664,204800,79777068⟩ E)) ⟨197668,200371,88047146⟩ (N (N (N E ⟨197669,200388,88260255⟩ E) ⟨197669,200820,87502227⟩ E) ⟨197680,201012,89830015⟩ (N E ⟨197680,201592,88799294⟩ E))) ⟨197680,204800,83357886⟩ (N (N (N (N E ⟨197684,200440,91850418⟩ E) ⟨197684,202642,87917516⟩ E) ⟨197684,204800,84265403⟩ (N (N E ⟨197685,199604,93653354⟩ E) ⟨197685,199988,92935147⟩ E)) ⟨197686,200533,92175613⟩ (N (N (N E ⟨197686,200821,91647277⟩ E) ⟨197686,201492,90430938⟩ E) ⟨197686,202260,89063431⟩ (N E ⟨197686,202292,89007014⟩ E)))) ⟨197686,202612,88445301⟩ (N (N (N (N (N E ⟨197686,203124,87555746⟩ E) ⟨197686,203380,87115164⟩ E) ⟨197686,204800,84721008⟩ (N (N E ⟨197688,200444,92837572⟩ E) ⟨197688,201020,91776650⟩ E)) ⟨197688,201600,90723634⟩ (N (N (N E ⟨197696,199904,95873024⟩ E) ⟨197696,200336,95047625⟩ E) ⟨197696,200768,94231092⟩ (N E ⟨197696,201344,93155976⟩ E))) ⟨197696,201376,93096698⟩ (N (N (N (N E ⟨197696,201920,92096153⟩ E) ⟨197696,202208,91571895⟩ E) ⟨197696,204800,87017505⟩ (N (N E ⟨197701,200004,96956428⟩ E) ⟨197701,200420,96152858⟩ E)) ⟨197701,200852,95327176⟩ (N (N (N E ⟨197701,201396,94299997⟩ E) ⟨197702,201476,94398767⟩ E) ⟨197702,202244,92971146⟩ (N E ⟨197702,203076,91454885⟩ E))))) ⟨197716,200051,100738137⟩ (N (N (N (N (N (N E ⟨197716,200467,99903420⟩ E) ⟨197718,200853,99650457⟩ E) ⟨197718,201524,98328110⟩ (N (N E ⟨197718,202292,96841415⟩ E) ⟨197718,203124,95262406⟩ E)) ⟨197718,204276,93128848⟩ (N (N (N E ⟨197724,204800,93611463⟩ E) ⟨197728,200400,103168452⟩ E) ⟨197728,200832,102282437⟩ (N E ⟨197728,201408,101115830⟩ E))) ⟨197728,202240,99459945⟩ (N (N (N (N E ⟨197728,202496,98957274⟩ E) ⟨197728,203072,97837827⟩ E) ⟨197734,201540,102398977⟩ (N (N E ⟨197735,201014,103738349⟩ E) ⟨197738,201776,102953915⟩ E)) ⟨197744,200000,108281690⟩ (N (N (N E ⟨197744,201656,104763758⟩ E) ⟨197744,202424,103180788⟩ E) ⟨197744,204800,98469199⟩ (N E ⟨197748,200035,109289674⟩ E)))) ⟨197748,200786,107661531⟩ (N (N (N (N (N E ⟨197748,204352,100331682⟩ E) ⟨197750,200901,107949524⟩ E) ⟨197750,201588,106483531⟩ (N (N E ⟨197750,202676,104212397⟩ E) ⟨197752,201664,106850766⟩ E)) ⟨197752,202432,105236326⟩ (N (N (N E ⟨197752,204800,100446772⟩ E) ⟨197760,200432,111683239⟩ E) ⟨197760,200528,111469236⟩ (N E ⟨197760,200864,110724252⟩ E))) ⟨197760,200944,110547793⟩ (N (N (N (N E ⟨197760,200992,110442086⟩ E) ⟨197760,201376,109600967⟩ E) ⟨197760,201408,109531236⟩ (N E ⟨197760,201440,109461560⟩ E)) ⟨197760,201952,108354249⟩ (N (N (N E ⟨197760,201984,108285508⟩ E) ⟨197760,202272,107669288⟩ E) ⟨197760,202560,107057445⟩ (N E ⟨197760,203392,105314155⟩ E))))))) ⟨197760,204128,103801507⟩ (N (N (N (N (N (N (N (N E ⟨197760,204224,103606213⟩ E) ⟨197760,204800,102444049⟩ E) ⟨197764,200051,113642794⟩ (N (N E ⟨197764,200467,112701149⟩ E) ⟨197764,200738,112092966⟩ E)) ⟨197764,200770,112021422⟩ (N (N (N E ⟨197764,201602,110181161⟩ E) ⟨197764,204800,103450075⟩ E) ⟨197765,202036,109502603⟩ (N E ⟨197766,200069,114156250⟩ E))) ⟨197780,200722,116543846⟩ (N (N (N (N E ⟨197780,201650,114410415⟩ E) ⟨197781,201460,115117927⟩ E) ⟨197782,200133,118488266⟩ (N (N E ⟨197782,200933,116609976⟩ E) ⟨197782,200965,116535622⟩ E)) ⟨197782,201620,115026622⟩ (N (N (N E ⟨197782,201652,114953528⟩ E) ⟨197782,202053,114042469⟩ E) ⟨197782,202484,113073296⟩ (N E ⟨197782,202740,112502511⟩ E)))) ⟨197782,203316,111231359⟩ (N (N (N (N (N E ⟨197783,201462,115663736⟩ E) ⟨197784,204800,108554093⟩ E) ⟨197788,201632,116650695⟩ (N (N E ⟨197788,203296,112873205⟩ E) ⟨197792,200000,121654515⟩ E)) ⟨197792,200432,120607658⟩ (N (N (N E ⟨197792,200864,119572039⟩ E) ⟨197792,201440,118208448⟩ E) ⟨197792,202208,116420428⟩ (N E ⟨197792,202304,116199310⟩ E))) ⟨197792,202560,115612224⟩ (N (N (N (N E ⟨197792,203072,114449136⟩ E) ⟨197792,203136,114304780⟩ E) ⟨197798,200501,122150726⟩ (N (N E ⟨197798,201604,119495844⟩ E) ⟨197798,202372,117689812⟩ E)) ⟨197798,203204,115771620⟩ (N (N (N E ⟨197798,204036,113892360⟩ E) ⟨197810,201616,122846125⟩ E) ⟨197810,202384,120989567⟩ (N E ⟨197810,202480,120759971⟩ E))))) ⟨197810,203216,119017710⟩ (N (N (N (N (N (N E ⟨197810,203312,118792782⟩ E) ⟨197810,204080,117012355⟩ E) ⟨197810,204144,116865497⟩ (N (N E ⟨197814,199733,128731375⟩ E) ⟨197814,203252,120033836⟩ E)) ⟨197814,203508,119430204⟩ (N (N (N E ⟨197824,203360,122546376⟩ E) ⟨197824,204800,119131542⟩ E) ⟨197844,201554,132839154⟩ (N E ⟨197845,200132,136963957⟩ E))) ⟨197846,200709,135694186⟩ (N (N (N (N E ⟨197846,200997,134917089⟩ E) ⟨197846,201109,134616388⟩ E) ⟨197846,201684,133085737⟩ (N (N E ⟨197846,202452,131075103⟩ E) ⟨197846,202804,130166259⟩ E)) ⟨197846,203572,128210517⟩ (N (N (N E ⟨197846,204800,125159081⟩ E) ⟨197847,202102,132279321⟩ E) ⟨197856,200672,138820464⟩ (N E ⟨197860,200579,140300486⟩ E)))) ⟨197860,200866,139499272⟩ (N (N (N (N (N E ⟨197860,201602,137470583⟩ E) ⟨197861,200148,141823539⟩ E) ⟨197861,200564,140648956⟩ (N (N E ⟨197862,200165,142084527⟩ E) ⟨197864,204800,130201516⟩ E)) ⟨197872,204800,132474608⟩ (N (N (N E ⟨197876,202802,138969641⟩ E) ⟨197877,199796,147852138⟩ E) ⟨197877,200212,146625474⟩ (N E ⟨197877,200628,145411509⟩ E))) ⟨197878,201029,144562433⟩ (N (N (N (N E ⟨197878,201716,142600466⟩ E) ⟨197878,202484,140446424⟩ E) ⟨197878,203316,138158586⟩ (N E ⟨197880,204800,134767399⟩ E)) ⟨197888,200656,148775704⟩ (N (N (N E ⟨197888,200960,147876300⟩ E) ⟨197888,203168,141543691⟩ E) ⟨197888,204032,139158233⟩ (N E ⟨197888,204800,137079886⟩ E)))))) ⟨197890,203264,141875120⟩ (N (N (N (N (N (N (N E ⟨197890,204096,139572810⟩ E) ⟨197892,200930,149220782⟩ E) ⟨197892,201762,146771356⟩ (N (N E ⟨197892,202594,144371996⟩ E) ⟨197892,203968,140515959⟩ E)) ⟨197892,204800,138243516⟩ (N (N (N E ⟨197893,199796,152964262⟩ E) ⟨197904,200672,153810287⟩ E) ⟨197907,201042,153634926⟩ (N E ⟨197908,200259,156379296⟩ E))) ⟨197908,200675,155084878⟩ (N (N (N (N E ⟨197910,202868,149094808⟩ E) ⟨197912,204800,144135524⟩ E) ⟨197920,202688,152738434⟩ (N (N E ⟨197920,204460,147505149⟩ E) ⟨197920,204800,146526793⟩ E)) ⟨197925,200628,160751374⟩ (N (N (N E ⟨197927,201622,158243529⟩ E) ⟨197936,204800,151368407⟩ E) ⟨197940,200243,166982753⟩ (N E ⟨197941,200228,167368314⟩ E)))) ⟨197944,202870,159764152⟩ (N (N (N (N (N E ⟨197952,201136,168007961⟩ E) ⟨197952,201568,166570368⟩ E) ⟨197952,201694,166153969⟩ (N (N E ⟨197952,202558,163333450⟩ E) ⟨197952,202720,162811285⟩ E)) ⟨197952,202752,162708388⟩ (N (N (N E ⟨197952,203584,160061385⟩ E) ⟨197952,203964,158870335⟩ E) ⟨197952,204416,157468006⟩ (N E ⟨197952,204800,156288787⟩ E))) ⟨197956,200259,172333583⟩ (N (N (N (N E ⟨197956,200675,170907105⟩ E) ⟨197956,200962,169931572⟩ E) ⟨197956,201730,167355116⟩ (N E ⟨197956,202594,164514710⟩ E)) ⟨197956,203968,160120680⟩ (N (N (N E ⟨197957,200644,171350911⟩ E) ⟨197957,200660,171296192⟩ E) ⟨197957,201652,167945849⟩ (N E ⟨197960,204800,158778510⟩ E))))) ⟨197962,202032,168333107⟩ (N (N (N (N (N (N E ⟨197968,204800,161287921⟩ E) ⟨197971,200722,175844242⟩ E) ⟨197971,201138,174392053⟩ (N (N E ⟨197972,201874,172194069⟩ E) ⟨197974,203700,166741058⟩ E)) ⟨197976,204800,163817019⟩ (N (N (N E ⟨197984,200192,182242438⟩ E) ⟨197984,200624,180675711⟩ E) ⟨197984,201056,179125788⟩ (N E ⟨197984,201088,179011642⟩ E))) ⟨197984,201600,177197605⟩ (N (N (N (N E ⟨197984,202176,175184201⟩ E) ⟨197991,202262,177247423⟩ E) ⟨198000,200256,187650757⟩ (N (N E ⟨198003,200706,187029046⟩ E) ⟨198003,201138,185425275⟩ E)) ⟨198004,200752,187210399⟩ (N (N (N E ⟨198004,203410,177602801⟩ E) ⟨198004,204274,174613166⟩ E) ⟨198004,204800,172823873⟩ (N E ⟨198006,201285,185932118⟩ E)))) ⟨198006,202932,179961268⟩ (N (N (N (N (N E ⟨198006,203700,177259053⟩ E) ⟨198007,201270,186337939⟩ E) ⟨198008,203702,177920114⟩ (N (N E ⟨198008,204800,174130248⟩ E) ⟨198016,200272,193316506⟩ E)) ⟨198016,200832,191166441⟩ (N (N (N E ⟨198016,201120,190072335⟩ E) ⟨198016,201632,188146519⟩ E) ⟨198016,201664,188026967⟩ (N E ⟨198016,202208,186009045⟩ E))) ⟨198016,202240,185891189⟩ (N (N (N (N E ⟨198016,203360,181824413⟩ E) ⟨198016,203552,181138461⟩ E) ⟨198016,204224,178762967⟩ (N E ⟨198016,204800,176757759⟩ E)) ⟨198021,200324,194920675⟩ (N (N (N E ⟨198024,201830,190215010⟩ E) ⟨198032,200800,197039401⟩ E) ⟨198034,201872,193591309⟩ (N E ⟨198034,202736,190307906⟩ E))))))))
+
+noncomputable def tab13 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨198034,204336,184409300⟩ E) ⟨198034,204400,184178145⟩ E) ⟨198037,200340,200689171⟩ (N (N E ⟨198037,200756,199028652⟩ E) ⟨198044,201312,199364560⟩ E)) ⟨198048,200816,202810742⟩ (N (N (N E ⟨198048,201152,201457234⟩ E) ⟨198048,202560,195906721⟩ E) ⟨198048,202816,194918170⟩ (N E ⟨198048,203584,191989707⟩ E))) ⟨198048,204416,188879012⟩ (N (N (N (N E ⟨198053,199988,208066394⟩ E) ⟨198053,200404,206341812⟩ E) ⟨198053,200820,204635066⟩ (N (N E ⟨198056,203568,194842717⟩ E) ⟨198056,204800,190190453⟩ E)) ⟨198064,201976,203969764⟩ (N (N (N E ⟨198064,203576,197624324⟩ E) ⟨198064,204728,193207917⟩ E) ⟨198064,204800,192936009⟩ (N E ⟨198066,204800,193625471⟩ E)))) ⟨198068,200824,210189680⟩ (N (N (N (N (N E ⟨198068,201874,205844902⟩ E) ⟨198068,203026,201206450⟩ E) ⟨198068,204800,194316163⟩ (N (N E ⟨198069,199988,214111556⟩ E) ⟨198072,200828,211671008⟩ E)) ⟨198072,201404,209256696⟩ (N (N (N E ⟨198072,201984,206860309⟩ E) ⟨198072,202752,203739711⟩ E) ⟨198072,203030,202624644⟩ (N E ⟨198072,203584,200425194⟩ E))) ⟨198076,200832,213157416⟩ (N (N (N (N E ⟨198080,200288,217010943⟩ E) ⟨198080,201152,213301458⟩ E) ⟨198080,201728,210872451⟩ (N (N E ⟨198080,201992,209770717⟩ E) ⟨198080,202272,208610064⟩ E)) ⟨198080,202496,207687318⟩ (N (N (N E ⟨198080,202760,206606339⟩ E) ⟨198080,203360,204175608⟩ E) ⟨198080,203592,203245318⟩ (N E ⟨198080,204544,199482961⟩ E))))) ⟨198080,204744,198703649⟩ (N (N (N (N (N (N E ⟨198080,204800,198486124⟩ E) ⟨198084,204800,199885944⟩ E) ⟨198088,202662,209931739⟩ (N (N E ⟨198088,204800,201290680⟩ E) ⟨198098,204400,206434157⟩ E)) ⟨198100,200803,222417447⟩ (N (N (N E ⟨198100,201235,220511139⟩ E) ⟨198100,201906,217590512⟩ E) ⟨198101,200820,222726762⟩ (N E ⟨198101,201364,220326434⟩ E))) ⟨198101,201780,218512682⟩ (N (N (N (N E ⟨198102,200949,222538685⟩ E) ⟨198104,204800,206958777⟩ E) ⟨198112,203648,214616784⟩ (N (N E ⟨198112,204480,211140561⟩ E) ⟨198115,201266,226129476⟩ E)) ⟨198117,200420,230763039⟩ (N (N (N E ⟨198128,200336,235505058⟩ E) ⟨198128,200768,233481886⟩ E) ⟨198128,204800,215608358⟩ (N E ⟨198132,200467,236478490⟩ E)))) ⟨198132,200883,234523083⟩ (N (N (N (N (N E ⟨198132,201299,232587851⟩ E) ⟨198132,201970,229508243⟩ E) ⟨198132,202802,225760168⟩ (N (N E ⟨198132,203634,222088313⟩ E) ⟨198132,204466,218490825⟩ E)) ⟨198132,204800,217067153⟩ (N (N (N E ⟨198133,200852,235063200⟩ E) ⟨198134,201108,234260403⟩ E) ⟨198134,204660,218395730⟩ (N E ⟨198136,203862,222586011⟩ E))) ⟨198136,204800,218530860⟩ (N (N (N (N E ⟨198144,202336,232474660⟩ E) ⟨198144,204092,224566275⟩ E) ⟨198144,204800,221473012⟩ (N E ⟨198148,201922,235954329⟩ E)) ⟨198148,204800,222951456⟩ (N (N (N E ⟨198151,201430,239459680⟩ E) ⟨198160,200832,245954446⟩ E) ⟨198160,204044,230809870⟩ (N E ⟨198160,204800,227416258⟩ E)))))) ⟨198164,201299,245282141⟩ (N (N (N (N (N (N (N E ⟨198164,201970,242034453⟩ E) ⟨198164,202738,238382984⟩ E) ⟨198166,203124,237349759⟩ (N (N E ⟨198166,203892,233789171⟩ E) ⟨198166,204724,230006903⟩ E)) ⟨198167,202422,241057765⟩ (N (N (N E ⟨198176,200944,251903986⟩ E) ⟨198176,200992,251663114⟩ E) ⟨198176,202592,243796272⟩ (N E ⟨198176,203456,239675946⟩ E))) ⟨198176,203712,238471859⟩ (N (N (N (N E ⟨198176,204800,233438077⟩ E) ⟨198179,200946,253121740⟩ E) ⟨198179,201362,251033689⟩ (N (N E ⟨198180,200467,255966845⟩ E) ⟨198192,200864,258899527⟩ E)) ⟨198192,200960,258404503⟩ (N (N (N E ⟨198192,204800,239538451⟩ E) ⟨198196,200483,262550195⟩ E) ⟨198196,200899,260379378⟩ (N E ⟨198196,201331,258148768⟩ E)))) ⟨198196,201875,255373730⟩ (N (N (N (N (N E ⟨198196,202002,254731258⟩ E) ⟨198196,202770,250888842⟩ E) ⟨198196,203634,246652340⟩ (N (N E ⟨198196,203890,245414287⟩ E) ⟨198196,204498,242504906⟩ E)) ⟨198196,204800,241075816⟩ (N (N (N E ⟨198198,201940,255859823⟩ E) ⟨198198,203892,246189004⟩ E) ⟨198208,202400,257596835⟩ (N E ⟨198208,202976,254681414⟩ E))) ⟨198208,204800,245717359⟩ (N (N (N (N E ⟨198211,200930,266488592⟩ E) ⟨198211,201362,264205997⟩ E) ⟨198212,200899,267074249⟩ (N (N E ⟨198212,201315,264870588⟩ E) ⟨198212,201986,261363814⟩ E)) ⟨198212,202754,257421041⟩ (N (N (N E ⟨198212,203586,253233256⟩ E) ⟨198212,204418,249130308⟩ E) ⟨198212,204800,247274354⟩ (N E ⟨198214,200917,267820944⟩ E))))) ⟨198216,204800,248836257⟩ (N (N (N (N (N (N E ⟨198224,200432,274699800⟩ E) ⟨198224,200864,272341043⟩ E) ⟨198224,204800,251974780⟩ (N (N E ⟨198240,201424,276093040⟩ E) ⟨198240,201508,275632346⟩ E)) ⟨198240,201856,273733963⟩ (N (N (N E ⟨198240,201920,273386617⟩ E) ⟨198240,202432,270627593⟩ E) ⟨198240,203008,267565174⟩ (N E ⟨198240,203584,264545962⟩ E))) ⟨198242,201216,278093900⟩ (N (N (N (N E ⟨198248,204800,261508078⟩ E) ⟨198258,202992,275132446⟩ E) ⟨198260,201592,283727045⟩ (N (N E ⟨198260,202098,280892422⟩ E) ⟨198260,203186,274916364⟩ E)) ⟨198260,204800,266340931⟩ (N (N (N E ⟨198261,201396,285267478⟩ E) ⟨198262,201109,287337215⟩ E) ⟨198262,201125,287245670⟩ (N E ⟨198262,201541,284878228⟩ E)))) ⟨198264,201020,288720924⟩ (N (N (N (N (N E ⟨198264,203190,276567497⟩ E) ⟨198264,204800,267961688⟩ E) ⟨198268,201600,287139735⟩ (N (N E ⟨198272,201088,291833793⟩ E) ⟨198272,201344,290350418⟩ E)) ⟨198272,201376,290165660⟩ (N (N (N E ⟨198272,201504,289428095⟩ E) ⟨198272,201920,287047141⟩ E) ⟨198272,201952,286865007⟩ (N E ⟨198272,202496,283790719⟩ E))) ⟨198272,202784,282179830⟩ (N (N (N (N E ⟨198272,203040,280757516⟩ E) ⟨198272,203072,280580357⟩ E) ⟨198272,203904,276022906⟩ (N E ⟨198272,204800,271217907⟩ E)) ⟨198274,202944,282137294⟩ (N (N (N E ⟨198277,200564,297123404⟩ E) ⟨198277,201556,291309280⟩ E) ⟨198277,201972,288913468⟩ (N E ⟨198288,204800,277789161⟩ E))))))) ⟨198290,204800,278616080⟩ (N (N (N (N (N (N (N (N E ⟨198292,201011,301147024⟩ E) ⟨198292,201443,298568601⟩ E) ⟨198292,202130,294524780⟩ (N (N E ⟨198293,200212,306443619⟩ E) ⟨198293,200628,303906461⟩ E)) ⟨198293,201428,299100699⟩ (N (N (N E ⟨198293,201460,298910452⟩ E) ⟨198293,202548,292531133⟩ E) ⟨198294,204800,280273594⟩ (N E ⟨198300,202144,297946370⟩ E))) ⟨198304,201408,304116589⟩ (N (N (N (N E ⟨198304,201920,301039664⟩ E) ⟨198304,201984,300657791⟩ E) ⟨198304,203648,290938279⟩ (N (N E ⟨198304,203840,289842236⟩ E) ⟨198304,204800,284438812⟩ E)) ⟨198311,202582,300183423⟩ (N (N (N E ⟨198320,201088,313299085⟩ E) ⟨198324,200675,317727818⟩ E) ⟨198324,201091,315103288⟩ (N E ⟨198324,201507,312505809⟩ E)))) ⟨198324,202194,308274558⟩ (N (N (N (N (N E ⟨198324,203026,303245693⟩ E) ⟨198324,203858,298318982⟩ E) ⟨198324,204018,297383040⟩ (N (N E ⟨198324,204690,293491945⟩ E) ⟨198324,204800,292861086⟩ E)) ⟨198326,204800,293710046⟩ (N (N (N E ⟨198328,204022,299084934⟩ E) ⟨198328,204800,294560230⟩ E) ⟨198336,201104,320520663⟩ (N E ⟨198336,201440,318384647⟩ E))) ⟨198336,201520,317878698⟩ (N (N (N (N E ⟨198336,201568,317575610⟩ E) ⟨198336,202528,311589044⟩ E) ⟨198336,202560,311391933⟩ (N (N E ⟨198336,202848,309624928⟩ E) ⟨198336,203872,303442903⟩ E)) ⟨198336,204800,297973208⟩ (N (N (N E ⟨198338,202080,315268464⟩ E) ⟨198338,202944,309926817⟩ E) ⟨198340,202914,311000285⟩ (N E ⟨198340,203746,305944821⟩ E))))) ⟨198340,204800,299687039⟩ (N (N (N (N (N (N E ⟨198354,202064,322644525⟩ E) ⟨198354,202896,317377883⟩ E) ⟨198356,202194,322727411⟩ (N (N E ⟨198356,202962,317863918⟩ E) ⟨198357,201204,329600898⟩ E)) ⟨198357,201492,327717972⟩ (N (N (N E ⟨198358,202932,318953177⟩ E) ⟨198359,202038,325102757⟩ E) ⟨198360,202836,320462221⟩ (N E ⟨198368,201440,333180902⟩ E))) ⟨198368,202016,329392147⟩ (N (N (N (N E ⟨198368,202784,324423874⟩ E) ⟨198368,203648,318946036⟩ E) ⟨198368,203712,318544887⟩ (N (N E ⟨198368,203904,317345220⟩ E) ⟨198372,200675,340199307⟩ E)) ⟨198384,201152,342662533⟩ (N (N (N E ⟨198384,201568,339838730⟩ E) ⟨198387,201138,344186611⟩ E) ⟨198388,201107,344876298⟩ (N E ⟨198388,201539,341924871⟩ E)))) ⟨198388,202083,338253036⟩ (N (N (N (N (N E ⟨198388,202226,337296024⟩ E) ⟨198388,202994,332213782⟩ E) ⟨198388,204114,324972575⟩ (N (N E ⟨198388,204690,321325358⟩ E) ⟨198388,204800,320634671⟩ E)) ⟨198389,201524,342500335⟩ (N (N (N E ⟨198390,204800,321522773⟩ E) ⟨198392,203350,331719174⟩ E) ⟨198400,204768,326185701⟩ (N E ⟨198400,204800,325981618⟩ E))) ⟨198416,200624,361837635⟩ (N (N (N (N E ⟨198416,201056,358733619⟩ E) ⟨198422,201285,360016239⟩ E) ⟨198424,204800,336807470⟩ (N E ⟨198432,200688,369267276⟩ E)) ⟨198432,200832,368207903⟩ (N (N (N E ⟨198432,201248,365168764⟩ E) ⟨198435,201138,367445137⟩ E) ⟨198436,202848,355670857⟩ (N E ⟨198437,201588,365147512⟩ E)))))) ⟨198448,201120,374008493⟩ (N (N (N (N (N (N (N E ⟨198448,203960,353581999⟩ E) ⟨198452,203410,359328689⟩ E) ⟨198452,204800,349659889⟩ (N (N E ⟨198453,200756,379238678⟩ E) ⟨198454,202133,369484976⟩ E)) ⟨198454,202260,368556610⟩ (N (N (N E ⟨198454,202292,368323152⟩ E) ⟨198454,203124,362317606⟩ E) ⟨198454,203380,360494416⟩ (N E ⟨198454,204788,350669361⟩ E))) ⟨198456,204182,355796185⟩ (N (N (N (N E ⟨198456,204800,351515478⟩ E) ⟨198464,200848,384076769⟩ E) ⟨198464,201232,381149575⟩ (N (N E ⟨198464,202880,368899244⟩ E) ⟨198464,203744,362673371⟩ E)) ⟨198464,204608,356578322⟩ (N (N (N E ⟨198464,204800,355241300⟩ E) ⟨198466,202240,374580129⟩ E) ⟨198469,200820,386821096⟩ (N E ⟨198469,201620,380709986⟩ E)))) ⟨198469,201652,380468062⟩ (N (N (N (N (N E ⟨198469,202740,372355796⟩ E) ⟨198470,202244,376519736⟩ E) ⟨198472,204800,358986641⟩ (N (N E ⟨198480,201248,389083578⟩ E) ⟨198482,203248,374947289⟩ E)) ⟨198482,203544,372768145⟩ (N (N (N E ⟨198485,201604,388855539⟩ E) ⟨198486,202292,384082913⟩ E) ⟨198486,204800,365587946⟩ (N E ⟨198496,202340,388705548⟩ E))) ⟨198496,203172,382369158⟩ (N (N (N (N E ⟨198496,203264,381676455⟩ E) ⟨198496,204800,370339742⟩ E) ⟨198503,202198,393320208⟩ (N E ⟨198508,204800,376082121⟩ E)) ⟨198512,202424,396092960⟩ (N (N (N E ⟨198512,204800,378005996⟩ E) ⟨198516,204210,384350390⟩ E) ⟨198516,204242,384109257⟩ (N E ⟨198516,204592,381484172⟩ E))))) ⟨198516,204800,379934745⟩ (N (N (N (N (N (N E ⟨198517,201780,403740265⟩ E) ⟨198518,201365,407600518⟩ E) ⟨198518,202773,396382086⟩ (N (N E ⟨198518,203124,393645772⟩ E) ⟨198518,203444,391171678⟩ E)) ⟨198520,202432,400076804⟩ (N (N (N E ⟨198520,204800,381868366⟩ E) ⟨198528,201712,409952800⟩ E) ⟨198528,202720,401848983⟩ (N E ⟨198528,204736,386233418⟩ E))) ⟨198528,204800,385750226⟩ (N (N (N (N E ⟨198532,201235,415949049⟩ E) ⟨198532,204800,387698463⟩ E) ⟨198533,201684,412771148⟩ (N (N E ⟨198533,201812,411723539⟩ E) ⟨198534,203076,402059739⟩ E)) ⟨198548,200883,427348336⟩ (N (N (N E ⟨198548,201299,423821953⟩ E) ⟨198548,204800,395540112⟩ E) ⟨198550,203124,409793423⟩ (N E ⟨198550,204800,396525796⟩ E)))) ⟨198560,200768,434753781⟩ (N (N (N (N (N E ⟨198560,201632,427339925⟩ E) ⟨198560,201664,427068386⟩ E) ⟨198560,202176,422752951⟩ (N (N E ⟨198560,202208,422485050⟩ E) ⟨198560,202240,422217362⟩ E)) ⟨198560,203072,415331310⟩ (N (N (N E ⟨198560,203328,413240819⟩ E) ⟨198565,201716,429268024⟩ E) ⟨198566,202372,424243923⟩ (N E ⟨198578,202384,430433202⟩ E))) ⟨198580,204656,412617823⟩ (N (N (N (N E ⟨198580,204800,411457054⟩ E) ⟨198582,204800,412462202⟩ E) ⟨198592,200992,450101821⟩ (N E ⟨198592,201696,443842161⟩ E)) ⟨198592,201824,442715761⟩ (N (N (N E ⟨198592,202208,439357940⟩ E) ⟨198592,202240,439079561⟩ E) ⟨198592,202272,438801403⟩ (N E ⟨198592,202784,434380687⟩ E))))))))
+
+noncomputable def tab14 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨198592,203104,431646000⟩ E) ⟨198592,203392,429203163⟩ E) ⟨198592,204128,423038436⟩ (N (N E ⟨198592,204224,422242525⟩ E) ⟨198592,204800,417506173⟩ E)) ⟨198595,201362,448423978⟩ (N (N (N E ⟨198596,204608,421111265⟩ E) ⟨198596,204800,419532271⟩ E) ⟨198608,201376,455375657⟩ (N E ⟨198608,203020,440784728⟩ E))) ⟨198612,200899,461931129⟩ (N (N (N (N E ⟨198612,204800,427685267⟩ E) ⟨198614,202309,450246571⟩ E) ⟨198614,202452,448974122⟩ (N (N E ⟨198614,202484,448689994⟩ E) ⟨198614,203316,441380943⟩ E)) ⟨198614,203572,439162002⟩ (N (N (N E ⟨198614,204800,428709859⟩ E) ⟨198620,202464,452093479⟩ E) ⟨198620,203296,444728264⟩ (N E ⟨198624,201392,464012932⟩ E)))) ⟨198624,202240,456268993⟩ (N (N (N (N (N E ⟨198624,202972,449713919⟩ E) ⟨198624,203136,448261474⟩ E) ⟨198624,204800,433851033⟩ (N (N E ⟨198628,201315,466936121⟩ E) ⟨198628,201331,466787508⟩ E)) ⟨198630,203204,450858890⟩ (N (N (N E ⟨198630,204036,443540334⟩ E) ⟨198636,204800,440060510⟩ E) ⟨198642,202480,463872933⟩ (N E ⟨198642,203216,457180420⟩ E))) ⟨198642,204144,448913168⟩ (N (N (N (N E ⟨198643,201362,474832944⟩ E) ⟨198644,203570,455072739⟩ E) ⟨198644,204720,444920119⟩ (N (N E ⟨198644,204800,444224437⟩ E) ⟨198646,202484,466020305⟩ E)) ⟨198648,201404,477228094⟩ (N (N (N E ⟨198648,204800,446313681⟩ E) ⟨198652,201984,473976428⟩ E) ⟨198656,202304,473185269⟩ (N E ⟨198656,203072,466058232⟩ E))))) ⟨198656,203424,462836544⟩ (N (N (N (N (N (N E ⟨198656,204192,455903499⟩ E) ⟨198656,204800,450506728⟩ E) ⟨198672,201856,486354180⟩ (N (N E ⟨198672,204800,458951035⟩ E) ⟨198674,201809,487933413⟩ E)) ⟨198674,202480,481489106⟩ (N (N (N E ⟨198674,203248,474243259⟩ E) ⟨198674,204080,466546771⟩ E) ⟨198676,204560,463244693⟩ (N E ⟨198678,201525,492960821⟩ E))) ⟨198678,201941,488905946⟩ (N (N (N (N E ⟨198678,202949,479252261⟩ E) ⟨198678,203636,472809143⟩ E) ⟨198688,201920,494756294⟩ (N (N E ⟨198688,204224,472776118⟩ E) ⟨198688,204800,467472925⟩ E)) ⟨198692,204200,475166629⟩ (N (N (N E ⟨198693,201972,497078715⟩ E) ⟨198696,204800,471762950⟩ E) ⟨198704,204800,476072355⟩ (N E ⟨198706,204800,477152733⟩ E)))) ⟨198708,204402,481974859⟩ (N (N (N (N (N E ⟨198708,204434,481672763⟩ E) ⟨198708,204800,478234323⟩ E) ⟨198710,203316,493483972⟩ (N (N E ⟨198710,204800,479317123⟩ E) ⟨198716,202754,502374738⟩ E)) ⟨198716,204800,482572786⟩ (N (N (N E ⟨198720,202912,503068523⟩ E) ⟨198720,204800,484749281⟩ E) ⟨198722,204096,492586280⟩ (N E ⟨198724,201443,520254776⟩ E))) ⟨198724,201730,517296487⟩ (N (N (N (N E ⟨198724,202594,508516760⟩ E) ⟨198724,204672,488151432⟩ E) ⟨198728,204800,489116790⟩ (N E ⟨198740,201507,528955521⟩ E)) ⟨198740,203314,510375650⟩ (N (N (N E ⟨198740,204688,496791597⟩ E) ⟨198742,204800,496806506⟩ E) ⟨198752,201520,535892928⟩ (N E ⟨198752,201984,530979095⟩ E)))))) ⟨198752,204032,509951634⟩ (N (N (N (N (N (N (N E ⟨198768,201536,545223817⟩ E) ⟨198768,201952,540739294⟩ E) ⟨198768,204800,511244579⟩ (N (N E ⟨198771,201906,543010467⟩ E) ⟨198772,202451,537765951⟩ E)) ⟨198772,204800,513483946⟩ (N (N (N E ⟨198773,201620,547295632⟩ E) ⟨198773,202036,542795939⟩ E) ⟨198774,203700,525826273⟩ (N E ⟨198776,204800,515728144⟩ E))) ⟨198784,202976,539209664⟩ (N (N (N (N E ⟨198784,204800,520231031⟩ E) ⟨198792,204800,524753234⟩ E) ⟨198800,201568,564114819⟩ (N (N E ⟨198802,202640,553444311⟩ E) ⟨198803,201970,561436939⟩ E)) ⟨198804,204800,531572743⟩ (N (N (N E ⟨198816,201584,573674680⟩ E) ⟨198816,202000,568957266⟩ E) ⟨198816,202558,562705481⟩ (N E ⟨198816,203584,551432782⟩ E)))) ⟨198816,204800,538435678⟩ (N (N (N (N (N E ⟨198820,201539,576637736⟩ E) ⟨198820,202594,564704230⟩ E) ⟨198828,204800,545342019⟩ (N (N E ⟨198832,202744,570238907⟩ E) ⟨198832,204800,547653775⟩ E)) ⟨198834,204800,548811460⟩ (N (N (N E ⟨198835,201970,580878799⟩ E) ⟨198836,203794,560924843⟩ E) ⟨198836,204800,549970350⟩ (N E ⟨198838,201701,585837184⟩ E))) ⟨198838,202117,581022544⟩ (N (N (N (N E ⟨198838,203093,569919390⟩ E) ⟨198838,204532,554028504⟩ E) ⟨198840,202752,574977269⟩ (N (N E ⟨198848,201232,597568103⟩ E) ⟨198848,201248,597377834⟩ E)) ⟨198848,201664,592457325⟩ (N (N (N E ⟨198848,201920,589454495⟩ E) ⟨198848,201952,589080480⟩ E) ⟨198848,202080,587587386⟩ (N E ⟨198848,202496,582767396⟩ E))))) ⟨198848,202760,579734184⟩ (N (N (N (N (N (N E ⟨198848,203072,576174882⟩ E) ⟨198848,204800,556948987⟩ E) ⟨198856,204800,561625495⟩ (N (N E ⟨198864,204800,566321264⟩ E) ⟨198866,203472,582479258⟩ E)) ⟨198866,203568,581379834⟩ (N (N (N E ⟨198866,204400,571959347⟩ E) ⟨198867,202002,600265737⟩ E) ⟨198867,203122,587118310⟩ (N E ⟨198868,204274,574564030⟩ E))) ⟨198868,204800,568676368⟩ (N (N (N (N E ⟨198870,204800,569855725⟩ E) ⟨198880,201984,608601553⟩ E) ⟨198880,202496,602461472⟩ (N (N E ⟨198880,203072,595646169⟩ E) ⟨198880,204224,582302317⟩ E)) ⟨198880,204416,580114817⟩ (N (N (N E ⟨198882,204800,576957128⟩ E) ⟨198883,201986,610459168⟩ E) ⟨198892,204800,582908030⟩ (N E ⟨198896,201664,622612460⟩ E)))) ⟨198896,203576,599519426⟩ (N (N (N (N (N E ⟨198898,202736,610776372⟩ E) ⟨198898,203504,601596430⟩ E) ⟨198898,204096,594637728⟩ (N (N E ⟨198898,204336,591845318⟩ E) ⟨198900,204626,589694470⟩ E)) ⟨198900,204800,587690386⟩ (N (N (N E ⟨198904,203584,604332714⟩ E) ⟨198904,204800,590088774⟩ E) ⟨198912,201680,632626806⟩ (N E ⟨198912,202096,627427090⟩ E))) ⟨198912,202528,622083818⟩ (N (N (N (N E ⟨198912,202560,621690288⟩ E) ⟨198912,203104,615047647⟩ E) ⟨198912,203592,609164156⟩ (N E ⟨198912,203680,608110700⟩ E)) ⟨198912,203712,607728189⟩ (N (N (N E ⟨198912,204800,594899963⟩ E) ⟨198916,204800,597312763⟩ E) ⟨198930,204656,607504397⟩ (N E ⟨198930,204800,605795377⟩ E))))))) ⟨198932,202738,632119956⟩ (N (N (N (N (N (N (N (N E ⟨198933,202196,639574873⟩ E) ⟨198934,203892,619151338⟩ E) ⟨198936,204800,609448784⟩ (N (N E ⟨198944,203360,631946377⟩ E) ⟨198944,204224,621306060⟩ E)) ⟨198944,204480,618196465⟩ (N (N (N E ⟨198944,204800,614336786⟩ E) ⟨198949,202228,649458250⟩ E) ⟨198956,204800,621704760⟩ (N E ⟨198960,201728,663121061⟩ E))) ⟨198960,202144,657671999⟩ (N (N (N (N E ⟨198960,204800,624170340⟩ E) ⟨198964,202659,653580061⟩ E) ⟨198964,202770,652148216⟩ (N (N E ⟨198964,202802,651736160⟩ E) ⟨198964,203634,641136058⟩ E)) ⟨198964,203890,637917924⟩ (N (N (N E ⟨198964,204466,630750643⟩ E) ⟨198964,204800,626640714⟩ E) ⟨198972,204800,631595836⟩ (N E ⟨198976,204512,637664528⟩ E)))) ⟨198976,204800,634080582⟩ (N (N (N (N (N E ⟨198979,202130,670266972⟩ E) ⟨198980,202754,662691215⟩ E) ⟨198996,204800,646576139⟩ (N (N E ⟨198998,203269,667597718⟩ E) ⟨198998,204724,648796046⟩ E)) ⟨199008,201408,699384366⟩ (N (N (N E ⟨199008,202240,687931165⟩ E) ⟨199008,204544,657416077⟩ E) ⟨199008,204800,654130900⟩ (N E ⟨199011,202194,690553415⟩ E))) ⟨199016,203428,677179243⟩ (N (N (N (N E ⟨199024,204800,664270860⟩ E) ⟨199028,202291,700565750⟩ E) ⟨199028,202834,693084112⟩ (N (N E ⟨199028,203602,682672088⟩ E) ⟨199028,204722,667835944⟩ E)) ⟨199028,204800,666817798⟩ (N (N (N E ⟨199030,202709,696126289⟩ E) ⟨199032,204800,669369514⟩ E) ⟨199040,201808,715440878⟩ (N E ⟨199040,204800,674487275⟩ E))))) ⟨199044,203586,693369181⟩ (N (N (N (N (N (N E ⟨199044,204418,682135042⟩ E) ⟨199044,204800,677053318⟩ E) ⟨199056,201824,726128035⟩ (N (N E ⟨199058,204800,686072056⟩ E) ⟨199060,203634,703265232⟩ E)) ⟨199060,204466,691873420⟩ (N (N (N E ⟨199060,204498,691439898⟩ E) ⟨199072,203840,708354837⟩ E) ⟨199075,202226,733325912⟩ (N E ⟨199075,203346,717281705⟩ E))) ⟨199092,204800,708217917⟩ (N (N (N (N E ⟨199100,204800,713478734⟩ E) ⟨199104,202288,752403944⟩ E) ⟨199104,202720,746002415⟩ (N (N E ⟨199104,202784,745059841⟩ E) ⟨199104,203296,737572600⟩ E)) ⟨199104,203328,737107778⟩ (N (N (N E ⟨199104,204736,717013293⟩ E) ⟨199104,204800,716116283⟩ E) ⟨199109,202388,754380188⟩ (N E ⟨199124,202962,756192744⟩ E)))) ⟨199125,203380,750671930⟩ (N (N (N (N (N E ⟨199136,202208,775981915⟩ E) ⟨199136,202240,775490250⟩ E) ⟨199136,202784,767191229⟩ (N (N E ⟨199136,202816,766706517⟩ E) ⟨199136,203648,754237345⟩ E)) ⟨199152,204558,751689025⟩ (N (N (N E ⟨199152,204800,748137812⟩ E) ⟨199156,202994,777952209⟩ E) ⟨199156,203026,777461208⟩ (N E ⟨199156,203858,764830108⟩ E))) ⟨199156,204114,760995317⟩ (N (N (N (N E ⟨199156,204690,752454550⟩ E) ⟨199156,204800,750837154⟩ E) ⟨199158,204800,752188605⟩ (N E ⟨199160,204800,753541242⟩ E)) ⟨199168,202272,797675188⟩ (N (N (N E ⟨199168,202400,795656588⟩ E) ⟨199168,202784,789638990⟩ E) ⟨199168,202816,789140096⟩ (N E ⟨199168,203360,780718885⟩ E)))))) ⟨199168,203392,780227027⟩ (N (N (N (N (N (N (N E ⟨199168,203936,771924415⟩ E) ⟨199168,204704,760390232⟩ E) ⟨199168,204800,758963653⟩ (N (N E ⟨199172,202978,789437862⟩ E) ⟨199172,203746,777586696⟩ E)) ⟨199172,204578,764997863⟩ (N (N (N E ⟨199172,204800,761681973⟩ E) ⟨199180,204800,767132840⟩ E) ⟨199184,201952,814280446⟩ (N E ⟨199184,204800,769865383⟩ E))) ⟨199186,202896,800632076⟩ (N (N (N (N E ⟨199189,203444,794138897⟩ E) ⟨199190,202885,803650656⟩ E) ⟨199192,204800,775344687⟩ (N (N E ⟨199196,204800,778091444⟩ E) ⟨199200,201968,825629288⟩ E)) ⟨199200,202384,818852890⟩ (N (N (N E ⟨199200,202816,811889302⟩ E) ⟨199200,203392,802719289⟩ E) ⟨199200,204800,780842937⟩ (N E ⟨199202,202944,811268926⟩ E)))) ⟨199216,204728,793012279⟩ (N (N (N (N (N E ⟨199220,202499,831460539⟩ E) ⟨199220,203826,809990402⟩ E) ⟨199220,204800,794671403⟩ (N (N E ⟨199224,204736,798450179⟩ E) ⟨199224,204800,797451289⟩ E)) ⟨199232,202000,848545269⟩ (N (N (N E ⟨199232,203648,821374484⟩ E) ⟨199232,203912,817123528⟩ E) ⟨199232,204744,803905296⟩ (N E ⟨199232,204800,803025244⟩ E))) ⟨199240,204800,808618104⟩ (N (N (N (N E ⟨199248,202432,853054375⟩ E) ⟨199252,203858,832269615⟩ E) ⟨199252,204690,818802832⟩ (N E ⟨199264,201664,878140498⟩ E)) ⟨199264,202080,870922273⟩ (N (N (N E ⟨199264,202496,863778082⟩ E) ⟨199264,204800,825510025⟩ E) ⟨199266,203968,840518329⟩ (N E ⟨199268,203616,847803040⟩ E))))) ⟨199280,204800,836865670⟩ (N (N (N (N (N (N E ⟨199284,204800,839716367⟩ E) ⟨199286,204212,850885971⟩ E) ⟨199288,204800,842571775⟩ (N (N E ⟨199294,203900,861934796⟩ E) ⟨199296,204800,848296723⟩ E)) ⟨199300,204800,851166260⟩ (N (N (N E ⟨199301,203572,872653712⟩ E) ⟨199318,204800,864137416⟩ E) ⟨199328,202096,919029150⟩ (N E ⟨199328,203744,889615174⟩ E))) ⟨199328,204608,874664397⟩ (N (N (N (N E ⟨199328,204800,871384765⟩ E) ⟨199330,203968,887185441⟩ E) ⟨199344,202528,923392049⟩ (N (N E ⟨199344,204800,883041609⟩ E) ⟨199345,202480,925034302⟩ E)) ⟨199346,204800,884503998⟩ (N (N (N E ⟨199348,204800,885967560⟩ E) ⟨199349,202612,925678655⟩ E) ⟨199350,204800,887432295⟩ (N E ⟨199360,204128,906629974⟩ E)))) ⟨199360,204800,894773569⟩ (N (N (N (N (N E ⟨199365,203636,919201950⟩ E) ⟨199376,202144,955240290⟩ E) ⟨199380,203792,927697104⟩ (N (N E ⟨199380,204800,909544038⟩ E) ⟨199392,202576,959520359⟩ E)) ⟨199392,203008,951368237⟩ (N (N (N E ⟨199392,203072,950167891⟩ E) ⟨199392,203584,940632975⟩ E) ⟨199392,204160,930048746⟩ (N E ⟨199408,204800,930419398⟩ E))) ⟨199416,204800,936425887⟩ (N (N (N (N E ⟨199424,201824,999357541⟩ E) ⟨199424,202240,991149420⟩ E) ⟨199424,202656,983025420⟩ (N E ⟨199424,203072,974984507⟩ E)) ⟨199424,203104,974369387⟩ (N (N (N E ⟨199424,203648,963986209⟩ E) ⟨199424,203936,958545232⟩ E) ⟨199424,204192,953741008⟩ (N E ⟨199424,204224,953142598⟩ E))))))))
+
+noncomputable def tab15 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨199442,203248,985653816⟩ E) ⟨199444,202707,997815959⟩ E) ⟨199446,204404,966580534⟩ (N (N E ⟨199456,203072,1000110383⟩ E) ⟨199456,203648,988828653⟩ E)) ⟨199456,204800,966738541⟩ (N (N (N E ⟨199462,204036,985975074⟩ E) ⟨199472,202240,1029580791⟩ E) ⟨199474,203312,1009591828⟩ (N E ⟨199474,204800,980531379⟩ E))) ⟨199478,204800,983609261⟩ (N (N (N (N E ⟨199480,204800,985149947⟩ E) ⟨199488,202256,1042217761⟩ E) ⟨199488,203104,1024897850⟩ (N (N E ⟨199488,203680,1013338319⟩ E) ⟨199488,204256,1001941343⟩ E)) ⟨199488,204800,991324325⟩ (N (N (N E ⟨199492,204800,994418491⟩ E) ⟨199504,204800,1003728883⟩ E) ⟨199506,204080,1019565343⟩ (N E ⟨199509,203764,1028296830⟩ E)))) ⟨199510,204800,1008399761⟩ (N (N (N (N (N E ⟨199520,203936,1033561476⟩ E) ⟨199520,204800,1016207776⟩ E) ⟨199525,202804,1060934203⟩ (N (N E ⟨199536,202720,1071694852⟩ E) ⟨199536,204800,1028760925⟩ E)) ⟨199538,204112,1044315794⟩ (N (N (N E ⟨199538,204800,1030335285⟩ E) ⟨199540,204800,1031910804⟩ E) ⟨199544,204800,1035065318⟩ (N E ⟨199552,204800,1041388244⟩ E))) ⟨199554,204096,1057455807⟩ (N (N (N (N E ⟨199554,204800,1042971870⟩ E) ⟨199556,204800,1044556654⟩ E) ⟨199564,204800,1050907358⟩ (N (N E ⟨199568,204800,1054089651⟩ E) ⟨199570,204800,1055682532⟩ E)) ⟨199584,202816,1109283685⟩ (N (N (N E ⟨199600,204800,1079714391⟩ E) ⟨199604,202867,1124862602⟩ E) ⟨199606,204532,1090254927⟩ (N E ⟨199616,202384,1145825076⟩ E))))) ⟨199616,204800,1092637553⟩ (N (N (N (N (N (N E ⟨199632,202400,1159087578⟩ E) ⟨199632,202816,1149594557⟩ E) ⟨199636,202915,1150733502⟩ (N (N E ⟨199638,204800,1110527296⟩ E) ⟨199644,203992,1133231736⟩ E)) ⟨199644,204800,1115430485⟩ (N (N (N E ⟨199664,204800,1131849164⟩ E) ⟨199666,203504,1162687306⟩ E) ⟨199668,204800,1135146684⟩ (N E ⟨199670,204800,1136797166⟩ E))) ⟨199680,203296,1179375340⟩ (N (N (N (N E ⟨199680,203872,1166086009⟩ E) ⟨199680,203904,1165353217⟩ E) ⟨199680,204448,1152983382⟩ (N (N E ⟨199680,204800,1145066785⟩ E) ⟨199685,203956,1168378356⟩ E)) ⟨199696,204800,1158357798⟩ (N (N (N E ⟨199698,204800,1160024330⟩ E) ⟨199699,203378,1193710069⟩ E) ⟨199720,204800,1178431732⟩ (N E ⟨199728,204800,1185159642⟩ E)))) ⟨199730,204336,1197675595⟩ (N (N (N (N (N E ⟨199732,204800,1188530452⟩ E) ⟨199744,203392,1232252630⟩ E) ⟨199744,203968,1218373997⟩ (N (N E ⟨199744,204544,1204690255⟩ E) ⟨199744,204800,1198670290⟩ E)) ⟨199748,204800,1202059367⟩ (N (N (N E ⟨199762,204800,1213957057⟩ E) ⟨199766,204724,1219177712⟩ E) ⟨199776,202960,1271034473⟩ (N E ⟨199776,203392,1260256092⟩ E))) ⟨199776,203968,1246062060⟩ (N (N (N (N E ⟨199776,204544,1232067349⟩ E) ⟨199796,203491,1275422100⟩ E) ⟨199796,203602,1272639379⟩ (N E ⟨199796,203634,1271838563⟩ E)) ⟨199796,204466,1251236740⟩ (N (N (N E ⟨199796,204722,1244981794⟩ E) ⟨199796,204800,1243083765⟩ E) ⟨199804,204800,1249984866⟩ (N E ⟨199808,204800,1253442231⟩ E)))))) ⟨199820,204800,1263841564⟩ (N (N (N (N (N (N (N E ⟨199824,203008,1312721170⟩ E) ⟨199824,204800,1267317083⟩ E) ⟨199830,204800,1272538863⟩ (N (N E ⟨199840,203072,1325493777⟩ E) ⟨199840,204800,1281264491⟩ E)) ⟨199856,204800,1295284358⟩ (N (N (N E ⟨199858,204800,1297041931⟩ E) ⟨199860,204800,1298800635⟩ E) ⟨199872,204800,1309376586⟩ (N E ⟨199876,204800,1312910939⟩ E))) ⟨199892,204466,1335797449⟩ (N (N (N (N E ⟨199904,202672,1394930504⟩ E) ⟨199907,204178,1356885474⟩ E) ⟨199920,203104,1397878040⟩ (N (N E ⟨199920,204800,1352086458⟩ E) ⟨199924,204800,1355674888⟩ E)) ⟨199936,204704,1369035614⟩ (N (N (N E ⟨199936,204736,1368178788⟩ E) ⟨199936,204800,1366467147⟩ E) ⟨199940,203746,1398682132⟩ (N E ⟨199952,204800,1380919699⟩ E)))) ⟨199968,203584,1429128134⟩ (N (N (N (N (N E ⟨199968,204160,1413047240⟩ E) ⟨199968,204736,1397191952⟩ E) ⟨199968,204800,1395444015⟩ (N (N E ⟨199988,203858,1440046549⟩ E) ⟨199988,204690,1416745454⟩ E)) ⟨199988,204800,1413700169⟩ (N (N (N E ⟨200000,203648,1457262291⟩ E) ⟨200000,204224,1440869955⟩ E) ⟨200000,204800,1424707523⟩ (N E ⟨200004,204578,1434603876⟩ E))) ⟨200004,204800,1428385575⟩ (N (N (N (N E ⟨200016,204800,1439446509⟩ E) ⟨200020,203283,1486762678⟩ E) ⟨200032,203648,1487486818⟩ (N (N E ⟨200032,204224,1470754495⟩ E) ⟨200032,204800,1454256844⟩ E)) ⟨200048,202816,1527551459⟩ (N (N (N E ⟨200048,204800,1469138422⟩ E) ⟨200052,204800,1472869936⟩ E) ⟨200060,204800,1480346296⟩ (N E ⟨200064,203680,1517047834⟩ E))))) ⟨200064,204256,1499985657⟩ (N (N (N (N (N (N E ⟨200064,204744,1485717584⟩ E) ⟨200064,204800,1484091138⟩ E) ⟨200082,204800,1500997843⟩ (N (N E ⟨200084,204690,1506119302⟩ E) ⟨200088,204800,1506653363⟩ E)) ⟨200100,204800,1517994294⟩ (N (N (N E ⟨200108,202792,1586986117⟩ E) ⟨200114,204688,1534634317⟩ E) ⟨200116,204800,1533177468⟩ (N E ⟨200128,204800,1544611238⟩ E))) ⟨200140,204800,1556084718⟩ (N (N (N (N E ⟨200160,204800,1575295307⟩ E) ⟨200176,204800,1590742961⟩ E) ⟨200180,204800,1594615858⟩ (N (N E ⟨200184,204800,1598493144⟩ E) ⟨200188,204800,1602374819⟩ E)) ⟨200192,204800,1606260880⟩ (N (N (N E ⟨200208,203392,1667287204⟩ E) ⟨200224,204800,1637507063⟩ E) ⟨200240,204800,1653235100⟩ (N E ⟨200244,204800,1657178022⟩ E)))) ⟨200256,204800,1669032948⟩ (N (N (N (N (N E ⟨200260,204800,1672993305⟩ E) ⟨200275,203954,1716100512⟩ E) ⟨200288,204800,1700837617⟩ (N (N E ⟨200300,204800,1712836052⟩ E) ⟨200312,204800,1724873511⟩ E)) ⟨200320,204544,1741623214⟩ (N (N (N E ⟨200320,204800,1732920140⟩ E) ⟨200336,204800,1749065303⟩ E) ⟨200352,203968,1794297190⟩ (N E ⟨200352,204544,1774145168⟩ E))) ⟨200352,204800,1765279577⟩ (N (N (N (N E ⟨200370,204800,1783603095⟩ E) ⟨200372,204800,1785644424⟩ E) ⟨200376,204800,1789730309⟩ (N E ⟨200384,204800,1797914978⟩ E)) ⟨200386,204800,1799963831⟩ (N (N (N E ⟨200392,204800,1806116834⟩ E) ⟨200402,204800,1816393302⟩ E) ⟨200432,204800,1847383399⟩ (N E ⟨200440,204800,1855688061⟩ E))))))) ⟨200448,204800,1864009804⟩ (N (N (N (N (N (N (N (N E ⟨200494,204800,1912190518⟩ E) ⟨200496,204800,1914298085⟩ E) ⟨200512,204800,1931196784⟩ (N (N E ⟨200544,204800,1965197336⟩ E) ⟨200546,204800,1967331347⟩ E)) ⟨200556,204800,1978017213⟩ (N (N (N E ⟨200564,204800,1986584866⟩ E) ⟨200568,204800,1990875007⟩ E) ⟨200576,204800,1999467908⟩ (N E ⟨200594,204800,2018863381⟩ E))) ⟨200608,204800,2034007473⟩ (N (N (N (N E ⟨200620,204800,2047028947⟩ E) ⟨200640,204800,2068814990⟩ E) ⟨200688,204800,2121526376⟩ (N (N E ⟨200692,204800,2125945986⟩ E) ⟨200704,204800,2139229668⟩ E)) ⟨200708,204800,2143665839⟩ (N (N (N E ⟨200712,204800,2148106145⟩ E) ⟨200752,204800,2192736161⟩ E) ⟨200756,204800,2197221811⟩ (N E ⟨200768,204800,2210703411⟩ E)))) ⟨200816,204800,2264998498⟩ (N (N (N (N (N E ⟨200820,204800,2269549642⟩ E) ⟨200832,204800,2283227512⟩ E) ⟨200836,204800,2287794941⟩ (N (N E ⟨200844,204800,2296941997⟩ E) ⟨200876,204800,2333692515⟩ E)) ⟨200884,204800,2342920630⟩ (N (N (N E ⟨200896,204800,2356793094⟩ E) ⟨200928,204800,2393963621⟩ E) ⟨200944,204800,2412645318⟩ (N E ⟨200964,204800,2436087559⟩ E))) ⟨201008,204800,2488011624⟩ (N (N (N (N E ⟨201012,204800,2492755856⟩ E) ⟨201024,204800,2507012350⟩ E) ⟨201036,204800,2521304486⟩ (N (N E ⟨201072,204800,2564394129⟩ E) ⟨201088,204800,2583647426⟩ E)) ⟨201200,204800,2720169542⟩ (N (N (N E ⟨201204,204800,2725101561⟩ E) ⟨201216,204800,2739920731⟩ E) ⟨201232,204800,2759733463⟩ (N E ⟨201280,204800,2819539367⟩ E))))) ⟨201288,204800,2829560435⟩ (N (N (N (N (N (N E ⟨201308,204800,2854679603⟩ E) ⟨201332,204800,2884947646⟩ E) ⟨201344,204800,2900132663⟩ (N (N E ⟨201360,204800,2920432085⟩ E) ⟨201396,204800,2966325346⟩ E)) ⟨201400,204800,2971443304⟩ (N (N (N E ⟨201408,204800,2981690414⟩ E) ⟨201412,204800,2986819561⟩ E) ⟨201420,204800,2997089025⟩ (N E ⟨201448,204800,3033149175⟩ E))) ⟨201456,204800,3043485426⟩ (N (N (N (N E ⟨201460,204800,3048659097⟩ E) ⟨201472,204800,3064202262⟩ E) ⟨201488,204800,3084978072⟩ (N (N E ⟨201524,204800,3131938408⟩ E) ⟨201584,204800,3210862060⟩ E)) ⟨201604,204800,3237351010⟩ (N (N (N E ⟨201616,204800,3253287592⟩ E) ⟨201652,204800,3301290973⟩ E) ⟨201708,204800,3376536470⟩ (N E ⟨201712,204800,3381937705⟩ E)))) ⟨201728,204800,3403577882⟩ (N (N (N (N (N E ⟨201788,204800,3485228063⟩ E) ⟨201808,204800,3512618957⟩ E) ⟨201836,204800,3551111462⟩ (N (N E ⟨201840,204800,3556624176⟩ E) ⟨201844,204800,3562140328⟩ E)) ⟨201864,204800,3589772560⟩ (N (N (N E ⟨201964,204800,3729209537⟩ E) ⟨202028,204800,3819550789⟩ E) ⟨202036,204800,3830903156⟩ (N E ⟨202044,204800,3842268715⟩ E))) ⟨202048,204800,3847956435⟩ (N (N (N (N E ⟨202092,204800,3910737789⟩ E) ⟨202100,204800,3922195036⟩ E) ⟨202128,204800,3962397654⟩ (N E ⟨202156,204800,4002758560⟩ E)) ⟨202172,204800,4025892612⟩ (N (N (N E ⟨202224,204800,4101430639⟩ E) ⟨202252,204800,4142326492⟩ E) ⟨202268,204800,4165764645⟩ (N E ⟨202284,204800,4189252805⟩ E)))))) ⟨202292,204800,4201015576⟩ (N (N (N (N (N (N (N E ⟨202300,204800,4212790777⟩ E) ⟨202328,204800,4254101506⟩ E) ⟨202352,204800,4289630850⟩ (N (N E ⟨202412,204800,4378934904⟩ E) ⟨202432,204800,4408854180⟩ E)) ⟨202480,204800,4480965631⟩ (N (N (N E ⟨202508,204800,4523227946⟩ E) ⟨202552,204800,4589930760⟩ E) ⟨202608,204800,4675333033⟩ (N E ⟨202688,204800,4798306513⟩ E))) ⟨202736,204800,4872629004⟩ (N (N (N (N E ⟨202792,204800,4959839855⟩ E) ⟨202848,204800,5047581965⟩ E) ⟨202864,204800,5072747449⟩ (N (N E ⟨202876,204800,5091649409⟩ E) ⟨202896,204800,5123205450⟩ E)) ⟨202944,204800,5199206823⟩ (N (N (N E ⟨202972,204800,5243713164⟩ E) ⟨202992,204800,5275580288⟩ E) ⟨203120,204800,5481017517⟩ (N E ⟨203132,204800,5500406795⟩ E)))) ⟨203260,204800,5708564424⟩ (N (N (N (N (N E ⟨203296,204800,5767540392⟩ E) ⟨203456,204800,6031855592⟩ E) ⟨203712,204800,6461782864⟩ (N (N E ⟨203784,204800,6584148680⟩ E) ⟨204108,204800,7141861699⟩ E)) ⟨204160,204800,7232362537⟩ (N (N (N E ⟨204544,204800,7907901185⟩ E) ⟨204800,204848,8356336171⟩ E) ⟨204800,204850,8356009412⟩ (N E ⟨204800,204852,8355682670⟩ E))) ⟨204800,204854,8355355943⟩ (N (N (N (N E ⟨204800,204864,8353722550⟩ E) ⟨204800,204876,8351763005⟩ E) ⟨204800,204916,8345235339⟩ (N E ⟨204800,204928,8343278283⟩ E)) ⟨204800,204944,8340669767⟩ (N (N (N E ⟨204800,204946,8340343774⟩ E) ⟨204800,204960,8338062271⟩ E) ⟨204800,204976,8335455795⟩ (N E ⟨204800,204980,8334804335⟩ E))))) ⟨204800,204988,8333501606⟩ (N (N (N (N (N (N E ⟨204800,204992,8332850337⟩ E) ⟨204800,205012,8329594946⟩ E) ⟨204800,205014,8329269494⟩ (N (N E ⟨204800,205024,8327642475⟩ E) ⟨204800,205042,8324714841⟩ E)) ⟨204800,205044,8324389628⟩ (N (N (N E ⟨204800,205052,8323088934⟩ E) ⟨204800,205056,8322438682⟩ E) ⟨204800,205074,8319513335⟩ (N E ⟨204800,205104,8314640613⟩ E))) ⟨204800,205108,8313991187⟩ (N (N (N (N E ⟨204800,205120,8312043287⟩ E) ⟨204800,205184,8301664123⟩ E) ⟨204800,205212,8297128334⟩ (N (N E ⟨204800,205228,8294537846⟩ E) ⟨204800,205232,8293890382⟩ E)) ⟨204800,205234,8293566674⟩ (N (N (N E ⟨204800,205236,8293242981⟩ E) ⟨204800,205244,8291948369⟩ E) ⟨204800,205248,8291301158⟩ (N E ⟨204800,205266,8288389489⟩ E)))) ⟨204800,205268,8288066049⟩ (N (N (N (N (N E ⟨204800,205280,8286125741⟩ E) ⟨204800,205312,8280954363⟩ E) ⟨204800,205344,8275787019⟩ (N (N E ⟨204800,205352,8274495813⟩ E) ⟨204800,205364,8272559476⟩ E)) ⟨204800,205376,8270623706⟩ (N (N (N E ⟨204800,205410,8265142098⟩ E) ⟨204800,205422,8263208498⟩ E) ⟨204800,205440,8260309158⟩ (N E ⟨204800,205458,8257411090⟩ E))) ⟨204800,205484,8253227235⟩ (N (N (N (N E ⟨204800,205488,8252583800⟩ E) ⟨204800,205494,8251618766⟩ E) ⟨204800,205504,8250010689⟩ (N E ⟨204800,205548,8242939802⟩ E)) ⟨204800,205554,8241976178⟩ (N (N (N E ⟨204800,205556,8241655001⟩ E) ⟨204800,205568,8239728268⟩ E) ⟨204800,205580,8237802098⟩ (N E ⟨204800,205584,8237160167⟩ E))))))))
+
+noncomputable def tab16 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨204800,205600,8234593066⟩ E) ⟨204800,205616,8232026966⟩ E) ⟨204800,205628,8230103047⟩ (N (N E ⟨204800,205632,8229461866⟩ E) ⟨204800,205654,8225936484⟩ E)) ⟨204800,205656,8225616088⟩ (N (N (N E ⟨204800,205664,8224334662⟩ E) ⟨204800,205684,8221132188⟩ E) ⟨204800,205696,8219211452⟩ (N E ⟨204800,205700,8218571331⟩ E))) ⟨204800,205704,8217931273⟩ (N (N (N (N E ⟨204800,205744,8211534116⟩ E) ⟨204800,205760,8208976997⟩ E) ⟨204800,205772,8207059811⟩ (N (N E ⟨204800,205778,8206101428⟩ E) ⟨204800,205808,8201311611⟩ E)) ⟨204800,205856,8193655172⟩ (N (N (N E ⟨204800,205872,8191105012⟩ E) ⟨204800,205874,8190786311⟩ E) ⟨204800,205876,8190467627⟩ (N E ⟨204800,205888,8188555844⟩ E)))) ⟨204800,205904,8186007668⟩ (N (N (N (N (N E ⟨204800,205936,8180914290⟩ E) ⟨204800,205952,8178369086⟩ E) ⟨204800,205968,8175824873⟩ (N (N E ⟨204800,205992,8172010409⟩ E) ⟨204800,206000,8170739415⟩ E)) ⟨204800,206002,8170421705⟩ (N (N (N E ⟨204800,206016,8168198169⟩ E) ⟨204800,206032,8165657911⟩ E) ⟨204800,206064,8160580358⟩ (N E ⟨204800,206068,8159945941⟩ E))) ⟨204800,206098,8155189782⟩ (N (N (N (N E ⟨204800,206144,8147903735⟩ E) ⟨204800,206148,8147270550⟩ E) ⟨204800,206176,8142839980⟩ (N (N E ⟨204800,206192,8140309578⟩ E) ⟨204800,206196,8139677132⟩ E)) ⟨204800,206208,8137780160⟩ (N (N (N E ⟨204800,206224,8135251724⟩ E) ⟨204800,206226,8134935738⟩ E) ⟨204800,206256,8130197797⟩ (N E ⟨204800,206260,8129566333⟩ E))))) ⟨204800,206272,8127672307⟩ (N (N (N (N (N (N E ⟨204800,206300,8123255057⟩ E) ⟨204800,206320,8120101717⟩ E) ⟨204800,206336,8117580146⟩ (N (N E ⟨204800,206386,8109706546⟩ E) ⟨204800,206388,8109391800⟩ E)) ⟨204800,206400,8107503649⟩ (N (N (N E ⟨204800,206404,8106874387⟩ E) ⟨204800,206416,8104986969⟩ E) ⟨204800,206432,8102471265⟩ (N E ⟨204800,206436,8101842492⟩ E))) ⟨204800,206448,8099956538⟩ (N (N (N (N E ⟨204800,206452,8099328009⟩ E) ⟨204800,206464,8097442786⟩ E) ⟨204800,206528,8087397529⟩ (N (N E ⟨204800,206544,8084888649⟩ E) ⟨204800,206560,8082380743⟩ E)) ⟨204800,206576,8079873809⟩ (N (N (N E ⟨204800,206592,8077367847⟩ E) ⟨204800,206600,8076115231⟩ E) ⟨204800,206610,8074549802⟩ (N E ⟨204800,206624,8072358839⟩ E)))) ⟨204800,206640,8069855791⟩ (N (N (N (N (N E ⟨204800,206644,8069230181⟩ E) ⟨204800,206656,8067353713⟩ E) ⟨204800,206672,8064852606⟩ (N (N E ⟨204800,206704,8059853298⟩ E) ⟨204800,206706,8059540970⟩ E)) ⟨204800,206716,8057979557⟩ (N (N (N E ⟨204800,206720,8057355097⟩ E) ⟨204800,206764,8050490036⟩ E) ⟨204800,206780,8047995463⟩ (N E ⟨204800,206784,8047371971⟩ E))) ⟨204800,206804,8044255416⟩ (N (N (N (N E ⟨204800,206828,8040517541⟩ E) ⟨204800,206832,8039894774⟩ E) ⟨204800,206836,8039272066⟩ (N E ⟨204800,206848,8037404305⟩ E)) ⟨204800,206908,8028073634⟩ (N (N (N E ⟨204800,206912,8027452071⟩ E) ⟨204800,206960,8019998005⟩ E) ⟨204800,206964,8019377224⟩ (N E ⟨204800,206972,8018135841⟩ E)))))) ⟨204800,206976,8017515240⟩ (N (N (N (N (N (N (N E ⟨204800,206988,8015653797⟩ E) ⟨204800,206996,8014413135⟩ E) ⟨204800,207016,8011312530⟩ (N (N E ⟨204800,207028,8009452887⟩ E) ⟨204800,207040,8007593784⟩ E)) ⟨204800,207084,8000781686⟩ (N (N (N E ⟨204800,207104,7997687674⟩ E) ⟨204800,207108,7997069051⟩ E) ⟨204800,207148,7990886110⟩ (N E ⟨204800,207152,7990268145⟩ E))) ⟨204800,207156,7989650239⟩ (N (N (N (N E ⟨204800,207168,7987796881⟩ E) ⟨204800,207216,7980388822⟩ E) ⟨204800,207232,7977921378⟩ (N (N E ⟨204800,207244,7976071420⟩ E) ⟨204800,207248,7975454887⟩ E)) ⟨204800,207292,7968676953⟩ (N (N (N E ⟨204800,207296,7968061135⟩ E) ⟨204800,207312,7965598455⟩ E) ⟨204800,207344,7960675951⟩ (N E ⟨204800,207360,7958216125⟩ E)))) ⟨204800,207364,7957601317⟩ (N (N (N (N (N E ⟨204800,207408,7950842346⟩ E) ⟨204800,207424,7948386319⟩ E) ⟨204800,207436,7946544921⟩ (N (N E ⟨204800,207472,7941023925⟩ E) ⟨204800,207488,7938571689⟩ E)) ⟨204800,207528,7932445239⟩ (N (N (N E ⟨204800,207532,7931832920⟩ E) ⟨204800,207536,7931220659⟩ E) ⟨204800,207538,7930914551⟩ (N E ⟨204800,207552,7928772207⟩ E))) ⟨204800,207568,7926324700⟩ (N (N (N (N E ⟨204800,207600,7921432520⟩ E) ⟨204800,207604,7920821263⟩ E) ⟨204800,207624,7917765862⟩ (N (N E ⟨204800,207656,7912880285⟩ E) ⟨204800,207664,7911659479⟩ E)) ⟨204800,207680,7909218575⟩ (N (N (N E ⟨204800,207728,7901901510⟩ E) ⟨204800,207744,7899464369⟩ E) ⟨204800,207760,7897028168⟩ (N E ⟨204800,207762,7896723709⟩ E))))) ⟨204800,207792,7892158584⟩ (N (N (N (N (N (N E ⟨204800,207796,7891550149⟩ E) ⟨204800,207808,7889725199⟩ E) ⟨204800,207852,7883038228⟩ (N (N E ⟨204800,207860,7881823176⟩ E) ⟨204800,207868,7880608358⟩ E)) ⟨204800,207872,7880001038⟩ (N (N (N E ⟨204800,207936,7870291856⟩ E) ⟨204800,207984,7863019785⟩ E) ⟨204800,208000,7860597628⟩ (N E ⟨204800,208016,7858176404⟩ E))) ⟨204800,208052,7852732059⟩ (N (N (N (N E ⟨204800,208064,7850918325⟩ E) ⟨204800,208128,7841253920⟩ E) ⟨204800,208160,7836427295⟩ (N (N E ⟨204800,208172,7834618269⟩ E) ⟨204800,208192,7831604385⟩ E)) ⟨204800,208208,7829194321⟩ (N (N (N E ⟨204800,208224,7826785185⟩ E) ⟨204800,208240,7824376975⟩ E) ⟨204800,208256,7821969692⟩ (N E ⟨204800,208264,7820766398⟩ E)))) ⟨204800,208312,7813551490⟩ (N (N (N (N (N E ⟨204800,208344,7808746175⟩ E) ⟨204800,208360,7806344903⟩ E) ⟨204800,208364,7805744729⟩ (N (N E ⟨204800,208444,7793753361⟩ E) ⟨204800,208448,7793154397⟩ E)) ⟨204800,208480,7788364760⟩ (N (N (N E ⟨204800,208492,7786569595⟩ E) ⟨204800,208496,7785971321⟩ E) ⟨204800,208500,7785373105⟩ (N E ⟨204800,208512,7783578802⟩ E))) ⟨204800,208556,7777004113⟩ (N (N (N (N E ⟨204800,208576,7774017913⟩ E) ⟨204800,208624,7766856881⟩ E) ⟨204800,208640,7764471704⟩ (N E ⟨204800,208652,7762683421⟩ E)) ⟨204800,208680,7758512765⟩ (N (N (N E ⟨204800,208692,7756726198⟩ E) ⟨204800,208700,7755535440⟩ E) ⟨204800,208704,7754940146⟩ (N E ⟨204800,208812,7738888793⟩ E))))))) ⟨204800,208832,7735920880⟩ (N (N (N (N (N (N (N (N E ⟨204800,208880,7728803693⟩ E) ⟨204800,208896,7726433117⟩ E) ⟨204800,208908,7724655782⟩ (N (N E ⟨204800,208928,7721694692⟩ E) ⟨204800,208944,7719326842⟩ E)) ⟨204800,208956,7717551550⟩ (N (N (N E ⟨204800,208960,7716959899⟩ E) ⟨204800,208976,7714593864⟩ E) ⟨204800,208984,7713411187⟩ (N E ⟨204800,209008,7709864514⟩ E))) ⟨204800,209024,7707501199⟩ (N (N (N (N E ⟨204800,209040,7705138789⟩ E) ⟨204800,209088,7698056990⟩ E) ⟨204800,209136,7690983326⟩ (N (N E ⟨204800,209152,7688627245⟩ E) ⟨204800,209184,7683917788⟩ E)) ⟨204800,209200,7681564413⟩ (N (N (N E ⟨204800,209216,7679211938⟩ E) ⟨204800,209232,7676860364⟩ E) ⟨204800,209264,7672159917⟩ (N E ⟨204800,209268,7671572614⟩ E)))) ⟨204800,209280,7669811042⟩ (N (N (N (N (N E ⟨204800,209296,7667463067⟩ E) ⟨204800,209392,7653394073⟩ E) ⟨204800,209408,7651052380⟩ (N (N E ⟨204800,209460,7643448061⟩ E) ⟨204800,209464,7642863504⟩ E)) ⟨204800,209472,7641694560⟩ (N (N (N E ⟨204800,209488,7639357341⟩ E) ⟨204800,209520,7634685584⟩ E) ⟨204800,209524,7634101866⟩ (N E ⟨204800,209532,7632934597⟩ E))) ⟨204800,209536,7632351046⟩ (N (N (N (N E ⟨204800,209580,7625935664⟩ E) ⟨204800,209600,7623021811⟩ E) ⟨204800,209648,7616034240⟩ (N (N E ⟨204800,209652,7615452304⟩ E) ⟨204800,209712,7606729932⟩ E)) ⟨204800,209716,7606148885⟩ (N (N (N E ⟨204800,209732,7603825251⟩ E) ⟨204800,209744,7602083107⟩ E) ⟨204800,209776,7597439831⟩ (N E ⟨204800,209780,7596859671⟩ E))))) ⟨204800,209788,7595699517⟩ (N (N (N (N (N (N E ⟨204800,209792,7595119523⟩ E) ⟨204800,209836,7588743242⟩ E) ⟨204800,209844,7587584638⟩ (N (N E ⟨204800,209852,7586426254⟩ E) ⟨204800,209856,7585847146⟩ E)) ⟨204800,209900,7579480595⟩ (N (N (N E ⟨204800,209904,7578902149⟩ E) ⟨204800,209908,7578323758⟩ E) ⟨204800,209972,7569077007⟩ (N E ⟨204800,210048,7558114805⟩ E))) ⟨204800,210092,7551777339⟩ (N (N (N (N E ⟨204800,210100,7550625786⟩ E) ⟨204800,210108,7549474453⟩ E) ⟨204800,210112,7548898869⟩ (N (N E ⟨204800,210156,7542571062⟩ E) ⟨204800,210160,7541996136⟩ E)) ⟨204800,210164,7541421264⟩ (N (N (N E ⟨204800,210176,7539696979⟩ E) ⟨204800,210184,7538547729⟩ E) ⟨204800,210216,7533952919⟩ (N E ⟨204800,210220,7533378814⟩ E)))) ⟨204800,210240,7530509109⟩ (N (N (N (N (N E ⟨204800,210288,7523627392⟩ E) ⟨204800,210356,7513891747⟩ E) ⟨204800,210432,7503029365⟩ (N (N E ⟨204800,210496,7493897320⟩ E) ⟨204800,210508,7492186609⟩ E)) ⟨204800,210512,7491616480⟩ (N (N (N E ⟨204800,210528,7489336509⟩ E) ⟨204800,210544,7487057405⟩ E) ⟨204800,210560,7484779168⟩ (N E ⟨204800,210600,7479087366⟩ E))) ⟨204800,210624,7475674883⟩ (N (N (N (N E ⟨204800,210692,7466016746⟩ E) ⟨204800,210736,7459775676⟩ E) ⟨204800,210752,7457507814⟩ (N E ⟨204800,210800,7450709396⟩ E)) ⟨204800,210816,7448444979⟩ (N (N (N E ⟨204800,210944,7430360584⟩ E) ⟨204800,211072,7412331053⟩ E) ⟨204800,211088,7410081209⟩ (N E ⟨204800,211128,7404460335⟩ E)))))) ⟨204800,211176,7397722320⟩ (N (N (N (N (N (N (N E ⟨204800,211184,7396600063⟩ E) ⟨204800,211196,7394917077⟩ E) ⟨204800,211200,7394356188⟩ (N (N E ⟨204800,211232,7389870989⟩ E) ⟨204800,211264,7385389192⟩ E)) ⟨204800,211296,7380910793⟩ (N (N (N E ⟨204800,211328,7376435789⟩ E) ⟨204800,211336,7375317568⟩ E) ⟨204800,211384,7368612691⟩ (N E ⟨204800,211440,7360799963⟩ E))) ⟨204800,211456,7358569658⟩ (N (N (N (N E ⟨204800,211516,7350213535⟩ E) ⟨204800,211520,7349656882⟩ E) ⟨204800,211552,7345205555⟩ (N (N E ⟨204800,211560,7344093250⟩ E) ⟨204800,211564,7343537177⟩ E)) ⟨204800,211572,7342425188⟩ (N (N (N E ⟨204800,211584,7340757599⟩ E) ⟨204800,211592,7339646136⟩ E) ⟨204800,211640,7332981776⟩ (N E ⟨204800,211672,7328543072⟩ E)))) ⟨204800,211712,7322999415⟩ (N (N (N (N (N E ⟨204800,211744,7318568264⟩ E) ⟨204800,211764,7315800497⟩ E) ⟨204800,211772,7314693756⟩ (N (N E ⟨204800,211776,7314140465⟩ E) ⟨204800,211820,7308057708⟩ E)) ⟨204800,211828,7306952432⟩ (N (N (N E ⟨204800,211840,7305294910⟩ E) ⟨204800,211884,7299221349⟩ E) ⟨204800,211904,7296462727⟩ (N E ⟨204800,211948,7290398344⟩ E))) ⟨204800,211952,7289847349⟩ (N (N (N (N E ⟨204800,212016,7281038507⟩ E) ⟨204800,212020,7280488397⟩ E) ⟨204800,212096,7270046162⟩ (N (N E ⟨204800,212140,7264009215⟩ E) ⟨204800,212160,7261267221⟩ E)) ⟨204800,212204,7255239387⟩ (N (N (N E ⟨204800,212208,7254691713⟩ E) ⟨204800,212224,7252501531⟩ E) ⟨204800,212268,7246482793⟩ (N E ⟨204800,212280,7244842403⟩ E))))) ⟨204800,212332,7237739408⟩ (N (N (N (N (N (N E ⟨204800,212336,7237193385⟩ E) ⟨204800,212352,7235009806⟩ E) ⟨204800,212416,7226283724⟩ (N (N E ⟨204800,212464,7219747796⟩ E) ⟨204800,212480,7217570796⟩ E)) ⟨204800,212524,7211588276⟩ (N (N (N E ⟨204800,212536,7209957756⟩ E) ⟨204800,212588,7202897493⟩ E) ⟨204800,212592,7202354754⟩ (N E ⟨204800,212604,7200726844⟩ E))) ⟨204800,212652,7194219801⟩ (N (N (N (N E ⟨204800,212720,7185014071⟩ E) ⟨204800,212736,7182850157⟩ E) ⟨204800,212792,7175282874⟩ (N (N E ⟨204800,212832,7169883774⟩ E) ⟨204800,212848,7167725556⟩ E)) ⟨204800,212852,7167186128⟩ (N (N (N E ⟨204800,212860,7166107426⟩ E) ⟨204800,212864,7165568150⟩ E) ⟨204800,212908,7159639470⟩ (N E ⟨204800,212928,7156946642⟩ E)))) ⟨204800,212972,7151026878⟩ (N (N (N (N (N E ⟨204800,212992,7148338100⟩ E) ⟨204984,212992,7430534959⟩ E) ⟨205016,212992,7479747351⟩ (N (N E ⟨207696,212992,11551972317⟩ E) ⟨208160,212992,12205051124⟩ E)) ⟨209280,212992,13651975337⟩ (N (N (N E ⟨210512,212992,14968078744⟩ E) ⟨210944,212992,15347203445⟩ E) ⟨212992,213044,16444306165⟩ (N E ⟨212992,213104,16424286405⟩ E))) ⟨212992,213120,16418769270⟩ (N (N (N (N E ⟨212992,213184,16395951169⟩ E) ⟨212992,213228,16379569867⟩ E) ⟨212992,213248,16371937440⟩ (N E ⟨212992,213256,16368851904⟩ E)) ⟨212992,213292,16354737045⟩ (N (N (N E ⟨212992,213296,16353145525⟩ E) ⟨212992,213312,16346733102⟩ E) ⟨212992,213440,16292773527⟩ (N E ⟨212992,213488,16271325063⟩ E))))))))
+
+noncomputable def tab17 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨212992,213632,16203039755⟩ E) ⟨212992,213744,16145876113⟩ E) ⟨212992,213868,16078495271⟩ (N (N E ⟨212992,213876,16074001499⟩ E) ⟨212992,213952,16030429901⟩ E)) ⟨212992,214064,15963332136⟩ (N (N (N E ⟨212992,214068,15960872564⟩ E) ⟨212992,214128,15923458807⟩ E) ⟨212992,214132,15920929959⟩ (N E ⟨212992,214188,15885073860⟩ E))) ⟨212992,214200,15877280860⟩ (N (N (N (N E ⟨212992,214248,15845723799⟩ E) ⟨212992,214256,15840404536⟩ E) ⟨212992,214272,15829714926⟩ (N (N E ⟨212992,214324,15794504608⟩ E) ⟨212992,214352,15775249101⟩ E)) ⟨212992,214384,15752990065⟩ (N (N (N E ⟨212992,214400,15741759742⟩ E) ⟨212992,214456,15701926500⟩ E) ⟨212992,214504,15667134158⟩ (N E ⟨212992,214512,15661277398⟩ E)))) ⟨212992,214528,15649514276⟩ (N (N (N (N (N E ⟨212992,214560,15625790073⟩ E) ⟨212992,214592,15601802787⟩ E) ⟨212992,214624,15577553457⟩ (N (N E ⟨212992,214632,15571450303⟩ E) ⟨212992,214636,15568392614⟩ E)) ⟨212992,214656,15553043132⟩ (N (N (N E ⟨212992,214664,15546874894⟩ E) ⟨212992,214768,15465217013⟩ E) ⟨212992,214784,15452413173⟩ (N E ⟨212992,214888,15367636688⟩ E))) ⟨212992,214892,15364322650⟩ (N (N (N (N E ⟨212992,214912,15347693469⟩ E) ⟨212992,214956,15310764305⟩ E) ⟨212992,214968,15300610688⟩ (N (N E ⟨212992,215016,15259646416⟩ E) ⟨212992,215212,15086639292⟩ E)) ⟨212992,215344,14965029214⟩ (N (N (N E ⟨212992,215352,14957529418⟩ E) ⟨212992,215488,14827802700⟩ E) ⟨212992,215536,14781021856⟩ (N E ⟨212992,215552,14765314206⟩ E))))) ⟨212992,215608,14709891570⟩ (N (N (N (N (N (N E ⟨212992,215664,14653780647⟩ E) ⟨212992,215792,14522980056⟩ E) ⟨212992,215808,14506383906⟩ (N (N E ⟨212992,215904,14405676172⟩ E) ⟨212992,215920,14388704650⟩ E)) ⟨212992,215936,14371680180⟩ (N (N (N E ⟨212992,216048,14251040712⟩ E) ⟨212992,216064,14233598825⟩ E) ⟨212992,216172,14114530394⟩ (N E ⟨212992,216192,14092227980⟩ E))) ⟨212992,216492,13748512307⟩ (N (N (N (N E ⟨212992,216512,13725001916⟩ E) ⟨212992,216560,13668281922⟩ E) ⟨212992,216584,13639766909⟩ (N (N E ⟨212992,216704,13495666739⟩ E) ⟨212992,216752,13437326711⟩ E)) ⟨212992,216816,13358930536⟩ (N (N (N E ⟨212992,217008,13119678245⟩ E) ⟨212992,217072,13038613763⟩ E) ⟨212992,217088,13018247744⟩ (N E ⟨212992,217168,12915827976⟩ E)))) ⟨212992,217320,12718592543⟩ (N (N (N (N (N E ⟨212992,217528,12443354988⟩ E) ⟨212992,217576,12379003573⟩ E) ⟨212992,217704,12205939677⟩ (N (N E ⟨212992,217728,12173259767⟩ E) ⟨212992,217832,12030834160⟩ E)) ⟨212992,217856,11997783053⟩ (N (N (N E ⟨212992,217960,11853791487⟩ E) ⟨212992,217984,11820388852⟩ E) ⟨212992,218032,11753393144⟩ (N E ⟨212992,218088,11674916825⟩ E))) ⟨212992,218216,11494315974⟩ (N (N (N (N E ⟨212992,218240,11460269768⟩ E) ⟨212992,218288,11392009324⟩ E) ⟨212992,218296,11380611106⟩ (N E ⟨212992,218608,10931607019⟩ E)) ⟨212992,218672,10838504302⟩ (N (N (N E ⟨212992,218680,10826844437⟩ E) ⟨212992,218856,10569158034⟩ E) ⟨212992,218864,10557394293⟩ (N E ⟨212992,218880,10533854239⟩ E)))))) ⟨212992,219008,10344954523⟩ (N (N (N (N (N (N (N E ⟨212992,219120,10178881781⟩ E) ⟨212992,219136,10155101777⟩ E) ⟨212992,219232,10012152067⟩ (N (N E ⟨212992,219240,10000219583⟩ E) ⟨212992,219376,9796936964⟩ E)) ⟨212992,219392,9772971268⟩ (N (N (N E ⟨212992,219648,9388330754⟩ E) ⟨212992,219776,9195340124⟩ E) ⟨212992,219888,9026221224⟩ (N E ⟨212992,220032,8808558093⟩ E))) ⟨212992,220144,8639179947⟩ (N (N (N (N E ⟨212992,220160,8614981766⟩ E) ⟨212992,220384,8276333427⟩ E) ⟨212992,220416,8227993137⟩ (N (N E ⟨212992,220648,7878061509⟩ E) ⟨212992,220856,7565489698⟩ E)) ⟨212992,221032,7302206258⟩ (N (N (N E ⟨212992,221056,7266405248⟩ E) ⟨212992,221160,7111581235⟩ E) ⟨212992,221184,7075928778⟩ (N E ⟨213692,221184,7162415271⟩ E)))) ⟨214432,221184,7254214482⟩ (N (N (N (N (N E ⟨217200,221184,7597272638⟩ E) ⟨217888,221184,7681547271⟩ E) ⟨217968,221184,7691300998⟩ (N (N E ⟨218432,221184,7747656776⟩ E) ⟨219296,221184,7851468519⟩ E)) ⟨219424,221184,7866706880⟩ (N (N (N E ⟨220108,221184,7947437827⟩ E) ⟨220272,221184,7966607637⟩ E) ⟨220652,221184,8010726372⟩ (N E ⟨221184,221416,7690272903⟩ E))) ⟨221184,221544,7481280369⟩ (N (N (N (N E ⟨221184,221696,7234651425⟩ E) ⟨221184,221928,6861845531⟩ E) ⟨221184,222008,6734404292⟩ (N (N E ⟨221184,222080,6620229385⟩ E) ⟨221184,222312,6255915968⟩ E)) ⟨221184,222336,6218556595⟩ (N (N (N E ⟨221184,222464,6020404688⟩ E) ⟨221184,222592,5824173145⟩ E) ⟨221184,222784,5533636203⟩ (N E ⟨221184,222944,5295216672⟩ E))))) ⟨221184,223200,4921202122⟩ (N (N (N (N (N (N E ⟨221184,223216,4898144275⟩ E) ⟨221184,223456,4556984120⟩ E) ⟨221184,223472,4534561469⟩ (N (N E ⟨221184,223488,4512179917⟩ E) ⟨221184,223664,4268741260⟩ E)) ⟨221184,223712,4203243235⟩ (N (N (N E ⟨221184,223744,4159794995⟩ E) ⟨221184,223776,4116521886⟩ E) ⟨221184,223872,3987765561⟩ (N E ⟨221184,223976,3850108483⟩ E))) ⟨221184,224360,3358962831⟩ (N (N (N (N E ⟨221184,224488,3201467306⟩ E) ⟨221184,224864,2757711661⟩ E) ⟨221184,224872,2748584181⟩ (N (N E ⟨221184,224944,2667038594⟩ E) ⟨221184,225088,2507229055⟩ E)) ⟨221184,225256,2326405216⟩ (N (N (N E ⟨221184,225376,2201015601⟩ E) ⟨221184,225640,1936444831⟩ E) ⟨221184,225792,1791284529⟩ (N E ⟨221184,226224,1408058229⟩ E)))) ⟨221184,226304,1341936689⟩ (N (N (N (N (N E ⟨221184,226456,1220542878⟩ E) ⟨221184,227052,798958492⟩ E) ⟨221184,227072,786333379⟩ (N (N E ⟨221184,227100,768825680⟩ E) ⟨221184,227128,751513515⟩ E)) ⟨221184,227504,538057829⟩ (N (N (N E ⟨221184,227576,501238058⟩ E) ⟨221184,227756,414912132⟩ E) ⟨221184,228072,283173964⟩ (N E ⟨221184,228160,250984162⟩ E))) ⟨221184,228584,123302443⟩ (N (N (N (N E ⟨221184,228700,96257478⟩ E) ⟨221184,228720,91935740⟩ E) ⟨221184,228788,77991129⟩ (N E ⟨221184,228852,65923119⟩ E)) ⟨221184,228968,46654088⟩ (N (N (N E ⟨221184,229256,13245868⟩ E) ⟨221184,229376,5355706⟩ E) ⟨221504,227580,503706529⟩ (N E ⟨221772,229376,5958270⟩ E))))))) ⟨221936,227884,366855452⟩ (N (N (N (N (N (N (N (N E ⟨222316,228200,246525385⟩ E) ⟨223256,229204,21568241⟩ E) ⟨223308,229376,7477133⟩ (N (N E ⟨223472,229376,7630701⟩ E) ⟨223800,228148,277071942⟩ E)) ⟨224252,228664,118737632⟩ (N (N (N E ⟨229376,229384,10120304⟩ E) ⟨229376,229400,8988499⟩ E) ⟨229376,229420,7668239⟩ (N E ⟨229376,229578,925015⟩ E))) ⟨229376,229608,382972⟩ (N (N (N (N E ⟨229376,229632,118725⟩ E) ⟨229664,233888,412⟩ E) ⟨229664,234464,408⟩ (N (N E ⟨229664,234496,407⟩ E) ⟨229664,235328,402⟩ E)) ⟨229664,237568,387⟩ (N (N (N E ⟨229668,234570,4094⟩ E) ⟨229669,232836,5785⟩ E) ⟨229670,235396,7274⟩ (N E ⟨229676,237568,21843⟩ E)))) ⟨229678,235594,29584⟩ (N (N (N (N (N E ⟨229684,233411,58373⟩ E) ⟨229684,233443,58341⟩ E) ⟨229684,237568,54390⟩ (N (N E ⟨229685,232964,64333⟩ E) ⟨229686,235412,67216⟩ E)) ⟨229686,236244,66273⟩ (N (N (N E ⟨229687,232550,76636⟩ E) ⟨229687,232982,76069⟩ E) ⟨229687,233398,75528⟩ (N E ⟨229688,233975,80927⟩ E))) ⟨229688,234646,80004⟩ (N (N (N (N E ⟨229688,234678,79961⟩ E) ⟨229696,237568,130579⟩ E) ⟨229700,237568,163276⟩ (N (N E ⟨229703,233046,205407⟩ E) ⟨229704,234630,209822⟩ E)) ⟨229704,237568,199623⟩ (N (N (N E ⟨229710,235626,269710⟩ E) ⟨229716,233586,353721⟩ E) ⟨229716,234354,349103⟩ (N E ⟨229716,235218,343997⟩ E))))) ⟨229718,233013,384254⟩ (N (N (N (N (N (N E ⟨229718,233061,383937⟩ E) ⟨229718,233477,381205⟩ E) ⟨229718,235476,368412⟩ (N (N E ⟨229719,232630,400773⟩ E) ⟨229719,233046,397917⟩ E)) ⟨229719,233462,395085⟩ (N (N (N E ⟨229720,234023,405199⟩ E) ⟨229720,234710,400471⟩ E) ⟨229720,237268,383462⟩ (N E ⟨229720,237568,381527⟩ E))) ⟨229733,232868,620027⟩ (N (N (N (N E ⟨229734,232597,640640⟩ E) ⟨229734,232613,640464⟩ E) ⟨229736,237568,621870⟩ (N (N E ⟨229744,237568,763963⟩ E) ⟨229748,234160,890551⟩ E)) ⟨229748,235824,865656⟩ (N (N (N E ⟨229748,237202,845696⟩ E) ⟨229748,237568,840491⟩ E) ⟨229750,232629,957364⟩ (N E ⟨229750,234037,934510⟩ E)))) ⟨229750,234708,923859⟩ (N (N (N (N (N E ⟨229750,236340,898579⟩ E) ⟨229751,233030,972563⟩ E) ⟨229752,234087,976728⟩ (N (N E ⟨229752,234774,965335⟩ E) ⟨229752,236342,939946⟩ E)) ⟨229752,236438,938419⟩ (N (N (N E ⟨229752,237270,925313⟩ E) ⟨229752,237568,920674⟩ E) ⟨229760,235328,1134223⟩ (N E ⟨229760,237568,1092006⟩ E))) ⟨229764,237440,1185712⟩ (N (N (N (N E ⟨229764,237568,1183156⟩ E) ⟨229765,233492,1293081⟩ E) ⟨229767,232630,1363936⟩ (N E ⟨229768,236326,1305066⟩ E)) ⟨229772,237568,1376424⟩ (N (N (N E ⟨229780,236338,1617592⟩ E) ⟨229781,232964,1742673⟩ E) ⟨229782,233061,1769186⟩ (N E ⟨229782,234684,1720703⟩ E)))))) ⟨229782,235516,1696493⟩ (N (N (N (N (N (N (N E ⟨229783,232646,1811731⟩ E) ⟨229783,233494,1785529⟩ E) ⟨229784,234087,1796875⟩ (N (N E ⟨229784,235542,1752843⟩ E) ⟨229784,235612,1750758⟩ E)) ⟨229784,237568,1693753⟩ (N (N (N E ⟨229788,232746,1961457⟩ E) ⟨229792,237568,1923594⟩ E) ⟨229797,232980,2243163⟩ (N E ⟨229798,233604,2252323⟩ E))) ⟨229798,235236,2190406⟩ (N (N (N (N E ⟨229798,236100,2158488⟩ E) ⟨229799,233062,2306981⟩ E) ⟨229804,232762,2491561⟩ (N (N E ⟨229804,233906,2443126⟩ E) ⟨229804,234674,2411269⟩ E)) ⟨229804,235506,2377342⟩ (N (N (N E ⟨229808,237568,2427180⟩ E) ⟨229810,236144,2555014⟩ E) ⟨229812,237568,2562224⟩ (N E ⟨229813,232964,2808199⟩ E)))) ⟨229813,233140,2799720⟩ (N (N (N (N (N E ⟨229814,232725,2857297⟩ E) ⟨229814,233141,2836938⟩ E) ⟨229814,233557,2816759⟩ (N (N E ⟨229814,233652,2812177⟩ E) ⟨229814,233684,2810635⟩ E)) ⟨229814,234133,2789116⟩ (N (N (N E ⟨229814,234516,2770922⟩ E) ⟨229814,234804,2757339⟩ E) ⟨229814,235636,2718564⟩ (N E ⟨229814,236372,2684829⟩ E))) ⟨229816,234119,2863803⟩ (N (N (N (N E ⟨229816,234806,2830401⟩ E) ⟨229816,237568,2700929⟩ E) ⟨229820,232778,3084897⟩ (N E ⟨229824,237436,2995979⟩ E)) ⟨229824,237568,2989319⟩ (N (N (N E ⟨229828,237504,3142394⟩ E) ⟨229828,237568,3139005⟩ E) ⟨229829,232692,3452062⟩ (N E ⟨229829,233172,3423696⟩ E))))) ⟨229829,233556,3401213⟩ (N (N (N (N (N (N E ⟨229829,233588,3399347⟩ E) ⟨229830,233636,3437416⟩ E) ⟨229830,233668,3435531⟩ (N (N E ⟨229830,234500,3386985⟩ E) ⟨229830,234756,3372221⟩ E)) ⟨229830,235332,3339294⟩ (N (N (N E ⟨229831,232710,3534279⟩ E) ⟨229831,233558,3483178⟩ E) ⟨229834,236560,3428270⟩ (N E ⟨229846,233557,4130101⟩ E))) ⟨229846,233620,4125643⟩ (N (N (N (N E ⟨229846,235380,4003507⟩ E) ⟨229846,235604,3988288⟩ E) ⟨229846,236436,3932392⟩ (N (N E ⟨229848,237568,3942359⟩ E) ⟨229856,233504,4596148⟩ E)) ⟨229856,234080,4551031⟩ (N (N (N E ⟨229860,237568,4468319⟩ E) ⟨229861,233156,4865462⟩ E) ⟨229862,232725,4951104⟩ (N E ⟨229863,232790,4995226⟩ E)))) ⟨229863,233206,4959643⟩ (N (N (N (N (N E ⟨229863,233622,4924377⟩ E) ⟨229872,237568,5027250⟩ E) ⟨229876,237568,5220888⟩ (N (N E ⟨229878,232741,5774734⟩ E) ⟨229878,233157,5733589⟩ E)) ⟨229880,237568,5418191⟩ (N (N (N E ⟨229888,234720,6111919⟩ E) ⟨229888,236384,5941466⟩ E) ⟨229888,237568,5823791⟩ (N E ⟨229892,237568,6032088⟩ E))) ⟨229894,232773,6659715⟩ (N (N (N (N E ⟨229894,233045,6628647⟩ E) ⟨229894,233157,6615907⟩ E) ⟨229894,233700,6554572⟩ (N E ⟨229894,233732,6550979⟩ E)) ⟨229894,234468,6469030⟩ (N (N (N E ⟨229894,235588,6346769⟩ E) ⟨229895,233190,6669370⟩ E) ⟨229898,235046,6628700⟩ (N E ⟨229898,236646,6451068⟩ E))))))))
+
+noncomputable def tab18 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨229910,234213,7425860⟩ E) ⟨229910,234452,7395597⟩ E) ⟨229910,234516,7387519⟩ (N (N E ⟨229910,234900,7339283⟩ E) ⟨229910,235284,7291441⟩ E)) ⟨229910,235380,7279541⟩ (N (N (N E ⟨229911,232406,7721746⟩ E) ⟨229911,232774,7672983⟩ E) ⟨229912,237568,7128564⟩ (N E ⟨229920,233168,8182971⟩ E))) ⟨229920,233600,8122547⟩ (N (N (N (N E ⟨229920,234176,8042847⟩ E) ⟨229920,234752,7964122⟩ E) ⟨229920,235584,7852101⟩ (N (N E ⟨229924,237568,7830449⟩ E) ⟨229926,232789,8624595⟩ E)) ⟨229926,233109,8577288⟩ (N (N (N E ⟨229926,233796,8476816⟩ E) ⟨229926,234500,8375379⟩ E) ⟨229926,235332,8257448⟩ (N E ⟨229926,235460,8239489⟩ E)))) ⟨229926,236228,8132758⟩ (N (N (N (N (N E ⟨229926,236292,8123941⟩ E) ⟨229927,232790,8690008⟩ E) ⟨229927,232806,8687617⟩ (N (N E ⟨229927,233222,8625736⟩ E) ⟨229928,236592,8205894⟩ E)) ⟨229928,237568,8071745⟩ (N (N (N E ⟨229930,235078,8546836⟩ E) ⟨229930,235846,8435944⟩ E) ⟨229936,234420,9035256⟩ (N E ⟨229936,235000,8946299⟩ E))) ⟨229938,236336,8873856⟩ (N (N (N (N E ⟨229940,237568,8817641⟩ E) ⟨229942,233237,9629014⟩ E) ⟨229944,233852,9664833⟩ (N (N E ⟨229944,235670,9369754⟩ E) ⟨229944,237568,9073610⟩ E)) ⟨229952,233168,10342444⟩ (N (N (N E ⟨229952,233600,10266074⟩ E) ⟨229952,234176,10165341⟩ E) ⟨229952,234752,10065841⟩ (N E ⟨229952,234784,10060349⟩ E))))) ⟨229952,235616,9918862⟩ (N (N (N (N (N (N E ⟨229958,233796,10660090⟩ E) ⟨229958,234564,10521026⟩ E) ⟨229960,237568,10134173⟩ (N (N E ⟨229973,233252,11879979⟩ E) ⟨229974,232469,12118688⟩ E)) ⟨229974,232901,12028934⟩ (N (N (N E ⟨229974,233317,11943288⟩ E) ⟨229974,233733,11858404⟩ E) ⟨229974,233844,11835882⟩ (N E ⟨229974,233876,11829399⟩ E))) ⟨229974,234708,11662392⟩ (N (N (N (N E ⟨229974,235828,11442201⟩ E) ⟨229974,236564,11300331⟩ E) ⟨229975,233270,12029791⟩ (N (N E ⟨229975,233686,11944274⟩ E) ⟨229975,233718,11937727⟩ E)) ⟨229975,234262,11827117⟩ (N (N (N E ⟨229975,234294,11820650⟩ E) ⟨229976,235702,11614423⟩ E) ⟨229986,235688,12370129⟩ (N E ⟨229986,236848,12129333⟩ E)))) ⟨229988,237568,12131444⟩ (N (N (N (N (N E ⟨229989,233332,13117837⟩ E) ⟨229990,233141,13241665⟩ E) ⟨229990,234596,12915882⟩ (N (N E ⟨229990,234948,12838577⟩ E) ⟨229990,236292,12548682⟩ E)) ⟨229990,236548,12494395⟩ (N (N (N E ⟨229996,234130,13500556⟩ E) ⟨229996,234898,13324687⟩ E) ⟨229996,235730,13137382⟩ (N E ⟨230000,237568,13042479⟩ E))) ⟨230002,235472,13674213⟩ (N (N (N (N E ⟨230002,236336,13475153⟩ E) ⟨230002,236400,13460552⟩ E) ⟨230004,237568,13353501⟩ (N E ⟨230005,232884,14546630⟩ E)) ⟨230006,232485,14732515⟩ (N (N (N E ⟨230006,233733,14420064⟩ E) ⟨230006,235572,13974593⟩ E) ⟨230008,237568,13668194⟩ (N E ⟨230016,237568,14308597⟩ E)))))) ⟨230018,234688,15195229⟩ (N (N (N (N (N (N (N E ⟨230018,235424,15005915⟩ E) ⟨230018,236288,14787424⟩ E) ⟨230018,236352,14771398⟩ (N (N E ⟨230020,237568,14634307⟩ E) ⟨230022,232885,16026496⟩ E)) ⟨230022,232901,16022088⟩ (N (N (N E ⟨230023,233366,15983209⟩ E) ⟨230024,233303,16089408⟩ E) ⟨230027,233817,16214117⟩ (N E ⟨230032,237568,15633473⟩ E))) ⟨230034,236400,16118166⟩ (N (N (N (N E ⟨230038,232917,17475558⟩ E) ⟨230038,233333,17351140⟩ E) ⟨230043,233417,17790778⟩ (N (N E ⟨230048,237568,17017120⟩ E) ⟨230052,237568,17372216⟩ E)) ⟨230055,232934,19088678⟩ (N (N (N E ⟨230058,235784,18460572⟩ E) ⟨230058,236616,18202040⟩ E) ⟨230058,236816,18140569⟩ (N E ⟨230059,233017,19452105⟩ E)))) ⟨230062,234164,19363223⟩ (N (N (N (N (N E ⟨230068,233347,20230593⟩ E) ⟨230068,233395,20213939⟩ E) ⟨230068,233779,20081322⟩ (N (N E ⟨230069,232980,20459072⟩ E) ⟨230070,233349,20430029⟩ E)) ⟨230070,234708,19960488⟩ (N (N (N E ⟨230070,235028,19851895⟩ E) ⟨230070,235572,19668976⟩ E) ⟨230071,232950,20671627⟩ (N E ⟨230071,233350,20530112⟩ E))) ⟨230072,235830,19775740⟩ (N (N (N (N E ⟨230072,237568,19202810⟩ E) ⟨230075,233033,21048570⟩ E) ⟨230080,237568,19960770⟩ (N (N E ⟨230084,235778,20970788⟩ E) ⟨230084,237568,20345264⟩ E)) ⟨230086,232965,22212602⟩ (N (N (N E ⟨230088,237568,20733432⟩ E) ⟨230091,233465,22546080⟩ E) ⟨230103,232966,24032240⟩ (N E ⟨230104,235862,22976395⟩ E))))) ⟨230104,237568,22322862⟩ (N (N (N (N (N (N E ⟨230107,234568,23808578⟩ E) ⟨230117,232980,25578843⟩ E) ⟨230119,232982,25803700⟩ (N (N E ⟨230119,233846,25424080⟩ E) ⟨230119,233878,25410155⟩ E)) ⟨230124,235272,25359523⟩ (N (N (N E ⟨230128,237568,24817292⟩ E) ⟨230132,234040,26804499⟩ E) ⟨230132,237568,25245899⟩ (N E ⟨230134,233061,27491057⟩ E))) ⟨230134,233461,27302946⟩ (N (N (N (N E ⟨230134,233477,27295455⟩ E) ⟨230134,234421,26858004⟩ E) ⟨230134,235124,26537915⟩ (N (N E ⟨230134,235860,26207895⟩ E) ⟨230135,233046,27614982⟩ E)) ⟨230135,233414,27441069⟩ (N (N (N E ⟨230135,233462,27418486⟩ E) ⟨230136,235094,26777350⟩ E) ⟨230136,235126,26762762⟩ (N E ⟨230136,235958,26386920⟩ E)))) ⟨230136,237568,25678183⟩ (N (N (N (N (N E ⟨230140,233930,27778586⟩ E) ⟨230144,233792,28313063⟩ E) ⟨230144,234368,28035476⟩ (N (N E ⟨230144,237568,26553782⟩ E) ⟨230149,233444,29077447⟩ E)) ⟨230150,233013,29414028⟩ (N (N (N E ⟨230150,233445,29196688⟩ E) ⟨230152,235078,28626649⟩ E) ⟨230152,237568,27444090⟩ (N E ⟨230156,233530,29876721⟩ E))) ⟨230160,237568,28349110⟩ (N (N (N (N E ⟨230162,236592,29052612⟩ E) ⟨230163,233874,30550323⟩ E) ⟨230163,234450,30250906⟩ (N E ⟨230163,234482,30234380⟩ E)) ⟨230165,233444,31022897⟩ (N (N (N E ⟨230165,233876,30794091⟩ E) ⟨230166,232661,31568415⟩ E) ⟨230166,233029,31369276⟩ (N E ⟨230166,233045,31360653⟩ E))))))) ⟨230166,234453,30613336⟩ (N (N (N (N (N (N (N (N E ⟨230168,233974,31110918⟩ E) ⟨230168,235126,30505079⟩ E) ⟨230168,235926,30093020⟩ (N (N E ⟨230168,237568,29268840⟩ E) ⟨230176,233856,32169082⟩ E)) ⟨230176,234432,31853776⟩ (N (N (N E ⟨230176,237568,30203283⟩ E) ⟨230179,233346,32832098⟩ E) ⟨230180,236128,31431934⟩ (N E ⟨230180,237568,30676022⟩ E))) ⟨230182,233061,33377827⟩ (N (N (N (N E ⟨230183,233462,33276705⟩ E) ⟨230183,233942,33004167⟩ E) ⟨230183,234486,32698655⟩ (N (N E ⟨230188,235336,32850975⟩ E) ⟨230188,236104,32425211⟩ E)) ⟨230192,237568,32116310⟩ (N (N (N E ⟨230196,237568,32603763⟩ E) ⟨230198,235096,34253815⟩ E) ⟨230199,233062,35599248⟩ (N E ⟨230200,237568,33094895⟩ E)))) ⟨230204,233162,36204191⟩ (N (N (N (N (N E ⟨230208,233888,36286960⟩ E) ⟨230208,237568,34088195⟩ E) ⟨230210,235944,35294981⟩ (N (N E ⟨230210,237104,34608668⟩ E) ⟨230212,237568,34590364⟩ E)) ⟨230214,233493,37342140⟩ (N (N (N E ⟨230214,235908,35834910⟩ E) ⟨230214,236740,35333321⟩ E) ⟨230215,233478,37487438⟩ (N E ⟨230215,233494,37477154⟩ E))) ⟨230215,233510,37466873⟩ (N (N (N (N E ⟨230216,234054,37254015⟩ E) ⟨230216,235174,36548700⟩ E) ⟨230216,235910,36094284⟩ (N (N E ⟨230216,237568,35096212⟩ E) ⟨230220,233178,38366601⟩ E)) ⟨230220,234010,37823331⟩ (N (N (N E ⟨230222,234356,37870729⟩ E) ⟨230224,237568,36118945⟩ E) ⟨230226,236592,36981498⟩ (N E ⟨230226,236656,36941471⟩ E))))) ⟨230229,233140,39642288⟩ (N (N (N (N (N (N E ⟨230229,233940,39102272⟩ E) ⟨230229,233972,39080864⟩ E) ⟨230230,233141,39781805⟩ (N (N E ⟨230230,233525,39520526⟩ E) ⟨230230,233557,39498850⟩ E)) ⟨230230,235220,38392536⟩ (N (N (N E ⟨230232,234806,38937532⟩ E) ⟨230232,235638,38389974⟩ E) ⟨230232,235958,38181941⟩ (N E ⟨230236,233194,40591237⟩ E))) ⟨230236,234080,39979556⟩ (N (N (N (N E ⟨230240,233888,40673104⟩ E) ⟨230240,235040,39880767⟩ E) ⟨230240,235072,39859035⟩ (N (N E ⟨230240,235808,39363247⟩ E) ⟨230240,235904,39299148⟩ E)) ⟨230245,233108,41938288⟩ (N (N (N E ⟨230245,233172,41892216⟩ E) ⟨230247,233126,42213976⟩ E) ⟨230248,237568,39275453⟩ (N E ⟨230252,236168,40767857⟩ E)))) ⟨230256,237568,40357060⟩ (N (N (N (N (N E ⟨230260,233555,43790849⟩ E) ⟨230260,233971,43479930⟩ E) ⟨230260,233987,43468027⟩ (N (N E ⟨230260,234019,43444233⟩ E) ⟨230260,237568,40903383⟩ E)) ⟨230261,233124,44263844⟩ (N (N (N E ⟨230263,233142,44546671⟩ E) ⟨230263,233542,44241961⟩ E) ⟨230264,235254,43110224⟩ (N E ⟨230264,235286,43086753⟩ E))) ⟨230264,236118,42482075⟩ (N (N (N (N E ⟨230264,237568,41453386⟩ E) ⟨230274,237568,42844495⟩ E) ⟨230276,237568,43125477⟩ (N E ⟨230279,233622,46569364⟩ E)) ⟨230280,235238,45448816⟩ (N (N (N E ⟨230280,236006,44859534⟩ E) ⟨230280,237568,43690200⟩ E) ⟨230292,234130,48135543⟩ (N E ⟨230292,237568,45406453⟩ E)))))) ⟨230293,233172,49088040⟩ (N (N (N (N (N (N (N E ⟨230294,233157,49256713⟩ E) ⟨230294,233589,48892978⟩ E) ⟨230294,233637,48852771⟩ (N (N E ⟨230294,235316,47472001⟩ E) ⟨230294,236052,46882127⟩ E)) ⟨230294,236148,46805865⟩ (N (N (N E ⟨230295,232790,49725642⟩ E) ⟨230296,235286,47797857⟩ E) ⟨230296,235292,47792977⟩ (N E ⟨230296,237568,45985898⟩ E))) ⟨230304,237568,47155829⟩ (N (N (N (N E ⟨230308,233443,51215107⟩ E) ⟨230308,234114,50629892⟩ E) ⟨230310,233189,51758402⟩ (N (N E ⟨230310,233573,51418534⟩ E) ⟨230310,233589,51404433⟩ E)) ⟨230310,236868,48613929⟩ (N (N (N E ⟨230310,237568,48042939⟩ E) ⟨230312,234918,50561108⟩ E) ⟨230312,237568,48340482⟩ (N E ⟨230320,237568,49539858⟩ E)))) ⟨230324,233651,53596661⟩ (N (N (N (N (N E ⟨230324,234067,53216275⟩ E) ⟨230324,234194,53100821⟩ E) ⟨230324,235026,52352155⟩ (N (N E ⟨230324,235282,52124455⟩ E) ⟨230324,236722,50866457⟩ E)) ⟨230324,237568,50145066⟩ (N (N (N E ⟨230326,233205,54335665⟩ E) ⟨230326,234629,53027253⟩ E) ⟨230327,233622,54111278⟩ (N E ⟨230327,234614,53200992⟩ E))) ⟨230328,237568,50753955⟩ (N (N (N (N E ⟨230336,234560,54703744⟩ E) ⟨230336,235904,53466515⟩ E) ⟨230336,236768,52689597⟩ (N E ⟨230340,233507,56362421⟩ E)) ⟨230340,234178,55718565⟩ (N (N (N E ⟨230340,236674,53402796⟩ E) ⟨230340,237568,52602707⟩ E) ⟨230341,233636,56404228⟩ (N E ⟨230341,234068,55988565⟩ E))))) ⟨230342,233205,56990571⟩ (N (N (N (N (N (N E ⟨230342,234916,55346661⟩ E) ⟨230343,233206,57157627⟩ E) ⟨230343,233222,57141928⟩ (N (N E ⟨230344,237568,53226318⟩ E) ⟨230352,233184,58703260⟩ E)) ⟨230352,237568,54484584⟩ (N (N (N E ⟨230356,233635,58929371⟩ E) ⟨230356,237568,55119238⟩ E) ⟨230358,233221,59692506⟩ (N E ⟨230358,233637,59268078⟩ E))) ⟨230359,233654,59421496⟩ (N (N (N (N E ⟨230359,234646,58422015⟩ E) ⟨230360,236118,57141227⟩ E) ⟨230360,236918,56372591⟩ (N (N E ⟨230368,236252,58328244⟩ E) ⟨230368,237568,57045284⟩ E)) ⟨230371,234098,61023237⟩ (N (N (N E ⟨230371,234674,60425731⟩ E) ⟨230371,234706,60392752⟩ E) ⟨230372,234178,61112135⟩ (N E ⟨230372,234946,60316201⟩ E)))) ⟨230372,237568,57694661⟩ (N (N (N (N (N E ⟨230374,233669,61995298⟩ E) ⟨230376,237568,58347719⟩ E) ⟨230384,233168,64302320⟩ (N (N E ⟨230384,235448,61845150⟩ E) ⟨230384,237568,59664876⟩ E)) ⟨230388,234226,63850073⟩ (N (N (N E ⟨230388,234994,63018648⟩ E) ⟨230388,236722,61196873⟩ E) ⟨230388,237568,60328976⟩ (N E ⟨230390,232869,65714142⟩ E))) ⟨230390,232885,65696067⟩ (N (N (N (N E ⟨230390,233717,64764651⟩ E) ⟨230390,233733,64746901⟩ E) ⟨230390,234133,64305134⟩ (N E ⟨230392,237568,60996756⟩ E)) ⟨230394,236124,62847620⟩ (N (N (N E ⟨230400,236896,63054461⟩ E) ⟨230400,237568,62343359⟩ E) ⟨230404,234210,66718714⟩ (N E ⟨230404,234978,65849876⟩ E))))))))
+
+noncomputable def tab19 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨230404,236098,64608020⟩ E) ⟨230404,236674,63980752⟩ E) ⟨230404,236930,63704410⟩ (N (N E ⟨230404,237568,63022182⟩ E) ⟨230405,233268,67987263⟩ E)) ⟨230405,233332,67912627⟩ (N (N (N E ⟨230405,233748,67429982⟩ E) ⟨230405,234132,66988264⟩ E) ⟨230405,234164,66951617⟩ (N E ⟨230407,233286,68333293⟩ E))) ⟨230408,237156,64148955⟩ (N (N (N (N E ⟨230408,237568,63704685⟩ E) ⟨230416,237568,65080733⟩ E) ⟨230420,234194,69651282⟩ (N (N E ⟨230420,234962,68744194⟩ E) ⟨230420,235794,67778119⟩ E)) ⟨230420,236626,66828958⟩ (N (N (N E ⟨230420,237568,65774278⟩ E) ⟨230421,233300,70913179⟩ E) ⟨230421,234708,69225156⟩ (N E ⟨230422,233285,71118791⟩ E)))) ⟨230422,234133,70093028⟩ (N (N (N (N (N E ⟨230424,235382,68977890⟩ E) ⟨230432,233648,72552847⟩ E) ⟨230432,234080,72018206⟩ (N (N E ⟨230432,234656,71312990⟩ E) ⟨230432,234688,71274065⟩ E)) ⟨230432,235232,70616387⟩ (N (N (N E ⟨230437,233316,73919446⟩ E) ⟨230438,232917,74620298⟩ E) ⟨230438,233301,74129737⟩ (N E ⟨230439,234774,72471710⟩ E))) ⟨230440,233719,73980840⟩ (N (N (N (N E ⟨230440,236356,70730967⟩ E) ⟨230440,237188,69742794⟩ E) ⟨230448,237568,70732144⟩ (N (N E ⟨230452,234179,75686398⟩ E) ⟨230452,237568,71455132⟩ E)) ⟨230453,233732,76461159⟩ (N (N (N E ⟨230454,233317,77202327⟩ E) ⟨230454,233333,77181133⟩ E) ⟨230454,235324,74599563⟩ (N E ⟨230454,235412,74487971⟩ E))))) ⟨230456,235414,74862743⟩ (N (N (N (N (N (N E ⟨230456,235446,74822012⟩ E) ⟨230456,236278,73772671⟩ E) ⟨230456,237110,72741665⟩ (N (N E ⟨230456,237568,72181801⟩ E) ⟨230459,233833,77493354⟩ E)) ⟨230464,234144,78053886⟩ (N (N (N E ⟨230464,234720,77289776⟩ E) ⟨230464,237568,73646178⟩ E) ⟨230468,234338,78574751⟩ (N E ⟨230468,235074,77594353⟩ E))) ⟨230468,235170,77467605⟩ (N (N (N (N E ⟨230468,236002,76379895⟩ E) ⟨230468,237568,74383886⟩ E) ⟨230470,233733,79787433⟩ (N (N E ⟨230470,233765,79743711⟩ E) ⟨230471,233766,79940182⟩ E)) ⟨230472,235398,77936749⟩ (N (N (N E ⟨230472,237220,75567507⟩ E) ⟨230472,237568,75125275⟩ E) ⟨230475,233433,81196115⟩ (N E ⟨230484,233811,82470815⟩ E)))) ⟨230484,234354,81708372⟩ (N (N (N (N (N E ⟨230484,235218,80513279⟩ E) ⟨230485,232980,83858959⟩ E) ⟨230485,233396,83262087⟩ (N (N E ⟨230485,233812,82670517⟩ E) ⟨230485,234228,82084193⟩ E)) ⟨230487,233366,83711009⟩ (N (N (N E ⟨230488,237078,78776169⟩ E) ⟨230491,233449,84405820⟩ E) ⟨230492,234912,82519720⟩ (N E ⟨230496,233744,84997886⟩ E))) ⟨230496,234176,84371794⟩ (N (N (N (N E ⟨230496,234752,83545947⟩ E) ⟨230496,235328,82730182⟩ E) ⟨230500,233363,86378902⟩ (N E ⟨230500,234338,84948866⟩ E)) ⟨230500,235106,83843229⟩ (N (N (N E ⟨230500,235938,82665681⟩ E) ⟨230502,233365,86789411⟩ E) ⟨230502,233381,86765589⟩ (N E ⟨230502,236228,82653873⟩ E)))))) ⟨230502,237060,81498505⟩ (N (N (N (N (N (N (N E ⟨230503,233782,86376854⟩ E) ⟨230503,233798,86353188⟩ E) ⟨230504,237568,81188858⟩ (N (N E ⟨230507,233881,87054134⟩ E) ⟨230512,237568,82741549⟩ E)) ⟨230516,233848,88971771⟩ (N (N (N E ⟨230516,233859,88955016⟩ E) ⟨230516,234275,88324246⟩ E) ⟨230516,234418,88108711⟩ (N E ⟨230516,234424,88099682⟩ E))) ⟨230516,235250,86867649⟩ (N (N (N (N E ⟨230516,235506,86490187⟩ E) ⟨230516,235538,86443148⟩ E) ⟨230516,236946,84404749⟩ (N (N E ⟨230516,237568,83523414⟩ E) ⟨230517,234228,88602706⟩ E)) ⟨230518,233397,90083295⟩ (N (N (N E ⟨230518,233813,89443263⟩ E) ⟨230518,236244,85814641⟩ E) ⟨230520,233852,89802406⟩ (N E ⟨230520,234428,88922191⟩ E)))) ⟨230520,236246,86213849⟩ (N (N (N (N (N E ⟨230520,237568,84308957⟩ E) ⟨230524,234432,89748467⟩ E) ⟨230524,237568,85098180⟩ (N (N E ⟨230528,233744,91656991⟩ E) ⟨230528,234176,90981849⟩ E)) ⟨230528,234752,90091302⟩ (N (N (N E ⟨230528,236192,87912149⟩ E) ⟨230528,236960,86776870⟩ E) ⟨230528,237024,86683093⟩ (N E ⟨230528,237568,85891082⟩ E))) ⟨230532,236258,88628273⟩ (N (N (N (N E ⟨230532,237090,87389549⟩ E) ⟨230532,237568,86687663⟩ E) ⟨230533,233396,93274961⟩ (N (N E ⟨230535,233398,93701291⟩ E) ⟨230536,236230,89488904⟩ E)) ⟨230536,237062,88238004⟩ (N (N (N E ⟨230536,237568,87487923⟩ E) ⟨230548,233843,95783988⟩ E) ⟨230548,237274,90357659⟩ (N E ⟨230548,237568,89910774⟩ E))))) ⟨230549,233412,96712420⟩ (N (N (N (N (N (N E ⟨230549,233828,96025334⟩ E) ⟨230550,233045,97543606⟩ E) ⟨230550,233061,97516796⟩ (N (N E ⟨230550,233461,96849526⟩ E) ⟨230550,233893,96135273⟩ E)) ⟨230550,234309,95453688⟩ (N (N (N E ⟨230550,236276,92311513⟩ E) ⟨230550,237108,91021407⟩ E) ⟨230551,233462,97066462⟩ (N E ⟨230551,233830,96456247⟩ E))) ⟨230551,234262,95746014⟩ (N (N (N (N E ⟨230551,234294,95693665⟩ E) ⟨230552,235542,93890871⟩ E) ⟨230552,237110,91429444⟩ (N (N E ⟨230562,235104,96734263⟩ E) ⟨230565,233828,99526504⟩ E)) ⟨230568,237568,94022426⟩ (N (N (N E ⟨230572,233946,100874006⟩ E) ⟨230572,234674,99626875⟩ E) ⟨230576,237568,95692833⟩ (N E ⟨230580,234450,101777446⟩ E)))) ⟨230580,235218,100453408⟩ (N (N (N (N (N E ⟨230580,236946,97552171⟩ E) ⟨230580,237568,96533554⟩ E) ⟨230581,233460,103742573⟩ (N (N E ⟨230581,233732,103260024⟩ E) ⟨230582,233061,104683345⟩ E)) ⟨230582,233077,104654574⟩ (N (N (N E ⟨230582,234309,102468618⟩ E) ⟨230584,235574,100720349⟩ E) ⟨230584,235606,100665587⟩ (N E ⟨230584,236438,99254755⟩ E))) ⟨230584,237270,97868557⟩ (N (N (N (N E ⟨230592,237568,99077780⟩ E) ⟨230596,237568,99933209⟩ E) ⟨230597,233460,107392096⟩ (N E ⟨230597,234900,104780283⟩ E)) ⟨230598,233093,108302366⟩ (N (N (N E ⟨230598,233461,107620440⟩ E) ⟨230598,233477,107590913⟩ E) ⟨230600,235558,104280264⟩ (N E ⟨230600,237568,100792316⟩ E))))))) ⟨230612,237568,103391699⟩ (N (N (N (N (N (N (N (N E ⟨230613,233796,110466752⟩ E) ⟨230614,233493,111275847⟩ E) ⟨230614,234901,108629190⟩ (N (N E ⟨230614,235516,107497871⟩ E) ⟨230614,235572,107395590⟩ E)) ⟨230614,235604,107337199⟩ (N (N (N E ⟨230616,236444,106264265⟩ E) ⟨230616,237206,104904068⟩ E) ⟨230624,236192,108518981⟩ (N E ⟨230629,233924,113970720⟩ E))) ⟨230632,237568,107797532⟩ (N (N (N (N E ⟨230636,235506,112550414⟩ E) ⟨230636,237568,108689727⟩ E) ⟨230640,237568,109585597⟩ (N (N E ⟨230644,233923,117541240⟩ E) ⟨230644,235602,114223063⟩ E)) ⟨230644,235634,114160967⟩ (N (N (N E ⟨230644,237568,110485144⟩ E) ⟨230645,233140,119372957⟩ E) ⟨230645,233556,118523894⟩ (N E ⟨230645,233972,117682367⟩ E)))) ⟨230646,233557,118763476⟩ (N (N (N (N (N E ⟨230646,233925,118017164⟩ E) ⟨230646,234357,117148525⟩ E) ⟨230646,234389,117084500⟩ (N (N E ⟨230646,234965,115939492⟩ E) ⟨230646,235636,114623233⟩ E)) ⟨230646,236468,113016987⟩ (N (N (N E ⟨230646,237300,111438784⟩ E) ⟨230647,233942,118223100⟩ E) ⟨230648,236406,113596742⟩ (N E ⟨230648,237568,111388365⟩ E))) ⟨230660,237568,114120081⟩ (N (N (N (N E ⟨230661,233588,122352162⟩ E) ⟨230661,234004,121483573⟩ E) ⟨230661,234996,119443226⟩ (N (N E ⟨230662,233541,122696399⟩ E) ⟨230662,234468,120765588⟩ E)) ⟨230662,234500,120699617⟩ (N (N (N E ⟨230662,235332,119000084⟩ E) ⟨230662,235588,118483178⟩ E) ⟨230662,236100,117457761⟩ (N E ⟨230666,235814,118976636⟩ E))))) ⟨230677,233156,127248002⟩ (N (N (N (N (N (N E ⟨230677,233540,126412318⟩ E) ⟨230677,233828,125790054⟩ E) ⟨230678,236436,120563399⟩ (N (N E ⟨230678,237236,118943806⟩ E) ⟨230679,233558,126872516⟩ E)) ⟨230680,237270,119344698⟩ (N (N (N E ⟨230688,235108,125756022⟩ E) ⟨230688,237568,120622695⟩ E) ⟨230692,233987,129188549⟩ (N E ⟨230693,233556,130398931⟩ E))) ⟨230693,234420,128485204⟩ (N (N (N (N E ⟨230695,233974,129972127⟩ E) ⟨230695,234422,128980441⟩ E) ⟨230695,234454,128909969⟩ (N (N E ⟨230698,235846,126623741⟩ E) ⟨230698,237446,123241890⟩ E)) ⟨230704,235188,129537622⟩ (N (N (N E ⟨230704,235768,128266403⟩ E) ⟨230704,237568,124419297⟩ E) ⟨230708,234040,133118042⟩ (N E ⟨230708,234616,131814303⟩ E)))) ⟨230708,237568,125377630⟩ (N (N (N (N (N E ⟨230709,233588,134409385⟩ E) ⟨230710,234053,133598537⟩ E) ⟨230710,234421,132760777⟩ (N (N E ⟨230710,234453,132688239⟩ E) ⟨230710,235668,129970352⟩ E)) ⟨230710,236468,128218737⟩ (N (N (N E ⟨230710,237300,126428252⟩ E) ⟨230711,233990,133998310⟩ E) ⟨230712,234620,132816630⟩ (N E ⟨230712,237568,126339636⟩ E))) ⟨230714,234504,133587998⟩ (N (N (N (N E ⟨230716,237568,127305315⟩ E) ⟨230720,233504,137450012⟩ E) ⟨230720,234368,135432358⟩ (N E ⟨230720,234944,134107803⟩ E)) ⟨230720,235520,132799403⟩ (N (N (N E ⟨230720,235552,132727184⟩ E) ⟨230720,236384,130866583⟩ E) ⟨230720,237568,128274666⟩ (N E ⟨230724,236418,131783357⟩ E)))))) ⟨230724,237568,129247689⟩ (N (N (N (N (N (N (N E ⟨230725,233604,138516232⟩ E) ⟨230725,234020,137532960⟩ E) ⟨230726,234021,137789818⟩ (N (N E ⟨230726,234564,136517089⟩ E) ⟨230726,235652,134010867⟩ E)) ⟨230726,236420,132276337⟩ (N (N (N E ⟨230728,237568,130224384⟩ E) ⟨230730,234104,138632123⟩ E) ⟨230730,236646,132765153⟩ (N E ⟨230739,234450,140150204⟩ E))) ⟨230740,233651,142343327⟩ (N (N (N (N E ⟨230740,237568,133176498⟩ E) ⟨230741,234020,141709649⟩ E) ⟨230742,233237,143890777⟩ (N (N E ⟨230742,234021,141970334⟩ E) ⟨230742,235029,139548035⟩ E)) ⟨230746,233704,143803575⟩ (N (N (N E ⟨230752,234000,144666808⟩ E) ⟨230752,234432,143602361⟩ E) ⟨230752,235008,142198282⟩ (N E ⟨230752,235584,140811326⟩ E)))) ⟨230756,237568,137164046⟩ (N (N (N (N (N E ⟨230758,233637,147177819⟩ E) ⟨230758,234596,144783598⟩ E) ⟨230758,234628,144704550⟩ (N (N E ⟨230758,235332,142979070⟩ E) ⟨230758,235460,142668115⟩ E)) ⟨230758,235716,142048738⟩ (N (N (N E ⟨230758,236292,140667385⟩ E) ⟨230760,237568,138170109⟩ E) ⟨230762,234136,146994266⟩ (N E ⟨230762,236678,140774236⟩ E))) ⟨230764,234898,145623005⟩ (N (N (N (N E ⟨230764,237568,139179842⟩ E) ⟨230768,233600,149974082⟩ E) ⟨230768,235832,144371112⟩ (N E ⟨230768,236600,142503905⟩ E)) ⟨230768,237568,140193245⟩ (N (N (N E ⟨230772,237568,141210318⟩ E) ⟨230773,233652,151199924⟩ E) ⟨230774,233637,151511489⟩ (N E ⟨230774,234580,149087479⟩ E))))) ⟨230774,235077,147829433⟩ (N (N (N (N (N (N E ⟨230774,235348,147149046⟩ E) ⟨230774,235764,146112215⟩ E) ⟨230774,236180,145084501⟩ (N (N E ⟨230774,237012,143056044⟩ E) ⟨230776,235840,146449763⟩ E)) ⟨230776,237568,142231060⟩ (N (N (N E ⟨230782,236484,146425875⟩ E) ⟨230784,233616,154307433⟩ E) ⟨230784,234464,152084952⟩ (N E ⟨230784,235040,150598137⟩ E))) ⟨230784,235616,149129450⟩ (N (N (N (N E ⟨230784,236448,147039483⟩ E) ⟨230788,233651,155317670⟩ E) ⟨230790,233653,155865182⟩ (N (N E ⟨230790,234069,154758988⟩ E) ⟨230794,237568,146869803⟩ E)) ⟨230804,237568,149478980⟩ (N (N (N E ⟨230805,234132,158735707⟩ E) ⟨230805,235092,156156223⟩ E) ⟨230806,233301,161293877⟩ (N E ⟨230806,233717,160147433⟩ E)))) ⟨230806,234101,159098205⟩ (N (N (N (N (N E ⟨230806,234533,157928076⟩ E) ⟨230806,234565,157841828⟩ E) ⟨230806,236660,152321200⟩ (N (N E ⟨230806,237492,150195855⟩ E) ⟨230808,236534,153181099⟩ E)) ⟨230812,234656,159256087⟩ (N (N (N E ⟨230812,235808,156163733⟩ E) ⟨230816,233600,163289474⟩ E) ⟨230816,234032,162085950⟩ (N E ⟨230816,234464,160893496⟩ E))) ⟨230816,235040,159320567⟩ (N (N (N (N E ⟨230816,235616,157766816⟩ E) ⟨230816,236384,155724498⟩ E) ⟨230816,236480,155471538⟩ (N E ⟨230821,233684,164472053⟩ E)) ⟨230821,233748,164291818⟩ (N (N (N E ⟨230821,234164,163126293⟩ E) ⟨230822,233301,165841928⟩ E) ⟨230822,234101,163584343⟩ (N E ⟨230822,235428,159923636⟩ E))))))))
+
+noncomputable def tab20 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨230823,233702,164989863⟩ E) ⟨230827,234617,163550828⟩ E) ⟨230828,235730,160756718⟩ (N (N E ⟨230832,235180,163383640⟩ E) ⟨230834,235792,162246139⟩ E)) ⟨230834,236560,160147393⟩ (N (N (N E ⟨230834,236656,159887442⟩ E) ⟨230836,234115,167520638⟩ E) ⟨230836,234131,167474806⟩ (N E ⟨230836,234547,166288638⟩ E))) ⟨230836,235826,162706936⟩ (N (N (N (N E ⟨230836,236690,160341879⟩ E) ⟨230836,237568,157982366⟩ E) ⟨230837,233700,169002744⟩ (N (N E ⟨230837,234116,167803552⟩ E) ⟨230838,233701,169287909⟩ E)) ⟨230838,237396,158981976⟩ (N (N (N E ⟨230838,237428,158896201⟩ E) ⟨230838,237568,158521618⟩ E) ⟨230839,234134,168324014⟩ (N E ⟨230839,234550,167131847⟩ E)))) ⟨230840,237568,159061787⟩ (N (N (N (N (N E ⟨230843,234633,168032648⟩ E) ⟨230844,237568,160144873⟩ E) ⟨230848,237568,161231625⟩ (N (N E ⟨230850,235520,167482846⟩ E) ⟨230850,236352,165134716⟩ E)) ⟨230853,233348,174692309⟩ (N (N (N E ⟨230853,233732,173545982⟩ E) ⟨230854,234133,172648751⟩ E) ⟨230854,236292,166418726⟩ (N E ⟨230856,237568,163416122⟩ E))) ⟨230864,234080,175719550⟩ (N (N (N (N E ⟨230866,236336,169662830⟩ E) ⟨230868,236944,168485267⟩ E) ⟨230868,237568,166720348⟩ (N (N E ⟨230869,233748,178195579⟩ E) ⟨230870,233733,178537098⟩ E)) ⟨230870,234597,175918868⟩ (N (N (N E ⟨230870,234629,175822822⟩ E) ⟨230870,235860,172177296⟩ E) ⟨230882,234688,179155894⟩ (N E ⟨230882,235456,176827577⟩ E))))) ⟨230882,236288,174347763⟩ (N (N (N (N (N (N E ⟨230885,234164,181657351⟩ E) ⟨230886,234149,182001459⟩ E) ⟨230886,234165,181951672⟩ (N (N E ⟨230891,233849,184436991⟩ E) ⟨230891,234681,181832812⟩ E)) ⟨230892,237568,173427708⟩ (N (N (N E ⟨230896,237568,174558419⟩ E) ⟨230900,234227,185943911⟩ E) ⟨230900,234643,184627471⟩ (N E ⟨230900,237568,175692791⟩ E))) ⟨230901,233396,188914007⟩ (N (N (N (N E ⟨230901,233812,187571789⟩ E) ⟨230901,234228,186241472⟩ E) ⟨230902,234197,186641341⟩ (N (N E ⟨230902,235205,183459237⟩ E) ⟨230902,235860,181427812⟩ E)) ⟨230903,234198,186939529⟩ (N (N (N E ⟨230904,237568,176830825⟩ E) ⟨230907,233865,189222441⟩ E) ⟨230907,235368,184430561⟩ (N E ⟨230912,234560,188493558⟩ E)))) ⟨230912,237344,179795677⟩ (N (N (N (N (N E ⟨230912,237568,179117874⟩ E) ⟨230914,237440,180080089⟩ E) ⟨230914,237568,179691925⟩ (N (N E ⟨230916,233779,192253002⟩ E) ⟨230916,236610,183207036⟩ E)) ⟨230916,237442,180650203⟩ (N (N (N E ⟨230917,234212,191138520⟩ E) ⟨230918,233781,192860566⟩ E) ⟨230924,237568,182575900⟩ (N E ⟨230928,233760,196016443⟩ E))) ⟨230931,234642,193999671⟩ (N (N (N (N E ⟨230931,235218,192104521⟩ E) ⟨230932,233795,197139661⟩ E) ⟨230932,234275,195527368⟩ (N E ⟨230932,236944,186856914⟩ E)) ⟨230934,233797,197754693⟩ (N (N (N E ⟨230934,233813,197700515⟩ E) ⟨230934,235892,190815823⟩ E) ⟨230935,234230,196603974⟩ (N E ⟨230936,236694,188833047⟩ E)))))) ⟨230936,237568,186066861⟩ (N (N (N (N (N (N (N E ⟨230940,237568,187237832⟩ E) ⟨230942,236676,190675059⟩ E) ⟨230944,237568,188412461⟩ (N (N E ⟨230947,234674,198817089⟩ E) ⟨230950,233829,202652990⟩ E)) ⟨230950,234245,201215817⟩ (N (N (N E ⟨230956,236104,196768552⟩ E) ⟨230956,237568,191958293⟩ E) ⟨230960,233744,206113638⟩ (N E ⟨230960,237568,193147551⟩ E))) ⟨230964,236666,197323097⟩ (N (N (N (N E ⟨230964,237568,194340466⟩ E) ⟨230965,233828,207406893⟩ E) ⟨230966,233445,209093477⟩ (N (N E ⟨230966,233461,209036105⟩ E) ⟨230966,233477,208978754⟩ E)) ⟨230966,233877,207551334⟩ (N (N (N E ⟨230966,233893,207494491⟩ E) ⟨230966,234293,206079725⟩ E) ⟨230966,234309,206023385⟩ (N E ⟨230966,235956,200325537⟩ E)))) ⟨230966,236788,197522103⟩ (N (N (N (N (N E ⟨230966,237524,195082919⟩ E) ⟨230966,237568,194938294⟩ E) ⟨230968,237568,195537037⟩ (N (N E ⟨230976,237568,197941146⟩ E) ⟨230979,234114,210855528⟩ E)) ⟨230980,234275,210595528⟩ (N (N (N E ⟨230980,237568,199148684⟩ E) ⟨230981,234244,211027152⟩ E) ⟨230981,234260,210969448⟩ (N E ⟨230981,234324,210738829⟩ E))) ⟨230981,235284,207317067⟩ (N (N (N (N E ⟨230982,233477,214141122⟩ E) ⟨230983,234710,209990237⟩ E) ⟨230984,237568,200359877⟩ (N (N E ⟨230988,236136,206513870⟩ E) ⟨230995,234738,213722268⟩ E)) ⟨230995,235314,211635302⟩ (N (N (N E ⟨230997,233876,217545372⟩ E) ⟨230998,233877,217867807⟩ E) ⟨230998,234277,216382210⟩ (N E ⟨230998,236724,207564599⟩ E))))) ⟨230998,237568,204627828⟩ (N (N (N (N (N (N E ⟨231008,234656,218217920⟩ E) ⟨231008,234688,218098809⟩ E) ⟨231008,235264,215968655⟩ (N (N E ⟨231008,235808,213980675⟩ E) ⟨231010,236448,212300805⟩ E)) ⟨231010,237312,209222927⟩ (N (N (N E ⟨231010,237376,208997162⟩ E) ⟨231011,234178,220989007⟩ E) ⟨231012,237568,208940533⟩ (N E ⟨231013,233876,222793175⟩ E))) ⟨231013,233892,222732157⟩ (N (N (N (N E ⟨231013,234308,221153012⟩ E) ⟨231014,233877,223119409⟩ E) ⟨231014,234309,221476851⟩ (N (N E ⟨231020,236936,213692077⟩ E) ⟨231020,237568,211425024⟩ E)) ⟨231027,234738,224110380⟩ (N (N (N E ⟨231028,234323,226034751⟩ E) ⟨231028,234755,224373891⟩ E) ⟨231028,237568,213924120⟩ (N E ⟨231029,233892,228040720⟩ E)))) ⟨231029,234308,226423937⟩ (N (N (N (N (N E ⟨231030,233525,229815020⟩ E) ⟨231030,233893,228370660⟩ E) ⟨231030,233909,228308120⟩ (N (N E ⟨231030,235988,220360751⟩ E) ⟨231032,237568,215179144⟩ E)) ⟨231040,234720,228470722⟩ (N (N (N E ⟨231040,235296,226239569⟩ E) ⟨231040,237536,217817591⟩ E) ⟨231040,237568,217700143⟩ (N E ⟨231046,233925,233617186⟩ E))) ⟨231046,234341,231961100⟩ (N (N (N (N E ⟨231046,235972,225608011⟩ E) ⟨231047,234774,230585819⟩ E) ⟨231048,236006,226130174⟩ (N E ⟨231052,236968,223763169⟩ E)) ⟨231058,236048,229242186⟩ (N (N (N E ⟨231058,236912,225913105⟩ E) ⟨231058,237568,223425762⟩ E) ⟨231061,233540,240289020⟩ (N E ⟨231061,233556,240223116⟩ E))))))) ⟨231061,234356,236956537⟩ (N (N (N (N (N (N (N (N E ⟨231061,234388,236827032⟩ E) ⟨231061,234804,235151500⟩ E) ⟨231062,236052,230542320⟩ (N (N E ⟨231064,237568,225350719⟩ E) ⟨231068,235488,234760678⟩ E)) ⟨231072,234752,239076261⟩ (N (N (N E ⟨231072,235328,236741856⟩ E) ⟨231072,235904,234435879⟩ E) ⟨231072,236736,231154373⟩ (N E ⟨231076,233939,243797870⟩ E))) ⟨231077,234004,243871428⟩ (N (N (N (N E ⟨231077,234420,242143233⟩ E) ⟨231078,233957,244412764⟩ E) ⟨231078,234357,242746732⟩ (N (N E ⟨231079,234806,241233873⟩ E) ⟨231080,237568,230524054⟩ E)) ⟨231084,237000,234059077⟩ (N (N (N E ⟨231084,237568,231826504⟩ E) ⟨231088,236152,238780214⟩ E) ⟨231088,236920,235696137⟩ (N E ⟨231092,234424,247287492⟩ E)))) ⟨231092,234435,247241037⟩ (N (N (N (N (N E ⟨231092,234851,245492176⟩ E) ⟨231092,235000,244869545⟩ E) ⟨231092,236050,240537395⟩ (N (N E ⟨231092,237568,234442338⟩ E) ⟨231093,234372,247853528⟩ E)) ⟨231093,234804,246032726⟩ (N (N (N E ⟨231094,233973,249899125⟩ E) ⟨231094,236084,241071633⟩ E) ⟨231096,234428,248655848⟩ (N E ⟨231096,235004,246224563⟩ E))) ⟨231096,236160,241434133⟩ (N (N (N (N E ⟨231096,237568,235755722⟩ E) ⟨231100,235008,247583201⟩ E) ⟨231104,234320,251902219⟩ (N (N E ⟨231104,234752,250051265⟩ E) ⟨231104,235328,247609697⟩ E)) ⟨231104,235904,245197862⟩ (N (N (N E ⟨231104,235936,245064734⟩ E) ⟨231104,236168,244102256⟩ E) ⟨231104,236672,242027586⟩ (N E ⟨231104,236768,241634913⟩ E))))) ⟨231104,237536,238522035⟩ (N (N (N (N (N (N E ⟨231104,237568,238393423⟩ E) ⟨231108,237568,239717738⟩ E) ⟨231109,233588,256849694⟩ (N (N E ⟨231109,233972,255165981⟩ E) ⟨231112,236838,244034250⟩ E)) ⟨231112,237568,241045697⟩ (N (N (N E ⟨231122,237568,244381529⟩ E) ⟨231124,234003,260344872⟩ E) ⟨231124,234835,256671306⟩ (N E ⟨231124,237568,245051427⟩ E))) ⟨231125,233988,260768011⟩ (N (N (N (N E ⟨231126,233621,262770897⟩ E) ⟨231126,234469,258986303⟩ E) ⟨231126,236980,248172472⟩ (N (N E ⟨231126,237568,245722235⟩ E) ⟨231127,234406,259619366⟩ E)) ⟨231132,237568,247740121⟩ (N (N (N E ⟨231139,234866,261825752⟩ E) ⟨231139,235442,259270451⟩ E) ⟨231140,234946,261823066⟩ (N E ⟨231141,234020,266355925⟩ E)))) ⟨231141,234404,264613113⟩ (N (N (N (N (N E ⟨231142,237568,251121466⟩ E) ⟨231146,234520,265877613⟩ E) ⟨231146,236848,255567489⟩ (N (N E ⟨231148,237568,253161192⟩ E) ⟨231152,233936,270720502⟩ E)) ⟨231152,237568,254525558⟩ (N (N (N E ⟨231156,234067,271566144⟩ E) ⟨231156,234483,269642207⟩ E) ⟨231156,234899,267735281⟩ (N E ⟨231156,234994,267302173⟩ E))) ⟨231156,235026,267156481⟩ (N (N (N (N E ⟨231156,235858,263403095⟩ E) ⟨231156,236146,262119224⟩ E) ⟨231156,236978,258453956⟩ (N E ⟨231156,237568,255893562⟩ E)) ⟨231157,234452,270146155⟩ (N (N (N E ⟨231158,234453,270502941⟩ E) ⟨231158,236916,259417820⟩ E) ⟨231160,237568,257265204⟩ (N E ⟨231162,234120,273503018⟩ E)))))) ⟨231168,237568,260019400⟩ (N (N (N (N (N (N (N E ⟨231172,234978,273130600⟩ E) ⟨231172,235010,272981721⟩ E) ⟨231172,235842,269146235⟩ (N (N E ⟨231172,236098,267979659⟩ E) ⟨231172,236674,265377889⟩ E)) ⟨231172,237568,261401954⟩ (N (N (N E ⟨231173,234036,277926668⟩ E) ⟨231174,234053,278213590⟩ E) ⟨231174,234453,276317931⟩ (N E ⟨231178,234552,277312111⟩ E))) ⟨231180,237568,264177969⟩ (N (N (N (N E ⟨231184,234016,282082759⟩ E) ⟨231184,237568,265571429⟩ E) ⟨231188,234899,279322749⟩ (N (N E ⟨231188,234962,279022997⟩ E) ⟨231188,236722,270809155⟩ E)) ⟨231189,234068,283685825⟩ (N (N (N E ⟨231190,234069,284052469⟩ E) ⟨231190,236180,274022568⟩ E) ⟨231192,237568,268369255⟩ (N E ⟨231200,234032,287962907⟩ E)))) ⟨231200,236768,274868936⟩ (N (N (N (N (N E ⟨231200,237568,271181616⟩ E) ⟨231203,234962,284532494⟩ E) ⟨231203,235538,281756715⟩ (N (N E ⟨231204,234067,289288626⟩ E) ⟨231205,234084,289579530⟩ E)) ⟨231205,234500,287528125⟩ (N (N (N E ⟨231206,234069,290029193⟩ E) ⟨231212,237568,275427405⟩ E) ⟨231216,234464,291819187⟩ (N E ⟨231216,237568,276849932⟩ E))) ⟨231220,234931,290994826⟩ (N (N (N (N E ⟨231220,237568,278276091⟩ E) ⟨231221,234132,295369944⟩ E) ⟨231222,233717,297857034⟩ (N (N E ⟨231222,234133,295743684⟩ E) ⟨231222,234933,291731977⟩ E)) ⟨231222,234965,291572928⟩ (N (N (N E ⟨231222,236180,285613437⟩ E) ⟨231224,237568,279705879⟩ E) ⟨231232,237568,282576347⟩ (N E ⟨231235,234962,296464503⟩ E))))) ⟨231236,234915,297079156⟩ (N (N (N (N (N (N E ⟨231236,235810,292590222⟩ E) ⟨231236,236930,287091571⟩ E) ⟨231236,237568,284017026⟩ (N (N E ⟨231237,233732,303530564⟩ E) ⟨231237,233748,303447383⟩ E)) ⟨231237,234580,299160985⟩ (N (N (N E ⟨231237,234996,297046173⟩ E) ⟨231238,234517,299863033⟩ E) ⟨231238,234533,299781133⟩ (N E ⟨231240,237568,285461333⟩ E))) ⟨231248,234032,306205208⟩ (N (N (N (N E ⟨231248,234464,303952480⟩ E) ⟨231252,235794,298645390⟩ E) ⟨231252,235858,298321055⟩ (N (N E ⟨231252,236626,294463177⟩ E) ⟨231252,236722,293985339⟩ E)) ⟨231253,233732,309723995⟩ (N (N (N E ⟨231264,235684,303733319⟩ E) ⟨231264,236096,301616678⟩ E) ⟨231264,237568,294203355⟩ (N E ⟨231268,234547,311218714⟩ E)))) ⟨231268,234563,311133724⟩ (N (N (N (N (N E ⟨231268,235106,308266478⟩ E) ⟨231268,236674,300170251⟩ E) ⟨231269,234132,313823430⟩ (N (N E ⟨231269,234548,311600733⟩ E) ⟨231269,234564,311515639⟩ E)) ⟨231269,234996,309229026⟩ (N (N (N E ⟨231272,237188,299057041⟩ E) ⟨231272,237568,297146371⟩ E) ⟨231280,237568,300103886⟩ (N E ⟨231284,234616,317071094⟩ E))) ⟨231284,235768,310913330⟩ (N (N (N (N E ⟨231284,236274,308255905⟩ E) ⟨231284,237568,301588078⟩ E) ⟨231285,233780,322031756⟩ (N E ⟨231285,234164,319922488⟩ E)) ⟨231285,235572,312334763⟩ (N (N (N E ⟨231286,234997,315794365⟩ E) ⟨231286,237012,305181223⟩ E) ⟨231288,235196,315500770⟩ (N E ⟨231288,237568,303075894⟩ E))))))))
+
+noncomputable def tab21 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨231296,234080,324735418⟩ E) ⟨231296,234944,319980213⟩ E) ⟨231296,235520,316858382⟩ (N (N E ⟨231296,235552,316686066⟩ E) ⟨231296,236096,313774538⟩ E)) ⟨231296,237568,306062392⟩ (N (N (N E ⟨231300,235170,320311576⟩ E) ⟨231300,236002,315814131⟩ E) ⟨231300,237568,307561073⟩ (N E ⟨231301,234180,326165395⟩ E))) ⟨231304,237568,309063376⟩ (N (N (N (N E ⟨231308,237568,310569299⟩ E) ⟨231312,237568,312078842⟩ E) ⟨231315,235602,323809970⟩ (N (N E ⟨231316,234227,331889107⟩ E) ⟨231316,235043,327299665⟩ E)) ⟨231317,234228,332284388⟩ (N (N (N E ⟨231317,235028,327778829⟩ E) ⟨231317,235060,327600200⟩ E) ⟨231317,235636,324405597⟩ (N E ⟨231318,236276,321289032⟩ E)))) ⟨231320,237568,315108785⟩ (N (N (N (N (N E ⟨231324,236320,323377404⟩ E) ⟨231328,234576,334715074⟩ E) ⟨231328,235008,332258297⟩ (N (N E ⟨231328,235584,329017556⟩ E) ⟨231328,236160,325816239⟩ E)) ⟨231328,237568,318153202⟩ (N (N (N E ⟨231332,235938,328615779⟩ E) ⟨231334,234629,336822427⟩ E) ⟨231344,234176,343505846⟩ (N E ⟨231348,234211,344932879⟩ E))) ⟨231348,234691,342116863⟩ (N (N (N (N E ⟨231348,235107,339699531⟩ E) ⟨231348,235218,339058134⟩ E) ⟨231348,235250,338873508⟩ (N (N E ⟨231348,236082,334117045⟩ E) ⟨231348,236370,332490045⟩ E)) ⟨231348,237568,325827538⟩ (N (N (N E ⟨231349,234228,345241261⟩ E) ⟨231350,234213,345738753⟩ E) ⟨231360,234608,347489006⟩ (N E ⟨231360,235616,341574850⟩ E))))) ⟨231360,236766,334980400⟩ (N (N (N (N (N (N E ⟨231360,237024,333522869⟩ E) ⟨231360,237568,330475519⟩ E) ⟨231364,234227,351405096⟩ (N (N E ⟨231364,235202,345608731⟩ E) ⟨231364,237090,334720443⟩ E)) ⟨231364,237568,332032073⟩ (N (N (N E ⟨231366,234245,352121856⟩ E) ⟨231366,234645,349724572⟩ E) ⟨231368,236326,340667355⟩ (N E ⟨231368,237568,333592239⟩ E))) ⟨231370,237104,337001324⟩ (N (N (N (N E ⟨231380,236370,345211838⟩ E) ⟨231380,236946,341864074⟩ E) ⟨231381,235124,353005023⟩ (N (N E ⟨231381,235668,349753703⟩ E) ⟨231382,234293,358460986⟩ E)) ⟨231382,234309,358362987⟩ (N (N (N E ⟨231382,234709,355923878⟩ E) ⟨231382,235109,353505488⟩ E) ⟨231382,235141,353312906⟩ (N E ⟨231382,236372,346003060⟩ E)))) ⟨231382,237108,341722821⟩ (N (N (N (N (N E ⟨231388,237568,341447240⟩ E) ⟨231392,234176,363360412⟩ E) ⟨231392,234608,360688836⟩ (N (N E ⟨231392,235040,358041774⟩ E) ⟨231392,235616,354550023⟩ E)) ⟨231392,236192,351100743⟩ (N (N (N E ⟨231392,236960,346566701⟩ E) ⟨231392,237568,343029069⟩ E) ⟨231397,234740,361957152⟩ (N E ⟨231398,234677,362763472⟩ E))) ⟨231401,234775,363408192⟩ (N (N (N (N E ⟨231408,237568,349392469⟩ E) ⟨231412,234691,368539743⟩ E) ⟨231412,235139,365736357⟩ (N E ⟨231412,235824,361501276⟩ E)) ⟨231412,236370,358169413⟩ (N (N (N E ⟨231412,237568,350992336⟩ E) ⟨231413,234692,368954003⟩ E) ⟨231413,235124,366247250⟩ (N E ⟨231413,235700,362676747⟩ E)))))) ⟨231414,233909,374350502⟩ (N (N (N (N (N (N (N E ⟨231416,237568,352595809⟩ E) ⟨231417,234791,370013214⟩ E) ⟨231428,237568,357427857⟩ (N (N E ⟨231429,233924,380678296⟩ E) ⟨231430,234709,376030426⟩ E)) ⟨231432,237158,361537488⟩ (N (N (N E ⟨231432,237568,359045747⟩ E) ⟨231433,234807,376675057⟩ E) ⟨231444,236082,373179692⟩ (N E ⟨231444,236946,367761110⟩ E))) ⟨231445,234308,385052765⟩ (N (N (N (N E ⟨231445,234324,384947503⟩ E) ⟨231445,234740,382223289⟩ E) ⟨231446,234309,385477345⟩ (N (N E ⟨231446,235173,379838154⟩ E) ⟨231446,237204,366982884⟩ E)) ⟨231448,237568,365553331⟩ (N (N (N E ⟨231449,235239,380686168⟩ E) ⟨231460,234755,388568644⟩ E) ⟨231461,234324,391872835⟩ (N E ⟨231461,234740,389099611⟩ E)))) ⟨231461,235764,382377028⟩ (N (N (N (N (N E ⟨231462,234341,392193750⟩ E) ⟨231462,234741,389524743⟩ E) ⟨231472,237568,375422711⟩ (N (N E ⟨231476,234803,395176201⟩ E) ⟨231476,236434,384373850⟩ E)) ⟨231476,236466,384165627⟩ (N (N (N E ⟨231476,237202,379415176⟩ E) ⟨231476,237298,378800978⟩ E) ⟨231476,237568,377080201⟩ (N E ⟨231477,233972,401267080⟩ E))) ⟨231477,234804,395604302⟩ (N (N (N (N E ⟨231478,236436,385206953⟩ E) ⟨231478,236468,384998280⟩ E) ⟨231478,237300,379622049⟩ (N (N E ⟨231478,237568,377910294⟩ E) ⟨231480,237568,378741286⟩ E)) ⟨231488,235136,398144251⟩ (N (N (N E ⟨231488,237056,385389027⟩ E) ⟨231488,237568,382074244⟩ E) ⟨231492,234355,405249043⟩ (N E ⟨231492,237568,383746115⟩ E))))) ⟨231493,233972,408356588⟩ (N (N (N (N (N (N E ⟨231493,235220,399750476⟩ E) ⟨231493,235252,399532804⟩ E) ⟨231493,235828,395639914⟩ (N (N E ⟨231494,236420,392115134⟩ E) ⟨231498,236646,392321505⟩ E)) ⟨231507,235218,405885962⟩ (N (N (N E ⟨231508,234371,412236501⟩ E) ⟨231508,234435,411786083⟩ E) ⟨231508,236466,397806547⟩ (N E ⟨231509,235204,406861204⟩ E))) ⟨231510,234389,413001028⟩ (N (N (N (N E ⟨231510,235221,407182956⟩ E) ⟨231510,236468,398653383⟩ E) ⟨231514,235304,408365930⟩ (N (N E ⟨231520,236516,402641293⟩ E) ⟨231520,237348,397019823⟩ E)) ⟨231523,235826,408692243⟩ (N (N (N E ⟨231525,234804,416753411⟩ E) ⟨231526,234821,417078861⟩ E) ⟨231530,236678,405861680⟩ (N E ⟨231530,237568,399808048⟩ E)))) ⟨231536,234752,422050515⟩ (N (N (N (N (N E ⟨231536,236600,409005665⟩ E) ⟨231536,237568,402373756⟩ E) ⟨231540,234419,426265235⟩ (N (N E ⟨231540,237568,404088713⟩ E) ⟨231541,234404,426827440⟩ E)) ⟨231542,234885,423787992⟩ (N (N (N E ⟨231542,235285,420910641⟩ E) ⟨231542,235348,420459687⟩ E) ⟨231542,237300,406781757⟩ (N E ⟨231544,236608,412439916⟩ E))) ⟨231544,237568,405807256⟩ (N (N (N (N E ⟨231552,237568,409255098⟩ E) ⟨231556,234435,433420896⟩ E) ⟨231556,237250,413194434⟩ (N E ⟨231556,237568,410984396⟩ E)) ⟨231557,234820,431036143⟩ (N (N (N E ⟨231557,234836,430918568⟩ E) ⟨231557,235316,427409903⟩ E) ⟨231557,235860,423476484⟩ (N E ⟨231558,237252,414051108⟩ E))))))) ⟨231562,236710,419620092⟩ (N (N (N (N (N (N (N (N E ⟨231562,237478,414212990⟩ E) ⟨231564,237568,414453742⟩ E) ⟨231568,237568,416193789⟩ (N (N E ⟨231571,234898,436828887⟩ E) ⟨231572,234899,437277872⟩ E)) ⟨231574,235285,435320164⟩ (N (N (N E ⟨231574,237300,420707589⟩ E) ⟨231576,237568,419684628⟩ E) ⟨231578,234536,442754560⟩ (N E ⟨231584,234368,446803668⟩ E))) ⟨231584,234800,443521268⟩ (N (N (N (N E ⟨231584,235232,440268960⟩ E) ⟨231584,235264,440029236⟩ E) ⟨231584,235808,435978791⟩ (N (N E ⟨231584,235840,435741984⟩ E) ⟨231584,236384,431740761⟩ E)) ⟨231584,236416,431506828⟩ (N (N (N E ⟨231584,237248,425479821⟩ E) ⟨231588,237568,424947738⟩ E) ⟨231589,234452,448480367⟩ (N E ⟨231589,234884,445186827⟩ E)))) ⟨231589,235316,441923470⟩ (N (N (N (N (N E ⟨231589,235892,437618709⟩ E) ⟨231590,234885,445639992⟩ E) ⟨231590,236548,433227641⟩ (N (N E ⟨231594,237510,428009600⟩ E) ⟨231600,234432,453754174⟩ E)) ⟨231602,236560,438531353⟩ (N (N (N E ⟨231603,234882,451674186⟩ E) ⟨231604,236594,439180365⟩ E) ⟨231604,237568,432015314⟩ (N E ⟨231605,234468,455810823⟩ E))) ⟨231606,234485,456146200⟩ (N (N (N (N E ⟨231606,235317,449722941⟩ E) ⟨231606,236180,443179385⟩ E) ⟨231606,237012,436983201⟩ (N (N E ⟨231606,237568,432902785⟩ E) ⟨231608,237568,433791149⟩ E)) ⟨231616,234448,461127199⟩ (N (N (N E ⟨231616,235296,454509013⟩ E) ⟨231616,235872,450081282⟩ E) ⟨231616,236448,445707348⟩ (N E ⟨231616,237280,439482835⟩ E))))) ⟨231616,237568,437353544⟩ (N (N (N (N (N (N E ⟨231620,237568,439140102⟩ E) ⟨231621,234500,463071001⟩ E) ⟨231622,234917,460256518⟩ (N (N E ⟨231624,237568,440930233⟩ E) ⟨231637,234116,473738882⟩ E)) ⟨231637,234516,470511843⟩ (N (N (N E ⟨231637,234548,470254869⟩ E) ⟨231637,234932,467184822⟩ E) ⟨231637,234964,466930118⟩ (N E ⟨231637,235956,459119677⟩ E))) ⟨231638,236628,454379608⟩ (N (N (N (N E ⟨231638,236660,454133663⟩ E) ⟨231638,237492,447797115⟩ E) ⟨231638,237568,447223821⟩ (N (N E ⟨231644,236640,457040813⟩ E) ⟨231644,237472,450663165⟩ E)) ⟨231648,237312,453700345⟩ (N (N (N E ⟨231650,235456,469130155⟩ E) ⟨231652,237568,453561140⟩ E) ⟨231653,234164,481023677⟩ (N E ⟨231653,234996,474240882⟩ E)))) ⟨231654,237380,455912868⟩ (N (N (N (N (N E ⟨231654,237568,454470040⟩ E) ⟨231666,236656,467080117⟩ E) ⟨231666,237392,461308985⟩ (N (N E ⟨231666,237568,459942162⟩ E) ⟨231668,235011,481264482⟩ E)) ⟨231668,237426,461961878⟩ (N (N (N E ⟨231668,237568,460857302⟩ E) ⟨231669,234164,488757646⟩ E) ⟨231669,234948,482260087⟩ (N E ⟨231670,235397,479062800⟩ E))) ⟨231670,236660,468907973⟩ (N (N (N (N E ⟨231672,235004,483236229⟩ E) ⟨231672,235580,478522819⟩ E) ⟨231672,237568,462690256⟩ (N E ⟨231676,236160,475715364⟩ E)) ⟨231680,234464,491583274⟩ (N (N (N E ⟨231680,235328,484396566⟩ E) ⟨231680,235904,479678316⟩ E) ⟨231680,236480,475017385⟩ (N E ⟨231680,237248,468890534⟩ E)))))) ⟨231680,237568,466366854⟩ (N (N (N (N (N (N (N E ⟨231682,237568,467288231⟩ E) ⟨231684,237568,468210498⟩ E) ⟨231685,234548,493305008⟩ (N (N E ⟨231696,237568,473762796⟩ E) ⟨231698,235409,492363924⟩ E)) ⟨231698,236656,482058145⟩ (N (N (N E ⟨231700,234579,500354105⟩ E) ⟨231700,234979,496952478⟩ E) ⟨231700,236690,482724218⟩ (N E ⟨231701,234564,500971567⟩ E))) ⟨231701,234996,497294294⟩ (N (N (N (N E ⟨231702,235461,493855896⟩ E) ⟨231702,237568,476550961⟩ E) ⟨231714,236288,492694316⟩ (N (N E ⟨231715,235442,500306370⟩ E) ⟨231716,237568,483087810⟩ E)) ⟨231717,234596,508554911⟩ (N (N (N E ⟨231720,237568,484963484⟩ E) ⟨231728,234512,514728792⟩ E) ⟨231730,237568,489668220⟩ (N E ⟨231732,234643,515561402⟩ E)))) ⟨231732,235059,511917802⟩ (N (N (N (N (N E ⟨231732,235475,508306338⟩ E) ⟨231733,235028,512681111⟩ E) ⟨231734,235461,509406157⟩ (N (N E ⟨231734,237492,492186457⟩ E) ⟨231740,237568,494395165⟩ E)) ⟨231744,237568,496292159⟩ (N (N (N E ⟨231746,236320,507839552⟩ E) ⟨231746,237568,497241987⟩ E) ⟨231748,237568,498192703⟩ (N E ⟨231752,237568,500096798⟩ E))) ⟨231760,235008,526256373⟩ (N (N (N (N E ⟨231762,237136,508565189⟩ E) ⟨231762,237568,504872560⟩ E) ⟨231764,235107,527365926⟩ (N E ⟨231764,235475,524073754⟩ E)) ⟨231765,234644,532048398⟩ (N (N (N E ⟨231766,235493,524906357⟩ E) ⟨231766,236724,514062392⟩ E) ⟨231766,237568,506789074⟩ (N E ⟨231776,237344,513531811⟩ E))))) ⟨231776,237568,511595872⟩ (N (N (N (N (N (N E ⟨231779,235122,534748210⟩ E) ⟨231780,234643,539639581⟩ E) ⟨231781,235076,536174285⟩ (N (N E ⟨231782,237568,514490586⟩ E) ⟨231792,235040,542061483⟩ E)) ⟨231792,237568,519332826⟩ (N (N (N E ⟨231795,235506,539288403⟩ E) ⟨231795,236082,534039435⟩ E) ⟨231796,234659,547635348⟩ (N E ⟨231796,235075,543765336⟩ E))) ⟨231796,237522,521680241⟩ (N (N (N (N E ⟨231796,237568,521275920⟩ E) ⟨231798,236756,529457366⟩ E) ⟨231798,236788,529170938⟩ (N (N E ⟨231798,237568,522248795⟩ E) ⟨231800,237568,523222555⟩ E)) ⟨231804,237568,525172730⟩ (N (N (N E ⟨231811,235106,551108145⟩ E) ⟨231811,235538,547072157⟩ E) ⟨231812,235491,548016629⟩ (N E ⟨231813,234308,559697123⟩ E)))) ⟨231813,235156,551659478⟩ (N (N (N (N (N E ⟨231813,236148,542439221⟩ E) ⟨231814,235093,552762705⟩ E) ⟨231814,236740,537525519⟩ (N (N E ⟨231814,237568,530063650⟩ E) ⟨231817,235191,553373115⟩ E)) ⟨231820,237568,533008814⟩ (N (N (N E ⟨231824,234608,562518260⟩ E) ⟨231824,235040,558389990⟩ E) ⟨231824,237568,534976677⟩ (N E ⟨231826,236816,542808797⟩ E))) ⟨231827,235570,554905879⟩ (N (N (N (N E ⟨231827,236146,549506364⟩ E) ⟨231830,237568,537935101⟩ E) ⟨231832,237568,538923009⟩ (N E ⟨231833,235207,561426062⟩ E)) ⟨231840,237568,542883475⟩ (N (N (N E ⟨231844,235123,567911852⟩ E) ⟨231844,237568,544869006⟩ E) ⟨231845,235124,568420122⟩ (N E ⟨231845,236148,558615265⟩ E))))))))
+
+noncomputable def tab22 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨231852,237568,548850663⟩ E) ⟨231856,236920,556903926⟩ E) ⟨231856,237568,550846785⟩ (N (N E ⟨231859,236146,565784284⟩ E) ⟨231860,237568,552846437⟩ E)) ⟨231861,234740,580525311⟩ (N (N (N E ⟨231862,237568,553847586⟩ E) ⟨231864,236928,560874940⟩ E) ⟨231872,235088,582848679⟩ (N E ⟨231872,235520,578579917⟩ E))) ⟨231872,236096,572948851⟩ (N (N (N (N E ⟨231872,236128,572638028⟩ E) ⟨231872,236672,567386139⟩ E) ⟨231872,236936,564859133⟩ (N (N E ⟨231872,237568,558866557⟩ E) ⟨231874,237312,562295099⟩ E)) ⟨231876,237568,560880316⟩ (N (N (N E ⟨231877,234740,588957485⟩ E) ⟨231877,235172,584637604⟩ E) ⟨231878,237568,561888518⟩ (N E ⟨231880,237568,562897600⟩ E)))) ⟨231884,237568,564918408⟩ (N (N (N (N (N E ⟨231888,237568,566942738⟩ E) ⟨231890,237568,567956224⟩ E) ⟨231891,235602,587695477⟩ (N (N E ⟨231891,236178,581977676⟩ E) ⟨231892,235187,592386822⟩ E)) ⟨231892,235219,592064209⟩ (N (N (N E ⟨231892,235619,588050024⟩ E) ⟨231892,237568,568970591⟩ E) ⟨231893,234388,601049439⟩ (N E ⟨231893,234804,596797063⟩ E))) ⟨231893,235604,588724606⟩ (N (N (N (N E ⟨231893,235636,588404556⟩ E) ⟨231894,237568,569985838⟩ E) ⟨231904,235584,594713052⟩ (N (N E ⟨231904,236160,588926536⟩ E) ⟨231904,236736,583210240⟩ E)) ⟨231904,237568,575075275⟩ (N (N (N E ⟨231906,237568,576095802⟩ E) ⟨231907,235586,596276188⟩ E) ⟨231912,237568,579162660⟩ (N E ⟨231920,237568,583264114⟩ E))))) ⟨231922,236912,590796448⟩ (N (N (N (N (N (N E ⟨231922,237568,584291676⟩ E) ⟨231924,234787,613576896⟩ E) ⟨231924,234851,612907678⟩ (N (N E ⟨231924,235267,608579934⟩ E) ⟨231924,235683,604290328⟩ E)) ⟨231924,237568,585320115⟩ (N (N (N E ⟨231926,236916,592837038⟩ E) ⟨231928,237568,587379631⟩ E) ⟨231932,237568,589442660⟩ (N E ⟨231936,235616,611375596⟩ E))) ⟨231936,236768,599552091⟩ (N (N (N (N E ⟨231936,237568,591509203⟩ E) ⟨231940,234803,622065003⟩ E) ⟨231940,237568,593579258⟩ (N (N E ⟨231954,237568,600852094⟩ E) ⟨231956,236914,608574751⟩ E)) ⟨231956,237568,601894580⟩ (N (N (N E ⟨231958,236948,609279524⟩ E) ⟨231958,236980,608950181⟩ E) ⟨231958,237568,602937943⟩ (N E ⟨231960,237568,603982183⟩ E)))) ⟨231964,237568,606073292⟩ (N (N (N (N (N E ⟨231968,235616,628593799⟩ E) ⟨231968,236768,616437308⟩ E) ⟨231968,237536,608496011⟩ (N (N E ⟨231968,237568,608167908⟩ E) ⟨231972,234851,639029353⟩ E)) ⟨231974,237568,611316403⟩ (N (N (N E ⟨231976,237568,612367653⟩ E) ⟨231986,237568,617637042⟩ E) ⟨231987,235314,642216372⟩ (N E ⟨231988,235283,643104444⟩ E))) ⟨231988,235699,638571798⟩ (N (N (N (N E ⟨231988,235715,638398264⟩ E) ⟨231988,236946,625221970⟩ E) ⟨231988,236978,624884007⟩ (N E ⟨231988,237568,618693546⟩ E)) ⟨231990,237568,619750925⟩ (N (N (N E ⟨232003,235730,646438462⟩ E) ⟨232003,236306,640152541⟩ E) ⟨232004,236930,633966405⟩ (N E ⟨232004,237568,627177077⟩ E)))))) ⟨232008,237568,629306705⟩ (N (N (N (N (N (N (N E ⟨232016,234800,664015620⟩ E) ⟨232016,235232,659146445⟩ E) ⟨232020,237568,635716564⟩ (N (N E ⟨232021,234884,665865548⟩ E) ⟨232021,235316,660984548⟩ E)) ⟨232022,237568,636787932⟩ (N (N (N E ⟨232032,234864,672275319⟩ E) ⟨232032,237568,642157867⟩ E) ⟨232035,235314,668820627⟩ (N E ⟨232035,235794,663385921⟩ E))) ⟨232035,236370,656936948⟩ (N (N (N (N E ⟨232037,235316,669917683⟩ E) ⟨232040,237568,646469525⟩ E) ⟨232048,235296,676322990⟩ (N (N E ⟨232048,237568,650795140⟩ E) ⟨232052,235795,672844552⟩ E)) ⟨232052,237568,652963179⟩ (N (N (N E ⟨232053,234932,683362865⟩ E) ⟨232053,235380,678170018⟩ E) ⟨232054,237568,654048505⟩ (N E ⟨232064,237568,659488210⟩ E)))) ⟨232066,237568,660578764⟩ (N (N (N (N (N E ⟨232068,237568,661670189⟩ E) ⟨232069,235796,682367750⟩ E) ⟨232069,235828,681997096⟩ (N (N E ⟨232072,237568,663855651⟩ E) ⟨232080,237568,668237019⟩ E)) ⟨232083,236370,683581373⟩ (N (N (N E ⟨232084,235363,695937294⟩ E) ⟨232084,235427,695180107⟩ E) ⟨232084,237568,670432923⟩ (N E ⟨232085,235780,691588601⟩ E))) ⟨232086,237044,677495533⟩ (N (N (N (N E ⟨232088,235878,692136564⟩ E) ⟨232099,236402,692201257⟩ E) ⟨232101,235380,705461151⟩ (N (N E ⟨232104,235478,706006438⟩ E) ⟨232104,237568,681464612⟩ E)) ⟨232116,234995,718792059⟩ (N (N (N E ⟨232116,237568,688125324⟩ E) ⟨232117,234980,719557212⟩ E) ⟨232120,235910,709984863⟩ (N E ⟨232124,237568,692583158⟩ E))))) ⟨232128,236960,701982875⟩ (N (N (N (N (N (N E ⟨232128,237568,694817280⟩ E) ⟨232132,235411,722981442⟩ E) ⟨232132,235427,722784729⟩ (N (N E ⟨232132,235970,716148274⟩ E) ⟨232132,236834,705744876⟩ E)) ⟨232132,237568,697054870⟩ (N (N (N E ⟨232133,235412,723549902⟩ E) ⟨232136,237568,699295928⟩ E) ⟨232147,236466,718732784⟩ (N E ⟨232148,235059,736701336⟩ E))) ⟨232148,235475,731504076⟩ (N (N (N (N E ⟨232148,237138,711179846⟩ E) ⟨232148,237568,706039898⟩ E) ⟨232150,237568,707166924⟩ (N (N E ⟨232160,234944,745229452⟩ E) ⟨232160,235808,734356660⟩ E)) ⟨232160,235840,733957785⟩ (N (N (N E ⟨232160,236384,727218181⟩ E) ⟨232160,236416,726824148⟩ E) ⟨232160,236960,720166247⟩ (N E ⟨232160,236992,719776985⟩ E)))) ⟨232160,237568,712815042⟩ (N (N (N (N (N E ⟨232168,237568,717349110⟩ E) ⟨232176,237568,721897015⟩ E) ⟨232179,236466,737202774⟩ (N (N E ⟨232180,237170,729054149⟩ E) ⟨232180,237202,728660433⟩ E)) ⟨232180,237568,724176153⟩ (N (N (N E ⟨232181,235892,745584685⟩ E) ⟨232192,235872,752308651⟩ E) ⟨232192,236448,744997641⟩ (N E ⟨232192,237568,731034299⟩ E))) ⟨232195,235538,758368623⟩ (N (N (N (N E ⟨232196,236802,742871262⟩ E) ⟨232196,237154,738466339⟩ E) ⟨232196,237568,733327255⟩ (N E ⟨232208,237568,740226831⟩ E)) ⟨232210,237568,741379779⟩ (N (N (N E ⟨232212,235075,774568728⟩ E) ⟨232212,237568,742533589⟩ E) ⟨232213,235508,769480141⟩ (N E ⟨232213,235956,763647153⟩ E))))))) ⟨232224,237568,749474547⟩ (N (N (N (N (N (N (N (N E ⟨232228,235507,778485812⟩ E) ⟨232228,237568,751795091⟩ E) ⟨232229,235572,778226738⟩ (N (N E ⟨232232,237568,754119079⟩ E) ⟨232240,237568,758777383⟩ E)) ⟨232243,235538,787113628⟩ (N (N (N E ⟨232244,236003,781522018⟩ E) ⟨232244,237202,765824691⟩ E) ⟨232244,237568,761111697⟩ (N E ⟨232245,235956,782745757⟩ E))) ⟨232246,237236,766560345⟩ (N (N (N (N E ⟨232248,237568,763449450⟩ E) ⟨232256,237568,768135274⟩ E) ⟨232264,237568,772834844⟩ (N (N E ⟨232274,235985,799855604⟩ E) ⟨232276,236003,800824383⟩ E)) ⟨232276,237234,784315625⟩ (N (N (N E ⟨232276,237568,779909958⟩ E) ⟨232277,235988,801635201⟩ E) ⟨232296,237568,791770435⟩ (N E ⟨232304,235520,824635579⟩ E)))) ⟨232304,237568,796538618⟩ (N (N (N (N (N E ⟨232306,237568,797732805⟩ E) ⟨232308,237298,802573696⟩ E) ⟨232308,237568,798927847⟩ (N (N E ⟨232309,235604,826547049⟩ E) ⟨232310,237568,800123745⟩ E)) ⟨232312,237568,801320499⟩ (N (N (N E ⟨232320,237568,806116070⟩ E) ⟨232324,235619,835631254⟩ E) ⟨232324,237568,808518985⟩ (N E ⟨232330,237478,813362791⟩ E))) ⟨232340,235683,844681534⟩ (N (N (N (N E ⟨232340,237568,818164829⟩ E) ⟨232352,237568,825435072⟩ E) ⟨232355,236690,839612765⟩ (N (N E ⟨232356,235219,861467057⟩ E) ⟨232357,236084,849522108⟩ E)) ⟨232368,237568,835176486⟩ (N (N (N E ⟨232369,236656,848757921⟩ E) ⟨232370,237568,836397997⟩ E) ⟨232371,236082,858303752⟩ (N E ⟨232372,237330,840988614⟩ E))))) ⟨232372,237568,837620360⟩ (N (N (N (N (N (N E ⟨232384,237568,844972417⟩ E) ⟨232387,236690,859462653⟩ E) ⟨232388,237568,847429909⟩ (N (N E ⟨232389,236148,868647532⟩ E) ⟨232392,237568,849890804⟩ E)) ⟨232394,237568,851122527⟩ (N (N (N E ⟨232403,236146,877517954⟩ E) ⟨232416,237248,869406901⟩ E) ⟨232420,235715,894831994⟩ (N E ⟨232426,237568,870945602⟩ E))) ⟨232428,237568,872191756⟩ (N (N (N (N E ⟨232432,237568,874686609⟩ E) ⟨232440,237568,879686482⟩ E) ⟨232448,236096,906992532⟩ (N (N E ⟨232448,236672,898186617⟩ E) ⟨232448,237248,889487334⟩ E)) ⟨232448,237280,889007136⟩ (N (N (N E ⟨232448,237568,884699904⟩ E) ⟨232453,236180,908916447⟩ E) ⟨232456,237568,889726867⟩ (N E ⟨232466,237424,898207484⟩ E)))) ⟨232467,236178,917977832⟩ (N (N (N (N (N E ⟨232468,237458,898958091⟩ E) ⟨232468,237568,897292681⟩ E) ⟨232480,237568,904888911⟩ (N (N E ⟨232483,236162,928602235⟩ E) ⟨232496,237568,915064477⟩ E)) ⟨232498,237488,917576744⟩ (N (N (N E ⟨232498,237568,916340217⟩ E) ⟨232500,237522,918328539⟩ E) ⟨232500,237568,917616800⟩ (N E ⟨232508,237568,922731556⟩ E))) ⟨232512,237568,925293987⟩ (N (N (N (N E ⟨232516,235795,956111189⟩ E) ⟨232520,235894,957148530⟩ E) ⟨232520,237568,930428948⟩ (N E ⟨232528,237568,935577368⟩ E)) ⟨232530,237568,936866574⟩ (N (N (N E ⟨232532,237568,938156621⟩ E) ⟨232544,237568,945914544⟩ E) ⟨232556,237568,953702683⟩ (N E ⟨232560,237568,956305440⟩ E)))))) ⟨232562,237568,957608075⟩ (N (N (N (N (N (N (N E ⟨232564,237554,959137837⟩ E) ⟨232564,237568,958911549⟩ E) ⟨232568,237568,961521010⟩ (N (N E ⟨232576,237568,966749982⟩ E) ⟨232578,237152,974876298⟩ E)) ⟨232578,237568,968059317⟩ (N (N (N E ⟨232579,236306,989594916⟩ E) ⟨232588,237568,974618547⟩ E) ⟨232594,237568,978564119⟩ (N E ⟨232608,237568,987799695⟩ E))) ⟨232610,237568,989122403⟩ (N (N (N (N E ⟨232611,236370,1010023133⟩ E) ⟨232624,237568,998404714⟩ E) ⟨232628,237568,1001064305⟩ (N (N E ⟨232640,237568,1009063069⟩ E) ⟨232648,237568,1014412224⟩ E)) ⟨232660,237568,1022460901⟩ (N (N (N E ⟨232672,237568,1030539480⟩ E) ⟨232674,237568,1031888815⟩ E) ⟨232684,237568,1038647928⟩ (N E ⟨232688,237568,1041357376⟩ E)))) ⟨232690,237568,1042713343⟩ (N (N (N (N (N E ⟨232696,237568,1046786213⟩ E) ⟨232702,237568,1050866533⟩ E) ⟨232704,237568,1052228295⟩ (N (N E ⟨232708,237568,1054954299⟩ E) ⟨232722,237568,1064521355⟩ E)) ⟨232736,237536,1074708361⟩ (N (N (N E ⟨232736,237568,1074128874⟩ E) ⟨232738,237568,1075504677⟩ E) ⟨232744,237568,1079637032⟩ (N E ⟨232748,237568,1082396055⟩ E))) ⟨232754,237568,1086540768⟩ (N (N (N (N E ⟨232756,237568,1087923985⟩ E) ⟨232764,237568,1093465085⟩ E) ⟨232768,237568,1096240570⟩ (N E ⟨232772,237568,1099019343⟩ E)) ⟨232775,236565,1119917129⟩ (N (N (N E ⟨232780,237568,1104586750⟩ E) ⟨232786,237568,1108770927⟩ E) ⟨232791,237252,1118206755⟩ (N E ⟨232806,237568,1122771503⟩ E))))) ⟨232812,237568,1126987653⟩ (N (N (N (N (N (N E ⟨232816,237568,1129802514⟩ E) ⟨232818,237568,1131211171⟩ E) ⟨232820,237568,1132620647⟩ (N (N E ⟨232824,237568,1135442051⟩ E) ⟨232832,237568,1141094669⟩ E)) ⟨232850,237568,1153860831⟩ (N (N (N E ⟨232852,237568,1155283372⟩ E) ⟨232872,237568,1169553596⟩ E) ⟨232876,237568,1172417409⟩ (N E ⟨232880,237568,1175284474⟩ E))) ⟨232884,237568,1178154791⟩ (N (N (N (N E ⟨232896,237568,1186785237⟩ E) ⟨232900,237568,1189668547⟩ E) ⟨232904,237568,1192555101⟩ (N (N E ⟨232916,237568,1201234217⟩ E) ⟨232932,237568,1212851715⟩ E)) ⟨232936,237568,1215764178⟩ (N (N (N E ⟨232944,237568,1221598797⟩ E) ⟨232948,237568,1224520953⟩ E) ⟨232952,237568,1227446336⟩ (N E ⟨232960,237568,1233306783⟩ E)))) ⟨232964,237568,1236241843⟩ (N (N (N (N (N E ⟨232976,237568,1245066354⟩ E) ⟨232992,237568,1256877421⟩ E) ⟨232996,237568,1259838223⟩ (N (N E ⟨233004,237568,1265769462⟩ E) ⟨233008,237568,1268739895⟩ E)) ⟨233012,237568,1271713535⟩ (N (N (N E ⟨233024,237568,1280653685⟩ E) ⟨233028,237568,1283640140⟩ E) ⟨233040,237568,1292618700⟩ (N E ⟨233052,237568,1301626024⟩ E))) ⟨233060,237568,1307646867⟩ (N (N (N (N E ⟨233072,237568,1316702044⟩ E) ⟨233074,237568,1318214028⟩ E) ⟨233076,237568,1319726806⟩ (N E ⟨233088,237568,1328820187⟩ E)) ⟨233104,237568,1340989189⟩ (N (N (N E ⟨233108,237568,1344039375⟩ E) ⟨233120,237568,1353208956⟩ E) ⟨233124,237568,1356271818⟩ (N E ⟨233132,237568,1362407039⟩ E))))))))
+
+noncomputable def tab23 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨233140,237568,1368554909⟩ E) ⟨233152,237568,1377800408⟩ E) ⟨233156,237568,1380888553⟩ (N (N E ⟨233164,237568,1387074302⟩ E) ⟨233188,237568,1405707120⟩ E)) ⟨233192,237568,1408823594⟩ (N (N (N E ⟨233200,237568,1415065961⟩ E) ⟨233204,237568,1418191851⟩ E) ⟨233216,237568,1427588329⟩ (N E ⟨233220,237568,1430726753⟩ E))) ⟨233232,237568,1440160796⟩ (N (N (N (N E ⟨233236,237568,1443311730⟩ E) ⟨233252,237568,1455946682⟩ E) ⟨233264,237568,1465455635⟩ (N (N E ⟨233288,237568,1484557544⟩ E) ⟨233316,237568,1506984292⟩ E)) ⟨233328,237568,1516642175⟩ (N (N (N E ⟨233332,237568,1519867648⟩ E) ⟨233344,237568,1529562576⟩ E) ⟨233348,237568,1532800385⟩ (N E ⟨233360,237568,1542532284⟩ E)))) ⟨233362,237568,1544156960⟩ (N (N (N (N (N E ⟨233380,237568,1558813602⟩ E) ⟨233394,237568,1570256162⟩ E) ⟨233396,237568,1571893877⟩ (N (N E ⟨233400,237568,1575171602⟩ E) ⟨233408,237568,1581736229⟩ E)) ⟨233410,237568,1583379297⟩ (N (N (N E ⟨233412,237568,1585023128⟩ E) ⟨233426,237568,1596551316⟩ E) ⟨233428,237568,1598201251⟩ (N E ⟨233440,237568,1608116853⟩ E))) ⟨233446,237568,1613084928⟩ (N (N (N (N E ⟨233448,237568,1614742474⟩ E) ⟨233456,237568,1621380254⟩ E) ⟨233460,237568,1624703700⟩ (N (N E ⟨233472,237568,1634692240⟩ E) ⟨233478,237568,1639696741⟩ E)) ⟨233488,237568,1648052710⟩ (N (N (N E ⟨233518,237568,1673233899⟩ E) ⟨233520,237568,1674918675⟩ E) ⟨233522,237568,1676604204⟩ (N E ⟨233524,237568,1678290485⟩ E))))) ⟨233570,237568,1717282122⟩ (N (N (N (N (N (N E ⟨233576,237568,1722397189⟩ E) ⟨233584,237568,1729227732⟩ E) ⟨233588,237568,1732647479⟩ (N (N E ⟨233596,237568,1739495918⟩ E) ⟨233600,237568,1742924605⟩ E)) ⟨233604,237568,1746356269⟩ (N (N (N E ⟨233608,237568,1749790908⟩ E) ⟨233632,237568,1770461124⟩ E) ⟨233640,237568,1777374918⟩ (N E ⟨233650,237568,1786033808⟩ E))) ⟨233652,237568,1787767803⟩ (N (N (N (N E ⟨233664,237568,1798187277⟩ E) ⟨233668,237568,1801666336⟩ E) ⟨233704,237568,1833110298⟩ (N (N E ⟨233712,237568,1840130140⟩ E) ⟨233714,237568,1841886932⟩ E)) ⟨233716,237568,1843644455⟩ (N (N (N E ⟨233730,237568,1855967592⟩ E) ⟨233732,237568,1857730962⟩ E) ⟨233768,237568,1889596225⟩ (N E ⟨233776,237568,1896709381⟩ E)))) ⟨233780,237568,1900270310⟩ (N (N (N (N (N E ⟨233792,237568,1910970479⟩ E) ⟨233832,237568,1946825478⟩ E) ⟨233836,237568,1950426820⟩ (N (N E ⟨233840,237568,1954031035⟩ E) ⟨233844,237568,1957638122⟩ E)) ⟨233852,237568,1964860901⟩ (N (N (N E ⟨233860,237568,1972095145⟩ E) ⟨233872,237568,1982967971⟩ E) ⟨233896,237568,2004790710⟩ (N E ⟨233908,237568,2015740523⟩ E))) ⟨233916,237568,2023054602⟩ (N (N (N (N E ⟨233920,237568,2026715898⟩ E) ⟨233938,237568,2043226781⟩ E) ⟨233960,237568,2063484459⟩ (N E ⟨233964,237568,2067176835⟩ E)) ⟨233972,237568,2074570028⟩ (N (N (N E ⟨233988,237568,2089390126⟩ E) ⟨233996,237568,2096817001⟩ E) ⟨234012,237568,2111704326⟩ (N E ⟨234016,237568,2115433142⟩ E)))))) ⟨234024,237568,2122899141⟩ (N (N (N (N (N (N (N E ⟨234032,237568,2130376285⟩ E) ⟨234044,237568,2141612863⟩ E) ⟨234048,237568,2145363945⟩ (N (N E ⟨234052,237568,2149117802⟩ E) ⟨234072,237568,2167928638⟩ E)) ⟨234100,237568,2194379812⟩ (N (N (N E ⟨234156,237568,2247685712⟩ E) ⟨234164,237568,2255344528⟩ E) ⟨234172,237568,2263014218⟩ (N E ⟨234176,237568,2266853137⟩ E))) ⟨234228,237568,2317005228⟩ (N (N (N (N E ⟨234252,237568,2340305780⟩ E) ⟨234272,237568,2359796494⟩ E) ⟨234284,237568,2371522922⟩ (N (N E ⟨234292,237568,2379353841⟩ E) ⟨234300,237568,2387195380⟩ E)) ⟨234308,237568,2395047524⟩ (N (N (N E ⟨234336,237568,2422613309⟩ E) ⟨234352,237568,2438423157⟩ E) ⟨234356,237568,2442382187⟩ (N E ⟨234372,237568,2458244512⟩ E)))) ⟨234380,237568,2466191370⟩ (N (N (N (N (N E ⟨234420,237568,2506081969⟩ E) ⟨234432,237568,2518099748⟩ E) ⟨234460,237568,2546231569⟩ (N (N E ⟨234480,237568,2566402846⟩ E) ⟨234536,237568,2623221909⟩ E)) ⟨234548,237568,2635462120⟩ (N (N (N E ⟨234560,237568,2647725038⟩ E) ⟨234592,237568,2680536733⟩ E) ⟨234608,237568,2697002640⟩ (N E ⟨234640,237568,2730053889⟩ E))) ⟨234688,237568,2779927284⟩ (N (N (N (N E ⟨234716,237568,2809183125⟩ E) ⟨234736,237568,2830153178⟩ E) ⟨234864,237568,2965783399⟩ (N (N E ⟨234896,237568,3000069919⟩ E) ⟨234944,237568,3051779256⟩ E)) ⟨235004,237568,3116882324⟩ (N (N (N E ⟨235012,237568,3125601513⟩ E) ⟨235072,237568,3191283139⟩ E) ⟨235104,237568,3226519173⟩ (N E ⟨235132,237568,3257466941⟩ E))))) ⟨235260,237568,3400301060⟩ (N (N (N (N (N (N E ⟨235268,237568,3409301120⟩ E) ⟨235296,237568,3440867868⟩ E) ⟨235356,237568,3508856262⟩ (N (N E ⟨235420,237568,3581888716⟩ E) ⟨235456,237568,3623197850⟩ E)) ⟨235528,237568,3706300875⟩ (N (N (N E ⟨235584,237568,3771375843⟩ E) ⟨235712,237568,3921522783⟩ E) ⟨235744,237568,3959357509⟩ (N E ⟨235852,237568,4087902852⟩ E))) ⟨236000,237568,4266122134⟩ (N (N (N (N E ⟨236108,237568,4397612258⟩ E) ⟨236432,237568,4798801796⟩ E) ⟨236688,237568,5122196973⟩ (N (N E ⟨236728,237568,5173185534⟩ E) ⟨236760,237568,5214060013⟩ E)) ⟨236984,237568,5502137806⟩ (N (N (N E ⟨237568,237572,6265910311⟩ E) ⟨237568,237586,6264432116⟩ E) ⟨237568,237588,6264220981⟩ (N E ⟨237568,237596,6263376529⟩ E)))) ⟨237568,237600,6262954357⟩ (N (N (N (N (N E ⟨237568,237620,6260844029⟩ E) ⟨237568,237630,6259789198⟩ E) ⟨237568,237632,6259578259⟩ (N (N E ⟨237568,237636,6259156407⟩ E) ⟨237568,237648,6257891063⟩ E)) ⟨237568,237652,6257469353⟩ (N (N (N E ⟨237568,237664,6256204436⟩ E) ⟨237568,237666,6255993647⟩ E) ⟨237568,237680,6254518377⟩ (N E ⟨237568,237686,6253886251⟩ E))) ⟨237568,237700,6252411602⟩ (N (N (N (N E ⟨237568,237716,6250726821⟩ E) ⟨237568,237744,6247779819⟩ E) ⟨237568,237752,6246938138⟩ (N E ⟨237568,237760,6246096598⟩ E)) ⟨237568,237762,6245886235⟩ (N (N (N E ⟨237568,237768,6245255200⟩ E) ⟨237568,237778,6244203652⟩ E) ⟨237568,237780,6243993369⟩ (N E ⟨237568,237788,6243152325⟩ E))))))) ⟨237568,237810,6240840185⟩ (N (N (N (N (N (N (N (N E ⟨237568,237812,6240630044⟩ E) ⟨237568,237824,6239369381⟩ E) ⟨237568,237826,6239159301⟩ (N (N E ⟨237568,237836,6238109036⟩ E) ⟨237568,237846,6237058992⟩ E)) ⟨237568,237864,6235169470⟩ (N (N (N E ⟨237568,237876,6233910186⟩ E) ⟨237568,237888,6232651220⟩ E) ⟨237568,237920,6229295531⟩ (N E ⟨237568,237922,6229085875⟩ E))) ⟨237568,237936,6227618533⟩ (N (N (N (N E ⟨237568,237952,6225942100⟩ E) ⟨237568,237956,6225523080⟩ E) ⟨237568,237968,6224266231⟩ (N (N E ⟨237568,237988,6222172188⟩ E) ⟨237568,237990,6221962833⟩ E)) ⟨237568,237996,6221334818⟩ (N (N (N E ⟨237568,238000,6220916185⟩ E) ⟨237568,238002,6220706882⟩ E) ⟨237568,238016,6219242008⟩ (N E ⟨237568,238020,6218823551⟩ E)))) ⟨237568,238034,6217359231⟩ (N (N (N (N (N E ⟨237568,238052,6215477167⟩ E) ⟨237568,238064,6214222853⟩ E) ⟨237568,238066,6214013832⟩ (N (N E ⟨237568,238068,6213804819⟩ E) ⟨237568,238082,6212341976⟩ E)) ⟨237568,238088,6211715175⟩ (N (N (N E ⟨237568,238096,6210879563⟩ E) ⟨237568,238098,6210670683⟩ E) ⟨237568,238112,6209208762⟩ (N E ⟨237568,238130,6207329782⟩ E))) ⟨237568,238136,6206703613⟩ (N (N (N (N E ⟨237568,238144,6205868844⟩ E) ⟨237568,238148,6205451513⟩ E) ⟨237568,238176,6202531173⟩ (N (N E ⟨237568,238208,6199195745⟩ E) ⟨237568,238212,6198778974⟩ E)) ⟨237568,238224,6197528872⟩ (N (N (N E ⟨237568,238244,6195446068⟩ E) ⟨237568,238256,6194196806⟩ E) ⟨237568,238260,6193780456⟩ (N E ⟨237568,238272,6192531614⟩ E))))) ⟨237568,238278,6191907311⟩ (N (N (N (N (N (N E ⟨237568,238288,6190866981⟩ E) ⟨237568,238290,6190658941⟩ E) ⟨237568,238310,6188579024⟩ (N (N E ⟨237568,238320,6187539393⟩ E) ⟨237568,238322,6187331493⟩ E)) ⟨237568,238340,6185460785⟩ (N (N (N E ⟨237568,238342,6185252973⟩ E) ⟨237568,238354,6184006280⟩ E) ⟨237568,238374,6181929157⟩ (N E ⟨237568,238376,6181721492⟩ E))) ⟨237568,238386,6180683301⟩ (N (N (N (N E ⟨237568,238388,6180475689⟩ E) ⟨237568,238400,6179230200⟩ E) ⟨237568,238404,6178815107⟩ (N (N E ⟨237568,238432,6175910430⟩ E) ⟨237568,238450,6174044039⟩ E)) ⟨237568,238452,6173836705⟩ (N (N (N E ⟨237568,238464,6172592889⟩ E) ⟨237568,238480,6170934954⟩ E) ⟨237568,238512,6167620754⟩ (N E ⟨237568,238524,6166378502⟩ E)))) ⟨237568,238532,6165550509⟩ (N (N (N (N (N E ⟨237568,238544,6164308779⟩ E) ⟨237568,238576,6160999027⟩ E) ⟨237568,238578,6160792241⟩ (N (N E ⟨237568,238580,6160585464⟩ E) ⟨237568,238594,6159138268⟩ E)) ⟨237568,238608,6157691497⟩ (N (N (N E ⟨237568,238616,6156864961⟩ E) ⟨237568,238624,6156038564⟩ E) ⟨237568,238640,6154386186⟩ (N E ⟨237568,238642,6154179678⟩ E))) ⟨237568,238644,6153973178⟩ (N (N (N (N E ⟨237568,238674,6150876724⟩ E) ⟨237568,238676,6150670363⟩ E) ⟨237568,238688,6149432378⟩ (N E ⟨237568,238734,6144689656⟩ E)) ⟨237568,238754,6142629030⟩ (N (N (N E ⟨237568,238774,6140569267⟩ E) ⟨237568,238784,6139539709⟩ E) ⟨237568,238800,6137892866⟩ (N E ⟨237568,238808,6137069651⟩ E)))))) ⟨237568,238820,6135835089⟩ (N (N (N (N (N (N (N E ⟨237568,238838,6133983826⟩ E) ⟨237568,238852,6132544438⟩ E) ⟨237568,238866,6131105473⟩ (N (N E ⟨237568,238872,6130488902⟩ E) ⟨237568,238896,6128023396⟩ E)) ⟨237568,238904,6127201836⟩ (N (N (N E ⟨237568,238912,6126380414⟩ E) ⟨237568,238914,6126175080⟩ E) ⟨237568,238920,6125559129⟩ (N E ⟨237568,238930,6124532717⟩ E))) ⟨237568,238934,6124122212⟩ (N (N (N (N E ⟨237568,238962,6121249643⟩ E) ⟨237568,238972,6120224133⟩ E) ⟨237568,238976,6119813990⟩ (N (N E ⟨237568,238988,6118583765⟩ E) ⟨237568,238998,6117558814⟩ E)) ⟨237568,239028,6114485248⟩ (N (N (N E ⟨237568,239036,6113665957⟩ E) ⟨237568,239040,6113256363⟩ E) ⟨237568,239074,6109776197⟩ (N E ⟨237568,239104,6106707518⟩ E)))) ⟨237568,239116,6105480587⟩ (N (N (N (N (N E ⟨237568,239120,6105071678⟩ E) ⟨237568,239136,6103436385⟩ E) ⟨237568,239152,6101801640⟩ (N (N E ⟨237568,239154,6101597336⟩ E) ⟨237568,239164,6100575941⟩ E)) ⟨237568,239168,6100167443⟩ (N (N (N E ⟨237568,239186,6098329625⟩ E) ⟨237568,239196,6097308913⟩ E) ⟨237568,239218,6095064101⟩ (N E ⟨237568,239220,6094860078⟩ E))) ⟨237568,239288,6087928386⟩ (N (N (N (N E ⟨237568,239360,6080599687⟩ E) ⟨237568,239362,6080396270⟩ E) ⟨237568,239364,6080192861⟩ (N E ⟨237568,239376,6078972585⟩ E)) ⟨237568,239408,6075720015⟩ (N (N (N E ⟨237568,239424,6074094545⟩ E) ⟨237568,239442,6072266542⟩ E) ⟨237568,239472,6069221398⟩ (N E ⟨237568,239528,6063542236⟩ E))))) ⟨237568,239532,6063136836⟩ (N (N (N (N (N (N E ⟨237568,239552,6061110344⟩ E) ⟨237568,239556,6060705147⟩ E) ⟨237568,239586,6057667249⟩ (N (N E ⟨237568,239598,6056452624⟩ E) ⟨237568,239600,6056250215⟩ E)) ⟨237568,239602,6056047816⟩ (N (N (N E ⟨237568,239616,6054631256⟩ E) ⟨237568,239620,6054226600⟩ E) ⟨237568,239632,6053012837⟩ (N E ⟨237568,239652,6050990574⟩ E))) ⟨237568,239664,6049777621⟩ (N (N (N (N E ⟨237568,239680,6048160824⟩ E) ⟨237568,239684,6047756709⟩ E) ⟨237568,239692,6046948581⟩ (N (N E ⟨237568,239716,6044525006⟩ E) ⟨237568,239728,6043313673⟩ E)) ⟨237568,239744,6041699036⟩ (N (N (N E ⟨237568,239746,6041497244⟩ E) ⟨237568,239748,6041295461⟩ E) ⟨237568,239760,6040084937⟩ (N E ⟨237568,239792,6036858358⟩ E)))) ⟨237568,239794,6036656768⟩ (N (N (N (N (N E ⟨237568,239796,6036455187⟩ E) ⟨237568,239808,6035245876⟩ E) ⟨237568,239812,6034842840⟩ (N (N E ⟨237568,239826,6033432478⟩ E) ⟨237568,239856,6030411661⟩ E)) ⟨237568,239920,6023973569⟩ (N (N (N E ⟨237568,239936,6022365388⟩ E) ⟨237568,239984,6017544067⟩ E) ⟨237568,239988,6017142509⟩ (N E ⟨237568,240004,6015536608⟩ E))) ⟨237568,240016,6014332534⟩ (N (N (N (N E ⟨237568,240018,6014131884⟩ E) ⟨237568,240048,6011123143⟩ E) ⟨237568,240056,6010321130⟩ (N E ⟨237568,240060,6009920174⟩ E)) ⟨237568,240064,6009519251⟩ (N (N (N E ⟨237568,240068,6009118362⟩ E) ⟨237568,240072,6008717506⟩ E) ⟨237568,240084,6007515138⟩ (N E ⟨237568,240112,6004710783⟩ E))))))))
+
+noncomputable def tab24 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨237568,240124,6003509418⟩ E) ⟨237568,240128,6003109029⟩ E) ⟨237568,240132,6002708674⟩ (N (N E ⟨237568,240176,5998306972⟩ E) ⟨237568,240180,5997907018⟩ E)) ⟨237568,240192,5996707354⟩ (N (N (N E ⟨237568,240240,5991911698⟩ E) ⟨237568,240272,5988717257⟩ E) ⟨237568,240288,5987120836⟩ (N E ⟨237568,240296,5986322824⟩ E))) ⟨237568,240308,5985126057⟩ (N (N (N (N E ⟨237568,240320,5983929588⟩ E) ⟨237568,240340,5981936138⟩ E) ⟨237568,240370,5978947520⟩ (N (N E ⟨237568,240372,5978748345⟩ E) ⟨237568,240380,5977951728⟩ E)) ⟨237568,240384,5977553470⟩ (N (N (N E ⟨237568,240400,5975960768⟩ E) ⟨237568,240412,5974766589⟩ E) ⟨237568,240432,5972776955⟩ (N E ⟨237568,240448,5971185844⟩ E)))) ⟨237568,240472,5968800170⟩ (N (N (N (N (N E ⟨237568,240512,5964826696⟩ E) ⟨237568,240520,5964032398⟩ E) ⟨237568,240556,5960459692⟩ (N (N E ⟨237568,240572,5958872682⟩ E) ⟨237568,240576,5958476012⟩ E)) ⟨237568,240594,5956691406⟩ (N (N (N E ⟨237568,240640,5952133780⟩ E) ⟨237568,240652,5950945552⟩ E) ⟨237568,240672,5948965829⟩ (N E ⟨237568,240680,5948174171⟩ E))) ⟨237568,240692,5946986930⟩ (N (N (N (N E ⟨237568,240700,5946195601⟩ E) ⟨237568,240704,5945799986⟩ E) ⟨237568,240708,5945404404⟩ (N (N E ⟨237568,240736,5942636249⟩ E) ⟨237568,240738,5942438585⟩ E)) ⟨237568,240748,5941450390⟩ (N (N (N E ⟨237568,240750,5941252776⟩ E) ⟨237568,240756,5940659982⟩ E) ⟨237568,240768,5939474616⟩ (N E ⟨237568,240800,5936315086⟩ E))))) ⟨237568,240812,5935130804⟩ (N (N (N (N (N (N E ⟨237568,240844,5931974162⟩ E) ⟨237568,240860,5930396628⟩ E) ⟨237568,240864,5930002327⟩ (N (N E ⟨237568,240876,5928819619⟩ E) ⟨237568,240884,5928031311⟩ E)) ⟨237568,240896,5926849095⟩ (N (N (N E ⟨237568,240908,5925667173⟩ E) ⟨237568,240928,5923697959⟩ E) ⟨237568,240944,5922123176⟩ (N E ⟨237568,240948,5921729562⟩ E))) ⟨237568,240992,5917401968⟩ (N (N (N (N E ⟨237568,241026,5914060625⟩ E) ⟨237568,241028,5913864149⟩ E) ⟨237568,241040,5912685464⟩ (N (N E ⟨237568,241072,5909543739⟩ E) ⟨237568,241088,5907973660⟩ E)) ⟨237568,241116,5905227275⟩ (N (N (N E ⟨237568,241136,5903266549⟩ E) ⟨237568,241168,5900131079⟩ E) ⟨237568,241192,5897780844⟩ (N E ⟨237568,241200,5896997692⟩ E)))) ⟨237568,241216,5895431778⟩ (N (N (N (N (N E ⟨237568,241232,5893866385⟩ E) ⟨237568,241264,5890737156⟩ E) ⟨237568,241280,5889173320⟩ (N (N E ⟨237568,241296,5887610004⟩ E) ⟨237568,241316,5885656588⟩ E)) ⟨237568,241320,5885266002⟩ (N (N (N E ⟨237568,241328,5884484927⟩ E) ⟨237568,241344,5882923166⟩ E) ⟨237568,241380,5879411099⟩ (N E ⟨237568,241392,5878240993⟩ E))) ⟨237568,241424,5875122132⟩ (N (N (N (N E ⟨237568,241456,5872005339⟩ E) ⟨237568,241468,5870837075⟩ E) ⟨237568,241472,5870447718⟩ (N E ⟨237568,241476,5870058394⟩ E)) ⟨237568,241488,5868890614⟩ (N (N (N E ⟨237568,241504,5867334026⟩ E) ⟨237568,241508,5866944959⟩ E) ⟨237568,241520,5865777954⟩ (N E ⟨237568,241524,5865389016⟩ E)))))) ⟨237568,241568,5861112832⟩ (N (N (N (N (N (N (N E ⟨237568,241584,5859558823⟩ E) ⟨237568,241648,5853347934⟩ E) ⟨237568,241668,5851408719⟩ (N (N E ⟨237568,241672,5851020972⟩ E) ⟨237568,241680,5850245575⟩ E)) ⟨237568,241712,5847145273⟩ (N (N (N E ⟨237568,241716,5846757879⟩ E) ⟨237568,241728,5845595892⟩ E) ⟨237568,241732,5845208627⟩ (N E ⟨237568,241744,5844047024⟩ E))) ⟨237568,241776,5840950827⟩ (N (N (N (N E ⟨237568,241780,5840563947⟩ E) ⟨237568,241788,5839790282⟩ E) ⟨237568,241792,5839403498⟩ (N (N E ⟨237568,241808,5837856681⟩ E) ⟨237568,241840,5834764584⟩ E)) ⟨237568,241856,5833219304⟩ (N (N (N E ⟨237568,241872,5831674534⟩ E) ⟨237568,241876,5831288422⟩ E) ⟨237568,241888,5830130277⟩ (N E ⟨237568,241904,5828586530⟩ E)))) ⟨237568,241952,5823958356⟩ (N (N (N (N (N E ⟨237568,241960,5823187441⟩ E) ⟨237568,241968,5822416653⟩ E) ⟨237568,241972,5822031307⟩ (N (N E ⟨237568,241984,5820875459⟩ E) ⟨237568,242000,5819334776⟩ E)) ⟨237568,242032,5816254939⟩ (N (N (N E ⟨237568,242044,5815100525⟩ E) ⟨237568,242048,5814715784⟩ E) ⟨237568,242060,5813561752⟩ (N E ⟨237568,242068,5812792557⟩ E))) ⟨237568,242092,5810485734⟩ (N (N (N (N E ⟨237568,242100,5809717047⟩ E) ⟨237568,242108,5808948488⟩ E) ⟨237568,242112,5808564256⟩ (N (N E ⟨237568,242132,5806643572⟩ E) ⟨237568,242144,5805491543⟩ E)) ⟨237568,242156,5804339799⟩ (N (N (N E ⟨237568,242160,5803955948⟩ E) ⟨237568,242236,5796668805⟩ E) ⟨237568,242240,5796285588⟩ (N E ⟨237568,242292,5791306650⟩ E))))) ⟨237568,242316,5789010482⟩ (N (N (N (N (N (N E ⟨237568,242324,5788245346⟩ E) ⟨237568,242336,5787097878⟩ E) ⟨237568,242344,5786333058⟩ (N (N E ⟨237568,242356,5785186064⟩ E) ⟨237568,242364,5784421560⟩ E)) ⟨237568,242368,5784039355⟩ (N (N (N E ⟨237568,242372,5783657182⟩ E) ⟨237568,242400,5780982852⟩ E) ⟨237568,242412,5779837184⟩ (N E ⟨237568,242420,5779073563⟩ E))) ⟨237568,242432,5777928368⟩ (N (N (N (N E ⟨237568,242436,5777546700⟩ E) ⟨237568,242440,5777165063⟩ E) ⟨237568,242464,5774875902⟩ (N (N E ⟨237568,242476,5773731747⟩ E) ⟨237568,242480,5773350425⟩ E)) ⟨237568,242484,5772969135⟩ (N (N (N E ⟨237568,242496,5771825452⟩ E) ⟨237568,242508,5770682053⟩ E) ⟨237568,242528,5768777016⟩ (N E ⟨237568,242544,5767253553⟩ E)))) ⟨237568,242548,5766872766⟩ (N (N (N (N (N E ⟨237568,242604,5761545044⟩ E) ⟨237568,242624,5759643778⟩ E) ⟨237568,242640,5758123329⟩ (N (N E ⟨237568,242676,5754704155⟩ E) ⟨237568,242692,5753185337⟩ E)) ⟨237568,242724,5750149203⟩ (N (N (N E ⟨237568,242732,5749390483⟩ E) ⟨237568,242736,5749011170⟩ E) ⟨237568,242752,5747494230⟩ (N E ⟨237568,242788,5744082944⟩ E))) ⟨237568,242800,5742946411⟩ (N (N (N (N E ⟨237568,242832,5739917031⟩ E) ⟨237568,242864,5736889649⟩ E) ⟨237568,242880,5735376706⟩ (N E ⟨237568,242896,5733864262⟩ E)) ⟨237568,242980,5725932109⟩ (N (N (N E ⟨237568,242984,5725554729⟩ E) ⟨237568,242992,5724800064⟩ E) ⟨237568,243008,5723291106⟩ (N E ⟨237568,243044,5719897769⟩ E))))))) ⟨237568,243052,5719144036⟩ (N (N (N (N (N (N (N (N E ⟨237568,243056,5718767216⟩ E) ⟨237568,243076,5716883581⟩ E) ⟨237568,243088,5715753773⟩ (N (N E ⟨237568,243120,5712742314⟩ E) ⟨237568,243136,5711237329⟩ E)) ⟨237568,243160,5708980780⟩ (N (N (N E ⟨237568,243196,5705598047⟩ E) ⟨237568,243200,5705222343⟩ E) ⟨237568,243232,5702217819⟩ (N E ⟨237568,243312,5694715161⟩ E))) ⟨237568,243332,5692841425⟩ (N (N (N (N E ⟨237568,243336,5692466771⟩ E) ⟨237568,243376,5688721919⟩ E) ⟨237568,243384,5687973318⟩ (N (N E ⟨237568,243392,5687224841⟩ E) ⟨237568,243420,5684606139⟩ E)) ⟨237568,243432,5683484299⟩ (N (N (N E ⟨237568,243440,5682736560⟩ E) ⟨237568,243456,5681241451⟩ E) ⟨237568,243472,5679746834⟩ (N E ⟨237568,243484,5678626193⟩ E)))) ⟨237568,243500,5677132436⟩ (N (N (N (N (N E ⟨237568,243504,5676759073⟩ E) ⟨237568,243520,5675265930⟩ E) ⟨237568,243536,5673773277⟩ (N (N E ⟨237568,243544,5673027135⟩ E) ⟨237568,243552,5672281115⟩ E)) ⟨237568,243584,5669298264⟩ (N (N (N E ⟨237568,243592,5668552857⟩ E) ⟨237568,243600,5667807573⟩ E) ⟨237568,243624,5665572456⟩ (N E ⟨237568,243696,5658873714⟩ E))) ⟨237568,243724,5656271322⟩ (N (N (N (N E ⟨237568,243744,5654413387⟩ E) ⟨237568,243760,5652927588⟩ E) ⟨237568,243772,5651813559⟩ (N (N E ⟨237568,243776,5651442277⟩ E) ⟨237568,243780,5651071025⟩ E)) ⟨237568,243800,5649215225⟩ (N (N (N E ⟨237568,243808,5648473118⟩ E) ⟨237568,243816,5647731133⟩ E) ⟨237568,243820,5647360187⟩ (N E ⟨237568,243828,5646618384⟩ E))))) ⟨237568,243872,5642540650⟩ (N (N (N (N (N (N E ⟨237568,243980,5632547263⟩ E) ⟨237568,244000,5630699064⟩ E) ⟨237568,244008,5629959997⟩ (N (N E ⟨237568,244020,5628851624⟩ E) ⟨237568,244028,5628112860⟩ E)) ⟨237568,244032,5627743524⟩ (N (N (N E ⟨237568,244036,5627374218⟩ E) ⟨237568,244064,5624789923⟩ E) ⟨237568,244084,5622944906⟩ (N E ⟨237568,244128,5618888532⟩ E))) ⟨237568,244140,5617782883⟩ (N (N (N (N E ⟨237568,244156,5616309108⟩ E) ⟨237568,244160,5615940740⟩ E) ⟨237568,244208,5611522675⟩ (N (N E ⟨237568,244212,5611154700⟩ E) ⟨237568,244256,5607108956⟩ E)) ⟨237568,244272,5605638680⟩ (N (N (N E ⟨237568,244276,5605271187⟩ E) ⟨237568,244288,5604168887⟩ E) ⟨237568,244304,5602699575⟩ (N E ⟨237568,244396,5594260373⟩ E)))) ⟨237568,244404,5593527281⟩ (N (N (N (N (N E ⟨237568,244412,5592794309⟩ E) ⟨237568,244416,5592427868⟩ E) ⟨237568,244460,5588398996⟩ (N (N E ⟨237568,244464,5588032915⟩ E) ⟨237568,244536,5581448579⟩ E)) ⟨237568,244540,5581083067⟩ (N (N (N E ⟨237568,244544,5580717585⟩ E) ⟨237568,244552,5579986711⟩ E) ⟨237568,244560,5579255957⟩ (N E ⟨237568,244588,5576699257⟩ E))) ⟨237568,244592,5576334134⟩ (N (N (N (N E ⟨237568,244608,5574873941⟩ E) ⟨237568,244716,5565030126⟩ E) ⟨237568,244720,5564665958⟩ (N E ⟨237568,244736,5563209583⟩ E)) ⟨237568,244740,5562845564⟩ (N (N (N E ⟨237568,244780,5559207008⟩ E) ⟨237568,244784,5558843317⟩ E) ⟨237568,244796,5557752419⟩ (N E ⟨237568,244800,5557388847⟩ E)))))) ⟨237568,244816,5555934852⟩ (N (N (N (N (N (N (N E ⟨237568,244844,5553391506⟩ E) ⟨237568,244848,5553028290⟩ E) ⟨237568,244860,5551938820⟩ (N (N E ⟨237568,244908,5547583608⟩ E) ⟨237568,244972,5541783302⟩ E)) ⟨237568,244980,5541058797⟩ (N (N (N E ⟨237568,244996,5539610142⟩ E) ⟨237568,245020,5537438048⟩ E) ⟨237568,245040,5535628782⟩ (N E ⟨237568,245056,5534181902⟩ E))) ⟨237568,245060,5533820256⟩ (N (N (N (N E ⟨237568,245072,5532735494⟩ E) ⟨237568,245084,5531650999⟩ E) ⟨237568,245104,5529844097⟩ (N (N E ⟨237568,245108,5529482805⟩ E) ⟨237568,245116,5528760310⟩ E)) ⟨237568,245136,5526954588⟩ (N (N (N E ⟨237568,245148,5525871509⟩ E) ⟨237568,245164,5524427817⟩ E) ⟨237568,245168,5524066967⟩ (N E ⟨237568,245172,5523706147⟩ E)))) ⟨237568,245180,5522984596⟩ (N (N (N (N (N E ⟨237568,245184,5522623864⟩ E) ⟨237568,245236,5517937033⟩ E) ⟨237568,245256,5516135729⟩ (N (N E ⟨237568,245280,5513975135⟩ E) ⟨237568,245288,5513255173⟩ E)) ⟨237568,245292,5512895235⟩ (N (N (N E ⟨237568,245296,5512535327⟩ E) ⟨237568,245300,5512175449⟩ E) ⟨237568,245360,5506780794⟩ (N E ⟨237568,245408,5502469821⟩ E))) ⟨237568,245424,5501033768⟩ (N (N (N (N E ⟨237568,245428,5500674828⟩ E) ⟨237568,245436,5499957036⟩ E) ⟨237568,245440,5499598183⟩ (N (N E ⟨237568,245472,5496728419⟩ E) ⟨237568,245484,5495652740⟩ E)) ⟨237568,245500,5494218911⟩ (N (N (N E ⟨237568,245504,5493860527⟩ E) ⟨237568,245512,5493143846⟩ E) ⟨237568,245536,5490994505⟩ (N E ⟨237568,245544,5490278291⟩ E))))) ⟨237568,245568,5488130352⟩ (N (N (N (N (N (N E ⟨237568,245580,5487056776⟩ E) ⟨237568,245616,5483837624⟩ E) ⟨237568,245628,5482765098⟩ (N (N E ⟨237568,245664,5479549093⟩ E) ⟨237568,245672,5478834745⟩ E)) ⟨237568,245696,5476692401⟩ (N (N (N E ⟨237568,245728,5473837572⟩ E) ⟨237568,245744,5472410855⟩ E) ⟨237568,245760,5470984602⟩ (N E ⟨243152,245760,11205228276⟩ E))) ⟨243920,245760,11688866540⟩ (N (N (N (N E ⟨245760,245792,12349948495⟩ E) ⟨245760,245808,12346585142⟩ E) ⟨245760,245824,12343164825⟩ (N (N E ⟨245760,245836,12340562231⟩ E) ⟨245760,245840,12339687589⟩ E)) ⟨245760,245856,12336153482⟩ (N (N (N E ⟨245760,245884,12329832095⟩ E) ⟨245760,245888,12328914849⟩ E) ⟨245760,246000,12301795413⟩ (N E ⟨245760,246020,12296661493⟩ E)))) ⟨245760,246064,12285057354⟩ (N (N (N (N (N E ⟨245760,246076,12281818839⟩ E) ⟨245760,246084,12279642293⟩ E) ⟨245760,246124,12268549382⟩ (N (N E ⟨245760,246132,12266288813⟩ E) ⟨245760,246160,12258266783⟩ E)) ⟨245760,246168,12255943365⟩ (N (N (N E ⟨245760,246232,12236854548⟩ E) ⟨245760,246308,12213032487⟩ E) ⟨245760,246324,12207858222⟩ (N E ⟨245760,246340,12202628758⟩ E))) ⟨245760,246388,12186609814⟩ (N (N (N (N E ⟨245760,246408,12179789214⟩ E) ⟨245760,246444,12167296205⟩ E) ⟨245760,246456,12163070280⟩ (N E ⟨245760,246464,12160235913⟩ E)) ⟨245760,246504,12145859386⟩ (N (N (N E ⟨245760,246512,12142943202⟩ E) ⟨245760,246516,12141480007⟩ E) ⟨245760,246560,12125160665⟩ (N E ⟨245760,246580,12117607151⟩ E))))))))
+
+noncomputable def tab25 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨245760,246656,12088133631⟩ E) ⟨245760,246664,12084960423⟩ E) ⟨245760,246708,12067267816⟩ (N (N E ⟨245760,246712,12065639293⟩ E) ⟨245760,246720,12062372211⟩ E)) ⟨245760,246760,12045836385⟩ (N (N (N E ⟨245760,246768,12042489202⟩ E) ⟨245760,246784,12035754896⟩ E) ⟨245760,246840,12011766450⟩ (N E ⟨245760,246844,12010028144⟩ E))) ⟨245760,246848,12008286531⟩ (N (N (N (N E ⟨245760,246872,11997767492⟩ E) ⟨245760,246888,11990688828⟩ E) ⟨245760,246892,11988910928⟩ (N (N E ⟨245760,246896,11987129735⟩ E) ⟨245760,246912,11979972077⟩ E)) ⟨245760,246928,11972761854⟩ (N (N (N E ⟨245760,247024,11928401222⟩ E) ⟨245760,247040,11920825333⟩ E) ⟨245760,247044,11918923247⟩ (N E ⟨245760,247100,11891954144⟩ E)))) ⟨245760,247148,11868334640⟩ (N (N (N (N (N E ⟨245760,247152,11866345463⟩ E) ⟨245760,247164,11860358696⟩ E) ⟨245760,247212,11836123755⟩ (N (N E ⟨245760,247276,11803097212⟩ E) ⟨245760,247300,11790503138⟩ E)) ⟨245760,247328,11775666507⟩ (N (N (N E ⟨245760,247344,11767119204⟩ E) ⟨245760,247468,11699181498⟩ E) ⟨245760,247488,11687944184⟩ (N E ⟨245760,247584,11632934271⟩ E))) ⟨245760,247596,11625934069⟩ (N (N (N (N E ⟨245760,247608,11618906458⟩ E) ⟨245760,247664,11585749762⟩ E) ⟨245760,247744,11537357683⟩ (N (N E ⟨245760,247768,11522606476⟩ E) ⟨245760,247792,11507748077⟩ E)) ⟨245760,247808,11497783098⟩ (N (N (N E ⟨245760,247832,11482746822⟩ E) ⟨245760,247840,11477711100⟩ E) ⟨245760,247864,11462533227⟩ (N E ⟨245760,247888,11447249572⟩ E))))) ⟨245760,247896,11442131574⟩ (N (N (N (N (N (N E ⟨245760,247920,11426707431⟩ E) ⟨245760,247932,11418955982⟩ E) ⟨245760,248048,11342681784⟩ (N (N E ⟨245760,248064,11331971444⟩ E) ⟨245760,248092,11313118536⟩ E)) ⟨245760,248128,11288674548⟩ (N (N (N E ⟨245760,248144,11277736995⟩ E) ⟨245760,248160,11266754335⟩ E) ⟨245760,248176,11255726679⟩ (N E ⟨245760,248188,11247426476⟩ E))) ⟨245760,248192,11244654140⟩ (N (N (N (N E ⟨245760,248220,11225169539⟩ E) ⟨245760,248304,11165899209⟩ E) ⟨245760,248328,11148741515⟩ (N (N E ⟨245760,248348,11134368152⟩ E) ⟨245760,248368,11119926591⟩ E)) ⟨245760,248380,11111229014⟩ (N (N (N E ⟨245760,248428,11076195010⟩ E) ⟨245760,248476,11040773484⟩ E) ⟨245760,248584,10959674890⟩ (N E ⟨245760,248616,10935277502⟩ E)))) ⟨245760,248748,10832888533⟩ (N (N (N (N (N E ⟨245760,248768,10817132160⟩ E) ⟨245760,248816,10779059397⟩ E) ⟨245760,248880,10727735161⟩ (N (N E ⟨245760,248896,10714804851⟩ E) ⟨245760,248960,10662690453⟩ E)) ⟨245760,249024,10609953195⟩ (N (N (N E ⟨245760,249056,10583353592⟩ E) ⟨245760,249072,10569996506⟩ E) ⟨245760,249200,10461782356⟩ (N E ⟨245760,249216,10448087897⟩ E))) ⟨245760,249328,10351203274⟩ (N (N (N (N E ⟨245760,249344,10337218034⟩ E) ⟨245760,249456,10238328368⟩ E) ⟨245760,249468,10227631145⟩ (N E ⟨245760,249488,10209759126⟩ E)) ⟨245760,249528,10173853644⟩ (N (N (N E ⟨245760,249560,10144975472⟩ E) ⟨245760,249576,10130485507⟩ E) ⟨245760,249648,10064865254⟩ (N E ⟨245760,249736,9983753797⟩ E)))))) ⟨245760,249784,9939097608⟩ (N (N (N (N (N (N (N E ⟨245760,249792,9931626902⟩ E) ⟨245760,249832,9894154408⟩ E) ⟨245760,249888,9841363099⟩ (N (N E ⟨245760,249912,9818621812⟩ E) ⟨245760,249920,9811025991⟩ E)) ⟨245760,249952,9780566225⟩ (N (N (N E ⟨245760,249960,9772932254⟩ E) ⟨245760,250040,9696178922⟩ E) ⟨245760,250048,9688462628⟩ (N E ⟨245760,250112,9626468354⟩ E))) ⟨245760,250144,9595297185⟩ (N (N (N (N E ⟨245760,250216,9524745415⟩ E) ⟨245760,250240,9501101744⟩ E) ⟨245760,250344,9397931607⟩ (N (N E ⟨245760,250516,9224844104⟩ E) ⟨245760,250672,9065342512⟩ E)) ⟨245760,250680,9057101187⟩ (N (N (N E ⟨245760,250816,8916113590⟩ E) ⟨245760,250840,8891063937⟩ E) ⟨245760,250936,8790375467⟩ (N E ⟨245760,250968,8756642413⟩ E)))) ⟨245760,250992,8731288062⟩ (N (N (N (N (N E ⟨245760,251008,8714359474⟩ E) ⟨245760,251064,8654950045⟩ E) ⟨245760,251096,8620892362⟩ (N (N E ⟨245760,251112,8603834184⟩ E) ⟨245760,251120,8595297829⟩ E)) ⟨245760,251168,8543979226⟩ (N (N (N E ⟨245760,251192,8518256220⟩ E) ⟨245760,251200,8509672577⟩ E) ⟨245760,251224,8483894006⟩ (N E ⟨245760,251232,8475292000⟩ E))) ⟨245760,251248,8458074384⟩ (N (N (N (N E ⟨245760,251264,8440838759⟩ E) ⟨245760,251328,8371719348⟩ E) ⟨245760,251376,8319698463⟩ (N (N E ⟨245760,251392,8302324476⟩ E) ⟨245760,251496,8188996488⟩ E)) ⟨245760,251520,8162748999⟩ (N (N (N E ⟨245760,251656,8013378450⟩ E) ⟨245760,251712,7951574372⟩ E) ⟨245760,251840,7809702995⟩ (N E ⟨245760,251952,7684927063⟩ E))))) ⟨245760,252096,7523717741⟩ (N (N (N (N (N (N E ⟨245760,252128,7487784414⟩ E) ⟨245760,252144,7469803846⟩ E) ⟨245760,252216,7388781568⟩ (N (N E ⟨245760,252240,7361735933⟩ E) ⟨245760,252272,7325646867⟩ E)) ⟨245760,252352,7235291093⟩ (N (N (N E ⟨245760,252400,7180992790⟩ E) ⟨245760,252416,7162880181⟩ E) ⟨245760,252528,7035923973⟩ (N E ⟨245760,252656,6890522706⟩ E))) ⟨245760,252672,6872328267⟩ (N (N (N (N E ⟨245760,252784,6744871161⟩ E) ⟨245760,252856,6662862972⟩ E) ⟨245760,252904,6608168465⟩ (N (N E ⟨245760,253032,6462265182⟩ E) ⟨245760,253064,6425784614⟩ E)) ⟨245760,253120,6361945937⟩ (N (N (N E ⟨245760,253160,6316351863⟩ E) ⟨245760,253240,6225187053⟩ E) ⟨245760,253264,6197845992⟩ (N E ⟨245760,253288,6170509746⟩ E)))) ⟨245760,253368,6079430538⟩ (N (N (N (N (N E ⟨245760,253416,6024819718⟩ E) ⟨245760,253544,5879362262⟩ E) ⟨245760,253568,5852121386⟩ (N (N E ⟨245760,253800,5589464713⟩ E) ⟨245760,253952,5418189199⟩ E)) ⟨245900,253952,5429643105⟩ (N (N (N E ⟨246668,253952,5492648647⟩ E) ⟨249632,253952,5736009697⟩ E) ⟨249712,253952,5742526803⟩ (N E ⟨253952,254000,6017013441⟩ E))) ⟨253952,254008,6007167212⟩ (N (N (N (N E ⟨253952,254136,5849966368⟩ E) ⟨253952,254168,5810771500⟩ E) ⟨253952,254184,5791190760⟩ (N E ⟨253952,254296,5654452260⟩ E)) ⟨253952,254440,5479551124⟩ (N (N (N E ⟨253952,254448,5469866348⟩ E) ⟨253952,254496,5411831800⟩ E) ⟨253952,254528,5373214124⟩ (N E ⟨253952,254560,5334655536⟩ E))))))) ⟨253952,254568,5325025269⟩ (N (N (N (N (N (N (N (N E ⟨253952,254704,5161906701⟩ E) ⟨253952,254720,5142792756⟩ E) ⟨253952,254824,5018964658⟩ (N (N E ⟨253952,254984,4829929935⟩ E) ⟨253952,255056,4745480325⟩ E)) ⟨253952,255152,4633507938⟩ (N (N (N E ⟨253952,255216,4559272196⟩ E) ⟨253952,255280,4485377471⟩ E) ⟨253952,255288,4476165075⟩ (N E ⟨253952,255408,4338648401⟩ E))) ⟨253952,255424,4320409500⟩ (N (N (N (N E ⟨253952,255600,4121343877⟩ E) ⟨253952,255728,3978439280⟩ E) ⟨253952,255856,3837189707⟩ (N (N E ⟨253952,255872,3819653364⟩ E) ⟨253952,255984,3697664839⟩ E)) ⟨253952,256184,3483272115⟩ (N (N (N E ⟨253952,256336,3323417884⟩ E) ⟨253952,256360,3298429467⟩ E) ⟨253952,256432,3223884847⟩ (N E ⟨253952,256448,3207405852⟩ E)))) ⟨253952,256488,3166347375⟩ (N (N (N (N (N E ⟨253952,256688,2964094154⟩ E) ⟨253952,256696,2956111387⟩ E) ⟨253952,256744,2908391511⟩ (N (N E ⟨253952,256872,2782639106⟩ E) ⟨253952,257024,2636207502⟩ E)) ⟨253952,257336,2345881870⟩ (N (N (N E ⟨253952,257464,2230902134⟩ E) ⟨253952,257496,2202542455⟩ E) ⟨253952,257512,2188420944⟩ (N E ⟨253952,257624,2090668164⟩ E))) ⟨253952,257768,1967847439⟩ (N (N (N (N E ⟨253952,257848,1901027242⟩ E) ⟨253952,257896,1861425857⟩ E) ⟨253952,257920,1841764121⟩ (N (N E ⟨253952,258112,1687843176⟩ E) ⟨253952,258152,1656539113⟩ E)) ⟨253952,258432,1444924345⟩ (N (N (N E ⟨253952,258608,1318760832⟩ E) ⟨253952,258616,1313153777⟩ E) ⟨253952,258784,1197998146⟩ (N E ⟨253952,259056,1022185846⟩ E))))) ⟨253952,259168,953669250⟩ (N (N (N (N (N (N E ⟨253952,259296,878168081⟩ E) ⟨253952,259312,868941899⟩ E) ⟨253952,259328,859762868⟩ (N (N E ⟨253952,259584,719347841⟩ E) ⟨253952,259664,677974142⟩ E)) ⟨253952,259816,602678863⟩ (N (N (N E ⟨253952,260200,431973312⟩ E) ⟨253952,260480,325287065⟩ E) ⟨253952,260792,224207583⟩ (N E ⟨253952,260992,169311016⟩ E))) ⟨253952,260996,168292016⟩ (N (N (N (N E ⟨253952,261060,152408937⟩ E) ⟨253952,261632,45574600⟩ E) ⟨253952,261764,29855948⟩ (N (N E ⟨253952,261828,23433802⟩ E) ⟨253952,261944,13783017⟩ E)) ⟨253952,262064,6488198⟩ (N (N (N E ⟨253952,262124,3862282⟩ E) ⟨253952,262144,3137894⟩ E) ⟨262144,262172,4950243⟩ (N E ⟨262144,262176,4773716⟩ E)))) ⟨262396,267544,214⟩ (N (N (N (N (N E ⟨262396,268312,212⟩ E) ⟨262396,269144,209⟩ E) ⟨262408,267398,16938⟩ (N (N E ⟨262408,267430,16930⟩ E) ⟨262408,268262,16721⟩ E)) ⟨262408,269094,16515⟩ (N (N (N E ⟨262408,270336,16213⟩ E) ⟨262412,267592,28357⟩ E) ⟨262412,269192,27688⟩ (N E ⟨262414,267700,35142⟩ E))) ⟨262420,270336,57752⟩ (N (N (N (N E ⟨262422,267444,70112⟩ E) ⟨262424,267382,80748⟩ E) ⟨262424,270336,77273⟩ (N E ⟨262428,267576,103810⟩ E)) ⟨262436,270336,152865⟩ (N (N (N E ⟨262438,267428,175378⟩ E) ⟨262438,268292,173128⟩ E) ⟨262438,269028,171240⟩ (N E ⟨262440,270336,183739⟩ E)))))) ⟨262442,265880,214016⟩ (N (N (N (N (N (N (N E ⟨262444,267624,226408⟩ E) ⟨262444,268392,223826⟩ E) ⟨262450,269072,278521⟩ (N (N E ⟨262452,270336,293395⟩ E) ⟨262454,267508,327663⟩ E)) ⟨262456,270336,335626⟩ (N (N (N E ⟨262458,265480,384734⟩ E) ⟨262460,268376,391949⟩ E) ⟨262460,269208,387122⟩ (N E ⟨262460,270336,380697⟩ E))) ⟨262468,270336,479358⟩ (N (N (N (N E ⟨262470,268524,519601⟩ E) ⟨262472,267462,556247⟩ E) ⟨262472,268230,549899⟩ (N (N E ⟨262472,269894,536452⟩ E) ⟨262472,270336,532950⟩ E)) ⟨262476,269256,598902⟩ (N (N (N E ⟨262478,267764,642797⟩ E) ⟨262478,268532,635469⟩ E) ⟨262484,269170,723174⟩ (N E ⟨262484,270336,710769⟩ E)))) ⟨262490,265880,864942⟩ (N (N (N (N (N E ⟨262492,270336,843521⟩ E) ⟨262500,270336,987641⟩ E) ⟨262504,268262,1097276⟩ (N (N E ⟨262504,270336,1063964⟩ E) ⟨262506,265480,1186215⟩ E)) ⟨262512,270336,1225138⟩ (N (N (N E ⟨262516,270336,1309989⟩ E) ⟨262518,267540,1410998⟩ E) ⟨262518,269172,1377063⟩ (N E ⟨262520,270336,1397684⟩ E))) ⟨262524,270336,1488221⟩ (N (N (N (N E ⟨262532,266275,1782629⟩ E) ⟨262532,268258,1730462⟩ E) ⟨262532,268354,1727985⟩ (N E ⟨262532,270336,1677827⟩ E)) ⟨262536,268484,1826471⟩ (N (N (N E ⟨262536,269316,1803989⟩ E) ⟨262536,269412,1801417⟩ E) ⟨262536,270336,1776896⟩ (N E ⟨262540,270336,1878809⟩ E))))) ⟨262548,267538,2180098⟩ (N (N (N (N (N (N E ⟨262548,269170,2127665⟩ E) ⟨262548,270224,2094639⟩ E) ⟨262548,270336,2091167⟩ (N (N E ⟨262552,270336,2201614⟩ E) ⟨262564,267522,2659104⟩ E)) ⟨262566,266277,2773562⟩ (N (N (N E ⟨262568,268516,2745084⟩ E) ⟨262568,268612,2741159⟩ E) ⟨262568,270336,2671850⟩ (N E ⟨262576,269996,2938809⟩ E))) ⟨262584,270336,3187616⟩ (N (N (N (N E ⟨262587,265977,3510559⟩ E) ⟨262590,267738,3526488⟩ E) ⟨262598,266341,3902029⟩ (N (N E ⟨262600,269380,3802467⟩ E) ⟨262600,270054,3764620⟩ E)) ⟨262603,265625,4140615⟩ (N (N (N E ⟨262603,265993,4117731⟩ E) ⟨262603,266041,4114758⟩ E) ⟨262604,270336,3896370⟩ (N E ⟨262612,268882,4291452⟩ E)))) ⟨262612,270224,4206773⟩ (N (N (N (N (N E ⟨262612,270288,4202787⟩ E) ⟨262612,270336,4199801⟩ E) ⟨262619,265641,4799731⟩ (N (N E ⟨262619,266057,4769759⟩ E) ⟨262628,268834,4950013⟩ E)) ⟨262628,270176,4852321⟩ (N (N (N E ⟨262628,270336,4840835⟩ E) ⟨262630,270336,4924169⟩ E) ⟨262632,270336,5008214⟩ (N E ⟨262638,267892,5459536⟩ E))) ⟨262638,269492,5330935⟩ (N (N (N (N E ⟨262644,270130,5544335⟩ E) ⟨262644,270336,5527442⟩ E) ⟨262645,266964,5858980⟩ (N E ⟨262646,268668,5757361⟩ E)) ⟨262648,270336,5706216⟩ (N (N (N E ⟨262652,270336,5887838⟩ E) ⟨262654,268570,6138677⟩ E) ⟨262660,268418,6440610⟩ (N E ⟨262660,268514,6431398⟩ E))))))))
+
+noncomputable def tab26 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨262660,270336,6259631⟩ E) ⟨262661,266372,6691093⟩ E) ⟨262662,269220,6460461⟩ (N (N E ⟨262667,265641,7073378⟩ E) ⟨262668,270336,6642822⟩ E)) ⟨262674,270192,6952509⟩ (N (N (N E ⟨262676,268562,7225350⟩ E) ⟨262683,266057,7879552⟩ E) ⟨262683,266073,7877655⟩ (N E ⟨262692,268746,8048624⟩ E))) ⟨262693,266436,8387769⟩ (N (N (N (N E ⟨262694,266453,8441950⟩ E) ⟨262696,267686,8398505⟩ E) ⟨262696,270336,8073767⟩ (N (N E ⟨262697,266551,8599385⟩ E) ⟨262699,266073,8776395⟩ E)) ⟨262699,266089,8774282⟩ (N (N (N E ⟨262712,270336,8954164⟩ E) ⟨262713,266151,9591407⟩ E) ⟨262720,270336,9411469⟩ (N E ⟨262726,266453,10343986⟩ E)))) ⟨262728,268454,10160381⟩ (N (N (N (N (N E ⟨262728,269414,10016228⟩ E) ⟨262728,270246,9893359⟩ E) ⟨262728,270336,9880181⟩ (N (N E ⟨262729,266167,10577592⟩ E) ⟨262729,266551,10516723⟩ E)) ⟨262730,269510,10122381⟩ (N (N (N E ⟨262740,267762,11018642⟩ E) ⟨262740,269394,10753855⟩ E) ⟨262740,270336,10604637⟩ (N E ⟨262745,266135,11620234⟩ E))) ⟨262745,267270,11423951⟩ (N (N (N (N E ⟨262748,270336,11101868⟩ E) ⟨262756,270336,11610509⟩ E) ⟨262757,266468,12368216⟩ (N (N E ⟨262760,267750,12334690⟩ E) ⟨262760,269318,12049721⟩ E)) ⟨262760,270336,11869108⟩ (N (N (N E ⟨262761,266151,12703315⟩ E) ⟨262761,266583,12621109⟩ E) ⟨262762,269542,12141599⟩ (N E ⟨262764,266138,12914851⟩ E))))) ⟨262772,269458,12827986⟩ (N (N (N (N (N (N E ⟨262772,270322,12664647⟩ E) ⟨262776,270336,12932032⟩ E) ⟨262777,266599,13744927⟩ (N (N E ⟨262777,267270,13607311⟩ E) ⟨262780,266154,14055264⟩ E)) ⟨262788,270336,13759183⟩ (N (N (N E ⟨262790,270336,13899538⟩ E) ⟨262792,267782,14584390⟩ E) ⟨262792,270246,14059333⟩ (N E ⟨262794,267974,14689456⟩ E))) ⟨262794,270336,14182388⟩ (N (N (N (N E ⟨262798,268084,14960776⟩ E) ⟨262798,269684,14608620⟩ E) ⟨262804,270336,14901998⟩ (N (N E ⟨262805,266564,15841382⟩ E) ⟨262806,268860,15381489⟩ E)) ⟨262807,266534,16003481⟩ (N (N (N E ⟨262816,270336,15789073⟩ E) ⟨262820,268842,16451408⟩ E) ⟨262820,269674,16249171⟩ (N E ⟨262821,266580,17097532⟩ E)))) ⟨262821,267156,16950444⟩ (N (N (N (N (N E ⟨262822,267780,16871799⟩ E) ⟨262822,269412,16466384⟩ E) ⟨262824,270336,16394726⟩ (N (N E ⟨262826,266216,17597161⟩ E) ⟨262826,267319,17308300⟩ E)) ⟨262826,270336,16547923⟩ (N (N (N E ⟨262828,268082,17271100⟩ E) ⟨262832,270336,17011796⟩ E) ⟨262834,270336,17167848⟩ (N E ⟨262836,267826,17983752⟩ E))) ⟨262836,268594,17778792⟩ (N (N (N (N E ⟨262836,269458,17551691⟩ E) ⟨262836,270336,17324613⟩ E) ⟨262837,266564,18410207⟩ (N E ⟨262837,267140,18251817⟩ E)) ⟨262838,267828,18146680⟩ (N (N (N E ⟨262838,267860,18138003⟩ E) ⟨262838,268692,17914221⟩ E) ⟨262839,266598,18567692⟩ (N E ⟨262840,270336,17640284⟩ E)))))) ⟨262842,266232,18923211⟩ (N (N (N (N (N (N (N E ⟨262848,270336,18280189⟩ E) ⟨262852,268578,19096708⟩ E) ⟨262852,268674,19069408⟩ (N (N E ⟨262852,269410,18861722⟩ E) ⟨262852,270336,18604423⟩ E)) ⟨262854,267812,19485728⟩ (N (N (N E ⟨262854,267844,19476411⟩ E) ⟨262854,268676,19236101⟩ E) ⟨262854,269508,18999486⟩ (N E ⟨262856,270336,18931512⟩ E))) ⟨262858,266248,20297168⟩ (N (N (N (N E ⟨262858,266296,20282526⟩ E) ⟨262858,266680,20165868⟩ E) ⟨262858,268070,19750539⟩ (N (N E ⟨262858,268806,19534954⟩ E) ⟨262858,269734,19267304⟩ E)) ⟨262858,270336,19096127⟩ (N (N (N E ⟨262860,270336,19261456⟩ E) ⟨262868,270336,19929908⟩ E) ⟨262870,267796,20872851⟩ (N E ⟨262870,269556,20332628⟩ E)))) ⟨262874,265896,21839579⟩ (N (N (N (N (N E ⟨262874,266312,21703334⟩ E) ⟨262890,266328,23171952⟩ E) ⟨262890,266744,23027628⟩ (N (N E ⟨262890,268070,22575035⟩ E) ⟨262890,268102,22564251⟩ E)) ⟨262890,268934,22286108⟩ (N (N (N E ⟨262890,270336,21827036⟩ E) ⟨262892,270336,22003785⟩ E) ⟨262900,270336,22717919⟩ (N E ⟨262902,269268,23263965⟩ E))) ⟨262903,266630,24294688⟩ (N (N (N (N E ⟨262906,268822,23789881⟩ E) ⟨262912,270336,23810535⟩ E) ⟨262916,270336,24180451⟩ (N (N E ⟨262918,266645,25744982⟩ E) ⟨262918,267876,25274644⟩ E)) ⟨262918,267908,25262562⟩ (N (N (N E ⟨262918,268644,24986644⟩ E) ⟨262920,270336,24553223⟩ E) ⟨262922,265896,26436365⟩ (N E ⟨262922,266312,26271443⟩ E))))) ⟨262922,267415,25840346⟩ (N (N (N (N (N (N E ⟨262922,268102,25576303⟩ E) ⟨262922,268870,25285110⟩ E) ⟨262922,270336,24740680⟩ (N (N E ⟨262924,270336,24928851⟩ E) ⟨262928,270336,25307334⟩ E)) ⟨262934,268628,26545436⟩ (N (N (N E ⟨262934,268692,26520135⟩ E) ⟨262934,269460,26218855⟩ E) ⟨262934,269556,26181496⟩ (N E ⟨262936,270336,26072867⟩ E))) ⟨262938,265912,28059505⟩ (N (N (N (N E ⟨262938,266312,27891174⟩ E) ⟨262950,266709,28964580⟩ E) ⟨262950,267972,28421958⟩ (N (N E ⟨262950,268676,28125013⟩ E) ⟨262950,269636,27726309⟩ E)) ⟨262950,270336,27440036⟩ (N (N (N E ⟨262952,270336,27638201⟩ E) ⟨262954,266328,29552317⟩ E) ⟨262954,266776,29354155⟩ (N E ⟨262956,270336,28036674⟩ E)))) ⟨262962,270336,28639739⟩ (N (N (N (N (N E ⟨262964,269682,29123197⟩ E) ⟨262964,270336,28842189⟩ E) ⟨262966,269268,29509262⟩ (N (N E ⟨262968,270336,29249229⟩ E) ⟨262970,268118,30441359⟩ E)) ⟨262976,270336,30071879⟩ (N (N (N E ⟨262980,270336,30487487⟩ E) ⟨262982,267972,31794811⟩ E) ⟨262982,268740,31432644⟩ (N E ⟨262984,270336,30905952⟩ E))) ⟨262986,270336,31116255⟩ (N (N (N (N E ⟨262998,268020,33528185⟩ E) ⟨262998,268052,33512166⟩ E) ⟨262998,268884,33098994⟩ (N E ⟨263002,270336,32824386⟩ E)) ⟨263008,270336,33476716⟩ (N (N (N E ⟨263010,269864,33932121⟩ E) ⟨263010,270336,33695587⟩ E) ⟨263012,269066,34560530⟩ (N E ⟨263012,269898,34136029⟩ E))))))) ⟨263014,266741,36014708⟩ (N (N (N (N (N (N (N (N E ⟨263014,267317,35705065⟩ E) ⟨263019,266041,36986087⟩ E) ⟨263019,266841,36544198⟩ (N (N E ⟨263019,266873,36526660⟩ E) ⟨263019,267480,36195972⟩ E)) ⟨263020,268306,35866684⟩ (N (N (N E ⟨263020,269074,35458640⟩ E) ⟨263026,269648,35835949⟩ E) ⟨263026,270336,35472262⟩ (N E ⟨263028,268050,36931920⟩ E))) ⟨263028,268818,36511359⟩ (N (N (N (N E ⟨263028,269682,36045359⟩ E) ⟨263028,270336,35697559⟩ E) ⟨263030,269748,36238058⟩ (N (N E ⟨263035,266409,38693101⟩ E) ⟨263035,266857,38433725⟩ E)) ⟨263035,266889,38415281⟩ (N (N (N E ⟨263035,267528,38049292⟩ E) ⟨263035,267560,38031078⟩ E) ⟨263042,268864,38118723⟩ (N E ⟨263042,269600,37703863⟩ E)))) ⟨263046,270336,37757365⟩ (N (N (N (N (N E ⟨263048,270336,37989802⟩ E) ⟨263051,266841,40389843⟩ E) ⟨263052,270336,38456819⟩ (N (N E ⟨263056,270336,38926691⟩ E) ⟨263058,270336,39162698⟩ E)) ⟨263064,270336,39875004⟩ (N (N (N E ⟨263072,270336,40834740⟩ E) ⟨263076,270336,41318892⟩ E) ⟨263080,269670,42220732⟩ (N E ⟨263080,270336,41805899⟩ E))) ⟨263082,270336,42050474⟩ (N (N (N (N E ⟨263084,270336,42295762⟩ E) ⟨263086,268340,43822691⟩ E) ⟨263092,270336,43284056⟩ (N (N E ⟨263094,268884,44481605⟩ E) ⟨263094,269748,43914017⟩ E)) ⟨263096,270336,43782487⟩ (N (N (N E ⟨263100,268248,45679810⟩ E) ⟨263100,270336,44283773⟩ E) ⟨263104,270336,44787915⟩ (N E ⟨263108,266851,47709693⟩ E))))) ⟨263108,270336,45294912⟩ (N (N (N (N (N (N E ⟨263112,270336,45804765⟩ E) ⟨263126,268116,49209549⟩ E) ⟨263126,268980,48579846⟩ (N (N E ⟨263129,266567,50778665⟩ E) ⟨263132,268280,49898729⟩ E)) ⟨263132,270336,48396860⟩ (N (N (N E ⟨263142,268100,51400508⟩ E) ⟨263145,266583,53004793⟩ E) ⟨263148,270336,50521931⟩ (N E ⟨263152,270336,51060337⟩ E))) ⟨263156,270336,51601597⟩ (N (N (N (N E ⟨263158,270336,51873298⟩ E) ⟨263164,269080,53684167⟩ E) ⟨263164,269912,53024808⟩ (N (N E ⟨263164,270336,52692683⟩ E) ⟨263174,268996,55158944⟩ E)) ⟨263174,269828,54481261⟩ (N (N (N E ⟨263174,270336,54072598⟩ E) ⟨263176,270336,54350722⟩ E) ⟨263177,266151,58001717⟩ (N E ⟨263177,266567,57640221⟩ E)))) ⟨263180,268360,56545542⟩ (N (N (N (N (N E ⟨263180,268392,56518559⟩ E) ⟨263180,269224,55822619⟩ E) ⟨263186,270336,55752046⟩ (N (N E ⟨263188,270336,56034452⟩ E) ⟨263190,270336,56317571⟩ E)) ⟨263192,268150,58471216⟩ (N (N (N E ⟨263192,270336,56601404⟩ E) ⟨263193,266583,60009619⟩ E) ⟨263196,268344,58889112⟩ (N E ⟨263196,269112,58219245⟩ E))) ⟨263203,267522,60663769⟩ (N (N (N (N E ⟨263204,270336,58319386⟩ E) ⟨263206,268164,60531668⟩ E) ⟨263206,268196,60502762⟩ (N E ⟨263206,268932,59842657⟩ E)) ⟨263208,268614,60423798⟩ (N (N (N E ⟨263208,270336,58897755⟩ E) ⟨263212,268392,61222375⟩ E) ⟨263212,270336,59478978⟩ (N E ⟨263220,270336,60649986⟩ E)))))) ⟨263222,268212,62899569⟩ (N (N (N (N (N (N (N E ⟨263222,268980,62183732⟩ E) ⟨263222,269272,61914239⟩ E) ⟨263224,270336,61239770⟩ (N (N E ⟨263228,269144,62935926⟩ E) ⟨263228,269976,62163117⟩ E)) ⟨263228,270336,61832408⟩ (N (N (N E ⟨263232,270336,62427899⟩ E) ⟨263234,270336,62726715⟩ E) ⟨263236,270336,63026244⟩ (N E ⟨263237,266948,66447615⟩ E))) ⟨263238,268196,65373556⟩ (N (N (N (N E ⟨263238,270336,63326487⟩ E) ⟨263240,268230,65650918⟩ E) ⟨263240,270336,63627443⟩ (N (N E ⟨263246,268532,66287650⟩ E) ⟨263250,270336,65142921⟩ E)) ⟨263254,270336,65754105⟩ (N (N (N E ⟨263256,268982,67402003⟩ E) ⟨263256,269814,66573859⟩ E) ⟨263258,266648,70119675⟩ (N E ⟨263260,269176,67833906⟩ E)))) ⟨263268,270336,67915716⟩ (N (N (N (N (N E ⟨263269,267012,71527600⟩ E) ⟨263270,269028,69564960⟩ E) ⟨263270,269124,69465680⟩ (N (N E ⟨263270,269956,68612627⟩ E) ⟨263274,266664,72727329⟩ E)) ⟨263274,266712,72674948⟩ (N (N (N E ⟨263276,269224,70317318⟩ E) ⟨263276,270336,69166611⟩ E) ⟨263284,270336,70428916⟩ (N E ⟨263286,268308,72911232⟩ E))) ⟨263286,268340,72876433⟩ (N (N (N (N E ⟨263286,269172,71978898⟩ E) ⟨263288,270336,71064346⟩ E) ⟨263290,266312,75799769⟩ (N E ⟨263290,266680,75381921⟩ E)) ⟨263290,266728,75327632⟩ (N (N (N E ⟨263292,270336,71702629⟩ E) ⟨263300,270336,72987749⟩ E) ⟨263302,268292,75572287⟩ (N E ⟨263302,269060,74712481⟩ E))))) ⟨263304,270336,73634587⟩ (N (N (N (N (N (N E ⟨263306,266744,78027180⟩ E) ⟨263314,269936,75711598⟩ E) ⟨263316,268306,77907784⟩ (N (N E ⟨263316,270336,75592208⟩ E) ⟨263318,269204,77207007⟩ E)) ⟨263318,270336,75920973⟩ (N (N (N E ⟨263320,270336,76250451⟩ E) ⟨263332,267043,82176628⟩ E) ⟨263332,268290,80658292⟩ (N E ⟨263332,270336,78242285⟩ E))) ⟨263333,267044,82350943⟩ (N (N (N (N E ⟨263336,269094,80380024⟩ E) ⟨263340,270336,79584427⟩ E) ⟨263348,268370,83337697⟩ (N (N E ⟨263348,269202,82311436⟩ E) ⟨263348,270336,80937970⟩ E)) ⟨263352,270336,81619017⟩ (N (N (N E ⟨263354,266328,87010772⟩ E) ⟨263354,266728,86489602⟩ E) ⟨263354,266744,86468837⟩ (N E ⟨263356,270336,82302914⟩ E)))) ⟨263360,270336,82989660⟩ (N (N (N (N (N E ⟨263364,267107,87802727⟩ E) ⟨263364,268354,86180825⟩ E) ⟨263364,270336,83679256⟩ (N (N E ⟨263368,269316,85658138⟩ E) ⟨263368,270244,84486738⟩ E)) ⟨263368,270336,84371702⟩ (N (N (N E ⟨263370,266744,89378945⟩ E) ⟨263370,266760,89357487⟩ E) ⟨263380,270336,86466133⟩ (N E ⟨263381,267140,90866337⟩ E))) ⟨263382,268404,89346432⟩ (N (N (N (N E ⟨263382,269172,88330336⟩ E) ⟨263382,270336,86817698⟩ E) ⟨263384,267238,91286108⟩ (N E ⟨263396,268354,91968148⟩ E)) ⟨263396,269122,90922043⟩ (N (N (N E ⟨263396,270336,89298592⟩ E) ⟨263397,267156,93817393⟩ E) ⟨263400,266838,94831174⟩ (N E ⟨263400,268580,92392894⟩ E))))))))
+
+noncomputable def tab27 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨263400,269444,91212631⟩ E) ⟨263400,270180,90222056⟩ E) ⟨263404,270336,90731910⟩ (N (N E ⟨263406,268660,93388183⟩ E) ⟨263408,270336,91452842⟩ E)) ⟨263412,268402,94864273⟩ (N (N (N E ⟨263412,269170,93785418⟩ E) ⟨263412,270336,92176621⟩ E) ⟨263413,267140,96861232⟩ (N E ⟨263416,267238,97290103⟩ E))) ⟨263416,270336,92903247⟩ (N (N (N (N E ⟨263418,270300,93317363⟩ E) ⟨263420,270336,93632721⟩ E) ⟨263428,268386,97896466⟩ (N (N E ⟨263428,270336,95100210⟩ E) ⟨263432,268612,98324328⟩ E)) ⟨263432,270336,95838225⟩ (N (N (N E ⟨263440,270336,97322795⟩ E) ⟨263444,268370,100977003⟩ E) ⟨263448,267270,103435344⟩ (N E ⟨263448,270336,98818749⟩ E)))) ⟨263451,266825,104721836⟩ (N (N (N (N (N E ⟨263464,268644,104436912⟩ E) ⟨263464,270336,101844808⟩ E) ⟨263470,269492,104288566⟩ (N (N E ⟨263476,270336,104144227⟩ E) ⟨263478,269500,105834005⟩ E)) ⟨263480,270336,104916390⟩ (N (N (N E ⟨263488,270336,106469248⟩ E) ⟨263492,268514,110192916⟩ E) ⟨263492,269250,108992091⟩ (N E ⟨263492,269346,108836671⟩ E))) ⟨263492,270336,107249943⟩ (N (N (N (N E ⟨263494,267221,112752851⟩ E) ⟨263496,270336,108033482⟩ E) ⟨263497,267319,113202967⟩ (N (N E ⟨263500,270336,108819864⟩ E) ⟨263508,268530,113403551⟩ E)) ⟨263508,269394,111954621⟩ (N (N (N E ⟨263513,266903,117242511⟩ E) ⟨263520,270336,112794423⟩ E) ⟨263524,268514,116715025⟩ (N E ⟨263526,267285,119299703⟩ E))))) ⟨263526,270084,114427032⟩ (N (N (N (N (N (N E ⟨263528,268518,117536422⟩ E) ⟨263529,266919,120593030⟩ E) ⟨263529,267351,119814883⟩ (N (N E ⟨263529,267383,119757492⟩ E) ⟨263540,268594,119903103⟩ E)) ⟨263540,269426,118427782⟩ (N (N (N E ⟨263540,270336,116840040⟩ E) ⟨263542,270336,117248509⟩ E) ⟨263544,270336,117657688⟩ (N E ⟨263545,266983,123900558⟩ E))) ⟨263545,268038,121959886⟩ (N (N (N (N E ⟨263545,268070,121901618⟩ E) ⟨263556,270336,120127676⟩ E) ⟨263560,268550,124209103⟩ (N (N E ⟨263560,270246,121118016⟩ E) ⟨263561,266999,127340997⟩ E)) ⟨263561,267415,126549859⟩ (N (N (N E ⟨263566,268852,124928194⟩ E) ⟨263568,270336,122623228⟩ E) ⟨263572,270336,123460758⟩ (N E ⟨263576,270336,124301127⟩ E)))) ⟨263577,268102,128717081⟩ (N (N (N (N (N E ⟨263588,270336,126839270⟩ E) ⟨263590,267317,133116576⟩ E) ⟨263590,270180,127559178⟩ (N (N E ⟨263592,270336,127690994⟩ E) ⟨263593,266567,135298755⟩ E)) ⟨263593,267415,133589421⟩ (N (N (N E ⟨263594,270336,128117921⟩ E) ⟨263596,268850,131413388⟩ E) ⟨263596,270336,128545557⟩ (N E ⟨263604,268594,133678158⟩ E))) ⟨263604,268626,133614424⟩ (N (N (N (N E ⟨263604,269394,132096138⟩ E) ⟨263604,270336,130263196⟩ E) ⟨263605,267908,135277074⟩ (N E ⟨263608,270336,131126271⟩ E)) ⟨263609,266999,138037947⟩ (N (N (N E ⟨263609,267399,137213213⟩ E) ⟨263609,268102,135778614⟩ E) ⟨263620,270336,133732520⟩ (N E ⟨263624,269382,136525349⟩ E)))))) ⟨263624,270336,134606943⟩ (N (N (N (N (N (N (N E ⟨263625,266999,141699035⟩ E) ⟨263625,267447,140751259⟩ E) ⟨263626,270336,135045218⟩ (N (N E ⟨263630,269684,137244122⟩ E) ⟨263636,270322,137275683⟩ E)) ⟨263636,270336,137247228⟩ (N (N (N E ⟨263637,267396,143619398⟩ E) ⟨263637,267972,142387616⟩ E) ⟨263638,269692,139010627⟩ (N E ⟨263641,268134,142959537⟩ E))) ⟨263652,269674,142196065⟩ (N (N (N (N E ⟨263652,270336,140807301⟩ E) ⟨263656,270246,141893408⟩ E) ⟨263658,268838,145351423⟩ (N (N E ⟨263660,269682,143993733⟩ E) ⟨263664,270336,143507116⟩ E)) ⟨263668,270336,144412722⟩ (N (N (N E ⟨263672,270336,145321161⟩ E) ⟨263674,270336,145776443⟩ E) ⟨263684,269410,150111194⟩ (N E ⟨263684,269506,149897265⟩ E)))) ⟨263684,270336,148063475⟩ (N (N (N (N (N E ⟨263686,268644,152303140⟩ E) ⟨263686,268676,152230539⟩ E) ⟨263686,269508,150358020⟩ (N (N E ⟨263686,270276,148655033⟩ E) ⟨263690,268870,152732780⟩ E)) ⟨263690,268902,152660035⟩ (N (N (N E ⟨263690,269734,150783802⟩ E) ⟨263690,270336,149444190⟩ E) ⟨263696,270336,150831277⟩ (N E ⟨263700,268690,155515426⟩ E))) ⟨263700,270322,151791004⟩ (N (N (N (N E ⟨263701,268004,157355746⟩ E) ⟨263706,266728,161620432⟩ E) ⟨263706,267528,159694425⟩ (N (N E ⟨263706,267560,159617983⟩ E) ⟨263706,268854,156564832⟩ E)) ⟨263716,268674,159387370⟩ (N (N (N E ⟨263716,270274,155643741⟩ E) ⟨263716,270336,155500900⟩ E) ⟨263720,270336,156443315⟩ (N E ⟨263722,267512,163652359⟩ E))))) ⟨263722,268902,160292204⟩ (N (N (N (N (N (N E ⟨263722,268934,160215868⟩ E) ⟨263722,269766,158247004⟩ E) ⟨263722,270336,156915583⟩ (N (N E ⟨263736,270336,160241266⟩ E) ⟨263738,268886,164216771⟩ E)) ⟨263738,269654,162352538⟩ (N (N (N E ⟨263738,270336,160719192⟩ E) ⟨263744,270336,162157212⟩ E) ⟨263750,268740,167525731⟩ (N E ⟨263750,269988,164447353⟩ E))) ⟨263752,270336,164084468⟩ (N (N (N (N E ⟨263754,268934,168029283⟩ E) ⟨263754,269702,166122108⟩ E) ⟨263760,270336,166023033⟩ (N (N E ⟨263764,270336,166996555⟩ E) ⟨263770,269686,170093357⟩ E)) ⟨263770,270336,168462136⟩ (N (N (N E ⟨263776,270336,169934075⟩ E) ⟨263780,270336,170918899⟩ E) ⟨263782,268772,175440216⟩ (N E ⟨263782,268804,175356627⟩ E)))) ⟨263782,269508,173530186⟩ (N (N (N (N (N E ⟨263782,269636,173200665⟩ E) ⟨263782,270336,171412370⟩ E) ⟨263786,269734,173946831⟩ (N (N E ⟨263788,269074,176166038⟩ E) ⟨263790,270336,173393317⟩ E)) ⟨263796,268818,178873339⟩ (N (N (N E ⟨263796,270336,174886439⟩ E) ⟨263798,268756,179549549⟩ E) ⟨263798,270336,175385558⟩ (N E ⟨263800,270336,175885384⟩ E))) ⟨263802,269718,178009295⟩ (N (N (N (N E ⟨263802,270336,176385914⟩ E) ⟨263806,270336,177389093⟩ E) ⟨263812,270336,178899154⟩ (N E ⟨263814,270336,179403918⟩ E)) ⟨263816,267254,188359493⟩ (N (N (N E ⟨263816,270336,179909388⟩ E) ⟨263818,269766,181946381⟩ E) ⟨263818,270336,180415564⟩ (N E ⟨263824,270336,181938323⟩ E))))))) ⟨263828,270336,182957022⟩ (N (N (N (N (N (N (N (N E ⟨263832,270336,183978541⟩ E) ⟨263844,269898,188278161⟩ E) ⟨263844,270336,187060021⟩ (N (N E ⟨263846,269604,189623061⟩ E) ⟨263848,270336,188092819⟩ E)) ⟨263852,269906,190337463⟩ (N (N (N E ⟨263860,270336,191208128⟩ E) ⟨263864,270336,192252201⟩ E) ⟨263868,270336,193299091⟩ (N E ⟨263872,270336,194348798⟩ E))) ⟨263874,269696,196732479⟩ (N (N (N (N E ⟨263874,270336,194874708⟩ E) ⟨263876,270336,195401322⟩ E) ⟨263878,270336,195928640⟩ (N (N E ⟨263880,270336,196456662⟩ E) ⟨263890,270336,199107333⟩ E)) ⟨263892,268914,203899137⟩ (N (N (N E ⟨263892,269682,201584659⟩ E) ⟨263892,270336,199639579⟩ E) ⟨263906,268864,207879152⟩ (N E ⟨263906,269632,205519060⟩ E)))) ⟨263908,267619,212337602⟩ (N (N (N (N (N E ⟨263910,270336,204461452⟩ E) ⟨263912,270336,205000733⟩ E) ⟨263924,270336,208251186⟩ (N (N E ⟨263928,270336,209340294⟩ E) ⟨263932,270336,210432214⟩ E)) ⟨263936,270336,211526945⟩ (N (N (N E ⟨263940,267683,221186460⟩ E) ⟨263940,270336,212624487⟩ E) ⟨263942,270336,213174312⟩ (N E ⟨263944,270336,213724839⟩ E))) ⟨263945,267335,223780054⟩ (N (N (N (N E ⟨263948,270336,214828001⟩ E) ⟨263950,270336,215380636⟩ E) ⟨263954,270224,216847416⟩ (N (N E ⟨263956,270336,217042754⟩ E) ⟨263958,270336,217598198⟩ E)) ⟨263960,270336,218154344⟩ (N (N (N E ⟨263961,267351,228360205⟩ E) ⟨263961,267399,228196156⟩ E) ⟨263964,270336,219268742⟩ (N E ⟨263966,270336,219826994⟩ E))))) ⟨263970,270176,221469841⟩ (N (N (N (N (N (N E ⟨263972,270336,221505961⟩ E) ⟨263974,268932,226744336⟩ E) ⟨263974,270336,222067021⟩ (N (N E ⟨263976,270336,222628782⟩ E) ⟨263977,267415,232817754⟩ E)) ⟨263980,270002,224864457⟩ (N (N (N E ⟨263980,270336,223754410⟩ E) ⟨263984,270336,224882843⟩ E) ⟨263988,270336,226014083⟩ (N E ⟨263990,268980,231187919⟩ E))) ⟨263996,270336,228284978⟩ (N (N (N (N E ⟨264003,268290,237391962⟩ E) ⟨264004,270336,230567093⟩ E) ⟨264006,268964,235895396⟩ (N (N E ⟨264006,270336,231139374⟩ E) ⟨264008,270336,231712356⟩ E)) ⟨264028,269944,238864190⟩ (N (N (N E ⟨264034,270336,239224881⟩ E) ⟨264035,268354,246676458⟩ E) ⟨264036,270336,239807670⟩ (N E ⟨264041,267415,251991495⟩ E)))) ⟨264041,267431,251931149⟩ (N (N (N (N (N E ⟨264052,270336,244495182⟩ E) ⟨264060,270336,246855732⟩ E) ⟨264068,270336,249227474⟩ (N (N E ⟨264070,269060,254598645⟩ E) ⟨264070,269796,251829762⟩ E)) ⟨264071,267925,259252097⟩ (N (N (N E ⟨264072,270336,250417540⟩ E) ⟨264080,270336,252806061⟩ E) ⟨264086,269844,256468129⟩ (N E ⟨264086,270336,254604791⟩ E))) ⟨264087,268612,261517588⟩ (N (N (N (N E ⟨264088,270336,255205765⟩ E) ⟨264102,270336,259432142⟩ E) ⟨264104,270336,260038704⟩ (N E ⟨264114,270336,263081985⟩ E)) ⟨264116,270336,263692735⟩ (N (N (N E ⟨264120,270336,264916328⟩ E) ⟨264124,270336,266142713⟩ E) ⟨264132,270336,268603853⟩ (N E ⟨264134,269892,270998171⟩ E)))))) ⟨264136,270336,269838607⟩ (N (N (N (N (N (N (N E ⟨264150,269172,278959328⟩ E) ⟨264150,270036,275403578⟩ E) ⟨264156,270336,276054207⟩ (N (N E ⟨264162,270336,277932474⟩ E) ⟨264164,269122,283624187⟩ E)) ⟨264164,270336,278559957⟩ (N (N (N E ⟨264166,269924,280897882⟩ E) ⟨264166,270336,279188135⟩ E) ⟨264168,269348,283948371⟩ (N E ⟨264168,270336,279817010⟩ E))) ⟨264170,270336,280446582⟩ (N (N (N (N E ⟨264172,270226,281535138⟩ E) ⟨264172,270336,281076849⟩ E) ⟨264178,270336,282971829⟩ (N (N E ⟨264180,269170,288554754⟩ E) ⟨264180,269202,288417474⟩ E)) ⟨264180,270034,284876670⟩ (N (N (N E ⟨264180,270336,283604880⟩ E) ⟨264182,270336,284238628⟩ E) ⟨264184,268006,294917242⟩ (N E ⟨264184,270336,284873072⟩ E)))) ⟨264188,270336,286144047⟩ (N (N (N (N (N E ⟨264194,270336,288055726⟩ E) ⟨264196,269154,293802949⟩ E) ⟨264196,269186,293663163⟩ (N (N E ⟨264196,270018,290057747⟩ E) ⟨264196,270336,288694344⟩ E)) ⟨264200,269380,294115084⟩ (N (N (N E ⟨264200,270336,289973665⟩ E) ⟨264212,269138,299098936⟩ E) ⟨264212,270336,293828315⟩ (N E ⟨264213,267972,304676645⟩ E))) ⟨264216,268070,305232291⟩ (N (N (N (N E ⟨264216,270336,295118758⟩ E) ⟨264232,269412,304452538⟩ E) ⟨264232,269444,304307824⟩ (N E ⟨264232,270180,301003021⟩ E)) ⟨264232,270276,300575274⟩ (N (N (N E ⟨264232,270336,300308319⟩ E) ⟨264240,270336,302919764⟩ E) ⟨264246,270036,306243776⟩ (N E ⟨264246,270336,304885635⟩ E))))) ⟨264248,270336,305542313⟩ (N (N (N (N (N (N E ⟨264256,270336,308175963⟩ E) ⟨264260,269986,311106157⟩ E) ⟨264260,270336,309496949⟩ (N (N E ⟨264264,270212,311392069⟩ E) ⟨264264,270336,310820709⟩ E)) ⟨264276,269970,316520530⟩ (N (N (N E ⟨264276,270034,316220343⟩ E) ⟨264276,270336,314808624⟩ E) ⟨264280,268102,326821310⟩ (N E ⟨264280,270196,316799701⟩ E))) ⟨264292,269282,325210590⟩ (N (N (N (N E ⟨264292,270336,320164641⟩ E) ⟨264296,268086,332449096⟩ E) ⟨264296,269476,325637608⟩ (N (N E ⟨264296,270244,321948931⟩ E) ⟨264308,270336,325564966⟩ E)) ⟨264312,269460,331197178⟩ (N (N (N E ⟨264324,269346,335906740⟩ E) ⟨264324,270178,331785118⟩ E) ⟨264324,270336,331009563⟩ (N E ⟨264328,270336,332377626⟩ E)))) ⟨264336,270336,335122044⟩ (N (N (N (N (N E ⟨264340,270336,336498398⟩ E) ⟨264352,270336,340644033⟩ E) ⟨264356,270114,343158091⟩ (N (N E ⟨264360,270336,343421596⟩ E) ⟨264372,269394,352499861⟩ E)) ⟨264372,269426,352332298⟩ (N (N (N E ⟨264372,270258,348010407⟩ E) ⟨264372,270336,347608637⟩ E) ⟨264376,270336,349009834⟩ (N E ⟨264384,270336,351820500⟩ E))) ⟨264388,269378,358285465⟩ (N (N (N (N E ⟨264392,270336,354642191⟩ E) ⟨264394,270336,355349336⟩ E) ⟨264402,270336,358184803⟩ (N E ⟨264404,270336,358895391⟩ E)) ⟨264424,270336,366039118⟩ (N (N (N E ⟨264440,270336,371803611⟩ E) ⟨264452,270336,376155838⟩ E) ⟨264454,270336,376883613⟩ (N E ⟨264468,269458,387004191⟩ E))))))))
+
+noncomputable def tab28 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨264468,270336,381997252⟩ E) ⟨264474,269622,388288034⟩ E) ⟨264484,269442,393060064⟩ (N (N E ⟨264488,270336,389360750⟩ E) ⟨264500,270336,393811742⟩ E)) ⟨264506,269654,400071398⟩ (N (N (N E ⟨264512,270336,398287384⟩ E) ⟨264516,270336,399784739⟩ E) ⟨264520,270336,401284830⟩ (N E ⟨264522,269702,405832430⟩ E))) ⟨264538,270336,408069087⟩ (N (N (N (N E ⟨264548,270274,412240366⟩ E) ⟨264552,270336,413383993⟩ E) ⟨264554,269766,417660005⟩ (N (N E ⟨264554,270336,414145997⟩ E) ⟨264564,270336,417966251⟩ E)) ⟨264566,269524,423805099⟩ (N (N (N E ⟨264568,270336,419499128⟩ E) ⟨264570,270336,420266590⟩ E) ⟨264576,270336,422573066⟩ (N E ⟨264580,270306,424302579⟩ E)))) ⟨264580,270336,424114125⟩ (N (N (N (N (N E ⟨264592,270336,428753655⟩ E) ⟨264596,270336,430305614⟩ E) ⟨264600,270336,431860296⟩ (N (N E ⟨264608,270336,434977828⟩ E) ⟨264618,270336,438890049⟩ E)) ⟨264628,270336,442819267⟩ (N (N (N E ⟨264630,270336,443607150⟩ E) ⟨264636,270336,445974873⟩ E) ⟨264640,270336,447556751⟩ (N E ⟨264644,270336,449141345⟩ E))) ⟨264648,270336,450728654⟩ (N (N (N (N E ⟨264650,270336,451523326⟩ E) ⟨264660,269682,459944851⟩ E) ⟨264672,270336,460309487⟩ (N (N E ⟨264674,269632,465950614⟩ E) ⟨264676,270336,461915783⟩ E)) ⟨264690,270336,467559152⟩ (N (N (N E ⟨264692,270336,468368055⟩ E) ⟨264696,270336,469987892⟩ E) ⟨264706,270336,474049322⟩ (N E ⟨264716,270336,478127653⟩ E))))) ⟨264720,270336,479763716⟩ (N (N (N (N (N (N E ⟨264724,270336,481402480⟩ E) ⟨264736,270336,486334977⟩ E) ⟨264738,270336,487159422⟩ (N (N E ⟨264742,270336,488810336⟩ E) ⟨264752,270336,492949421⟩ E)) ⟨264754,270336,493779261⟩ (N (N (N E ⟨264756,270336,494609774⟩ E) ⟨264764,270336,497938565⟩ E) ⟨264770,270336,500442230⟩ (N E ⟨264772,270336,501278131⟩ E))) ⟨264774,270336,502114705⟩ (N (N (N (N E ⟨264776,270336,502951953⟩ E) ⟨264786,270336,507148281⟩ E) ⟨264796,270336,511361420⟩ (N (N E ⟨264800,270336,513051380⟩ E) ⟨264806,270336,515591359⟩ E)) ⟨264812,270336,518137380⟩ (N (N (N E ⟨264816,270336,519838085⟩ E) ⟨264836,270336,528381851⟩ E) ⟨264852,270336,535265113⟩ (N E ⟨264856,270336,536992624⟩ E)))) ⟨264868,270336,542191211⟩ (N (N (N (N (N E ⟨264880,270336,547413865⟩ E) ⟨264892,270336,552660564⟩ E) ⟨264898,270336,555292925⟩ (N (N E ⟨264904,270336,557931289⟩ E) ⟨264908,270336,559693532⟩ E)) ⟨264914,270336,562341895⟩ (N (N (N E ⟨264916,270336,563226016⟩ E) ⟨264948,270336,577462473⟩ E) ⟨264950,270336,578357904⟩ (N E ⟨264952,270336,579254000⟩ E))) ⟨264964,270336,584644524⟩ (N (N (N (N E ⟨264972,270336,588251482⟩ E) ⟨264978,270336,590963666⟩ E) ⟨264980,270336,591869053⟩ (N E ⟨264996,270336,599136009⟩ E)) ⟨264998,270336,600047359⟩ (N (N (N E ⟨265004,270336,602785381⟩ E) ⟨265012,270336,606445338⟩ E) ⟨265020,270336,610115876⟩ (N E ⟨265024,270336,611955111⟩ E)))))) ⟨265028,270336,613796987⟩ (N (N (N (N (N (N (N E ⟨265030,270336,614718916⟩ E) ⟨265032,270336,615641506⟩ E) ⟨265044,270336,621190902⟩ (N (N E ⟨265048,270336,623045979⟩ E) ⟨265058,270336,627695206⟩ E)) ⟨265060,270336,628627029⟩ (N (N (N E ⟨265064,270244,631352291⟩ E) ⟨265064,270276,631053119⟩ E) ⟨265064,270336,630492649⟩ (N E ⟨265080,270228,639002746⟩ E))) ⟨265080,270336,637981464⟩ (N (N (N (N E ⟨265092,270336,643625698⟩ E) ⟨265096,270336,645512367⟩ E) ⟨265108,270336,651188131⟩ (N (N E ⟨265112,270336,653085302⟩ E) ⟨265124,270336,658792554⟩ E)) ⟨265128,270336,660700215⟩ (N (N (N E ⟨265140,270336,666438912⟩ E) ⟨265144,270336,668357047⟩ E) ⟨265148,270336,670277799⟩ (N E ⟨265152,270336,672201166⟩ E)))) ⟨265156,270146,676027084⟩ (N (N (N (N (N E ⟨265156,270336,674127148⟩ E) ⟨265160,270336,676055743⟩ E) ⟨265172,270336,681857204⟩ (N (N E ⟨265184,270336,687682156⟩ E) ⟨265186,270336,688655264⟩ E)) ⟨265204,270336,697442548⟩ (N (N (N E ⟨265208,270336,699402438⟩ E) ⟨265216,270336,703330025⟩ E) ⟨265220,270336,705297719⟩ (N E ⟨265232,270336,711216393⟩ E))) ⟨265236,270336,713194479⟩ (N (N (N (N E ⟨265240,270336,715175160⟩ E) ⟨265248,270336,719144305⟩ E) ⟨265252,270336,721132767⟩ (N (N E ⟨265272,270336,731113937⟩ E) ⟨265280,270336,735124522⟩ E)) ⟨265284,270336,737133693⟩ (N (N (N E ⟨265300,270336,745196209⟩ E) ⟨265312,270336,751270196⟩ E) ⟨265316,270336,753300014⟩ (N E ⟨265322,270336,756349573⟩ E))))) ⟨265330,270336,760424664⟩ (N (N (N (N (N (N E ⟨265346,270336,768605720⟩ E) ⟨265360,270336,775797869⟩ E) ⟨265380,270336,786126887⟩ (N (N E ⟨265396,270336,794436207⟩ E) ⟨265408,270336,800695052⟩ E)) ⟨265412,270336,802786443⟩ (N (N (N E ⟨265416,270336,804880387⟩ E) ⟨265444,270336,819609405⟩ E) ⟨265460,270336,828082002⟩ (N E ⟨265476,270336,836595258⟩ E))) ⟨265488,270336,843006843⟩ (N (N (N (N E ⟨265496,270336,847293905⟩ E) ⟨265508,270336,853743484⟩ E) ⟨265524,270336,862378322⟩ (N (N E ⟨265536,270336,868880963⟩ E) ⟨265540,270336,871053555⟩ E)) ⟨265544,270336,873228667⟩ (N (N (N E ⟨265574,270336,889622244⟩ E) ⟨265584,270336,895118185⟩ E) ⟨265588,270336,897320953⟩ (N E ⟨265600,270336,903944301⟩ E)))) ⟨265602,270336,905050385⟩ (N (N (N (N (N E ⟨265604,270336,906157094⟩ E) ⟨265606,270336,907264430⟩ E) ⟨265612,270336,910590191⟩ (N (N E ⟨265616,270336,912810491⟩ E) ⟨265618,270336,913921579⟩ E)) ⟨265620,270336,915033292⟩ (N (N (N E ⟨265634,270336,922832771⟩ E) ⟨265638,270336,925066810⟩ E) ⟨265648,270336,930662819⟩ (N E ⟨265654,270336,934027900⟩ E))) ⟨265664,270336,939648817⟩ (N (N (N (N E ⟨265668,270336,941901538⟩ E) ⟨265670,270336,943028831⟩ E) ⟨265684,270336,950937272⟩ (N E ⟨265686,270336,952069532⟩ E)) ⟨265698,270336,958876116⟩ (N (N (N E ⟨265704,270336,962287772⟩ E) ⟨265724,270336,973700179⟩ E) ⟨265726,270336,974844819⟩ (N E ⟨265756,270336,992088449⟩ E))))))) ⟨265762,270336,995553806⟩ (N (N (N (N (N (N (N (N E ⟨265784,270336,1008307444⟩ E) ⟨265792,270336,1012963544⟩ E) ⟨265800,270336,1017629450⟩ (N (N E ⟨265816,270336,1026990643⟩ E) ⟨265832,270336,1036390949⟩ E)) ⟨265848,270336,1045830294⟩ (N (N (N E ⟨265858,270336,1051749677⟩ E) ⟨265860,270336,1052935379⟩ E) ⟨265872,270336,1060062349⟩ (N E ⟨265876,270336,1062442864⟩ E))) ⟨265896,270336,1074381823⟩ (N (N (N (N E ⟨265912,270336,1083976579⟩ E) ⟨265920,270336,1088788461⟩ E) ⟨265922,270336,1089992941⟩ (N (N E ⟨265924,270336,1091198024⟩ E) ⟨265928,270336,1093609999⟩ E)) ⟨265938,270336,1099650487⟩ (N (N (N E ⟨265940,270336,1100860391⟩ E) ⟨265976,270336,1122741476⟩ E) ⟨265980,270336,1125184711⟩ (N E ⟨265984,270336,1127630341⟩ E)))) ⟨265988,270336,1130078366⟩ (N (N (N (N (N E ⟨266000,270336,1137436798⟩ E) ⟨266024,270336,1152218158⟩ E) ⟨266044,270336,1164601491⟩ (N (N E ⟨266048,270336,1167085292⟩ E) ⟨266080,270336,1187041101⟩ E)) ⟨266112,270336,1207148283⟩ (N (N (N E ⟨266124,270336,1214727371⟩ E) ⟨266128,270336,1217258438⟩ E) ⟨266164,270336,1240143644⟩ (N E ⟨266172,270336,1245255003⟩ E))) ⟨266180,270336,1250375707⟩ (N (N (N (N E ⟨266204,270336,1265793778⟩ E) ⟨266228,270336,1281295575⟩ E) ⟨266240,270336,1289077782⟩ (N (N E ⟨266252,270336,1296880815⟩ E) ⟨266256,270336,1299486448⟩ E)) ⟨266260,270336,1302094390⟩ (N (N (N E ⟨266264,270336,1304704639⟩ E) ⟨266280,270336,1315168683⟩ E) ⟨266292,270336,1323040880⟩ (N E ⟨266304,270336,1330933747⟩ E))))) ⟨266308,270336,1333569291⟩ (N (N (N (N (N (N E ⟨266324,270336,1344134366⟩ E) ⟨266336,270336,1352082181⟩ E) ⟨266356,270336,1365374165⟩ (N (N E ⟨266384,270336,1384078469⟩ E) ⟨266422,270336,1409640381⟩ E)) ⟨266436,270336,1419109243⟩ (N (N (N E ⟨266454,270336,1431323950⟩ E) ⟨266460,270336,1435405614⟩ E) ⟨266516,270336,1473743524⟩ (N E ⟨266544,270336,1493075901⟩ E))) ⟨266546,270336,1494460935⟩ (N (N (N (N E ⟨266552,270336,1498619351⟩ E) ⟨266560,270336,1504171631⟩ E) ⟨266564,270336,1506951079⟩ (N (N E ⟨266572,270336,1512516582⟩ E) ⟨266640,270336,1560177550⟩ E)) ⟨266680,270336,1588507606⟩ (N (N (N E ⟨266688,270336,1594199599⟩ E) ⟨266816,270336,1686437568⟩ E) ⟨266828,270336,1695196449⟩ (N E ⟨266848,270336,1709836685⟩ E)))) ⟨266868,270336,1724529384⟩ (N (N (N (N (N E ⟨266896,270336,1745186938⟩ E) ⟨266936,270336,1774874411⟩ E) ⟨267024,270336,1840911437⟩ (N (N E ⟨267104,270336,1901798238⟩ E) ⟨267140,270336,1929458859⟩ E)) ⟨267152,270336,1938714835⟩ (N (N (N E ⟨267260,270336,2022814864⟩ E) ⟨267408,270336,2140347265⟩ E) ⟨267564,270336,2267006360⟩ (N E ⟨267584,270336,2283445483⟩ E))) ⟨267628,270336,2319769368⟩ (N (N (N (N E ⟨267664,270336,2349648990⟩ E) ⟨267840,270336,2497756798⟩ E) ⟨267888,270336,2538721601⟩ (N E ⟨267952,270336,2593712708⟩ E)) ⟨268108,270336,2729487227⟩ (N (N (N E ⟨268208,270336,2817775302⟩ E) ⟨268432,270336,3018919607⟩ E) ⟨268504,270336,3084522572⟩ (N E ⟨268688,270336,3254156315⟩ E)))))) ⟨268976,270336,3524998765⟩ (N (N (N (N (N (N (N E ⟨269192,270336,3731995009⟩ E) ⟨270336,270338,4869028383⟩ E) ⟨270336,270352,4868019153⟩ (N (N E ⟨270336,270354,4867874998⟩ E) ⟨270336,270356,4867730849⟩ E)) ⟨270336,270374,4866433748⟩ (N (N (N E ⟨270336,270386,4865569253⟩ E) ⟨270336,270402,4864416893⟩ E) ⟨270336,270406,4864128856⟩ (N E ⟨270336,270434,4862113195⟩ E))) ⟨270336,270454,4860674076⟩ (N (N (N (N E ⟨270336,270464,4859954717⟩ E) ⟨270336,270468,4859667010⟩ E) ⟨270336,270480,4858804019⟩ (N (N E ⟨270336,270486,4858372594⟩ E) ⟨270336,270496,4857653661⟩ E)) ⟨270336,270498,4857509890⟩ (N (N (N E ⟨270336,270512,4856503643⟩ E) ⟨270336,270518,4856072475⟩ E) ⟨270336,270528,4855353966⟩ (N E ⟨270336,270534,4854922925⟩ E)))) ⟨270336,270546,4854060986⟩ (N (N (N (N (N E ⟨270336,270550,4853773716⟩ E) ⟨270336,270562,4852912032⟩ E) ⟨270336,270566,4852624847⟩ (N (N E ⟨270336,270598,4850328128⟩ E) ⟨270336,270610,4849467209⟩ E)) ⟨270336,270612,4849323741⟩ (N (N (N E ⟨270336,270624,4848463045⟩ E) ⟨270336,270630,4848032769⟩ E) ⟨270336,270636,4847602540⟩ (N E ⟨270336,270640,4847315747⟩ E))) ⟨270336,270652,4846455496⟩ (N (N (N (N E ⟨270336,270660,4845882102⟩ E) ⟨270336,270690,4843732628⟩ E) ⟨270336,270708,4842443516⟩ (N E ⟨270336,270722,4841441170⟩ E)) ⟨270336,270752,4839294158⟩ (N (N (N E ⟨270336,270756,4839007980⟩ E) ⟨270336,270768,4838149572⟩ E) ⟨270336,270770,4838006522⟩ (N E ⟨270336,270802,4835718450⟩ E))))) ⟨270336,270822,4834289091⟩ (N (N (N (N (N (N E ⟨270336,270828,4833860387⟩ E) ⟨270336,270834,4833431730⟩ E) ⟨270336,270842,4832860261⟩ (N (N E ⟨270336,270844,4832717407⟩ E) ⟨270336,270850,4832288877⟩ E)) ⟨270336,270898,4828862344⟩ (N (N (N E ⟨270336,270900,4828719638⟩ E) ⟨270336,270942,4825724024⟩ E) ⟨270336,270966,4824013288⟩ (N E ⟨270336,270978,4823158204⟩ E))) ⟨270336,271010,4820878907⟩ (N (N (N (N E ⟨270336,271016,4820451689⟩ E) ⟨270336,271024,4819882138⟩ E) ⟨270336,271028,4819597394⟩ (N (N E ⟨270336,271044,4818458629⟩ E) ⟨270336,271058,4817462485⟩ E)) ⟨270336,271060,4817320200⟩ (N (N (N E ⟨270336,271076,4816182108⟩ E) ⟨270336,271108,4813906931⟩ E) ⟨270336,271122,4812911963⟩ (N E ⟨270336,271138,4811775173⟩ E)))) ⟨270336,271188,4808224865⟩ (N (N (N (N (N E ⟨270336,271200,4807373278⟩ E) ⟨270336,271236,4804819650⟩ E) ⟨270336,271254,4803543471⟩ (N (N E ⟨270336,271260,4803118173⟩ E) ⟨270336,271266,4802692921⟩ E)) ⟨270336,271272,4802267717⟩ (N (N (N E ⟨270336,271286,4801275756⟩ E) ⟨270336,271312,4799434223⟩ E) ⟨270336,271318,4799009379⟩ (N E ⟨270336,271324,4798584582⟩ E))) ⟨270336,271328,4798301410⟩ (N (N (N (N E ⟨270336,271330,4798159832⟩ E) ⟨270336,271426,4791370223⟩ E) ⟨270336,271428,4791228901⟩ (N E ⟨270336,271450,4789674698⟩ E)) ⟨270336,271452,4789533438⟩ (N (N (N E ⟨270336,271472,4788121126⟩ E) ⟨270336,271488,4786991651⟩ E) ⟨270336,271554,4782336085⟩ (N E ⟨270336,271556,4782195096⟩ E))))))))
+
+noncomputable def tab29 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨270336,271586,4780080879⟩ E) ⟨270336,271616,4777967830⟩ E) ⟨270336,271618,4777827002⟩ (N (N E ⟨270336,271620,4777686178⟩ E) ⟨270336,271652,4775433713⟩ E)) ⟨270336,271664,4774589381⟩ (N (N (N E ⟨270336,271680,4773463895⟩ E) ⟨270336,271716,4770932763⟩ E) ⟨270336,271728,4770089426⟩ (N E ⟨270336,271780,4766437116⟩ E))) ⟨270336,271796,4765314032⟩ (N (N (N (N E ⟨270336,271806,4764612272⟩ E) ⟨270336,271812,4764191278⟩ E) ⟨270336,271828,4763068856⟩ (N (N E ⟨270336,271840,4762227256⟩ E) ⟨270336,271842,4762087007⟩ E)) ⟨270336,271844,4761946764⟩ (N (N (N E ⟨270336,271860,4760825002⟩ E) ⟨270336,271888,4758862714⟩ E) ⟨270336,271892,4758582469⟩ (N E ⟨270336,271908,4757461698⟩ E)))) ⟨270336,271920,4756621337⟩ (N (N (N (N (N E ⟨270336,271924,4756341257⟩ E) ⟨270336,271940,4755221146⟩ E) ⟨270336,271952,4754381279⟩ (N (N E ⟨270336,271954,4754241320⟩ E) ⟨270336,271972,4752981913⟩ E)) ⟨270336,271984,4752142541⟩ (N (N (N E ⟨270336,271988,4751862791⟩ E) ⟨270336,271994,4751443205⟩ E) ⟨270336,272002,4750883829⟩ (N E ⟨270336,272004,4750743998⟩ E))) ⟨270336,272016,4749905120⟩ (N (N (N (N E ⟨270336,272050,4747529303⟩ E) ⟨270336,272144,4740968595⟩ E) ⟨270336,272176,4738737749⟩ (N (N E ⟨270336,272192,4737622818⟩ E) ⟨270336,272196,4737344136⟩ E)) ⟨270336,272274,4731913941⟩ (N (N (N E ⟨270336,272276,4731774808⟩ E) ⟨270336,272324,4728437140⟩ E) ⟨270336,272340,4727325238⟩ (N E ⟨270336,272384,4724269192⟩ E))))) ⟨270336,272388,4723991493⟩ (N (N (N (N (N (N E ⟨270336,272432,4720938141⟩ E) ⟨270336,272436,4720660686⟩ E) ⟨270336,272468,4718441779⟩ (N (N E ⟨270336,272562,4711931277⟩ E) ⟨270336,272564,4711792878⟩ E)) ⟨270336,272578,4710824226⟩ (N (N (N E ⟨270336,272602,4709164258⟩ E) ⟨270336,272628,4707366784⟩ E) ⟨270336,272640,4706537470⟩ (N E ⟨270336,272660,4705155686⟩ E))) ⟨270336,272680,4703774409⟩ (N (N (N (N E ⟨270336,272688,4703222040⟩ E) ⟨270336,272692,4702945886⟩ E) ⟨270336,272704,4702117546⟩ (N (N E ⟨270336,272736,4699909530⟩ E) ⟨270336,272756,4698530178⟩ E)) ⟨270336,272764,4697978579⟩ (N (N (N E ⟨270336,272768,4697702810⟩ E) ⟨270336,272820,4694119652⟩ E) ⟨270336,272832,4693293255⟩ (N E ⟨270336,272860,4691365702⟩ E)))) ⟨270336,272864,4691090418⟩ (N (N (N (N (N E ⟨270336,272900,4688613771⟩ E) ⟨270336,272908,4688063627⟩ E) ⟨270336,272928,4686688620⟩ (N (N E ⟨270336,272944,4685588977⟩ E) ⟨270336,272958,4684627055⟩ E)) ⟨270336,272960,4684489657⟩ (N (N (N E ⟨270336,272964,4684214878⟩ E) ⟨270336,272992,4682291984⟩ E) ⟨270336,272994,4682154673⟩ (N E ⟨270336,273008,4681193631⟩ E))) ⟨270336,273056,4677900504⟩ (N (N (N (N E ⟨270336,273072,4676803439⟩ E) ⟨270336,273120,4673514172⟩ E) ⟨270336,273152,4671322934⟩ (N E ⟨270336,273154,4671186024⟩ E)) ⟨270336,273200,4668038485⟩ (N (N (N E ⟨270336,273216,4666944310⟩ E) ⟨270336,273234,4665713747⟩ E) ⟨270336,273248,4664756922⟩ (N E ⟨270336,273252,4664483589⟩ E)))))) ⟨270336,273264,4663663709⟩ (N (N (N (N (N (N (N E ⟨270336,273280,4662570816⟩ E) ⟨270336,273282,4662434227⟩ E) ⟨270336,273284,4662297643⟩ (N (N E ⟨270336,273296,4661478243⟩ E) ⟨270336,273316,4660112977⟩ E)) ⟨270336,273324,4659567011⟩ (N (N (N E ⟨270336,273328,4659294057⟩ E) ⟨270336,273344,4658202445⟩ E) ⟨270336,273348,4657929591⟩ (N E ⟨270336,273360,4657111151⟩ E))) ⟨270336,273392,4654929523⟩ (N (N (N (N E ⟨270336,273408,4653839189⟩ E) ⟨270336,273424,4652749173⟩ E) ⟨270336,273472,4649481041⟩ (N (N E ⟨270336,273476,4649208826⟩ E) ⟨270336,273504,4647303881⟩ E)) ⟨270336,273524,4645943802⟩ (N (N (N E ⟨270336,273536,4645127994⟩ E) ⟨270336,273552,4644040529⟩ E) ⟨270336,273572,4642681645⟩ (N E ⟨270336,273584,4641866553⟩ E)))) ⟨270336,273588,4641594895⟩ (N (N (N (N (N E ⟨270336,273636,4638336554⟩ E) ⟨270336,273648,4637522416⟩ E) ⟨270336,273652,4637251076⟩ (N (N E ⟨270336,273668,4636165916⟩ E) ⟨270336,273680,4635352254⟩ E)) ⟨270336,273700,4633996547⟩ (N (N (N E ⟨270336,273712,4633183361⟩ E) ⟨270336,273714,4633047847⟩ E) ⟨270336,273820,4625872707⟩ (N E ⟨270336,273840,4624520466⟩ E))) ⟨270336,273852,4623709358⟩ (N (N (N (N E ⟨270336,273860,4623168718⟩ E) ⟨270336,273880,4621817464⟩ E) ⟨270336,273920,4619116438⟩ (N (N E ⟨270336,273924,4618846444⟩ E) ⟨270336,273936,4618036580⟩ E)) ⟨270336,273940,4617766665⟩ (N (N (N E ⟨270336,273944,4617496769⟩ E) ⟨270336,273968,4615877811⟩ E) ⟨270336,273984,4614798899⟩ (N E ⟨270336,273988,4614529221⟩ E))))) ⟨270336,274002,4613585501⟩ (N (N (N (N (N (N E ⟨270336,274004,4613450703⟩ E) ⟨270336,274048,4610486405⟩ E) ⟨270336,274076,4608601272⟩ (N (N E ⟨270336,274140,4604296016⟩ E) ⟨270336,274144,4604027105⟩ E)) ⟨270336,274164,4602682842⟩ (N (N (N E ⟨270336,274200,4600264404⟩ E) ⟨270336,274224,4598652995⟩ E) ⟨270336,274228,4598384496⟩ (N E ⟨270336,274268,4595700578⟩ E))) ⟨270336,274288,4594359353⟩ (N (N (N (N E ⟨270336,274292,4594091167⟩ E) ⟨270336,274300,4593554853⟩ E) ⟨270336,274304,4593286726⟩ (N (N E ⟨270336,274308,4593018618⟩ E) ⟨270336,274316,4592482461⟩ E)) ⟨270336,274336,4591142410⟩ (N (N (N E ⟨270336,274356,4589802848⟩ E) ⟨270336,274364,4589267161⟩ E) ⟨270336,274368,4588999346⟩ (N E ⟨270336,274400,4586857532⟩ E)))) ⟨270336,274432,4584716968⟩ (N (N (N (N (N E ⟨270336,274444,4583914578⟩ E) ⟨270336,274480,4581508463⟩ E) ⟨270336,274492,4580706775⟩ (N (N E ⟨270336,274496,4580439585⟩ E) ⟨270336,274544,4577234821⟩ E)) ⟨270336,274564,4575900330⟩ (N (N (N E ⟨270336,274580,4574833088⟩ E) ⟨270336,274592,4574032860⟩ E) ⟨270336,274608,4572966162⟩ (N E ⟨270336,274628,4571633227⟩ E))) ⟨270336,274644,4570567228⟩ (N (N (N (N E ⟨270336,274656,4569767933⟩ E) ⟨270336,274672,4568702479⟩ E) ⟨270336,274688,4567637334⟩ (N E ⟨270336,274692,4567371097⟩ E)) ⟨270336,274704,4566572501⟩ (N (N (N E ⟨270336,274720,4565507977⟩ E) ⟨270336,274736,4564443764⟩ E) ⟨270336,274740,4564177759⟩ (N E ⟨270336,274752,4563379861⟩ E))))))) ⟨270336,274848,4557002948⟩ (N (N (N (N (N (N (N (N E ⟨270336,274860,4556206618⟩ E) ⟨270336,274868,4555675828⟩ E) ⟨270336,274884,4554614479⟩ (N (N E ⟨270336,274932,4551432286⟩ E) ⟨270336,274940,4550902191⟩ E)) ⟨270336,274944,4550637173⟩ (N (N (N E ⟨270336,274948,4550372173⟩ E) ⟨270336,274960,4549577291⟩ E) ⟨270336,274980,4548252873⟩ (N E ⟨270336,274992,4547458454⟩ E))) ⟨270336,274996,4547193686⟩ (N (N (N (N E ⟨270336,275008,4546399498⟩ E) ⟨270336,275044,4544017973⟩ E) ⟨270336,275056,4543224479⟩ (N (N E ⟨270336,275060,4542960019⟩ E) ⟨270336,275072,4542166755⟩ E)) ⟨270336,275076,4541902372⟩ (N (N (N E ⟨270336,275088,4541109339⟩ E) ⟨270336,275120,4538995431⟩ E) ⟨270336,275124,4538731279⟩ (N E ⟨270336,275136,4537938938⟩ E)))) ⟨270336,275140,4537674863⟩ (N (N (N (N (N E ⟨270336,275188,4534507458⟩ E) ⟨270336,275236,4531342818⟩ E) ⟨270336,275248,4530552089⟩ (N (N E ⟨270336,275252,4530288551⟩ E) ⟨270336,275268,4529234591⟩ E)) ⟨270336,275300,4527127591⟩ (N (N (N E ⟨270336,275312,4526337781⟩ E) ⟨270336,275316,4526074550⟩ E) ⟨270336,275328,4525284970⟩ (N E ⟨270336,275332,4525021815⟩ E))) ⟨270336,275344,4524232465⟩ (N (N (N (N E ⟨270336,275376,4522128374⟩ E) ⟨270336,275388,4521339655⟩ E) ⟨270336,275392,4521076786⟩ (N (N E ⟨270336,275412,4519762732⟩ E) ⟨270336,275440,4517923859⟩ E)) ⟨270336,275452,4517136056⟩ (N (N (N E ⟨270336,275472,4515823434⟩ E) ⟨270336,275484,4515036089⟩ E) ⟨270336,275504,4513724230⟩ (N E ⟨270336,275524,4512412847⟩ E))))) ⟨270336,275544,4511101940⟩ (N (N (N (N (N (N E ⟨270336,275592,4507957706⟩ E) ⟨270336,275600,4507433933⟩ E) ⟨270336,275612,4506648417⟩ (N (N E ⟨270336,275628,4505601328⟩ E) ⟨270336,275648,4504292894⟩ E)) ⟨270336,275652,4504031265⟩ (N (N (N E ⟨270336,275668,4502984936⟩ E) ⟨270336,275676,4502461885⟩ E) ⟨270336,275692,4501416012⟩ (N E ⟨270336,275696,4501154592⟩ E))) ⟨270336,275700,4500893190⟩ (N (N (N (N E ⟨270336,275708,4500370443⟩ E) ⟨270336,275712,4500109098⟩ E) ⟨270336,275728,4499063908⟩ (N (N E ⟨270336,275740,4498280215⟩ E) ⟨270336,275752,4497496693⟩ E)) ⟨270336,275764,4496713341⟩ (N (N (N E ⟨270336,275776,4495930159⟩ E) ⟨270336,275808,4493842509⟩ E) ⟨270336,275932,4485764303⟩ (N E ⟨270336,275952,4484463067⟩ E)))) ⟨270336,275956,4484202876⟩ (N (N (N (N (N E ⟨270336,275968,4483422418⟩ E) ⟨270336,275980,4482642130⟩ E) ⟨270336,275988,4482122032⟩ (N (N E ⟨270336,276000,4481342026⟩ E) ⟨270336,276016,4480302282⟩ E)) ⟨270336,276020,4480042394⟩ (N (N (N E ⟨270336,276028,4479522673⟩ E) ⟨270336,276032,4479262840⟩ E) ⟨270336,276036,4479003027⟩ (N E ⟨270336,276052,4477963962⟩ E))) ⟨270336,276064,4477184861⟩ (N (N (N (N E ⟨270336,276076,4476405929⟩ E) ⟨270336,276096,4475108086⟩ E) ⟨270336,276172,4470180571⟩ (N E ⟨270336,276188,4469144064⟩ E)) ⟨270336,276192,4468884984⟩ (N (N (N E ⟨270336,276208,4467848853⟩ E) ⟨270336,276244,4465518654⟩ E) ⟨270336,276256,4464742259⟩ (N E ⟨270336,276272,4463707328⟩ E)))))) ⟨270336,276292,4462414086⟩ (N (N (N (N (N (N (N E ⟨270336,276308,4461379830⟩ E) ⟨270336,276320,4460604335⟩ E) ⟨270336,276368,4457504037⟩ (N (N E ⟨270336,276384,4456471203⟩ E) ⟨270336,276396,4455696774⟩ E)) ⟨270336,276416,4454406433⟩ (N (N (N E ⟨270336,276420,4454148421⟩ E) ⟨270336,276460,4451569326⟩ E) ⟨270336,276464,4451311519⟩ (N E ⟨270336,276468,4451053731⟩ E))) ⟨270336,276496,4449249737⟩ (N (N (N (N E ⟨270336,276604,4442300030⟩ E) ⟨270336,276612,4441785777⟩ E) ⟨270336,276620,4441271599⟩ (N (N E ⟨270336,276624,4441014537⟩ E) ⟨270336,276660,4438701822⟩ E)) ⟨270336,276668,4438188089⟩ (N (N (N E ⟨270336,276672,4437931251⟩ E) ⟨270336,276720,4434850640⟩ E) ⟨270336,276752,4432798385⟩ (N E ⟨270336,276784,4430747317⟩ E)))) ⟨270336,276800,4429722228⟩ (N (N (N (N (N E ⟨270336,276816,4428697435⟩ E) ⟨270336,276836,4427416861⟩ E) ⟨270336,276848,4426648739⟩ (N (N E ⟨270336,276976,4418465792⟩ E) ⟨270336,276992,4417444254⟩ E)) ⟨270336,276996,4417188915⟩ (N (N (N E ⟨270336,277000,4416933595⟩ E) ⟨270336,277008,4416423011⟩ E) ⟨270336,277040,4414381410⟩ (N E ⟨270336,277056,4413361052⟩ E))) ⟨270336,277072,4412340989⟩ (N (N (N (N E ⟨270336,277104,4410301747⟩ E) ⟨270336,277116,4409537335⟩ E) ⟨270336,277172,4405972269⟩ (N E ⟨270336,277248,4401139726⟩ E)) ⟨270336,277252,4400885565⟩ (N (N (N E ⟨270336,277264,4400123193⟩ E) ⟨270336,277272,4399615037⟩ E) ⟨270336,277292,4398344967⟩ (N E ⟨270336,277340,4395298668⟩ E))))) ⟨270336,277356,4394283822⟩ (N (N (N (N (N (N E ⟨270336,277364,4393776508⟩ E) ⟨270336,277372,4393269268⟩ E) ⟨270336,277376,4393015675⟩ (N (N E ⟨270336,277380,4392762101⟩ E) ⟨270336,277388,4392255007⟩ E)) ⟨270336,277392,4392001488⟩ (N (N (N E ⟨270336,277404,4391241039⟩ E) ⟨270336,277428,4389720636⟩ E) ⟨270336,277440,4388960681⟩ (N E ⟨270336,277512,4384404403⟩ E))) ⟨270336,277528,4383392700⟩ (N (N (N (N E ⟨270336,277568,4380864719⟩ E) ⟨270336,277616,4377833547⟩ E) ⟨270336,277620,4377581068⟩ (N (N E ⟨270336,277644,4376066575⟩ E) ⟨270336,277680,4373796063⟩ E)) ⟨270336,277692,4373039553⟩ (N (N (N E ⟨270336,277696,4372787419⟩ E) ⟨270336,277716,4371527023⟩ E) ⟨270336,277728,4370771004⟩ (N E ⟨270336,277824,4364728729⟩ E)))) ⟨270336,277836,4363974179⟩ (N (N (N (N (N E ⟨270336,277872,4361711508⟩ E) ⟨270336,277884,4360957610⟩ E) ⟨270336,277904,4359701475⟩ (N (N E ⟨270336,277920,4358696893⟩ E) ⟨270336,277936,4357692601⟩ E)) ⟨270336,277952,4356688597⟩ (N (N (N E ⟨270336,277972,4355434000⟩ E) ⟨270336,277984,4354681458⟩ E) ⟨270336,277996,4353929079⟩ (N E ⟨270336,278000,4353678322⟩ E))) ⟨270336,278060,4349919134⟩ (N (N (N (N E ⟨270336,278080,4348666973⟩ E) ⟨270336,278112,4346664453⟩ E) ⟨270336,278124,4345913805⟩ (N E ⟨270336,278140,4344913193⟩ E)) ⟨270336,278160,4343662833⟩ (N (N (N E ⟨270336,278232,4339165261⟩ E) ⟨270336,278256,4337667364⟩ E) ⟨270336,278284,4335920635⟩ (N E ⟨270336,278292,4335421731⟩ E))))))))
+
+noncomputable def tab30 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨270336,278332,4332928287⟩ E) ⟨270336,278340,4332429814⟩ E) ⟨270336,278376,4330187569⟩ (N (N E ⟨270336,278388,4329440477⟩ E) ⟨270336,278416,4327697888⟩ E)) ⟨270336,278448,4325707432⟩ (N (N (N E ⟨270336,278476,4323966721⟩ E) ⟨270336,278528,4320736295⟩ E) ⟨276128,278528,8864094723⟩ (N E ⟨278528,278544,9614042450⟩ E))) ⟨278528,278548,9613477112⟩ (N (N (N (N E ⟨278528,278560,9611764383⟩ E) ⟨278528,278580,9608854144⟩ E) ⟨278528,278596,9606475868⟩ (N (N E ⟨278528,278604,9605270046⟩ E) ⟨278528,278616,9603440469⟩ E)) ⟨278528,278640,9599706332⟩ (N (N (N E ⟨278528,278644,9599074261⟩ E) ⟨278528,278664,9595872309⟩ E) ⟨278528,278672,9594572124⟩ (N E ⟨278528,278700,9589934243⟩ E)))) ⟨278528,278704,9589260618⟩ (N (N (N (N (N E ⟨278528,278720,9586538465⟩ E) ⟨278528,278724,9585851016⟩ E) ⟨278528,278740,9583073594⟩ (N (N E ⟨278528,278768,9578106835⟩ E) ⟨278528,278772,9577386266⟩ E)) ⟨278528,278836,9565482705⟩ (N (N (N E ⟨278528,278860,9560837450⟩ E) ⟨278528,278872,9558477782⟩ E) ⟨278528,278920,9548792563⟩ (N E ⟨278528,278928,9547140058⟩ E))) ⟨278528,278932,9546309707⟩ (N (N (N (N E ⟨278528,278964,9539568604⟩ E) ⟨278528,278976,9536995684⟩ E) ⟨278528,279052,9520131814⟩ (N (N E ⟨278528,279080,9513671785⟩ E) ⟨278528,279100,9508976255⟩ E)) ⟨278528,279104,9508029036⟩ (N (N (N E ⟨278528,279136,9500354045⟩ E) ⟨278528,279300,9458318687⟩ E) ⟨278528,279308,9456153106⟩ (N E ⟨278528,279356,9442936010⟩ E))))) ⟨278528,279360,9441817308⟩ (N (N (N (N (N (N E ⟨278528,279420,9424718715⟩ E) ⟨278528,279484,9405825055⟩ E) ⟨278528,279556,9383765501⟩ (N (N E ⟨278528,279684,9342461357⟩ E) ⟨278528,279696,9338452953⟩ E)) ⟨278528,279744,9322187246⟩ (N (N (N E ⟨278528,279856,9282797382⟩ E) ⟨278528,279864,9279907266⟩ E) ⟨278528,279888,9271175954⟩ (N E ⟨278528,279976,9238381857⟩ E))) ⟨278528,280020,9221527973⟩ (N (N (N (N E ⟨278528,280024,9219980769⟩ E) ⟨278528,280040,9213766956⟩ E) ⟨278528,280112,9185311415⟩ (N (N E ⟨278528,280140,9174028233⟩ E) ⟨278528,280144,9172406461⟩ E)) ⟨278528,280188,9154404244⟩ (N (N (N E ⟨278528,280276,9117509353⟩ E) ⟨278528,280300,9107242264⟩ E) ⟨278528,280348,9086446334⟩ (N E ⟨278528,280364,9079437069⟩ E)))) ⟨278528,280400,9063525489⟩ (N (N (N (N (N E ⟨278528,280444,9043814398⟩ E) ⟨278528,280556,8992342568⟩ E) ⟨278528,280584,8979185607⟩ (N (N E ⟨278528,280588,8977296662⟩ E) ⟨278528,280604,8969717485⟩ E)) ⟨278528,280608,8967816847⟩ (N (N (N E ⟨278528,280636,8954447076⟩ E) ⟨278528,280744,8901814033⟩ E) ⟨278528,280864,8841374088⟩ (N E ⟨278528,280872,8837272255⟩ E))) ⟨278528,280908,8818702732⟩ (N (N (N (N E ⟨278528,280976,8783132897⟩ E) ⟨278528,281000,8770425560⟩ E) ⟨278528,281024,8757638718⟩ (N E ⟨278528,281072,8731827694⟩ E)) ⟨278528,281164,8681479539⟩ (N (N (N E ⟨278528,281232,8643532999⟩ E) ⟨278528,281280,8616376469⟩ E) ⟨278528,281304,8602684040⟩ (N E ⟨278528,281324,8591215845⟩ E)))))) ⟨278528,281328,8588915914⟩ (N (N (N (N (N (N (N E ⟨278528,281408,8542479447⟩ E) ⟨278528,281424,8533092657⟩ E) ⟨278528,281452,8516586550⟩ (N (N E ⟨278528,281456,8514220328⟩ E) ⟨278528,281584,8437428214⟩ E)) ⟨278528,281680,8378487616⟩ (N (N (N E ⟨278528,281712,8358588403⟩ E) ⟨278528,281724,8351093963⟩ E) ⟨278528,281736,8343582005⟩ (N E ⟨278528,281784,8313359829⟩ E))) ⟨278528,281872,8257235176⟩ (N (N (N (N E ⟨278528,281944,8210634313⟩ E) ⟨278528,281992,8179231664⟩ E) ⟨278528,282000,8173972040⟩ (N (N E ⟨278528,282040,8147563911⟩ E) ⟨278528,282048,8142260373⟩ E)) ⟨278528,282168,8061841726⟩ (N (N (N E ⟨278528,282304,7968777808⟩ E) ⟨278528,282432,7879378057⟩ E) ⟨278528,282444,7870908863⟩ (N E ⟨278528,282464,7856760480⟩ E)))) ⟨278528,282724,7669165930⟩ (N (N (N (N (N E ⟨278528,282768,7636765193⟩ E) ⟨278528,282936,7511388731⟩ E) ⟨278528,283024,7444693755⟩ (N (N E ⟨278528,283048,7426385832⟩ E) ⟨278528,283096,7389620376⟩ E)) ⟨278528,283176,7327908677⟩ (N (N (N E ⟨278528,283192,7315501994⟩ E) ⟨278528,283224,7290625221⟩ E) ⟨278528,283272,7253153301⟩ (N E ⟨278528,283304,7228068886⟩ E))) ⟨278528,283320,7215496092⟩ (N (N (N (N E ⟨278528,283352,7190289920⟩ E) ⟨278528,283480,7088674855⟩ E) ⟨278528,283656,6946976558⟩ (N (N E ⟨278528,283816,6816294970⟩ E) ⟨278528,283912,6737085865⟩ E)) ⟨278528,283936,6717193826⟩ (N (N (N E ⟨278528,283944,6710555332⟩ E) ⟨278528,284072,6603821877⟩ E) ⟨278528,284192,6502912727⟩ (N E ⟨278528,284200,6496157640⟩ E))))) ⟨278528,284304,6408038825⟩ (N (N (N (N (N (N E ⟨278528,284352,6367184911⟩ E) ⟨278528,284448,6285146420⟩ E) ⟨278528,284472,6264570370⟩ (N (N E ⟨278528,284480,6257705948⟩ E) ⟨278528,284496,6243968592⟩ E)) ⟨278528,284528,6216460264⟩ (N (N (N E ⟨278528,284608,6147499214⟩ E) ⟨278528,284632,6126759638⟩ E) ⟨278528,284656,6105997158⟩ (N E ⟨278528,284752,6022726673⟩ E))) ⟨278528,284784,5994894610⟩ (N (N (N (N E ⟨278528,284912,5883217059⟩ E) ⟨278528,285064,5749942243⟩ E) ⟨278528,285112,5707723277⟩ (N (N E ⟨278528,285192,5637232081⟩ E) ⟨278528,285240,5594867171⟩ E)) ⟨278528,285272,5566596758⟩ (N (N (N E ⟨278528,285328,5517074737⟩ E) ⟨278528,285368,5481666367⟩ E) ⟨278528,285376,5474581348⟩ (N E ⟨278528,285472,5389481559⟩ E)))) ⟨278528,285504,5361085181⟩ (N (N (N (N (N E ⟨278528,285632,5247377678⟩ E) ⟨278528,285672,5211810948⟩ E) ⟨278528,286096,4834429251⟩ (N (N E ⟨278528,286264,4685031479⟩ E) ⟨278528,286344,4613983316⟩ E)) ⟨278528,286376,4585586016⟩ (N (N (N E ⟨278528,286392,4571392567⟩ E) ⟨278528,286424,4543016684⟩ E) ⟨278528,286440,4528834498⟩ (N E ⟨278528,286504,4472146979⟩ E))) ⟨278528,286520,4457986019⟩ (N (N (N (N E ⟨278528,286552,4429678062⟩ E) ⟨278528,286648,4344874677⟩ E) ⟨278528,286720,4281402733⟩ (N E ⟨278876,286720,4301264662⟩ E)) ⟨281560,286720,4454872555⟩ (N (N (N E ⟨286720,286808,4654635218⟩ E) ⟨286720,286824,4639391053⟩ E) ⟨286720,286984,4487356597⟩ (N E ⟨286720,287144,4336151789⟩ E))))))) ⟨286720,287264,4223368803⟩ (N (N (N (N (N (N (N (N E ⟨286720,287272,4215870359⟩ E) ⟨286720,287520,3984805512⟩ E) ⟨286720,287544,3962596178⟩ (N (N E ⟨286720,287632,3881408783⟩ E) ⟨286720,287800,3727551014⟩ E)) ⟨286720,287808,3720263472⟩ (N (N (N E ⟨286720,287824,3705699389⟩ E) ⟨286720,287936,3604170856⟩ E) ⟨286720,287960,3582512759⟩ (N E ⟨286720,287984,3560890137⟩ E))) ⟨286720,288032,3517752895⟩ (N (N (N (N E ⟨286720,288080,3474762273⟩ E) ⟨286720,288240,3332559134⟩ E) ⟨286720,288264,3311379256⟩ (N (N E ⟨286720,288392,3199111382⟩ E) ⟨286720,288544,3067364681⟩ E)) ⟨286720,288568,3046724305⟩ (N (N (N E ⟨286720,288696,2937413488⟩ E) ⟨286720,288832,2822739058⟩ E) ⟨286720,288904,2762663216⟩ (N E ⟨286720,288960,2716249128⟩ E)))) ⟨286720,289128,2578689167⟩ (N (N (N (N (N E ⟨286720,289312,2431032011⟩ E) ⟨286720,289408,2355288468⟩ E) ⟨286720,289424,2342752964⟩ (N (N E ⟨286720,289672,2151773571⟩ E) ⟨286720,289704,2127595540⟩ E)) ⟨286720,289720,2115547180⟩ (N (N (N E ⟨286720,289832,2031975898⟩ E) ⟨286720,289976,1926535884⟩ E) ⟨286720,290312,1689628045⟩ (N E ⟨286720,290472,1581470155⟩ E))) ⟨286720,290600,1497179022⟩ (N (N (N (N E ⟨286720,290640,1471252164⟩ E) ⟨286720,290872,1324838582⟩ E) ⟨286720,291128,1171305448⟩ (N (N E ⟨286720,291264,1093253679⟩ E) ⟨286720,291376,1030840438⟩ E)) ⟨286720,291592,915304170⟩ (N (N (N E ⟨286720,291632,894615252⟩ E) ⟨286720,291872,775188023⟩ E) ⟨286720,291920,752279509⟩ (N E ⟨286720,292024,703772922⟩ E))))) ⟨286720,292288,587644695⟩ (N (N (N (N (N (N E ⟨286720,292640,448674736⟩ E) ⟨286720,293000,325618895⟩ E) ⟨286720,293336,228401376⟩ (N (N E ⟨286720,293352,224199490⟩ E) ⟨286720,293456,197837495⟩ E)) ⟨286720,293736,135064409⟩ (N (N (N E ⟨286720,293972,91459105⟩ E) ⟨286720,294036,81101145⟩ E) ⟨286720,294272,48310569⟩ (N E ⟨286720,294912,1958320⟩ E))) ⟨294912,294920,3640140⟩ (N (N (N (N E ⟨294912,295056,488698⟩ E) ⟨294912,295072,310153⟩ E) ⟨295136,303104,120⟩ (N (N E ⟨295144,303104,6134⟩ E) ⟨295146,301062,9304⟩ E)) ⟨295162,302806,53058⟩ (N (N (N E ⟨295172,303104,98661⟩ E) ⟨295178,301926,135047⟩ E) ⟨295178,302568,133904⟩ (N E ⟨295180,303104,145526⟩ E)))) ⟨295184,303104,172364⟩ (N (N (N (N (N E ⟨295192,303104,232852⟩ E) ⟨295194,303104,249393⟩ E) ⟨295210,303104,402164⟩ (N (N E ⟨295224,303104,565654⟩ E) ⟨295236,303104,727942⟩ E)) ⟨295244,303104,847497⟩ (N (N (N E ⟨295250,303104,943129⟩ E) ⟨295272,303104,1337546⟩ E) ⟨295276,302856,1421296⟩ (N E ⟨295308,302056,2161092⟩ E))) ⟨295308,303104,2131341⟩ (N (N (N (N E ⟨295316,303104,2332763⟩ E) ⟨295320,303104,2436888⟩ E) ⟨295324,302200,2573874⟩ (N E ⟨295340,300488,3097256⟩ E)) ⟨295340,301256,3065774⟩ (N (N (N E ⟨295340,303104,2991645⟩ E) ⟨295352,302964,3358015⟩ E) ⟨295372,301288,4094936⟩ (N E ⟨295372,302120,4049987⟩ E)))))) ⟨295372,302952,4005654⟩ (N (N (N (N (N (N (N E ⟨295384,303104,4412429⟩ E) ⟨295388,301336,4663169⟩ E) ⟨295396,303104,4847734⟩ (N (N E ⟨295400,301958,5073734⟩ E) ⟨295404,301320,5272435⟩ E)) ⟨295404,302152,5214568⟩ (N (N (N E ⟨295414,302004,5620319⟩ E) ⟨295414,302868,5556422⟩ E) ⟨295416,303104,5618795⟩ (N E ⟨295420,302200,5849353⟩ E))) ⟨295432,303104,6276650⟩ (N (N (N (N E ⟨295436,303104,6446809⟩ E) ⟨295444,303104,6793964⟩ E) ⟨295446,302868,6903665⟩ (N (N E ⟨295448,303104,6970959⟩ E) ⟨295462,302820,7636987⟩ E)) ⟨295496,303104,9272668⟩ (N (N (N E ⟨295500,303104,9479293⟩ E) ⟨295508,303104,9899382⟩ E) ⟨295512,303104,10112846⟩ (N E ⟨295524,303104,10766918⟩ E)))) ⟨295528,303104,10989502⟩ (N (N (N (N (N E ⟨295544,303104,11902640⟩ E) ⟨295560,303104,12852263⟩ E) ⟨295564,303104,13095369⟩ (N (N E ⟨295568,303104,13340756⟩ E) ⟨295572,303104,13588424⟩ E)) ⟨295588,303104,14601901⟩ (N (N (N E ⟨295628,303104,17295249⟩ E) ⟨295636,303058,17872143⟩ E) ⟨295636,303104,17861289⟩ (N E ⟨295640,302420,18312570⟩ E))) ⟨295652,303010,19044370⟩ (N (N (N (N E ⟨295672,303104,20521384⟩ E) ⟨295688,303104,21762956⟩ E) ⟨295696,303104,22397430⟩ (N E ⟨295728,303104,25026566⟩ E)) ⟨295736,303104,25706660⟩ (N (N (N E ⟨295752,303104,27094221⟩ E) ⟨295764,303104,28158842⟩ E) ⟨295768,303104,28518277⟩ (N E ⟨295776,303104,29243990⟩ E))))) ⟨295780,303104,29610268⟩ (N (N (N (N (N (N E ⟨295800,303104,31475866⟩ E) ⟨295812,303104,32622592⟩ E) ⟨295816,303104,33009395⟩ (N (N E ⟨295828,303104,34183485⟩ E) ⟨295866,301814,38691697⟩ E)) ⟨295876,303104,39085055⟩ (N (N (N E ⟨295882,303104,39720834⟩ E) ⟨295892,303104,40791863⟩ E) ⟨295898,301846,42136925⟩ (N E ⟨295898,303104,41441319⟩ E))) ⟨295912,303104,42976657⟩ (N (N (N (N E ⟨295914,301830,43932686⟩ E) ⟨295926,303104,44539912⟩ E) ⟨295940,303104,46131080⟩ (N (N E ⟨295946,302694,47075900⟩ E) ⟨295952,303104,47517153⟩ E)) ⟨295962,301910,49463128⟩ (N (N (N E ⟨295978,301894,51407096⟩ E) ⟨295978,302726,50843947⟩ E) ⟨295978,303104,50590642⟩ (N E ⟨295984,303104,51313575⟩ E)))) ⟨295988,303104,51798377⟩ (N (N (N (N (N E ⟨295990,303104,52041632⟩ E) ⟨295994,302774,52759374⟩ E) ⟨296004,303104,53760355⟩ (N (N E ⟨296010,302758,54755226⟩ E) ⟨296032,303104,57281470⟩ E)) ⟨296118,303104,68793446⟩ (N (N (N E ⟨296140,302888,72112668⟩ E) ⟨296150,303104,73345280⟩ E) ⟨296156,303104,74214939⟩ (N E ⟨296168,303104,75969590⟩ E))) ⟨296172,302088,77594794⟩ (N (N (N (N E ⟨296172,302920,76745310⟩ E) ⟨296200,303104,80748581⟩ E) ⟨296204,303104,81356172⟩ (N E ⟨296208,303104,81966032⟩ E)) ⟨296232,302790,86028988⟩ (N (N (N E ⟨296264,303104,90742288⟩ E) ⟨296278,302868,93296195⟩ E) ⟨296308,303104,97949644⟩ (N E ⟨296328,303104,101316318⟩ E))))))))
+
+noncomputable def tab31 : CTN :=
+  (N (N (N (N (N (N (N (N (N E ⟨296356,303104,106124728⟩ E) ⟨296376,303104,109627172⟩ E) ⟨296392,303104,112469826⟩ (N (N E ⟨296420,303104,117531468⟩ E) ⟨296440,303104,121214678⟩ E)) ⟨296456,303104,124201875⟩ (N (N (N E ⟨296464,303104,125709009⟩ E) ⟨296468,303104,126465960⟩ E) ⟨296472,303104,127225166⟩ (N E ⟨296476,303104,127986627⟩ E))) ⟨296488,303104,130284536⟩ (N (N (N (N E ⟨296504,303104,133379967⟩ E) ⟨296520,303104,136511441⟩ E) ⟨296544,303104,141276196⟩ (N (N E ⟨296552,303104,142882450⟩ E) ⟨296564,303104,145308700⟩ E)) ⟨296584,303104,149397415⟩ (N (N (N E ⟨296612,303104,155215977⟩ E) ⟨296648,303104,162858593⟩ E) ⟨296650,303104,163288510⟩ (N E ⟨296682,303104,170243364⟩ E)))) ⟨296696,303104,173331185⟩ (N (N (N (N (N E ⟨296714,303104,177341520⟩ E) ⟨296730,302678,181965711⟩ E) ⟨296746,302662,185664048⟩ (N (N E ⟨296746,303104,184582800⟩ E) ⟨296760,303104,187795821⟩ E)) ⟨296762,303104,188257056⟩ (N (N (N E ⟨296772,303104,190571604⟩ E) ⟨296774,303104,191036187⟩ E) ⟨296778,303104,191967026⟩ (N E ⟨296784,303104,193367467⟩ E))) ⟨296788,303104,194303882⟩ (N (N (N (N E ⟨296800,303104,197126504⟩ E) ⟨296804,303104,198071835⟩ E) ⟨296836,303104,205714670⟩ (N (N E ⟨296844,303104,207647638⟩ E) ⟨296924,303104,227466146⟩ E)) ⟨296944,303104,232559418⟩ (N (N (N E ⟨296960,303104,236673892⟩ E) ⟨296978,303104,241344988⟩ E) ⟨296994,303104,245534652⟩ (N E ⟨297024,303104,253485503⟩ E))))) ⟨297044,303104,258855000⟩ (N (N (N (N (N (N E ⟨297056,303104,262103140⟩ E) ⟨297096,303104,273073316⟩ E) ⟨297100,303104,274182425⟩ (N (N E ⟨297142,303104,285960600⟩ E) ⟨297144,303104,286527497⟩ E)) ⟨297160,303104,291082386⟩ (N (N (N E ⟨297180,303104,296825253⟩ E) ⟨297192,303104,300297219⟩ E) ⟨297208,303104,304957099⟩ (N E ⟨297236,303104,313195924⟩ E))) ⟨297240,303104,314381622⟩ (N (N (N (N E ⟨297252,303104,317951788⟩ E) ⟨297256,303104,319146199⟩ E) ⟨297272,303104,323945608⟩ (N (N E ⟨297288,303104,328779816⟩ E) ⟨297300,303104,332428288⟩ E)) ⟨297320,303104,338552489⟩ (N (N (N E ⟨297348,303104,347217429⟩ E) ⟨297352,303104,348463941⟩ E) ⟨297364,303104,352216456⟩ (N E ⟨297412,303104,367420971⟩ E)))) ⟨297416,303104,368702038⟩ (N (N (N (N (N E ⟨297440,303104,376433671⟩ E) ⟨297514,303104,400759868⟩ E) ⟨297540,303104,409481003⟩ (N (N E ⟨297568,303104,418973928⟩ E) ⟨297604,303104,431332583⟩ E)) ⟨297668,303104,453728457⟩ (N (N (N E ⟨297696,303104,463697128⟩ E) ⟨297792,303104,498659321⟩ E) ⟨297820,303104,509084320⟩ (N E ⟨297824,303104,510581970⟩ E))) ⟨297892,303104,536361047⟩ (N (N (N (N E ⟨297928,303104,550251993⟩ E) ⟨297992,303104,575360664⟩ E) ⟨298000,303104,578536356⟩ (N E ⟨298020,303104,586511558⟩ E)) ⟨298024,303104,588112759⟩ (N (N (N E ⟨298056,303104,600996170⟩ E) ⟨298080,303104,610744663⟩ E) ⟨298116,303104,625505106⟩ (N E ⟨298148,303104,638763806⟩ E)))))) ⟨298180,303104,652152247⟩ (N (N (N (N (N (N (N E ⟨298184,303104,653834903⟩ E) ⟨298208,303104,663973230⟩ E) ⟨298276,303104,693091791⟩ (N (N E ⟨298336,303104,719264896⟩ E) ⟨298372,303104,735183605⟩ E)) ⟨298380,303104,738742896⟩ (N (N (N E ⟨298436,303104,763879059⟩ E) ⟨298460,303104,774769769⟩ E) ⟨298560,303104,820904978⟩ (N E ⟨298760,303104,916792057⟩ E))) ⟨298768,303104,920726559⟩ (N (N (N (N E ⟨298848,303104,960485267⟩ E) ⟨299024,303104,1050570332⟩ E) ⟨299076,303104,1077864765⟩ (N (N E ⟨299104,303104,1092688340⟩ E) ⟨300096,303104,1671772511⟩ E)) ⟨303104,303156,3889444660⟩ (N (N (N E ⟨303104,303222,3886057420⟩ E) ⟨303104,303236,3885339388⟩ E) ⟨303104,303430,3875406578⟩ (N E ⟨303104,303444,3874691006⟩ E)))) ⟨303104,303462,3873771228⟩ (N (N (N (N (N E ⟨303104,303494,3872136740⟩ E) ⟨303104,303526,3870503114⟩ E) ⟨303104,303542,3869686625⟩ (N (N E ⟨303104,303762,3858481696⟩ E) ⟨303104,303824,3855331271⟩ E)) ⟨303104,303942,3849344182⟩ (N (N (N E ⟨303104,304068,3842964014⟩ E) ⟨303104,304116,3840536952⟩ E) ⟨303104,304132,3839728357⟩ (N E ⟨303104,304162,3838212815⟩ E))) ⟨303104,304180,3837303849⟩ (N (N (N (N E ⟨303104,304210,3835789503⟩ E) ⟨303104,304230,3834780354⟩ E) ⟨303104,304262,3833166406⟩ (N (N E ⟨303104,304294,3831553308⟩ E) ⟨303104,304596,3816371408⟩ E)) ⟨303104,304836,3804359921⟩ (N (N (N E ⟨303104,304884,3801963297⟩ E) ⟨303104,304900,3801164842⟩ E) ⟨303104,305136,3789411944⟩ (N E ⟨303104,305316,3780478395⟩ E))))) ⟨303104,305504,3771175891⟩ (N (N (N (N (N (N E ⟨303104,305552,3768805371⟩ E) ⟨303104,305604,3766239410⟩ E) ⟨303104,305616,3765647575⟩ (N (N E ⟨303104,305668,3763084301⟩ E) ⟨303104,305680,3762493086⟩ E)) ⟨303104,305712,3760917080⟩ (N (N (N E ⟨303104,305732,3759932495⟩ E) ⟨303104,305808,3756194011⟩ E) ⟨303104,305904,3751478356⟩ (N E ⟨303104,305968,3748338697⟩ E))) ⟨303104,306036,3745006407⟩ (N (N (N (N E ⟨303104,306048,3744418741⟩ E) ⟨303104,306096,3742069227⟩ E) ⟨303104,306500,3722367008⟩ (N (N E ⟨303104,306524,3721200664⟩ E) ⟨303104,306528,3721006318⟩ E)) ⟨303104,306652,3714987876⟩ (N (N (N E ⟨303104,306752,3710143157⟩ E) ⟨303104,306816,3707046681⟩ E) ⟨303104,306864,3704726444⟩ (N E ⟨303104,306896,3703180628⟩ E)))) ⟨303104,306900,3702987457⟩ (N (N (N (N (N E ⟨303104,306980,3699126695⟩ E) ⟨303104,307140,3691420255⟩ E) ⟨303104,307168,3690073692⟩ (N (N E ⟨303104,307268,3685269550⟩ E) ⟨303104,307280,3684693578⟩ E)) ⟨303104,307332,3682199002⟩ (N (N (N E ⟨303104,307344,3681623630⟩ E) ⟨303104,307396,3679131651⟩ E) ⟨303104,307520,3673197744⟩ (N E ⟨303104,307584,3670139764⟩ E))) ⟨303104,307632,3667848367⟩ (N (N (N (N E ⟨303104,307752,3662127694⟩ E) ⟨303104,307808,3659461864⟩ E) ⟨303104,307836,3658129859⟩ (N E ⟨303104,308064,3647306061⟩ E)) ⟨303104,308164,3642571414⟩ (N (N (N E ⟨303104,308188,3641436242⟩ E) ⟨303104,308236,3639167224⟩ E) ⟨303104,308352,3633691059⟩ (N E ⟨303104,308388,3631993654⟩ E))))))) ⟨303104,308416,3630674135⟩ (N (N (N (N (N (N (N (N E ⟨303104,308480,3627660343⟩ E) ⟨303104,308576,3623145516⟩ E) ⟨303104,308592,3622393728⟩ (N (N E ⟨303104,308624,3620890736⟩ E) ⟨303104,308644,3619951763⟩ E)) ⟨303104,308668,3618825396⟩ (N (N (N E ⟨303104,308676,3618450038⟩ E) ⟨303104,308688,3617887092⟩ E) ⟨303104,308704,3617136668⟩ (N E ⟨303104,308740,3615448924⟩ E))) ⟨303104,308784,3613387463⟩ (N (N (N (N E ⟨303104,308828,3611327472⟩ E) ⟨303104,308832,3611140273⟩ E) ⟨303104,308880,3608894829⟩ (N (N E ⟨303104,308928,3606651130⟩ E) ⟨303104,308932,3606464234⟩ E)) ⟨303104,308976,3604409175⟩ (N (N (N E ⟨303104,308992,3603662244⟩ E) ⟨303104,308996,3603475541⟩ E) ⟨303104,309008,3602915506⟩ (N E ⟨303104,309148,3596389796⟩ E)))) ⟨303104,309184,3594714145⟩ (N (N (N (N (N E ⟨303104,309208,3593597587⟩ E) ⟨303104,309248,3591737619⟩ E) ⟨303104,309296,3589507247⟩ (N (N E ⟨303104,309372,3585979363⟩ E) ⟨303104,309436,3583011876⟩ E)) ⟨303104,309472,3581344013⟩ (N (N (N E ⟨303104,309500,3580047457⟩ E) ⟨303104,309548,3577826156⟩ E) ⟨303104,309596,3575606577⟩ (N E ⟨303104,309648,3573203975⟩ E))) ⟨303104,309728,3569511604⟩ (N (N (N (N E ⟨303104,309760,3568035991⟩ E) ⟨303104,309824,3565087053⟩ E) ⟨303104,309888,3562141161⟩ (N (N E ⟨303104,309924,3560485434⟩ E) ⟨303104,309936,3559933739⟩ E)) ⟨303104,310016,3556258500⟩ (N (N (N E ⟨303104,310080,3553321725⟩ E) ⟨303104,310092,3552771417⟩ E) ⟨303104,310112,3551854474⟩ (N E ⟨303104,310144,3550387980⟩ E))))) ⟨303104,310160,3549655017⟩ (N (N (N (N (N (N E ⟨303104,310192,3548189659⟩ E) ⟨303104,310268,3544712462⟩ E) ⟨303104,310320,3542335782⟩ (N (N E ⟨303104,310332,3541787600⟩ E) ⟨303104,310368,3540143691⟩ E)) ⟨303104,310416,3537953295⟩ (N (N (N E ⟨303104,310492,3534488634⟩ E) ⟨303104,310540,3532302611⟩ E) ⟨303104,310592,3529936328⟩ (N E ⟨303104,310656,3527026698⟩ E))) ⟨303104,310672,3526299759⟩ (N (N (N (N E ⟨303104,310704,3524846443⟩ E) ⟨303104,310800,3520490986⟩ E) ⟨303104,310812,3519947027⟩ (N (N E ⟨303104,310824,3519403173⟩ E) ⟨303104,310848,3518315780⟩ E)) ⟨303104,310872,3517228808⟩ (N (N (N E ⟨303104,310908,3515599136⟩ E) ⟨303104,310912,3515418119⟩ E) ⟨303104,310960,3513246831⟩ (N E ⟨303104,310972,3512704271⟩ E)))) ⟨303104,311036,3509812386⟩ (N (N (N (N (N E ⟨303104,311088,3507464920⟩ E) ⟨303104,311100,3506923476⟩ E) ⟨303104,311136,3505299771⟩ (N (N E ⟨303104,311260,3499714197⟩ E) ⟨303104,311296,3498094663⟩ E)) ⟨311296,311308,7694996611⟩ (N (N (N E ⟨311296,311392,7686051254⟩ E) ⟨311296,311424,7682384680⟩ E) ⟨311296,311516,7671050236⟩ (N E ⟨311296,311680,7647939783⟩ E))) ⟨311296,311952,7601477490⟩ (N (N (N (N E ⟨311296,312184,7553934313⟩ E) ⟨311296,312232,7543199228⟩ E) ⟨311296,312508,7475575871⟩ (N E ⟨311296,312572,7458475179⟩ E)) ⟨311296,312672,7430698629⟩ (N (N (N E ⟨311296,312764,7404014908⟩ E) ⟨311296,312796,7394481723⟩ E) ⟨311296,312840,7381162472⟩ (N E ⟨311296,312844,7379939541⟩ E)))))) ⟨311296,312952,7346162789⟩ (N (N (N (N (N (N (N E ⟨311296,313080,7304254818⟩ E) ⟨311296,313276,7236200800⟩ E) ⟨311296,313532,7140399025⟩ (N (N E ⟨311296,313560,7129454955⟩ E) ⟨311296,313720,7065190113⟩ E)) ⟨311296,313848,7011692538⟩ (N (N (N E ⟨311296,313944,6970375320⟩ E) ⟨311296,313992,6949338187⟩ E) ⟨311296,314152,6877420943⟩ (N E ⟨311296,314200,6855315200⟩ E))) ⟨311296,315256,6311610279⟩ (N (N (N (N E ⟨311296,315280,6298073333⟩ E) ⟨311296,315480,6183422759⟩ E) ⟨311296,315512,6164780109⟩ (N (N E ⟨311296,315528,6155428585⟩ E) ⟨311296,315744,6027260879⟩ E)) ⟨311296,315912,5925195688⟩ (N (N (N E ⟨311296,316024,5856053822⟩ E) ⟨311296,316152,5776006080⟩ E) ⟨311296,316280,5694907543⟩ (N E ⟨311296,316632,5466867682⟩ E)))) ⟨311296,316792,5360986259⟩ (N (N (N (N (N E ⟨311296,316920,5275372985⟩ E) ⟨311296,317272,5036210458⟩ E) ⟨311296,317480,4892644623⟩ (N (N E ⟨311296,318352,4278191046⟩ E) ⟨311296,318552,4135533285⟩ E)) ⟨311296,318584,4112682170⟩ (N (N (N E ⟨311296,318600,4101254723⟩ E) ⟨311296,318856,3918331670⟩ E) ⟨311296,319072,3764072198⟩ (N E ⟨311296,319240,3644313518⟩ E))) ⟨311296,319352,3564645100⟩ (N (N (N (N E ⟨311296,319480,3473813401⟩ E) ⟨311296,319488,3468145225⟩ E) ⟨319488,319960,3441396271⟩ (N E ⟨319488,320120,3321645605⟩ E)) ⟨319488,320248,3226450986⟩ (N (N (N E ⟨319488,320600,2967880823⟩ E) ⟨319488,321880,2081621181⟩ E) ⟨319488,321928,2050428903⟩ (N E ⟨319488,322184,1886990282⟩ E))))) ⟨319488,322400,1753085620⟩ (N (N (N (N (N (N E ⟨319488,322680,1585275186⟩ E) ⟨319488,322808,1510828826⟩ E) ⟨319488,322848,1487864743⟩ (N (N E ⟨319488,323288,1245054427⟩ E) ⟨319488,323448,1161373428⟩ E)) ⟨319488,323576,1096267502⟩ (N (N (N E ⟨319488,324568,650268299⟩ E) ⟨319488,325208,421041230⟩ E) ⟨319488,325264,403269334⟩ (N E ⟨319488,326432,119142818⟩ E))) ⟨319488,327280,18139488⟩ (N (N (N (N E ⟨327896,335872,14001⟩ E) ⟨327924,335872,109955⟩ E) ⟨327960,335872,367049⟩ (N (N E ⟨327984,335872,622063⟩ E) ⟨328212,335872,6385231⟩ E)) ⟨328248,335872,7848312⟩ (N (N (N E ⟨328284,335872,9462349⟩ E) ⟨328376,335872,14273065⟩ E) ⟨328728,335872,41781288⟩ (N E ⟨329168,335872,96403325⟩ E)))) ⟨329232,335872,106211584⟩ (N (N (N (N (N E ⟨329496,335872,151635305⟩ E) ⟨329588,335872,169332767⟩ E) ⟨329936,335872,244916797⟩ (N (N E ⟨335872,338292,3092045363⟩ E) ⟨335872,338580,3081533279⟩ E)) ⟨335872,339376,3052710541⟩ (N (N (N E ⟨335872,339792,3037781477⟩ E) ⟨335872,340560,3010459128⟩ E) ⟨335872,341040,2993538576⟩ (N E ⟨335872,341328,2983443296⟩ E))) ⟨335872,341364,2982184380⟩ (N (N (N (N E ⟨335872,341708,2970188170⟩ E) ⟨335872,344064,2889629010⟩ E) ⟨344064,344392,6268599833⟩ (N E ⟨344064,351560,3273569067⟩ E)) ⟨344064,352256,2866362512⟩ (N (N (N E ⟨352256,354888,1582117934⟩ E) ⟨352256,357416,507732170⟩ E) ⟨352256,359488,60563652⟩ (N E ⟨352256,360256,5298027⟩ E))))))))
+
+noncomputable def table : CTN :=
+  (N (N (N (N (N tab0 ⟨96608,98304,312050644⟩ tab1) ⟨102144,106496,5576516022⟩ (N tab2 ⟨131712,133920,7434408⟩ tab3)) ⟨132790,137332,509757185⟩ (N (N tab4 ⟨139264,139500,17486088980⟩ tab5) ⟨164272,171328,221179⟩ (N tab6 ⟨164803,167122,76257770⟩ tab7))) ⟨165494,168597,366900306⟩ (N (N (N tab8 ⟨166528,171264,1148273930⟩ tab9) ⟨172032,175872,10731190103⟩ (N tab10 ⟨197012,200722,815654⟩ tab11)) ⟨197524,202962,53710199⟩ (N (N tab12 ⟨198034,203472,187565689⟩ tab13) ⟨198592,202816,434106245⟩ (N tab14 ⟨199424,204800,942451069⟩ tab15)))) ⟨204800,205596,8235234748⟩ (N (N (N (N tab16 ⟨212992,213504,16264029169⟩ tab17) ⟨229904,237568,6678975⟩ (N tab18 ⟨230404,235330,65456388⟩ tab19)) ⟨230822,236548,156913362⟩ (N (N tab20 ⟨231292,235776,313942050⟩ tab21) ⟨231849,235223,569533418⟩ (N tab22 ⟨233138,237568,1367016756⟩ tab23))) ⟨237568,240116,6004310295⟩ (N (N (N tab24 ⟨245760,246592,12113034436⟩ tab25) ⟨262660,269250,6361312⟩ (N tab26 ⟨263400,269348,91342837⟩ tab27)) ⟨264468,270258,382438769⟩ (N (N tab28 ⟨270336,271568,4781349269⟩ tab29) ⟨270336,278304,4334673510⟩ (N tab30 ⟨296332,303104,101996445⟩ tab31)))))
+
+theorem tab0_ok : tab0.allOk = true := by decide +kernel
+
+theorem tab1_ok : tab1.allOk = true := by decide +kernel
+
+theorem tab2_ok : tab2.allOk = true := by decide +kernel
+
+theorem tab3_ok : tab3.allOk = true := by decide +kernel
+
+theorem tab4_ok : tab4.allOk = true := by decide +kernel
+
+theorem tab5_ok : tab5.allOk = true := by decide +kernel
+
+theorem tab6_ok : tab6.allOk = true := by decide +kernel
+
+theorem tab7_ok : tab7.allOk = true := by decide +kernel
+
+theorem tab8_ok : tab8.allOk = true := by decide +kernel
+
+theorem tab9_ok : tab9.allOk = true := by decide +kernel
+
+theorem tab10_ok : tab10.allOk = true := by decide +kernel
+
+theorem tab11_ok : tab11.allOk = true := by decide +kernel
+
+theorem tab12_ok : tab12.allOk = true := by decide +kernel
+
+theorem tab13_ok : tab13.allOk = true := by decide +kernel
+
+theorem tab14_ok : tab14.allOk = true := by decide +kernel
+
+theorem tab15_ok : tab15.allOk = true := by decide +kernel
+
+theorem tab16_ok : tab16.allOk = true := by decide +kernel
+
+theorem tab17_ok : tab17.allOk = true := by decide +kernel
+
+theorem tab18_ok : tab18.allOk = true := by decide +kernel
+
+theorem tab19_ok : tab19.allOk = true := by decide +kernel
+
+theorem tab20_ok : tab20.allOk = true := by decide +kernel
+
+theorem tab21_ok : tab21.allOk = true := by decide +kernel
+
+theorem tab22_ok : tab22.allOk = true := by decide +kernel
+
+theorem tab23_ok : tab23.allOk = true := by decide +kernel
+
+theorem tab24_ok : tab24.allOk = true := by decide +kernel
+
+theorem tab25_ok : tab25.allOk = true := by decide +kernel
+
+theorem tab26_ok : tab26.allOk = true := by decide +kernel
+
+theorem tab27_ok : tab27.allOk = true := by decide +kernel
+
+theorem tab28_ok : tab28.allOk = true := by decide +kernel
+
+theorem tab29_ok : tab29.allOk = true := by decide +kernel
+
+theorem tab30_ok : tab30.allOk = true := by decide +kernel
+
+theorem tab31_ok : tab31.allOk = true := by decide +kernel
+
+theorem table_ok : table.allOk = true := by
+  simp only [table, CTN.allOk, tab0_ok, tab1_ok, tab2_ok, tab3_ok, tab4_ok, tab5_ok, tab6_ok, tab7_ok, tab8_ok, tab9_ok, tab10_ok, tab11_ok, tab12_ok, tab13_ok, tab14_ok, tab15_ok, tab16_ok, tab17_ok, tab18_ok, tab19_ok, tab20_ok, tab21_ok, tab22_ok, tab23_ok, tab24_ok, tab25_ok, tab26_ok, tab27_ok, tab28_ok, tab29_ok, tab30_ok, tab31_ok, Bool.true_and, Bool.and_true]
+  decide +kernel
+
+def cover0 : List (ℕ × ℕ × Bool) := [
+  (16384, 24576, true),
+  (24576, 28672, true),
+  (28672, 30720, true),
+  (30720, 39936, false),
+  (39936, 40448, true),
+  (40448, 40960, true),
+  (40960, 43008, true),
+  (43008, 45056, true),
+  (45056, 49152, true),
+  (49152, 53248, true),
+  (53248, 55296, true),
+  (55296, 57344, true),
+  (57344, 57856, true),
+  (57856, 401408, false)]
+
+theorem cover0_ok : SixW15A.coverCheck table 25715100 (SC / 2) 401408 cover0 = true := by decide +kernel
+
+def cover1 : List (ℕ × ℕ × Bool) := [
+  (16384, 24576, true),
+  (24576, 28672, true),
+  (28672, 30720, true),
+  (30720, 31744, true),
+  (31744, 38400, false),
+  (38400, 38912, true),
+  (38912, 40960, true),
+  (40960, 49152, true),
+  (49152, 57344, true),
+  (57344, 59392, true),
+  (59392, 60416, true),
+  (60416, 74240, false),
+  (74240, 74496, true),
+  (74496, 74752, true),
+  (74752, 75776, true),
+  (75776, 77824, true),
+  (77824, 81920, true),
+  (81920, 86016, true),
+  (86016, 88064, true),
+  (88064, 88576, true),
+  (88576, 88832, true),
+  (88832, 89088, true),
+  (89088, 237568, false)]
+
+theorem cover1_ok : SixW15A.coverCheck table 48318100 (SC / 2) 237568 cover1 = true := by decide +kernel
+
+def cover2 : List (ℕ × ℕ × Bool) := [
+  (16384, 24576, true),
+  (24576, 28672, true),
+  (28672, 30720, true),
+  (30720, 31744, true),
+  (31744, 37888, false),
+  (37888, 38016, true),
+  (38016, 38144, true),
+  (38144, 38400, true),
+  (38400, 38912, true),
+  (38912, 40960, true),
+  (40960, 49152, true),
+  (49152, 57344, true),
+  (57344, 59392, true),
+  (59392, 60416, true),
+  (60416, 73728, false),
+  (73728, 73984, true),
+  (73984, 74240, true),
+  (74240, 74752, true),
+  (74752, 75776, true),
+  (75776, 77824, true),
+  (77824, 81920, true),
+  (81920, 86016, true),
+  (86016, 88064, true),
+  (88064, 89088, true),
+  (89088, 89344, true),
+  (89344, 89600, true),
+  (89600, 221184, false)]
+
+theorem cover2_ok : SixW15A.coverCheck table 52857300 (SC / 2) 221184 cover2 = true := by decide +kernel
+
+def cover3 : List (ℕ × ℕ × Bool) := [
+  (16384, 24576, true),
+  (24576, 28672, true),
+  (28672, 30720, true),
+  (30720, 31744, true),
+  (31744, 38400, false),
+  (38400, 38912, true),
+  (38912, 40960, true),
+  (40960, 49152, true),
+  (49152, 57344, true),
+  (57344, 59392, true),
+  (59392, 60416, true),
+  (60416, 74240, false),
+  (74240, 74496, true),
+  (74496, 74752, true),
+  (74752, 75776, true),
+  (75776, 77824, true),
+  (77824, 81920, true),
+  (81920, 86016, true),
+  (86016, 88064, true),
+  (88064, 88576, true),
+  (88576, 88832, true),
+  (88832, 88960, true),
+  (88960, 89088, true),
+  (89088, 237568, false)]
+
+theorem cover3_ok : SixW15A.coverCheck table 48170700 (SC / 2) 237568 cover3 = true := by decide +kernel
+
+def cover4 : List (ℕ × ℕ × Bool) := [
+  (16384, 24576, true),
+  (24576, 28672, true),
+  (28672, 30720, true),
+  (30720, 39936, false),
+  (39936, 40448, true),
+  (40448, 40960, true),
+  (40960, 43008, true),
+  (43008, 45056, true),
+  (45056, 49152, true),
+  (49152, 53248, true),
+  (53248, 55296, true),
+  (55296, 57344, true),
+  (57344, 57856, true),
+  (57856, 409600, false)]
+
+theorem cover4_ok : SixW15A.coverCheck table 24938600 (SC / 2) 409600 cover4 = true := by decide +kernel
+
+def bits : ℕ := 6617345366883656859763357831932390164930723854604104414772017587160887731206702693961674513099952508296770572355593078618174482941222942969187985288542896217854906365040794889117494227743324033851714008930092909162048753972342093085198448230595833315795915977203892783453542936964065459764736171857024791081083885239783866661314425062384233699536283197679637349693853417862523627797282029058059985392911131892199231028032580732908673931731342185383002870768763560996835525810403082687515900832057274380201387683271322769812491029815985072633497552343424388132959781549954591806535821034936655581531386297214099581155691538014094155723303669445220231231088348513583171061955733809239256881239262362669947719262984530277406243525462502324625284902538269777767786006210975168275493035603164458526960458774990922451097659360250678717353993360274554178799160665396972317596732470140151818895284109719028530003765091733320626876278905484765398878099388770827152437663026452369949425441376963823067188153293650090917019544778056696485183960541504282001823282033904790785384389382987292780876626112214650894389178050451259487029303087049001336321743210221939209307350635888163229179842326167313584122743453755272380025294345493519896762653713472730245586127005511712417883864990847249719017950875204088924634187513322324472336394517481841566860214373594520350014846736242629606928673596083321019243207621986498341465913588273703953097621337333175858496242508029017508046116275526672321055471132809312109931050525206540050792044344832119007502324547906183263264940992371798672098389110448898144540628776365303319045902947737220599818212775181636689338440082281022321657343132345691356165121858334591622238473046727913046769393661049844847605967108225964129694133626718550003465945284719868521234228476525892511780515433628899914569226094265157989062411376850067324466843049849223192024432271551204461588123253191508474190714014064880771989707574112249368663836591335697124020716122789121352973390502407804352218727569720873316004626717825767491293970847353345543337277401752053375667230351410194087536633239024810015829723788405617847871886811999682699732155378958723467092737364308048299309508830595988224761441507313461616691496242629932555977377844322450080351071123428689229423855307889642020104017149973990251346905221427495644899977664388004900674676355992852603545075633448326752021895414226707811801712797258089974997852872327302812286093685432588147821082434310500234905962021133144962902315152452657438770108558284403354381811135658770603447592898808936469342129242901220457754346705030826560069467588993614974149684519214039624595642868045163348201391469055520127691529323758869382209450604851373054026742472003942552592701527082700416408610477672764748844947090935116792576950975486492540226985753488547908972822334524161148008244326786034991689675024149165264234446666623768618222445198281089328736552194061279800033649629707788509058243395837604928645548531599034779559668106053747245982361880740091867412111426629604172192131139959164861878513109460095870025652831320156259157366392977628055984769387301268624593538775968243116626510109203862726839667811636912101900595496849125491020888317092817985047270117238931488279823002838338238655881526282905599395042444207658024655284392836238335141685116472434494286077622409932889595305922415541547015774045075973762979081623161457558047953647489945309324462548171820224522326926395495558481115342948273914493972879662064164626259917156710943159486927918437675611143168319801625764647590857597184961304279526818646263932300136975802569916276944882487332218324145082239237674334154287585831309141916193481312451000343003972583685007591591935684733906919867976381226831747899549920771741399761391969490688707046624703278895702057027123465797417060216241083185638829290437400375212079494364330662964163434789741573436020960570438224700628862896494992877582727410513980959844654468794744047902525645171719850999483321621668863509511886773304936672262409295612628868407622795207162584262907693810664103937874574262944756998675098035753925618851328533081799906487997155241021138384738196696991576970607190395335093991358967249188507894954791157272814241936986183038406338044493051134483204244613152599723573316772561105275359187784247340918596412377074669673995017195615917844013133339745311558161854441589356960987239737571549772747394455484731801824846474449135021517093730317207753793094143467157182856709742671073423367359836070053964276630154397945629734187608990119978779458870997463280994673437350941949970676292908183633073026471698126441770371356634147581880504857909815568010840349746560371232523537840470909044884235217923486904734307290170308426127835896766855395008879567546627077130376113073238121536742459023611140670415169842502557730281130404615954010162262102299593003630029669153760620906146692763014487932389023065257806341730676589178002187281379063564983872552583702977961925889374846523827608548974260658913728847767014272654693413039166570753947738577580733351369275163445677881432286382356462910944327627188583219891315556978486369512035093779906319906649325121893285008971034238873410092708990971973710707727859896423740011978243476433043545167817809600421364831788796315395773319581035534270805043891316812910900829806075881389665925275910699220874587874810893829849278753133801049930385463789993376968284517552788220552906039103221572484402908413976905800439721305552736112991667547415888305974013832545001606132502552735675086964980461005785769865967393103003888876584507177754802333781361404147643385371729975788584454213533657019807565179133474160606516795020684836430221571677203368543979333931650418865635937278002893963848394412157877870832823134856837122339112137101290922815613154351522186506405519132897765708379403145246177275261012385667893559921560354383305545051315464823321957211386934800804636311312010949043636583658580357059658682921933051371019122033653402860638071969968292217697268288214451162576741040225717638166227572095937135453901497877665478227452931286388730505472215342060367214801462277542975855041836674117148606206473311650201132947986530957476040377598744706761459928283849201402438995084271443089734869614178426169644056435348452121873430527735567618792835776497977269040357627673141023713007617577198386160974452412611708397756094060560882203804745307185995308065403812066443310670523886427179626081091882924062178842504494706072582212362821188702368954473161627336203069098485798109141212988980376656853160482169779129964097746623713709161403707643618149093009442207374147551183115885905466521290163185270885188893649488362780175194771288826086348880583421008002450230722886617347610772590487526933430079041401159588536082341705823978053902286172955773785269552901509907016280887808627854440915497731472300994680158875256895437689611554049804335095031914456482669448775582743319627121828700897193106884788488763230918056850288979238872828725036189216418591334372280084546116409952406892700398174346968648240880719887439054895994782842044502630807785448170453589227474143571204951119073004106358252627528388805116759017715051602620187496282839440769867053262180239582035604755856116543977173630376170274802899818570666820368676034408096596808350852764728000105139750564602912486509923518889474779152132573241815825878387856396700234834500799026751485274851891686398270174999961727711525650445207419942544971500516856489940963161653750837799551198123873368460428165086280970538262537145667620396752719323204121673927339044569930396168698187382626930288694932223538767855427137086444482108143795577901792112804655365982225142445473891475054383420390880650973751789830989180723371598486021282660876767855878653537994904931917695767922747773672715350752477832047933246200855222567628879457316446222497866741375017028427579533937655487286751239245771421011735075310142740412360081153460209519294836978130828769086550003794476703204639408434064407210945626606245506202463736678650066425690843594694097968091071750920666174991951306265825478166508419412060444162754819528166783176138558432632812944191683470240284533602984406711518284215041841650714685904715164365662349738029613857090108808750439996878530497761405589146041955613537629718439511733142021141475086687022643676167433592462541915964942122763034235159688149523481187587340805070796262302167931502720602404618820669755520133168353011704916456524262412280352344135324432940098583449411723174657406523310824210373901581517660888135688772655352876344133428702221322113143924502149004269215035571699911774031598806581409310914369599936528319174739153612490742147271366862241239990627881912042241385307191258019012368486258798133956293420910161129749089632082114854262527004282183176988839691093332198869292984431914227473607284586351357725816602403012997032365203652774323857478550143004974739757566308497027653850351328004071053153177705595265299713446014440591529861461439583668020046164501273580790091297712142144599542397580283602247986593765196484722456912354166696594982169179408682584695401540647004630592471806677838775125004259886734446284984099198929652367213059138587877034323193312662160237667562310723450873794101130472276163549129128433545479538577850505752333788191265936772158999120971269356495677573155977102132987391170831474302470843458793046824343547279087873881179094938565891968953718121813359917423895511425274150730609135342712219981295559660878417717896796539500094570541836881155819885138248074361090781956598273612358481462745836242016570989477522118753410368151206691070198694309138984960373096208401528152683519767807099228644237267730632652127114036638564660336009421610338099603080236085458756273221967445709292306416523832966085664486250325104298377089460979315302293870010617107165124619074935116060675328949294956524718716712086555847021124629713471822914787808111119580868913943911717402576415465255836339007912336820254249969402096221586055093632331858796146695863824550178684352368118356237440687981943550741224473867456402424908480416008997755442141744258123220359862144113100479065460635898636982727335516642253497404072640570371611644850350097811221639326993443467744332165171579374519505465426607970510141830620505082433675844727981538454898460804168289801475204227694483721586544566593369852142904409499632028914713876909736126195659498108275103547942977087964408173802574051294538174601393129743125784053158773479427780278558159427148132127664262833834328624210975353162265687035080553353192100899635959155040514838484017224682814893229654845935083359662185570761572650083014290262304088312808811865658482306386169236373770801592894574334021095160532353474185418436204039564372088128575089368199704380463447124520449667690357909733668010327657630888368105787781679039975918822827102385364697875486030148381830130270055900946725856389689542109577718402736535907391665718172705582151050689455709317395390709054215884204123219912223608739417868862994640229299667170271260871648854902024125693909579192511354786698945998683927097479940170156074287857393439967349321498445683065576707697999799776006448262267943264926747810051213907349036115380257948114220855488415565749657940021760399122420479073235008030723996072286714281724233581385547018316828455109064824922215281750752491420673538592534683221800381645354411772870007127275002008980385682609579551385773082807466356907219338941067337459937579356338218555227633006800614404432708648218177957580804321496467773497346701269729276687052581593796174511064485810941590425773154650611274835892795061866863469495242996987597575316450755767246474948954822124580454114496279819233796018506282387026674152244073980717259127938799444999584721448482974283259510623287699696411054596150571536614303636321886568033503581282862825246766723485568981210741499041330350195826354481397559889606828079033631412160681542383907285825769493253869881277534816892594899164283724197965111905998341560004431884001794394996210355874919341694455785506270190215722051980375439312332413196767175180922424284609256623371476752055006252810082322522467521683188444301498746971859130763476624011843038027955441728117074456579424689734736386542494831016345445545812912518401024379044426207203650414074607221144601013622627263823367233279586180562996150134624552594121716760824849105441439093484051685281031376926629732690716700693829675632738464594733751287682414195994538258961981940501312502509234742658204359193768525698223446778084232075227755751478912686114313471068573714027164286509254405174415286124103443270248707348827759223557047945145850639114587825366719159016905470433489201400186866750923542756626699392907732860850599568188320329812006818354510429047009130036843644702243116898829705353012774293350675343468486433056188180087664453278614009049371526846375000307299358335200434842768205019396721598491987148193749739030168922498520564686332822299729174665342487437631758818349373761411310126796885222197415493791507571497873415272543430307746179650993416502161219881227041441000120272943507359706250950391507770585178228812813571045896924228719825117614349333553177511095130892553075361606183284584127430263932365622622838975202103184856668657550279988871649450950142396939705216257707651924323274597174945111017758326617158578021802753495859104097345713956980573347783966406823567846244734511999699649129961433610124003776827171803865370598296189830351168623259964482050908625330736192699896940710499001278001225958451926390588953387227101176139436540163101291914122648927057224692145726014859322202424546710984391432726739096993279007598749083734287927556876891335470354354894483177916969088721931346635075363967510924820118824131108943914356953673332736098925300587095907313950322362145131873756181594971148157382818530177155146083480689967754239269842124653114416503903806143830795255542229076889164838148357790202465893976138501773763571242534405242132208407366126472036362486313234846596299383297346109820839411939778355641590606273046853261911579326041559629907833169536566279428424178171571697412014943619943491700025714914032385632812445353369689917681966009654067488970984300337995113684520689139170692684572292581155254791128401869386276950416779117223362949660328200914591859604447372658421600072405133446124713511350651730728775364930027547230879149841484204737591707758756996008399105251682529502262844258479991739343974492738091854055823802388589000339302121997784584363339857315225668044871056242318869465518163466654970038531489777938084825642728529822348682134167430835110618421068547762107548676556652992484164623688538831741090288736596005974215530680049426192586568194263040063832249233353835448953578185777287628792115763101417668935175037914860026655518124996631504346700408429560002426601299915976198249252511245085555190931357226994463848820065194830835053316496506167762369253662215456688901426179667485093130040026164309568987604453740400092076969832002546659310727307848636077885232103354168299792215817525913947046751680122157920013249238131134061937977770732504603341432225311723938460233818840113870127760733562771293134175530583836897369534038602958487744497981836465219411011203154317912592043862636011471298511168497605793481285098661806801041281707249368508585075977714206847276075386903885422512839401028061192585732614931557800685634922086970132870921037880455250790485890282953275071389133348069469577147182446714975265669301544378679045490610636184787715662061438611337751240679132276531774050020092654810369172428528639613960889526665596303659810463991836477032440146857094714319590325479950257875380158656023104336079132753546334301775614737067737595779107653138925819831227554518472000560068054296508499878451302388590431669757454395844610228735901458654766118120457308349849776942499757306022084975191938782038544618542065043345718220304619882333648920782434213238688242866882095105405762238633904490146957605176327682649554377774686512839054240822181130669242267571894608958065511607915767010739926440287530979406864135365751738095880833049760361541930199765029827138210781841937840314188522536701357721843862655684668504536667963815051088727135405213447314177943424242332460749706765561908169862794808320620236593995681823076560794191492408854152429890852643892679090153024136176601009025946641448834592031590746092622107341277696231252567912332439271853038483599084482709003587894944233083249201626467269862121499242508724848865230876441753155548602934968518299552276187839545195251841551624670602165616508530708779596800913179395263774340138801498994631447487700322573248835253622661665954414046568048976530946912614726611261201116580576444746550350113304609856070775827993447877758412769819890880172210023782223175131026402413067112679587889561527707782420981416645376777969947500927265332399308737509701277130402729624381243014232447324674807203427217764908649970425247836581844983537863194591887926967838075432489192886710768316677512563622894785152833860136296147029083027202258286447425868260565240942359174658183696325235836525913768828962554728748943722693710291030377286935886147303905580032521267946097099145400972453541653248203106807761647187187214152400630150284905507171828364340675454619230218511134263408243909158672696592295849910105677360739370136129703606348089591792602571293058740628617593643868070719959087497986708172124217881969908395428019534395232204684916995910674979426096540939258476177626593842929294965020193128785449278374880701614481190423419952684722279657023725575257224457342908066772798496953816836974432874497178882327762671819262437327554292874508856141821888722670882272896463508217812118813883084539480492809663911388935415980911523900636250347647422140115577512199487699210825292853001617916383317762502529511303463314969933724876249815804200182188429577904436739691059853032005793129812937588421221393693410584823409405007081495795866735971564952029227030202221436751006442477542266899527376403216061541945261199838645836756734130513429855744028054497539498346697570893714782438786928309516176739507699844515323631415151260202944193997883268882029302886928058317758272915082947109988526214424037262917231057194764100553624980459830159141133777324750583300640628305333246944448039795982815695510795431164036243265269326467257448498514040151025063394839838520583746354791117903052076388668346788138714516434541240568471701965898656742529823905490656798894887364495181319927455718478933140477232779772413935626368418627102431256477279148666773770259528321320210026720505775563260725167496838575268644454738907177740511378669403970187013049292674923345201375351989447038436189943768529766944174008621173025266970140837338553734246529080927965037282487423054853824427381549900475243805320832237673780884248935445687475515051200549335211798604686367538094418581876234016012418314595144366104794723118483590081448715854230597457749186793565412147040102381410519529341314262710084758492713982789738281986920166780907275713302955139194343718900529616546008942243043148921004693497540132284704284442719753625383146220970167437733993853161330920600355855958701640306488474794682516815156480370633686031240960173970342918904787319315201738287983688522178625936649901286049448667091618872209387486515980891738667581179302224880435170819163057657580312326961118456223769230210098317137051379591213236625124292185667827748998047083471863705428124051831712186852836678299884509964836602184185072343538218811683953141843094602542673276202398763299133989063249425187875809745260963002943421147736779951673446786798704443107645555216853601088035258807779176249141953636907829581600644511735927576938470662241039134930521434462782916504775984779015711758791104119108323280063956363077100788365719437672164419859174530562238919820984097268123280640873000224090042653260657650697215134292300500261367030730364132793597473845966354143319910090928514788631447695240769705717099404456031736356237515975886428601427243631592563558853885832081657364546325158625419761917959398329604973873900372290860095965613126061732837968705975662248754201440952781444833436114629411830267284645176077684309985789597391059943060697904184610141097620129308144567584882465210002673216884584357719276679303403638606854118223769123579136585697416367408745090396606825868727998261153754008810067681812189111038139040257048040251293089438935354033684623918038651694985459953540577391638615637683509613670264488386844652337504852692458320629059211887250689479749121322916135371655460765721245268524271649270291114264825238405316792674059043159700925063523161111683780649815545849257701099575576347111697757789720468851701970111515831643973255548318626130589584406393189711352777217750573570096207030465693303854175958627524449002390303523693613213930743614148227949713241652508999367561727276415727731393969056191765824571170077746996021820131081958475080528761602674360577990498205580558122921362672132278839137876679068653635953011907142932413836359014952143246318064621476697218028332977341460375906397682980107900075695617876780230436747554279290014148920685601398143593391613238153018147999123039639306723088087883447049629640548730186843276825315877528557967701837815108872194403499178462735106582200596836941833074981333406106805615362820625398218318936500871911611508315001010955298822099784193345937616256124532374319663591916575297386949746171577066630338561288708469053575119674460840635271023777687308044360549706452681691905047027962833175973116886808887779206925037530113750622419662305944202935504333433630166328538637100514522114241072118450124460384585337327986837490374325174187108041985332586035211949571753843803742505179250527184726249415724750174710399386684301488996840337
+
+theorem wk0 : SixW15A.walk table bits 64 0 (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 31744 38400 30720 39936) = some 1451 := by decide +kernel
+
+theorem wk1 : SixW15A.walk table bits 64 1451 (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 31744 38400 57856 409600) = some 6167 := by decide +kernel
+
+theorem wk2 : SixW15A.walk table bits 64 6167 (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 60416 74240 30720 39936) = some 8513 := by decide +kernel
+
+theorem wk3 : SixW15A.walk table bits 64 8513 (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 60416 74240 57856 409600) = some 11854 := by decide +kernel
+
+theorem wk4 : SixW15A.walk table bits 64 11854 (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 89088 237568 30720 39936) = some 12865 := by decide +kernel
+
+theorem wk5 : SixW15A.walk table bits 64 12865 (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 89088 237568 57856 409600) = some 13486 := by decide +kernel
+
+theorem wk6 : SixW15A.walk table bits 64 13486 (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 31744 38400 30720 39936) = some 15462 := by decide +kernel
+
+theorem wk7 : SixW15A.walk table bits 64 15462 (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 31744 38400 57856 409600) = some 18633 := by decide +kernel
+
+theorem wk8 : SixW15A.walk table bits 64 18633 (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 60416 74240 30720 39936) = some 19829 := by decide +kernel
+
+theorem wk9 : SixW15A.walk table bits 64 19829 (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 60416 74240 57856 409600) = some 20380 := by decide +kernel
+
+theorem wk10 : SixW15A.walk table bits 64 20380 (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 89088 237568 30720 39936) = some 20521 := by decide +kernel
+
+theorem wk11 : SixW15A.walk table bits 64 20521 (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 89088 237568 57856 409600) = some 20522 := by decide +kernel
+
+theorem wk12 : SixW15A.walk table bits 64 20522 (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 31744 38400 30720 39936) = some 21228 := by decide +kernel
+
+theorem wk13 : SixW15A.walk table bits 64 21228 (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 31744 38400 57856 409600) = some 21639 := by decide +kernel
+
+theorem wk14 : SixW15A.walk table bits 64 21639 (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 60416 74240 30720 39936) = some 21715 := by decide +kernel
+
+theorem wk15 : SixW15A.walk table bits 64 21715 (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 60416 74240 57856 409600) = some 21716 := by decide +kernel
+
+theorem wk16 : SixW15A.walk table bits 64 21716 (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 89088 237568 30720 39936) = some 21717 := by decide +kernel
+
+theorem wk17 : SixW15A.walk table bits 64 21717 (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 89088 237568 57856 409600) = some 21718 := by decide +kernel
+
+theorem wk18 : SixW15A.walk table bits 64 21718 (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 31744 38400 30720 39936) = some 24144 := by decide +kernel
+
+theorem wk19 : SixW15A.walk table bits 64 24144 (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 31744 38400 57856 409600) = some 28645 := by decide +kernel
+
+theorem wk20 : SixW15A.walk table bits 64 28645 (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 60416 74240 30720 39936) = some 30521 := by decide +kernel
+
+theorem wk21 : SixW15A.walk table bits 64 30521 (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 60416 74240 57856 409600) = some 31502 := by decide +kernel
+
+theorem wk22 : SixW15A.walk table bits 64 31502 (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 89088 237568 30720 39936) = some 31713 := by decide +kernel
+
+theorem wk23 : SixW15A.walk table bits 64 31713 (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 89088 237568 57856 409600) = some 31769 := by decide +kernel
+
+theorem wk24 : SixW15A.walk table bits 64 31769 (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 31744 38400 30720 39936) = some 33035 := by decide +kernel
+
+theorem wk25 : SixW15A.walk table bits 64 33035 (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 31744 38400 57856 409600) = some 33651 := by decide +kernel
+
+theorem wk26 : SixW15A.walk table bits 64 33651 (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 60416 74240 30720 39936) = some 33832 := by decide +kernel
+
+theorem wk27 : SixW15A.walk table bits 64 33832 (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 60416 74240 57856 409600) = some 33833 := by decide +kernel
+
+theorem wk28 : SixW15A.walk table bits 64 33833 (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 89088 237568 30720 39936) = some 33834 := by decide +kernel
+
+theorem wk29 : SixW15A.walk table bits 64 33834 (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 89088 237568 57856 409600) = some 33835 := by decide +kernel
+
+theorem wk30 : SixW15A.walk table bits 64 33835 (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 31744 38400 30720 39936) = some 33916 := by decide +kernel
+
+theorem wk31 : SixW15A.walk table bits 64 33916 (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 31744 38400 57856 409600) = some 33917 := by decide +kernel
+
+theorem wk32 : SixW15A.walk table bits 64 33917 (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 60416 74240 30720 39936) = some 33918 := by decide +kernel
+
+theorem wk33 : SixW15A.walk table bits 64 33918 (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 60416 74240 57856 409600) = some 33919 := by decide +kernel
+
+theorem wk34 : SixW15A.walk table bits 64 33919 (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 89088 237568 30720 39936) = some 33920 := by decide +kernel
+
+theorem wk35 : SixW15A.walk table bits 64 33920 (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 89088 237568 57856 409600) = some 33921 := by decide +kernel
+
+theorem wk36 : SixW15A.walk table bits 64 33921 (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 31744 38400 30720 39936) = some 34987 := by decide +kernel
+
+theorem wk37 : SixW15A.walk table bits 64 34987 (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 31744 38400 57856 409600) = some 35678 := by decide +kernel
+
+theorem wk38 : SixW15A.walk table bits 64 35678 (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 60416 74240 30720 39936) = some 35884 := by decide +kernel
+
+theorem wk39 : SixW15A.walk table bits 64 35884 (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 60416 74240 57856 409600) = some 35940 := by decide +kernel
+
+theorem wk40 : SixW15A.walk table bits 64 35940 (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 89088 237568 30720 39936) = some 35941 := by decide +kernel
+
+theorem wk41 : SixW15A.walk table bits 64 35941 (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 89088 237568 57856 409600) = some 35942 := by decide +kernel
+
+theorem wk42 : SixW15A.walk table bits 64 35942 (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 31744 38400 30720 39936) = some 36068 := by decide +kernel
+
+theorem wk43 : SixW15A.walk table bits 64 36068 (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 31744 38400 57856 409600) = some 36069 := by decide +kernel
+
+theorem wk44 : SixW15A.walk table bits 64 36069 (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 60416 74240 30720 39936) = some 36070 := by decide +kernel
+
+theorem wk45 : SixW15A.walk table bits 64 36070 (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 60416 74240 57856 409600) = some 36071 := by decide +kernel
+
+theorem wk46 : SixW15A.walk table bits 64 36071 (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 89088 237568 30720 39936) = some 36072 := by decide +kernel
+
+theorem wk47 : SixW15A.walk table bits 64 36072 (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 89088 237568 57856 409600) = some 36073 := by decide +kernel
+
+theorem wk48 : SixW15A.walk table bits 64 36073 (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 31744 38400 30720 39936) = some 36074 := by decide +kernel
+
+theorem wk49 : SixW15A.walk table bits 64 36074 (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 31744 38400 57856 409600) = some 36075 := by decide +kernel
+
+theorem wk50 : SixW15A.walk table bits 64 36075 (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 60416 74240 30720 39936) = some 36076 := by decide +kernel
+
+theorem wk51 : SixW15A.walk table bits 64 36076 (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 60416 74240 57856 409600) = some 36077 := by decide +kernel
+
+theorem wk52 : SixW15A.walk table bits 64 36077 (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 89088 237568 30720 39936) = some 36078 := by decide +kernel
+
+theorem wk53 : SixW15A.walk table bits 64 36078 (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 89088 237568 57856 409600) = some 36079 := by decide +kernel
+
+theorem wk54 : SixW15A.walk table bits 64 36079 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 30720 39936) = some 40775 := by decide +kernel
+
+theorem wk62 : SixW15A.walk table bits 57 40803 (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 79840) = some 44199 := by decide +kernel
+
+theorem wk63 : SixW15A.walk table bits 57 44199 (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 79840 101824) = some 46145 := by decide +kernel
+
+theorem wk61 : SixW15A.walk table bits 58 40799 (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 101824) = some 46145 :=
+  SixW15A.walk_split table bits 57 40799 (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 101824) 44199 46145 (by decide +kernel)
+    (by rw [show ((SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 101824) : SixW15A.Box).setHi (SixW15A.axOf bits 40799) (SixW15A.Box.mid (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 101824) (SixW15A.axOf bits 40799)) = (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 79840) from by decide +kernel]; exact wk62)
+    (by rw [show ((SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 101824) : SixW15A.Box).setLo (SixW15A.axOf bits 40799) (SixW15A.Box.mid (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 101824) (SixW15A.axOf bits 40799)) = (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 79840 101824) from by decide +kernel]; exact wk63)
+
+theorem wk64 : SixW15A.walk table bits 58 46145 (SixW15A.Box.mk 100800 143744 31744 38400 31744 37888 31744 38400 57856 101824) = some 47386 := by decide +kernel
+
+theorem wk60 : SixW15A.walk table bits 59 40795 (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 101824) = some 47386 :=
+  SixW15A.walk_split table bits 58 40795 (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 101824) 46145 47386 (by decide +kernel)
+    (by rw [show ((SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 101824) : SixW15A.Box).setHi (SixW15A.axOf bits 40795) (SixW15A.Box.mid (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 101824) (SixW15A.axOf bits 40795)) = (SixW15A.Box.mk 57856 100800 31744 38400 31744 37888 31744 38400 57856 101824) from by decide +kernel]; exact wk61)
+    (by rw [show ((SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 101824) : SixW15A.Box).setLo (SixW15A.axOf bits 40795) (SixW15A.Box.mid (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 101824) (SixW15A.axOf bits 40795)) = (SixW15A.Box.mk 100800 143744 31744 38400 31744 37888 31744 38400 57856 101824) from by decide +kernel]; exact wk64)
+
+theorem wk65 : SixW15A.walk table bits 59 47386 (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 101824 145792) = some 48522 := by decide +kernel
+
+theorem wk59 : SixW15A.walk table bits 60 40791 (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 145792) = some 48522 :=
+  SixW15A.walk_split table bits 59 40791 (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 145792) 47386 48522 (by decide +kernel)
+    (by rw [show ((SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 145792) : SixW15A.Box).setHi (SixW15A.axOf bits 40791) (SixW15A.Box.mid (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 145792) (SixW15A.axOf bits 40791)) = (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 101824) from by decide +kernel]; exact wk60)
+    (by rw [show ((SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 145792) : SixW15A.Box).setLo (SixW15A.axOf bits 40791) (SixW15A.Box.mid (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 145792) (SixW15A.axOf bits 40791)) = (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 101824 145792) from by decide +kernel]; exact wk65)
+
+theorem wk66 : SixW15A.walk table bits 60 48522 (SixW15A.Box.mk 143744 229632 31744 38400 31744 37888 31744 38400 57856 145792) = some 48733 := by decide +kernel
+
+theorem wk58 : SixW15A.walk table bits 61 40787 (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 145792) = some 48733 :=
+  SixW15A.walk_split table bits 60 40787 (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 145792) 48522 48733 (by decide +kernel)
+    (by rw [show ((SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 145792) : SixW15A.Box).setHi (SixW15A.axOf bits 40787) (SixW15A.Box.mid (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 145792) (SixW15A.axOf bits 40787)) = (SixW15A.Box.mk 57856 143744 31744 38400 31744 37888 31744 38400 57856 145792) from by decide +kernel]; exact wk59)
+    (by rw [show ((SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 145792) : SixW15A.Box).setLo (SixW15A.axOf bits 40787) (SixW15A.Box.mid (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 145792) (SixW15A.axOf bits 40787)) = (SixW15A.Box.mk 143744 229632 31744 38400 31744 37888 31744 38400 57856 145792) from by decide +kernel]; exact wk66)
+
+theorem wk67 : SixW15A.walk table bits 61 48733 (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 145792 233728) = some 48979 := by decide +kernel
+
+theorem wk57 : SixW15A.walk table bits 62 40783 (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 233728) = some 48979 :=
+  SixW15A.walk_split table bits 61 40783 (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 233728) 48733 48979 (by decide +kernel)
+    (by rw [show ((SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 233728) : SixW15A.Box).setHi (SixW15A.axOf bits 40783) (SixW15A.Box.mid (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 233728) (SixW15A.axOf bits 40783)) = (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 145792) from by decide +kernel]; exact wk58)
+    (by rw [show ((SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 233728) : SixW15A.Box).setLo (SixW15A.axOf bits 40783) (SixW15A.Box.mid (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 233728) (SixW15A.axOf bits 40783)) = (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 145792 233728) from by decide +kernel]; exact wk67)
+
+theorem wk68 : SixW15A.walk table bits 62 48979 (SixW15A.Box.mk 229632 401408 31744 38400 31744 37888 31744 38400 57856 233728) = some 48980 := by decide +kernel
+
+theorem wk56 : SixW15A.walk table bits 63 40779 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 233728) = some 48980 :=
+  SixW15A.walk_split table bits 62 40779 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 233728) 48979 48980 (by decide +kernel)
+    (by rw [show ((SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 233728) : SixW15A.Box).setHi (SixW15A.axOf bits 40779) (SixW15A.Box.mid (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 233728) (SixW15A.axOf bits 40779)) = (SixW15A.Box.mk 57856 229632 31744 38400 31744 37888 31744 38400 57856 233728) from by decide +kernel]; exact wk57)
+    (by rw [show ((SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 233728) : SixW15A.Box).setLo (SixW15A.axOf bits 40779) (SixW15A.Box.mid (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 233728) (SixW15A.axOf bits 40779)) = (SixW15A.Box.mk 229632 401408 31744 38400 31744 37888 31744 38400 57856 233728) from by decide +kernel]; exact wk68)
+
+theorem wk69 : SixW15A.walk table bits 63 48980 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 233728 409600) = some 48981 := by decide +kernel
+
+theorem wk55 : SixW15A.walk table bits 64 40775 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 409600) = some 48981 :=
+  SixW15A.walk_split table bits 63 40775 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 409600) 48980 48981 (by decide +kernel)
+    (by rw [show ((SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 409600) : SixW15A.Box).setHi (SixW15A.axOf bits 40775) (SixW15A.Box.mid (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 409600) (SixW15A.axOf bits 40775)) = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 233728) from by decide +kernel]; exact wk56)
+    (by rw [show ((SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 409600) : SixW15A.Box).setLo (SixW15A.axOf bits 40775) (SixW15A.Box.mid (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 409600) (SixW15A.axOf bits 40775)) = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 233728 409600) from by decide +kernel]; exact wk69)
+
+theorem wk70 : SixW15A.walk table bits 64 48981 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 60416 74240 30720 39936) = some 53367 := by decide +kernel
+
+theorem wk71 : SixW15A.walk table bits 64 53367 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 60416 74240 57856 409600) = some 56018 := by decide +kernel
+
+theorem wk72 : SixW15A.walk table bits 64 56018 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 89088 237568 30720 39936) = some 56714 := by decide +kernel
+
+theorem wk73 : SixW15A.walk table bits 64 56714 (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 89088 237568 57856 409600) = some 56860 := by decide +kernel
+
+theorem wk74 : SixW15A.walk table bits 64 56860 (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 31744 38400 30720 39936) = some 60216 := by decide +kernel
+
+theorem wk75 : SixW15A.walk table bits 64 60216 (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 31744 38400 57856 409600) = some 62352 := by decide +kernel
+
+theorem wk76 : SixW15A.walk table bits 64 62352 (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 60416 74240 30720 39936) = some 62928 := by decide +kernel
+
+theorem wk77 : SixW15A.walk table bits 64 62928 (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 60416 74240 57856 409600) = some 63029 := by decide +kernel
+
+theorem wk78 : SixW15A.walk table bits 64 63029 (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 89088 237568 30720 39936) = some 63030 := by decide +kernel
+
+theorem wk79 : SixW15A.walk table bits 64 63030 (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 89088 237568 57856 409600) = some 63031 := by decide +kernel
+
+theorem wk80 : SixW15A.walk table bits 64 63031 (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 31744 38400 30720 39936) = some 63422 := by decide +kernel
+
+theorem wk81 : SixW15A.walk table bits 64 63422 (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 31744 38400 57856 409600) = some 63503 := by decide +kernel
+
+theorem wk82 : SixW15A.walk table bits 64 63503 (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 60416 74240 30720 39936) = some 63504 := by decide +kernel
+
+theorem wk83 : SixW15A.walk table bits 64 63504 (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 60416 74240 57856 409600) = some 63505 := by decide +kernel
+
+theorem wk84 : SixW15A.walk table bits 64 63505 (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 89088 237568 30720 39936) = some 63506 := by decide +kernel
+
+theorem wk85 : SixW15A.walk table bits 64 63506 (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 89088 237568 57856 409600) = some 63507 := by decide +kernel
+
+theorem wk86 : SixW15A.walk table bits 64 63507 (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 31744 38400 30720 39936) = some 66683 := by decide +kernel
+
+theorem wk87 : SixW15A.walk table bits 64 66683 (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 31744 38400 57856 409600) = some 69354 := by decide +kernel
+
+theorem wk88 : SixW15A.walk table bits 64 69354 (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 60416 74240 30720 39936) = some 70275 := by decide +kernel
+
+theorem wk89 : SixW15A.walk table bits 64 70275 (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 60416 74240 57856 409600) = some 70401 := by decide +kernel
+
+theorem wk90 : SixW15A.walk table bits 64 70401 (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 89088 237568 30720 39936) = some 70447 := by decide +kernel
+
+theorem wk91 : SixW15A.walk table bits 64 70447 (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 89088 237568 57856 409600) = some 70448 := by decide +kernel
+
+theorem wk92 : SixW15A.walk table bits 64 70448 (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 31744 38400 30720 39936) = some 71034 := by decide +kernel
+
+theorem wk93 : SixW15A.walk table bits 64 71034 (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 31744 38400 57856 409600) = some 71130 := by decide +kernel
+
+theorem wk94 : SixW15A.walk table bits 64 71130 (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 60416 74240 30720 39936) = some 71131 := by decide +kernel
+
+theorem wk95 : SixW15A.walk table bits 64 71131 (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 60416 74240 57856 409600) = some 71132 := by decide +kernel
+
+theorem wk96 : SixW15A.walk table bits 64 71132 (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 89088 237568 30720 39936) = some 71133 := by decide +kernel
+
+theorem wk97 : SixW15A.walk table bits 64 71133 (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 89088 237568 57856 409600) = some 71134 := by decide +kernel
+
+theorem wk98 : SixW15A.walk table bits 64 71134 (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 31744 38400 30720 39936) = some 71135 := by decide +kernel
+
+theorem wk99 : SixW15A.walk table bits 64 71135 (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 31744 38400 57856 409600) = some 71136 := by decide +kernel
+
+theorem wk100 : SixW15A.walk table bits 64 71136 (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 60416 74240 30720 39936) = some 71137 := by decide +kernel
+
+theorem wk101 : SixW15A.walk table bits 64 71137 (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 60416 74240 57856 409600) = some 71138 := by decide +kernel
+
+theorem wk102 : SixW15A.walk table bits 64 71138 (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 89088 237568 30720 39936) = some 71139 := by decide +kernel
+
+theorem wk103 : SixW15A.walk table bits 64 71139 (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 89088 237568 57856 409600) = some 71140 := by decide +kernel
+
+theorem wk104 : SixW15A.walk table bits 64 71140 (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 31744 38400 30720 39936) = some 71796 := by decide +kernel
+
+theorem wk105 : SixW15A.walk table bits 64 71796 (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 31744 38400 57856 409600) = some 71942 := by decide +kernel
+
+theorem wk106 : SixW15A.walk table bits 64 71942 (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 60416 74240 30720 39936) = some 71988 := by decide +kernel
+
+theorem wk107 : SixW15A.walk table bits 64 71988 (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 60416 74240 57856 409600) = some 71989 := by decide +kernel
+
+theorem wk108 : SixW15A.walk table bits 64 71989 (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 89088 237568 30720 39936) = some 71990 := by decide +kernel
+
+theorem wk109 : SixW15A.walk table bits 64 71990 (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 89088 237568 57856 409600) = some 71991 := by decide +kernel
+
+theorem wk110 : SixW15A.walk table bits 64 71991 (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 31744 38400 30720 39936) = some 71992 := by decide +kernel
+
+theorem wk111 : SixW15A.walk table bits 64 71992 (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 31744 38400 57856 409600) = some 71993 := by decide +kernel
+
+theorem wk112 : SixW15A.walk table bits 64 71993 (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 60416 74240 30720 39936) = some 71994 := by decide +kernel
+
+theorem wk113 : SixW15A.walk table bits 64 71994 (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 60416 74240 57856 409600) = some 71995 := by decide +kernel
+
+theorem wk114 : SixW15A.walk table bits 64 71995 (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 89088 237568 30720 39936) = some 71996 := by decide +kernel
+
+theorem wk115 : SixW15A.walk table bits 64 71996 (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 89088 237568 57856 409600) = some 71997 := by decide +kernel
+
+theorem wk116 : SixW15A.walk table bits 64 71997 (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 31744 38400 30720 39936) = some 71998 := by decide +kernel
+
+theorem wk117 : SixW15A.walk table bits 64 71998 (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 31744 38400 57856 409600) = some 71999 := by decide +kernel
+
+theorem wk118 : SixW15A.walk table bits 64 71999 (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 60416 74240 30720 39936) = some 72000 := by decide +kernel
+
+theorem wk119 : SixW15A.walk table bits 64 72000 (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 60416 74240 57856 409600) = some 72001 := by decide +kernel
+
+theorem wk120 : SixW15A.walk table bits 64 72001 (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 89088 237568 30720 39936) = some 72002 := by decide +kernel
+
+theorem wk121 : SixW15A.walk table bits 64 72002 (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 89088 237568 57856 409600) = some 72003 := by decide +kernel
+
+theorem nb0_eq : (SixW15A.badOf cover0).length = 2 := by decide +kernel
+
+theorem nb1_eq : (SixW15A.badOf cover1).length = 3 := by decide +kernel
+
+theorem nb2_eq : (SixW15A.badOf cover2).length = 3 := by decide +kernel
+
+theorem nb3_eq : (SixW15A.badOf cover3).length = 3 := by decide +kernel
+
+theorem nb4_eq : (SixW15A.badOf cover4).length = 2 := by decide +kernel
+
+theorem root_00000 : SixW15A.walk table bits 64 0 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 0 0) = some 1451 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 0 0 = (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 31744 38400 30720 39936) from by decide +kernel]; exact wk0
+
+theorem root_00001 : SixW15A.walk table bits 64 1451 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 0 1) = some 6167 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 0 1 = (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 31744 38400 57856 409600) from by decide +kernel]; exact wk1
+
+theorem root_00010 : SixW15A.walk table bits 64 6167 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 1 0) = some 8513 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 1 0 = (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 60416 74240 30720 39936) from by decide +kernel]; exact wk2
+
+theorem root_00011 : SixW15A.walk table bits 64 8513 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 1 1) = some 11854 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 1 1 = (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 60416 74240 57856 409600) from by decide +kernel]; exact wk3
+
+theorem root_00020 : SixW15A.walk table bits 64 11854 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 2 0) = some 12865 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 2 0 = (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 89088 237568 30720 39936) from by decide +kernel]; exact wk4
+
+theorem root_00021 : SixW15A.walk table bits 64 12865 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 2 1) = some 13486 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 0 2 1 = (SixW15A.Box.mk 30720 39936 31744 38400 31744 37888 89088 237568 57856 409600) from by decide +kernel]; exact wk5
+
+theorem root_00100 : SixW15A.walk table bits 64 13486 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 0 0) = some 15462 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 0 0 = (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 31744 38400 30720 39936) from by decide +kernel]; exact wk6
+
+theorem root_00101 : SixW15A.walk table bits 64 15462 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 0 1) = some 18633 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 0 1 = (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 31744 38400 57856 409600) from by decide +kernel]; exact wk7
+
+theorem root_00110 : SixW15A.walk table bits 64 18633 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 1 0) = some 19829 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 1 0 = (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 60416 74240 30720 39936) from by decide +kernel]; exact wk8
+
+theorem root_00111 : SixW15A.walk table bits 64 19829 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 1 1) = some 20380 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 1 1 = (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 60416 74240 57856 409600) from by decide +kernel]; exact wk9
+
+theorem root_00120 : SixW15A.walk table bits 64 20380 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 2 0) = some 20521 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 2 0 = (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 89088 237568 30720 39936) from by decide +kernel]; exact wk10
+
+theorem root_00121 : SixW15A.walk table bits 64 20521 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 2 1) = some 20522 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 1 2 1 = (SixW15A.Box.mk 30720 39936 31744 38400 60416 73728 89088 237568 57856 409600) from by decide +kernel]; exact wk11
+
+theorem root_00200 : SixW15A.walk table bits 64 20522 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 0 0) = some 21228 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 0 0 = (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 31744 38400 30720 39936) from by decide +kernel]; exact wk12
+
+theorem root_00201 : SixW15A.walk table bits 64 21228 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 0 1) = some 21639 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 0 1 = (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 31744 38400 57856 409600) from by decide +kernel]; exact wk13
+
+theorem root_00210 : SixW15A.walk table bits 64 21639 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 1 0) = some 21715 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 1 0 = (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 60416 74240 30720 39936) from by decide +kernel]; exact wk14
+
+theorem root_00211 : SixW15A.walk table bits 64 21715 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 1 1) = some 21716 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 1 1 = (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 60416 74240 57856 409600) from by decide +kernel]; exact wk15
+
+theorem root_00220 : SixW15A.walk table bits 64 21716 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 2 0) = some 21717 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 2 0 = (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 89088 237568 30720 39936) from by decide +kernel]; exact wk16
+
+theorem root_00221 : SixW15A.walk table bits 64 21717 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 2 1) = some 21718 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 0 2 2 1 = (SixW15A.Box.mk 30720 39936 31744 38400 89600 221184 89088 237568 57856 409600) from by decide +kernel]; exact wk17
+
+theorem root_01000 : SixW15A.walk table bits 64 21718 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 0 0) = some 24144 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 0 0 = (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 31744 38400 30720 39936) from by decide +kernel]; exact wk18
+
+theorem root_01001 : SixW15A.walk table bits 64 24144 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 0 1) = some 28645 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 0 1 = (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 31744 38400 57856 409600) from by decide +kernel]; exact wk19
+
+theorem root_01010 : SixW15A.walk table bits 64 28645 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 1 0) = some 30521 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 1 0 = (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 60416 74240 30720 39936) from by decide +kernel]; exact wk20
+
+theorem root_01011 : SixW15A.walk table bits 64 30521 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 1 1) = some 31502 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 1 1 = (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 60416 74240 57856 409600) from by decide +kernel]; exact wk21
+
+theorem root_01020 : SixW15A.walk table bits 64 31502 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 2 0) = some 31713 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 2 0 = (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 89088 237568 30720 39936) from by decide +kernel]; exact wk22
+
+theorem root_01021 : SixW15A.walk table bits 64 31713 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 2 1) = some 31769 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 0 2 1 = (SixW15A.Box.mk 30720 39936 60416 74240 31744 37888 89088 237568 57856 409600) from by decide +kernel]; exact wk23
+
+theorem root_01100 : SixW15A.walk table bits 64 31769 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 0 0) = some 33035 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 0 0 = (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 31744 38400 30720 39936) from by decide +kernel]; exact wk24
+
+theorem root_01101 : SixW15A.walk table bits 64 33035 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 0 1) = some 33651 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 0 1 = (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 31744 38400 57856 409600) from by decide +kernel]; exact wk25
+
+theorem root_01110 : SixW15A.walk table bits 64 33651 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 1 0) = some 33832 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 1 0 = (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 60416 74240 30720 39936) from by decide +kernel]; exact wk26
+
+theorem root_01111 : SixW15A.walk table bits 64 33832 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 1 1) = some 33833 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 1 1 = (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 60416 74240 57856 409600) from by decide +kernel]; exact wk27
+
+theorem root_01120 : SixW15A.walk table bits 64 33833 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 2 0) = some 33834 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 2 0 = (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 89088 237568 30720 39936) from by decide +kernel]; exact wk28
+
+theorem root_01121 : SixW15A.walk table bits 64 33834 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 2 1) = some 33835 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 1 2 1 = (SixW15A.Box.mk 30720 39936 60416 74240 60416 73728 89088 237568 57856 409600) from by decide +kernel]; exact wk29
+
+theorem root_01200 : SixW15A.walk table bits 64 33835 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 0 0) = some 33916 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 0 0 = (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 31744 38400 30720 39936) from by decide +kernel]; exact wk30
+
+theorem root_01201 : SixW15A.walk table bits 64 33916 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 0 1) = some 33917 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 0 1 = (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 31744 38400 57856 409600) from by decide +kernel]; exact wk31
+
+theorem root_01210 : SixW15A.walk table bits 64 33917 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 1 0) = some 33918 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 1 0 = (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 60416 74240 30720 39936) from by decide +kernel]; exact wk32
+
+theorem root_01211 : SixW15A.walk table bits 64 33918 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 1 1) = some 33919 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 1 1 = (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 60416 74240 57856 409600) from by decide +kernel]; exact wk33
+
+theorem root_01220 : SixW15A.walk table bits 64 33919 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 2 0) = some 33920 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 2 0 = (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 89088 237568 30720 39936) from by decide +kernel]; exact wk34
+
+theorem root_01221 : SixW15A.walk table bits 64 33920 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 2 1) = some 33921 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 1 2 2 1 = (SixW15A.Box.mk 30720 39936 60416 74240 89600 221184 89088 237568 57856 409600) from by decide +kernel]; exact wk35
+
+theorem root_02000 : SixW15A.walk table bits 64 33921 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 0 0) = some 34987 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 0 0 = (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 31744 38400 30720 39936) from by decide +kernel]; exact wk36
+
+theorem root_02001 : SixW15A.walk table bits 64 34987 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 0 1) = some 35678 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 0 1 = (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 31744 38400 57856 409600) from by decide +kernel]; exact wk37
+
+theorem root_02010 : SixW15A.walk table bits 64 35678 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 1 0) = some 35884 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 1 0 = (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 60416 74240 30720 39936) from by decide +kernel]; exact wk38
+
+theorem root_02011 : SixW15A.walk table bits 64 35884 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 1 1) = some 35940 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 1 1 = (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 60416 74240 57856 409600) from by decide +kernel]; exact wk39
+
+theorem root_02020 : SixW15A.walk table bits 64 35940 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 2 0) = some 35941 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 2 0 = (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 89088 237568 30720 39936) from by decide +kernel]; exact wk40
+
+theorem root_02021 : SixW15A.walk table bits 64 35941 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 2 1) = some 35942 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 0 2 1 = (SixW15A.Box.mk 30720 39936 89088 237568 31744 37888 89088 237568 57856 409600) from by decide +kernel]; exact wk41
+
+theorem root_02100 : SixW15A.walk table bits 64 35942 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 0 0) = some 36068 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 0 0 = (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 31744 38400 30720 39936) from by decide +kernel]; exact wk42
+
+theorem root_02101 : SixW15A.walk table bits 64 36068 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 0 1) = some 36069 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 0 1 = (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 31744 38400 57856 409600) from by decide +kernel]; exact wk43
+
+theorem root_02110 : SixW15A.walk table bits 64 36069 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 1 0) = some 36070 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 1 0 = (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 60416 74240 30720 39936) from by decide +kernel]; exact wk44
+
+theorem root_02111 : SixW15A.walk table bits 64 36070 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 1 1) = some 36071 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 1 1 = (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 60416 74240 57856 409600) from by decide +kernel]; exact wk45
+
+theorem root_02120 : SixW15A.walk table bits 64 36071 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 2 0) = some 36072 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 2 0 = (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 89088 237568 30720 39936) from by decide +kernel]; exact wk46
+
+theorem root_02121 : SixW15A.walk table bits 64 36072 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 2 1) = some 36073 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 1 2 1 = (SixW15A.Box.mk 30720 39936 89088 237568 60416 73728 89088 237568 57856 409600) from by decide +kernel]; exact wk47
+
+theorem root_02200 : SixW15A.walk table bits 64 36073 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 0 0) = some 36074 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 0 0 = (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 31744 38400 30720 39936) from by decide +kernel]; exact wk48
+
+theorem root_02201 : SixW15A.walk table bits 64 36074 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 0 1) = some 36075 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 0 1 = (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 31744 38400 57856 409600) from by decide +kernel]; exact wk49
+
+theorem root_02210 : SixW15A.walk table bits 64 36075 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 1 0) = some 36076 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 1 0 = (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 60416 74240 30720 39936) from by decide +kernel]; exact wk50
+
+theorem root_02211 : SixW15A.walk table bits 64 36076 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 1 1) = some 36077 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 1 1 = (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 60416 74240 57856 409600) from by decide +kernel]; exact wk51
+
+theorem root_02220 : SixW15A.walk table bits 64 36077 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 2 0) = some 36078 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 2 0 = (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 89088 237568 30720 39936) from by decide +kernel]; exact wk52
+
+theorem root_02221 : SixW15A.walk table bits 64 36078 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 2 1) = some 36079 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 0 2 2 2 1 = (SixW15A.Box.mk 30720 39936 89088 237568 89600 221184 89088 237568 57856 409600) from by decide +kernel]; exact wk53
+
+theorem root_10000 : SixW15A.walk table bits 64 36079 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 0 0) = some 40775 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 0 0 = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 30720 39936) from by decide +kernel]; exact wk54
+
+theorem root_10001 : SixW15A.walk table bits 64 40775 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 0 1) = some 48981 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 0 1 = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 31744 38400 57856 409600) from by decide +kernel]; exact wk55
+
+theorem root_10010 : SixW15A.walk table bits 64 48981 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 1 0) = some 53367 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 1 0 = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 60416 74240 30720 39936) from by decide +kernel]; exact wk70
+
+theorem root_10011 : SixW15A.walk table bits 64 53367 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 1 1) = some 56018 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 1 1 = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 60416 74240 57856 409600) from by decide +kernel]; exact wk71
+
+theorem root_10020 : SixW15A.walk table bits 64 56018 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 2 0) = some 56714 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 2 0 = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 89088 237568 30720 39936) from by decide +kernel]; exact wk72
+
+theorem root_10021 : SixW15A.walk table bits 64 56714 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 2 1) = some 56860 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 0 2 1 = (SixW15A.Box.mk 57856 401408 31744 38400 31744 37888 89088 237568 57856 409600) from by decide +kernel]; exact wk73
+
+theorem root_10100 : SixW15A.walk table bits 64 56860 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 0 0) = some 60216 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 0 0 = (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 31744 38400 30720 39936) from by decide +kernel]; exact wk74
+
+theorem root_10101 : SixW15A.walk table bits 64 60216 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 0 1) = some 62352 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 0 1 = (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 31744 38400 57856 409600) from by decide +kernel]; exact wk75
+
+theorem root_10110 : SixW15A.walk table bits 64 62352 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 1 0) = some 62928 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 1 0 = (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 60416 74240 30720 39936) from by decide +kernel]; exact wk76
+
+theorem root_10111 : SixW15A.walk table bits 64 62928 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 1 1) = some 63029 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 1 1 = (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 60416 74240 57856 409600) from by decide +kernel]; exact wk77
+
+theorem root_10120 : SixW15A.walk table bits 64 63029 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 2 0) = some 63030 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 2 0 = (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 89088 237568 30720 39936) from by decide +kernel]; exact wk78
+
+theorem root_10121 : SixW15A.walk table bits 64 63030 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 2 1) = some 63031 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 1 2 1 = (SixW15A.Box.mk 57856 401408 31744 38400 60416 73728 89088 237568 57856 409600) from by decide +kernel]; exact wk79
+
+theorem root_10200 : SixW15A.walk table bits 64 63031 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 0 0) = some 63422 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 0 0 = (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 31744 38400 30720 39936) from by decide +kernel]; exact wk80
+
+theorem root_10201 : SixW15A.walk table bits 64 63422 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 0 1) = some 63503 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 0 1 = (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 31744 38400 57856 409600) from by decide +kernel]; exact wk81
+
+theorem root_10210 : SixW15A.walk table bits 64 63503 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 1 0) = some 63504 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 1 0 = (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 60416 74240 30720 39936) from by decide +kernel]; exact wk82
+
+theorem root_10211 : SixW15A.walk table bits 64 63504 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 1 1) = some 63505 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 1 1 = (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 60416 74240 57856 409600) from by decide +kernel]; exact wk83
+
+theorem root_10220 : SixW15A.walk table bits 64 63505 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 2 0) = some 63506 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 2 0 = (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 89088 237568 30720 39936) from by decide +kernel]; exact wk84
+
+theorem root_10221 : SixW15A.walk table bits 64 63506 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 2 1) = some 63507 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 0 2 2 1 = (SixW15A.Box.mk 57856 401408 31744 38400 89600 221184 89088 237568 57856 409600) from by decide +kernel]; exact wk85
+
+theorem root_11000 : SixW15A.walk table bits 64 63507 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 0 0) = some 66683 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 0 0 = (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 31744 38400 30720 39936) from by decide +kernel]; exact wk86
+
+theorem root_11001 : SixW15A.walk table bits 64 66683 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 0 1) = some 69354 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 0 1 = (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 31744 38400 57856 409600) from by decide +kernel]; exact wk87
+
+theorem root_11010 : SixW15A.walk table bits 64 69354 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 1 0) = some 70275 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 1 0 = (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 60416 74240 30720 39936) from by decide +kernel]; exact wk88
+
+theorem root_11011 : SixW15A.walk table bits 64 70275 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 1 1) = some 70401 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 1 1 = (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 60416 74240 57856 409600) from by decide +kernel]; exact wk89
+
+theorem root_11020 : SixW15A.walk table bits 64 70401 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 2 0) = some 70447 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 2 0 = (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 89088 237568 30720 39936) from by decide +kernel]; exact wk90
+
+theorem root_11021 : SixW15A.walk table bits 64 70447 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 2 1) = some 70448 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 0 2 1 = (SixW15A.Box.mk 57856 401408 60416 74240 31744 37888 89088 237568 57856 409600) from by decide +kernel]; exact wk91
+
+theorem root_11100 : SixW15A.walk table bits 64 70448 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 0 0) = some 71034 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 0 0 = (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 31744 38400 30720 39936) from by decide +kernel]; exact wk92
+
+theorem root_11101 : SixW15A.walk table bits 64 71034 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 0 1) = some 71130 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 0 1 = (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 31744 38400 57856 409600) from by decide +kernel]; exact wk93
+
+theorem root_11110 : SixW15A.walk table bits 64 71130 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 1 0) = some 71131 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 1 0 = (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 60416 74240 30720 39936) from by decide +kernel]; exact wk94
+
+theorem root_11111 : SixW15A.walk table bits 64 71131 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 1 1) = some 71132 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 1 1 = (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 60416 74240 57856 409600) from by decide +kernel]; exact wk95
+
+theorem root_11120 : SixW15A.walk table bits 64 71132 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 2 0) = some 71133 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 2 0 = (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 89088 237568 30720 39936) from by decide +kernel]; exact wk96
+
+theorem root_11121 : SixW15A.walk table bits 64 71133 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 2 1) = some 71134 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 1 2 1 = (SixW15A.Box.mk 57856 401408 60416 74240 60416 73728 89088 237568 57856 409600) from by decide +kernel]; exact wk97
+
+theorem root_11200 : SixW15A.walk table bits 64 71134 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 0 0) = some 71135 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 0 0 = (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 31744 38400 30720 39936) from by decide +kernel]; exact wk98
+
+theorem root_11201 : SixW15A.walk table bits 64 71135 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 0 1) = some 71136 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 0 1 = (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 31744 38400 57856 409600) from by decide +kernel]; exact wk99
+
+theorem root_11210 : SixW15A.walk table bits 64 71136 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 1 0) = some 71137 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 1 0 = (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 60416 74240 30720 39936) from by decide +kernel]; exact wk100
+
+theorem root_11211 : SixW15A.walk table bits 64 71137 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 1 1) = some 71138 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 1 1 = (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 60416 74240 57856 409600) from by decide +kernel]; exact wk101
+
+theorem root_11220 : SixW15A.walk table bits 64 71138 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 2 0) = some 71139 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 2 0 = (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 89088 237568 30720 39936) from by decide +kernel]; exact wk102
+
+theorem root_11221 : SixW15A.walk table bits 64 71139 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 2 1) = some 71140 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 1 2 2 1 = (SixW15A.Box.mk 57856 401408 60416 74240 89600 221184 89088 237568 57856 409600) from by decide +kernel]; exact wk103
+
+theorem root_12000 : SixW15A.walk table bits 64 71140 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 0 0) = some 71796 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 0 0 = (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 31744 38400 30720 39936) from by decide +kernel]; exact wk104
+
+theorem root_12001 : SixW15A.walk table bits 64 71796 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 0 1) = some 71942 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 0 1 = (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 31744 38400 57856 409600) from by decide +kernel]; exact wk105
+
+theorem root_12010 : SixW15A.walk table bits 64 71942 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 1 0) = some 71988 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 1 0 = (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 60416 74240 30720 39936) from by decide +kernel]; exact wk106
+
+theorem root_12011 : SixW15A.walk table bits 64 71988 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 1 1) = some 71989 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 1 1 = (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 60416 74240 57856 409600) from by decide +kernel]; exact wk107
+
+theorem root_12020 : SixW15A.walk table bits 64 71989 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 2 0) = some 71990 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 2 0 = (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 89088 237568 30720 39936) from by decide +kernel]; exact wk108
+
+theorem root_12021 : SixW15A.walk table bits 64 71990 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 2 1) = some 71991 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 0 2 1 = (SixW15A.Box.mk 57856 401408 89088 237568 31744 37888 89088 237568 57856 409600) from by decide +kernel]; exact wk109
+
+theorem root_12100 : SixW15A.walk table bits 64 71991 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 0 0) = some 71992 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 0 0 = (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 31744 38400 30720 39936) from by decide +kernel]; exact wk110
+
+theorem root_12101 : SixW15A.walk table bits 64 71992 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 0 1) = some 71993 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 0 1 = (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 31744 38400 57856 409600) from by decide +kernel]; exact wk111
+
+theorem root_12110 : SixW15A.walk table bits 64 71993 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 1 0) = some 71994 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 1 0 = (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 60416 74240 30720 39936) from by decide +kernel]; exact wk112
+
+theorem root_12111 : SixW15A.walk table bits 64 71994 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 1 1) = some 71995 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 1 1 = (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 60416 74240 57856 409600) from by decide +kernel]; exact wk113
+
+theorem root_12120 : SixW15A.walk table bits 64 71995 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 2 0) = some 71996 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 2 0 = (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 89088 237568 30720 39936) from by decide +kernel]; exact wk114
+
+theorem root_12121 : SixW15A.walk table bits 64 71996 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 2 1) = some 71997 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 1 2 1 = (SixW15A.Box.mk 57856 401408 89088 237568 60416 73728 89088 237568 57856 409600) from by decide +kernel]; exact wk115
+
+theorem root_12200 : SixW15A.walk table bits 64 71997 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 0 0) = some 71998 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 0 0 = (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 31744 38400 30720 39936) from by decide +kernel]; exact wk116
+
+theorem root_12201 : SixW15A.walk table bits 64 71998 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 0 1) = some 71999 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 0 1 = (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 31744 38400 57856 409600) from by decide +kernel]; exact wk117
+
+theorem root_12210 : SixW15A.walk table bits 64 71999 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 1 0) = some 72000 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 1 0 = (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 60416 74240 30720 39936) from by decide +kernel]; exact wk118
+
+theorem root_12211 : SixW15A.walk table bits 64 72000 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 1 1) = some 72001 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 1 1 = (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 60416 74240 57856 409600) from by decide +kernel]; exact wk119
+
+theorem root_12220 : SixW15A.walk table bits 64 72001 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 2 0) = some 72002 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 2 0 = (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 89088 237568 30720 39936) from by decide +kernel]; exact wk120
+
+theorem root_12221 : SixW15A.walk table bits 64 72002 (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 2 1) = some 72003 := by
+  rw [show SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) 1 2 2 2 1 = (SixW15A.Box.mk 57856 401408 89088 237568 89600 221184 89088 237568 57856 409600) from by decide +kernel]; exact wk121
+
+theorem run_ok : ∀ i0 i1 i2 i3 i4, i0 < (SixW15A.badOf cover0).length → i1 < (SixW15A.badOf cover1).length → i2 < (SixW15A.badOf cover2).length → i3 < (SixW15A.badOf cover3).length → i4 < (SixW15A.badOf cover4).length →
+    ∃ pos pos', SixW15A.walk table bits 64 pos (SixW15A.boxOf (SixW15A.badOf cover0) (SixW15A.badOf cover1) (SixW15A.badOf cover2) (SixW15A.badOf cover3) (SixW15A.badOf cover4) i0 i1 i2 i3 i4) = some pos' := by
+  intro i0 i1 i2 i3 i4 hi0 hi1 hi2 hi3 hi4
+  rw [nb0_eq] at hi0
+  rw [nb1_eq] at hi1
+  rw [nb2_eq] at hi2
+  rw [nb3_eq] at hi3
+  rw [nb4_eq] at hi4
+  match i0, i1, i2, i3, i4, hi0, hi1, hi2, hi3, hi4 with
+  | 0, 0, 0, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_00000⟩
+  | 0, 0, 0, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_00001⟩
+  | 0, 0, 0, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_00010⟩
+  | 0, 0, 0, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_00011⟩
+  | 0, 0, 0, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_00020⟩
+  | 0, 0, 0, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_00021⟩
+  | 0, 0, 1, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_00100⟩
+  | 0, 0, 1, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_00101⟩
+  | 0, 0, 1, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_00110⟩
+  | 0, 0, 1, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_00111⟩
+  | 0, 0, 1, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_00120⟩
+  | 0, 0, 1, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_00121⟩
+  | 0, 0, 2, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_00200⟩
+  | 0, 0, 2, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_00201⟩
+  | 0, 0, 2, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_00210⟩
+  | 0, 0, 2, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_00211⟩
+  | 0, 0, 2, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_00220⟩
+  | 0, 0, 2, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_00221⟩
+  | 0, 1, 0, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_01000⟩
+  | 0, 1, 0, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_01001⟩
+  | 0, 1, 0, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_01010⟩
+  | 0, 1, 0, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_01011⟩
+  | 0, 1, 0, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_01020⟩
+  | 0, 1, 0, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_01021⟩
+  | 0, 1, 1, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_01100⟩
+  | 0, 1, 1, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_01101⟩
+  | 0, 1, 1, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_01110⟩
+  | 0, 1, 1, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_01111⟩
+  | 0, 1, 1, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_01120⟩
+  | 0, 1, 1, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_01121⟩
+  | 0, 1, 2, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_01200⟩
+  | 0, 1, 2, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_01201⟩
+  | 0, 1, 2, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_01210⟩
+  | 0, 1, 2, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_01211⟩
+  | 0, 1, 2, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_01220⟩
+  | 0, 1, 2, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_01221⟩
+  | 0, 2, 0, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_02000⟩
+  | 0, 2, 0, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_02001⟩
+  | 0, 2, 0, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_02010⟩
+  | 0, 2, 0, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_02011⟩
+  | 0, 2, 0, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_02020⟩
+  | 0, 2, 0, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_02021⟩
+  | 0, 2, 1, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_02100⟩
+  | 0, 2, 1, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_02101⟩
+  | 0, 2, 1, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_02110⟩
+  | 0, 2, 1, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_02111⟩
+  | 0, 2, 1, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_02120⟩
+  | 0, 2, 1, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_02121⟩
+  | 0, 2, 2, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_02200⟩
+  | 0, 2, 2, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_02201⟩
+  | 0, 2, 2, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_02210⟩
+  | 0, 2, 2, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_02211⟩
+  | 0, 2, 2, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_02220⟩
+  | 0, 2, 2, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_02221⟩
+  | 1, 0, 0, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_10000⟩
+  | 1, 0, 0, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_10001⟩
+  | 1, 0, 0, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_10010⟩
+  | 1, 0, 0, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_10011⟩
+  | 1, 0, 0, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_10020⟩
+  | 1, 0, 0, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_10021⟩
+  | 1, 0, 1, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_10100⟩
+  | 1, 0, 1, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_10101⟩
+  | 1, 0, 1, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_10110⟩
+  | 1, 0, 1, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_10111⟩
+  | 1, 0, 1, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_10120⟩
+  | 1, 0, 1, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_10121⟩
+  | 1, 0, 2, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_10200⟩
+  | 1, 0, 2, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_10201⟩
+  | 1, 0, 2, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_10210⟩
+  | 1, 0, 2, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_10211⟩
+  | 1, 0, 2, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_10220⟩
+  | 1, 0, 2, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_10221⟩
+  | 1, 1, 0, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_11000⟩
+  | 1, 1, 0, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_11001⟩
+  | 1, 1, 0, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_11010⟩
+  | 1, 1, 0, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_11011⟩
+  | 1, 1, 0, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_11020⟩
+  | 1, 1, 0, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_11021⟩
+  | 1, 1, 1, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_11100⟩
+  | 1, 1, 1, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_11101⟩
+  | 1, 1, 1, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_11110⟩
+  | 1, 1, 1, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_11111⟩
+  | 1, 1, 1, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_11120⟩
+  | 1, 1, 1, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_11121⟩
+  | 1, 1, 2, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_11200⟩
+  | 1, 1, 2, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_11201⟩
+  | 1, 1, 2, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_11210⟩
+  | 1, 1, 2, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_11211⟩
+  | 1, 1, 2, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_11220⟩
+  | 1, 1, 2, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_11221⟩
+  | 1, 2, 0, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_12000⟩
+  | 1, 2, 0, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_12001⟩
+  | 1, 2, 0, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_12010⟩
+  | 1, 2, 0, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_12011⟩
+  | 1, 2, 0, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_12020⟩
+  | 1, 2, 0, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_12021⟩
+  | 1, 2, 1, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_12100⟩
+  | 1, 2, 1, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_12101⟩
+  | 1, 2, 1, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_12110⟩
+  | 1, 2, 1, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_12111⟩
+  | 1, 2, 1, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_12120⟩
+  | 1, 2, 1, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_12121⟩
+  | 1, 2, 2, 0, 0, _, _, _, _, _ => exact ⟨_, _, root_12200⟩
+  | 1, 2, 2, 0, 1, _, _, _, _, _ => exact ⟨_, _, root_12201⟩
+  | 1, 2, 2, 1, 0, _, _, _, _, _ => exact ⟨_, _, root_12210⟩
+  | 1, 2, 2, 1, 1, _, _, _, _, _ => exact ⟨_, _, root_12211⟩
+  | 1, 2, 2, 2, 0, _, _, _, _, _ => exact ⟨_, _, root_12220⟩
+  | 1, 2, 2, 2, 1, _, _, _, _, _ => exact ⟨_, _, root_12221⟩
+  | i + 2, _, _, _, _, hi, _, _, _, _ => exact absurd hi (by omega)
+  | _, i + 3, _, _, _, _, hi, _, _, _ => exact absurd hi (by omega)
+  | _, _, i + 3, _, _, _, _, hi, _, _ => exact absurd hi (by omega)
+  | _, _, _, i + 3, _, _, _, _, hi, _ => exact absurd hi (by omega)
+  | _, _, _, _, i + 2, _, _, _, _, hi => exact absurd hi (by omega)
+
+theorem cert : ∀ g0 g1 g2 g3 g4 : ℝ, 0 ≤ g0 → 0 ≤ g1 → 0 ≤ g2 → 0 ≤ g3 → 0 ≤ g4 → (SixW15A.cN : ℝ) / SixW15A.SA ≤ SixW15A.G g0 g1 g2 g3 g4 :=
+  SixW15A.of_check table table_ok bits 64 cover0 cover1 cover2 cover3 cover4 401408 237568 221184 237568 409600
+    (by decide +kernel) (by decide +kernel) (by decide +kernel) (by decide +kernel) (by decide +kernel) cover0_ok cover1_ok cover2_ok cover3_ok cover4_ok (by decide +kernel) run_ok
+
+
+end Zeta23Ext.Bridge.ThreePoint.SixW15AData
+
+/-! ###### submission layer: constant-independent part ###### -/
+
+noncomputable section
+
+namespace RiemannFail
+
+open Filter
+open Zeta23 Zeta23.ThmD Zeta23Ext.Bridge Zeta23Ext.BridgeW
+
+/-- `(√2)⁻¹ = √2/2`. -/
+theorem inv_sqrt_two : (Real.sqrt 2)⁻¹ = Real.sqrt 2 / 2 := by
+  have hne : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num)).ne'
+  rw [inv_eq_one_div, div_eq_div_iff hne two_ne_zero, one_mul,
+    Real.mul_self_sqrt (by norm_num : (0:ℝ) ≤ 2)]
+
+/-- `HD 1 = 3/2 − γ` with `γ = (√2/2)·cot(√2/2)`, the constant `ThreePoint.gam`. -/
+theorem HD_one_eq_gam : HD 1 = 3 / 2 - ThreePoint.gam := by
+  rw [HD_one, inv_sqrt_two]
+  unfold ThreePoint.gam
+  ring
+
+/-- `H = HD 1` enclosed to `1.1·10⁻⁸`, from `ThreePoint.gam_bounds`. -/
+theorem HD_one_bounds :
+    (6725006982 / 10000000000 : ℝ) ≤ HD 1 ∧ HD 1 ≤ 6725007093 / 10000000000 := by
+  have hg := ThreePoint.gam_bounds
+  rw [HD_one_eq_gam]
+  norm_num at hg ⊢
+  constructor <;> linarith [hg.1, hg.2]
+
+/-- The library's Theorem-D constant `cStar 1` (division-safe form) equals the challenge's
+`cMT` (the tan form at ϑ = 1/√2): by `cStar_eq_tan_form` and unfolding `theta 1 = 1/√2`. -/
+theorem cStar_one_eq_cMT : Zeta23.ThmD.cStar 1 = cMT := by
+  rw [Zeta23.ThmD.cStar_eq_tan_form zero_le_one le_rfl]
+  unfold cMT Zeta23.ThmD.theta
+  rfl
+
+/-- The pinned record is `HD 1`. -/
+theorem currentRecordKappa_eq : currentRecordKappa = HD 1 := by
+  unfold currentRecordKappa Zeta23.ThmD.HD
+  rw [cStar_one_eq_cMT]
+
+/-- Simple on-line zeros are among the distinct on-line zeros. -/
+theorem N0simple_le_N0star (T₁ T₂ : ℝ) : Zeta23.N0simple T₁ T₂ ≤ Zeta23.N0star T₁ T₂ := by
+  refine Set.ncard_le_ncard Set.inter_subset_left ?_
+  refine (Zeta23.zetaSeam.finite_window T₁ T₂).subset ?_
+  rintro ρ ⟨⟨h1, h2, h3⟩, _⟩
+  exact ⟨h1, h2, h3⟩
+
+
+end RiemannFail
+
+end
+
+/-! ###### the 6-point weighted bound from the checked certificate `SixW15A` ###### -/
+
+noncomputable section
+
+namespace RiemannFail
+
+open Filter
+open Zeta23 Zeta23.ThmD Zeta23Ext.Bridge Zeta23Ext.BridgeW Zeta23Ext.Bridge.ThreePoint
+
+/-- the pair weights `a_ij` (zero unless `i < j`), over `100000000` -/
+def aW : Fin 6 → Fin 6 → ℝ
+  | 0, 1 => (25715100 : ℝ) / 100000000
+  | 0, 2 => (61242800 : ℝ) / 100000000
+  | 0, 3 => (40905100 : ℝ) / 100000000
+  | 0, 4 => (104929600 : ℝ) / 100000000
+  | 0, 5 => (200000000 : ℝ) / 100000000
+  | 1, 2 => (48318100 : ℝ) / 100000000
+  | 1, 3 => (40072400 : ℝ) / 100000000
+  | 1, 4 => (119746800 : ℝ) / 100000000
+  | 1, 5 => (95070300 : ℝ) / 100000000
+  | 2, 3 => (52857300 : ℝ) / 100000000
+  | 2, 4 => (35189000 : ℝ) / 100000000
+  | 2, 5 => (39348000 : ℝ) / 100000000
+  | 3, 4 => (48170700 : ℝ) / 100000000
+  | 3, 5 => (63495600 : ℝ) / 100000000
+  | 4, 5 => (24938600 : ℝ) / 100000000
+  | _, _ => 0
+
+/-- the per-gap pressures, over `100000000` -/
+def bW : Fin 5 → ℝ
+  | 0 => (25232 : ℝ) / 100000000
+  | 1 => (42025 : ℝ) / 100000000
+  | 2 => (46137 : ℝ) / 100000000
+  | 3 => (42044 : ℝ) / 100000000
+  | 4 => (24559 : ℝ) / 100000000
+
+def WW : WCert 6 := ⟨aW, bW⟩
+
+theorem aW_0_0 : aW 0 0 = 0 := rfl
+theorem aW_0_1 : aW 0 1 = (25715100 : ℝ) / 100000000 := rfl
+theorem aW_0_2 : aW 0 2 = (61242800 : ℝ) / 100000000 := rfl
+theorem aW_0_3 : aW 0 3 = (40905100 : ℝ) / 100000000 := rfl
+theorem aW_0_4 : aW 0 4 = (104929600 : ℝ) / 100000000 := rfl
+theorem aW_0_5 : aW 0 5 = (200000000 : ℝ) / 100000000 := rfl
+theorem aW_1_0 : aW 1 0 = 0 := rfl
+theorem aW_1_1 : aW 1 1 = 0 := rfl
+theorem aW_1_2 : aW 1 2 = (48318100 : ℝ) / 100000000 := rfl
+theorem aW_1_3 : aW 1 3 = (40072400 : ℝ) / 100000000 := rfl
+theorem aW_1_4 : aW 1 4 = (119746800 : ℝ) / 100000000 := rfl
+theorem aW_1_5 : aW 1 5 = (95070300 : ℝ) / 100000000 := rfl
+theorem aW_2_0 : aW 2 0 = 0 := rfl
+theorem aW_2_1 : aW 2 1 = 0 := rfl
+theorem aW_2_2 : aW 2 2 = 0 := rfl
+theorem aW_2_3 : aW 2 3 = (52857300 : ℝ) / 100000000 := rfl
+theorem aW_2_4 : aW 2 4 = (35189000 : ℝ) / 100000000 := rfl
+theorem aW_2_5 : aW 2 5 = (39348000 : ℝ) / 100000000 := rfl
+theorem aW_3_0 : aW 3 0 = 0 := rfl
+theorem aW_3_1 : aW 3 1 = 0 := rfl
+theorem aW_3_2 : aW 3 2 = 0 := rfl
+theorem aW_3_3 : aW 3 3 = 0 := rfl
+theorem aW_3_4 : aW 3 4 = (48170700 : ℝ) / 100000000 := rfl
+theorem aW_3_5 : aW 3 5 = (63495600 : ℝ) / 100000000 := rfl
+theorem aW_4_0 : aW 4 0 = 0 := rfl
+theorem aW_4_1 : aW 4 1 = 0 := rfl
+theorem aW_4_2 : aW 4 2 = 0 := rfl
+theorem aW_4_3 : aW 4 3 = 0 := rfl
+theorem aW_4_4 : aW 4 4 = 0 := rfl
+theorem aW_4_5 : aW 4 5 = (24938600 : ℝ) / 100000000 := rfl
+theorem aW_5_0 : aW 5 0 = 0 := rfl
+theorem aW_5_1 : aW 5 1 = 0 := rfl
+theorem aW_5_2 : aW 5 2 = 0 := rfl
+theorem aW_5_3 : aW 5 3 = 0 := rfl
+theorem aW_5_4 : aW 5 4 = 0 := rfl
+theorem aW_5_5 : aW 5 5 = 0 := rfl
+theorem bW_0 : bW 0 = (25232 : ℝ) / 100000000 := rfl
+theorem bW_1 : bW 1 = (42025 : ℝ) / 100000000 := rfl
+theorem bW_2 : bW 2 = (46137 : ℝ) / 100000000 := rfl
+theorem bW_3 : bW 3 = (42044 : ℝ) / 100000000 := rfl
+theorem bW_4 : bW 4 = (24559 : ℝ) / 100000000 := rfl
+
+theorem WW_B : WW.B = (179997 : ℝ) / 100000000 := by
+  show (∑ r : Fin 5, bW r) = _
+  norm_num [Fin.sum_univ_five, bW_0, bW_1, bW_2, bW_3, bW_4]
+
+theorem WW_a_nonneg : ∀ i j, 0 ≤ WW.a i j := by
+  intro i j
+  unfold WW
+  match i, j with
+  | 0, 0 => show (0:ℝ) ≤ aW 0 0; norm_num [aW_0_0]
+  | 0, 1 => show (0:ℝ) ≤ aW 0 1; norm_num [aW_0_1]
+  | 0, 2 => show (0:ℝ) ≤ aW 0 2; norm_num [aW_0_2]
+  | 0, 3 => show (0:ℝ) ≤ aW 0 3; norm_num [aW_0_3]
+  | 0, 4 => show (0:ℝ) ≤ aW 0 4; norm_num [aW_0_4]
+  | 0, 5 => show (0:ℝ) ≤ aW 0 5; norm_num [aW_0_5]
+  | 1, 0 => show (0:ℝ) ≤ aW 1 0; norm_num [aW_1_0]
+  | 1, 1 => show (0:ℝ) ≤ aW 1 1; norm_num [aW_1_1]
+  | 1, 2 => show (0:ℝ) ≤ aW 1 2; norm_num [aW_1_2]
+  | 1, 3 => show (0:ℝ) ≤ aW 1 3; norm_num [aW_1_3]
+  | 1, 4 => show (0:ℝ) ≤ aW 1 4; norm_num [aW_1_4]
+  | 1, 5 => show (0:ℝ) ≤ aW 1 5; norm_num [aW_1_5]
+  | 2, 0 => show (0:ℝ) ≤ aW 2 0; norm_num [aW_2_0]
+  | 2, 1 => show (0:ℝ) ≤ aW 2 1; norm_num [aW_2_1]
+  | 2, 2 => show (0:ℝ) ≤ aW 2 2; norm_num [aW_2_2]
+  | 2, 3 => show (0:ℝ) ≤ aW 2 3; norm_num [aW_2_3]
+  | 2, 4 => show (0:ℝ) ≤ aW 2 4; norm_num [aW_2_4]
+  | 2, 5 => show (0:ℝ) ≤ aW 2 5; norm_num [aW_2_5]
+  | 3, 0 => show (0:ℝ) ≤ aW 3 0; norm_num [aW_3_0]
+  | 3, 1 => show (0:ℝ) ≤ aW 3 1; norm_num [aW_3_1]
+  | 3, 2 => show (0:ℝ) ≤ aW 3 2; norm_num [aW_3_2]
+  | 3, 3 => show (0:ℝ) ≤ aW 3 3; norm_num [aW_3_3]
+  | 3, 4 => show (0:ℝ) ≤ aW 3 4; norm_num [aW_3_4]
+  | 3, 5 => show (0:ℝ) ≤ aW 3 5; norm_num [aW_3_5]
+  | 4, 0 => show (0:ℝ) ≤ aW 4 0; norm_num [aW_4_0]
+  | 4, 1 => show (0:ℝ) ≤ aW 4 1; norm_num [aW_4_1]
+  | 4, 2 => show (0:ℝ) ≤ aW 4 2; norm_num [aW_4_2]
+  | 4, 3 => show (0:ℝ) ≤ aW 4 3; norm_num [aW_4_3]
+  | 4, 4 => show (0:ℝ) ≤ aW 4 4; norm_num [aW_4_4]
+  | 4, 5 => show (0:ℝ) ≤ aW 4 5; norm_num [aW_4_5]
+  | 5, 0 => show (0:ℝ) ≤ aW 5 0; norm_num [aW_5_0]
+  | 5, 1 => show (0:ℝ) ≤ aW 5 1; norm_num [aW_5_1]
+  | 5, 2 => show (0:ℝ) ≤ aW 5 2; norm_num [aW_5_2]
+  | 5, 3 => show (0:ℝ) ≤ aW 5 3; norm_num [aW_5_3]
+  | 5, 4 => show (0:ℝ) ≤ aW 5 4; norm_num [aW_5_4]
+  | 5, 5 => show (0:ℝ) ≤ aW 5 5; norm_num [aW_5_5]
+
+theorem WW_bmin : ∀ r, ((24559 : ℝ) / 100000000) ≤ WW.b r := by
+  intro r
+  unfold WW
+  match r with
+  | 0 => show ((24559 : ℝ) / 100000000) ≤ bW 0; norm_num [bW_0]
+  | 1 => show ((24559 : ℝ) / 100000000) ≤ bW 1; norm_num [bW_1]
+  | 2 => show ((24559 : ℝ) / 100000000) ≤ bW 2; norm_num [bW_2]
+  | 3 => show ((24559 : ℝ) / 100000000) ≤ bW 3; norm_num [bW_3]
+  | 4 => show ((24559 : ℝ) / 100000000) ≤ bW 4; norm_num [bW_4]
+
+theorem WW_capacity : ∀ s : ℕ, WW.spanMass s ≤ 2 := by
+  intro s
+  unfold WCert.spanMass WW
+  rcases lt_or_ge s 6 with hs | hs
+  · interval_cases s <;> simp (config := { decide := true }) only [Fin.sum_univ_six, aW_0_0, aW_0_1, aW_0_2, aW_0_3, aW_0_4, aW_0_5, aW_1_0, aW_1_1, aW_1_2, aW_1_3, aW_1_4, aW_1_5, aW_2_0, aW_2_1, aW_2_2, aW_2_3, aW_2_4, aW_2_5, aW_3_0, aW_3_1, aW_3_2, aW_3_3, aW_3_4, aW_3_5, aW_4_0, aW_4_1, aW_4_2, aW_4_3, aW_4_4, aW_4_5, aW_5_0, aW_5_1, aW_5_2, aW_5_3, aW_5_4, aW_5_5, if_true, if_false] <;> norm_num
+  · have h0 : ∀ i j : Fin 6, ¬ ((i : ℕ) < (j : ℕ) ∧ (j : ℕ) - (i : ℕ) = s) := by
+      intro i j ⟨_, h⟩
+      have := j.2
+      omega
+    simp only [h0, if_false, Finset.sum_const_zero]
+    norm_num
+
+theorem WW_adm : WW.Adm := ⟨WW_a_nonneg, fun r => le_trans (by norm_num) (WW_bmin r), WW_capacity⟩
+
+private lemma sumQ (f : Fin (6 - 1) → ℝ) : ∑ i, f i = f 0 + f 1 + f 2 + f 3 + f 4 := by
+  show ∑ i : Fin 5, f i = f 0 + f 1 + f 2 + f 3 + f 4
+  exact Fin.sum_univ_five f
+
+/-- `Fw WW` written out on the gaps: it is the checker's functional `SixW15A.G`. -/
+theorem Fw_WW (g : Fin (6 - 1) → ℝ) : Fw WW g = SixW15A.G (g 0) (g 1) (g 2) (g 3) (g 4) := by
+  show (∑ r : Fin 5, bW r * g r) + (∑ i : Fin 6, ∑ j : Fin 6, if (i : ℕ) < (j : ℕ) then aW i j * wfun (ptsN 6 g j - ptsN 6 g i) else 0) = _
+  unfold SixW15A.G ptsN
+  simp only [sumQ, Fin.sum_univ_six, Fin.sum_univ_five, Fin.isValue, aW_0_0, aW_0_1, aW_0_2, aW_0_3, aW_0_4, aW_0_5, aW_1_0, aW_1_1, aW_1_2, aW_1_3, aW_1_4, aW_1_5, aW_2_0, aW_2_1, aW_2_2, aW_2_3, aW_2_4, aW_2_5, aW_3_0, aW_3_1, aW_3_2, aW_3_3, aW_3_4, aW_3_5, aW_4_0, aW_4_1, aW_4_2, aW_4_3, aW_4_4, aW_4_5, aW_5_0, aW_5_1, aW_5_2, aW_5_3, aW_5_4, aW_5_5, bW_0, bW_1, bW_2, bW_3, bW_4]
+  norm_num [SixW15A.SA]
+  try ring
+
+/-- the certificate hypothesis of `n_point_bound_w'` at `n = 6` -/
+theorem cert_WW : ∀ g : Fin (6 - 1) → ℝ, (∀ i, 0 ≤ g i) → (304544 : ℝ) / 100000000 ≤ Fw WW g := by
+  intro g hg
+  rw [Fw_WW]
+  have h := SixW15AData.cert (g 0) (g 1) (g 2) (g 3) (g 4) (hg 0) (hg 1) (hg 2) (hg 3) (hg 4)
+  simp only [SixW15A.cN, SixW15A.SA] at h
+  push_cast at h
+  exact h
+
+/-- `Phi_w' 6 c 333 B` as an exact rational in `HD 1` -/
+theorem Phi_WW : Phi_w' 6 ((304544 : ℝ) / 100000000) 333 ((179997 : ℝ) / 100000000)
+    = (4162500000 * HD 1 - 7379877) / 4150013696 := by
+  unfold Phi_w'
+  push_cast
+  rw [div_eq_div_iff (by norm_num) (by norm_num)]
+  ring
+
+/-- **The 6-point weighted bound, unconditional.** -/
+theorem bound_WW :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      ((4162500000 * HD 1 - 7379877) / 4150013696 - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0simple T (2 * T) := by
+  rw [← Phi_WW, ← WW_B]
+  exact n_point_bound_w' 6 ((304544 : ℝ) / 100000000) 333 WW (by norm_num) (by norm_num) WW_adm
+    (by norm_num : (0 : ℝ) < (24559 : ℝ) / 100000000) WW_bmin (by norm_num) cert_WW (by norm_num)
+
+/-- The candidate rational sits below the proved constant. -/
+theorem candidateKappa_le : candidateKappa ≤ (4162500000 * HD 1 - 7379877) / 4150013696 := by
+  unfold candidateKappa
+  rw [le_div_iff₀ (by norm_num : (0:ℝ) < 4150013696)]
+  linarith [HD_one_bounds.1]
+
+/-- The dyadic bound at the candidate rational, in the library's vocabulary. -/
+theorem dyadic :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0star T (2 * T) := by
+  intro ε hε
+  obtain ⟨T₀, hT₀⟩ := bound_WW ε hε
+  refine ⟨T₀, fun T hT => ?_⟩
+  have h1 := hT₀ T hT
+  have hN : (0:ℝ) ≤ (Zeta23.Ncount T (2 * T) : ℝ) := Nat.cast_nonneg _
+  have h2 : (Zeta23.N0simple T (2 * T) : ℝ) ≤ Zeta23.N0star T (2 * T) := by
+    exact_mod_cast N0simple_le_N0star T (2 * T)
+  have h0 : (candidateKappa - ε) * (Zeta23.Ncount T (2 * T) : ℝ)
+      ≤ ((4162500000 * HD 1 - 7379877) / 4150013696 - ε) * (Zeta23.Ncount T (2 * T) : ℝ) :=
+    mul_le_mul_of_nonneg_right (by linarith [candidateKappa_le]) hN
+  linarith
+
+/-- The cumulative form, through the library's dyadic-to-cumulative wrapper. -/
+theorem cumulative :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Zeta23.Ncount 0 T : ℝ) ≤ Zeta23.N0star 0 T :=
+  Zeta23.cumulative_of_dyadic Zeta23.zetaSeam Zeta23.paperInputs_zeta.RvM
+    (fun _ _ _ => Zeta23.N0star_add' Zeta23.zetaSeam) dyadic
+
+/-- Strict improvement over the record. -/
+theorem strict : currentRecordKappa < candidateKappa := by
+  rw [currentRecordKappa_eq]
+  unfold candidateKappa
+  linarith [HD_one_bounds.2]
+
+end RiemannFail
+
+end
+
+/-! ###### the three scored theorems, statements as generated by the trusted template ###### -/
+
+noncomputable section
+
+/-- The submitted bound is strictly larger than the current formal record. -/
+theorem candidate_strict_improvement :
+    currentRecordKappa < candidateKappa :=
+  RiemannFail.strict
+
+/-- The candidate proves a larger unconditional critical-line proportion on dyadic windows. -/
+theorem candidate_critical_line_bound :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Ncount T (2 * T) : ℝ) ≤ N0star T (2 * T) :=
+  RiemannFail.dyadic
+
+/-- The same unconditional bound in cumulative windows. -/
+theorem candidate_critical_line_bound_cumulative :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Ncount 0 T : ℝ) ≤ N0star 0 T :=
+  RiemannFail.cumulative
+
+end
+
+#print axioms candidate_strict_improvement
+#print axioms candidate_critical_line_bound
+#print axioms candidate_critical_line_bound_cumulative

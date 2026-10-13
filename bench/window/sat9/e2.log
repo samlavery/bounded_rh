@@ -1,0 +1,18 @@
+  E1-min     y=1.00 P= 4 | env relaxed: W/def   +33.476 (s    9.298) X    14.341 vs 4P+2M   18 chain     -33.88 | all relaxed: W/def   +33.169 X    14.420 chain     -33.54
+  AP 1/2     y=1.00 P= 4 | env relaxed: W/def  +211.515 (s    6.617) X    40.236 vs 4P+2M   18 chain    +907.90 | all relaxed: W/def   +33.011 X    14.421 chain     -34.60
+  AP 3/2     y=1.00 P= 4 | env relaxed: W/def +1047.903 (s    1.366) X    89.183 vs 4P+2M   18 chain   +6351.01 | all relaxed: W/def  +394.173 X    54.558 chain   +1889.17
+  E1-min     y=1.00 P= 8 | env relaxed: W/def   +19.356 (s   34.370) X    12.443 vs 4P+2M   34 chain    -199.49 | all relaxed: W/def   +18.595 X    12.778 chain    -206.78
+  AP 1/2     y=1.00 P= 8 | env relaxed: W/def  +110.481 (s   14.432) X    41.040 vs 4P+2M   34 chain    +317.80 | all relaxed: W/def   +14.236 X    12.702 chain    -230.55
+  AP 3/2     y=1.00 P= 8 | env relaxed: W/def  +965.767 (s    1.999) X   120.585 vs 4P+2M   34 chain  +10444.89 | all relaxed: W/def  +268.165 X    62.920 chain   +1574.92
+  E1-min     y=1.00 P=16 | env relaxed: W/def   +12.382 (s  104.762) X     9.195 vs 4P+2M   68 chain    -331.20 | all relaxed: W/def   +11.387 X    11.409 chain    -470.53
+  AP 1/2     y=1.00 P=16 | env relaxed: W/def   +53.372 (s   30.392) X    39.957 vs 4P+2M   66 chain    -979.82 | all relaxed: W/def    +7.287 X    11.240 chain    -536.48
+  AP 3/2     y=1.00 P=16 | env relaxed: W/def  +927.731 (s    3.250) X   166.754 vs 4P+2M   66 chain  +16807.68 | all relaxed: W/def  +201.369 X    76.481 chain    -106.07
+  E1-min     y=1.50 P= 4 | env relaxed: W/def +1432.039 (s   11.505) X   105.905 vs 4P+2M   18 chain   +9332.59 | all relaxed: W/def +1431.768 X   105.909 chain   +9333.29
+  AP 1/2     y=1.50 P= 4 | env relaxed: W/def +33661.615 (s    7.050) X   516.342 vs 4P+2M   18 chain +257329.07 | all relaxed: W/def +1433.020 X   105.909 chain   +9332.14
+  AP 3/2     y=1.50 P= 4 | env relaxed: W/def +119298.337 (s    1.767) X   970.853 vs 4P+2M   18 chain +925083.25 | all relaxed: W/def +41550.541 X   573.286 chain +317195.76
+  E1-min     y=1.50 P= 8 | env relaxed: W/def  +363.783 (s   42.789) X    73.474 vs 4P+2M   36 chain   +2838.94 | all relaxed: W/def  +363.422 X    73.500 chain   +2841.55
+  AP 1/2     y=1.50 P= 8 | env relaxed: W/def +23132.874 (s   14.814) X   605.437 vs 4P+2M   34 chain +345998.79 | all relaxed: W/def  +615.381 X    98.377 chain   +6378.34
+  AP 3/2     y=1.50 P= 8 | env relaxed: W/def +87845.803 (s    2.374) X  1177.272 vs 4P+2M   34 chain +1345946.55 | all relaxed: W/def +21411.887 X   581.436 chain +315982.12
+  E1-min     y=1.50 P=16 | env relaxed: W/def  +112.252 (s  109.872) X    55.608 vs 4P+2M   66 chain    -358.12 | all relaxed: W/def  +112.105 X    55.622 chain    -357.92
+  AP 1/2     y=1.50 P=16 | env relaxed: W/def +11358.366 (s   30.766) X   599.996 vs 4P+2M   66 chain +320456.88 | all relaxed: W/def  +314.627 X    96.973 chain   +3096.51
+  AP 3/2     y=1.50 P=16 | env relaxed: W/def +72961.192 (s    3.614) X  1516.372 vs 4P+2M   66 chain +2199312.04 | all relaxed: W/def +11995.497 X   614.743 chain +329970.90

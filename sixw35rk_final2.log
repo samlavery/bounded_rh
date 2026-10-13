@@ -1,0 +1,178 @@
+comparator/Solution/Cand35RKfinal.lean:5211:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:5521:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Cand35RKfinal.lean:5842:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:5855:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:5956:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:6651:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:6681:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:6711:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:6741:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:6771:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand35RKfinal.lean:11398:9: error: Tactic `unfold` failed: Local variable `cMT` has no definition
+comparator/Solution/Cand35RKfinal.lean:11403:9: error: Tactic `unfold` failed: Local variable `currentRecordKappa` has no definition
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Cand35RKfinal.lean:11620:9: error: Tactic `unfold` failed: Local variable `candidateKappa` has no definition
+comparator/Solution/Cand35RKfinal.lean:11637:45: error: don't know how to synthesize implicit argument `candidateKappa`
+  @candidateKappa_le ?m.162
+context:
+candidateKappa ε : ℝ
+hε : ε > 0
+T₀ : ℝ
+hT₀ : ∀ T ≥ T₀, ((9800000000 * HD 1 - 17339711) / 9766693039 - ε) * ↑(Ncount T (2 * T)) ≤ ↑(N0simple T (2 * T))
+T : ℝ
+hT : T ≥ T₀
+h1 : ((9800000000 * HD 1 - 17339711) / 9766693039 - ε) * ↑(Ncount T (2 * T)) ≤ ↑(N0simple T (2 * T))
+hN : 0 ≤ ↑(Ncount T (2 * T))
+h2 : ↑(N0simple T (2 * T)) ≤ ↑(N0star T (2 * T))
+⊢ ℝ
+comparator/Solution/Cand35RKfinal.lean:11637:32: error: unsolved goals
+candidateKappa ε : ℝ
+hε : ε > 0
+T₀ : ℝ
+hT₀ : ∀ T ≥ T₀, ((9800000000 * HD 1 - 17339711) / 9766693039 - ε) * ↑(Ncount T (2 * T)) ≤ ↑(N0simple T (2 * T))
+T : ℝ
+hT : T ≥ T₀
+h1 : ((9800000000 * HD 1 - 17339711) / 9766693039 - ε) * ↑(Ncount T (2 * T)) ≤ ↑(N0simple T (2 * T))
+hN : 0 ≤ ↑(Ncount T (2 * T))
+h2 : ↑(N0simple T (2 * T)) ≤ ↑(N0star T (2 * T))
+⊢ candidateKappa - ε ≤ (9800000000 * HD 1 - 17339711) / 9766693039 - ε
+comparator/Solution/Cand35RKfinal.lean:11648:17: error: typeclass instance problem is stuck
+  LT ?m.5
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `LT` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+comparator/Solution/Cand35RKfinal.lean:11663:4: error: typeclass instance problem is stuck
+  LT ?m.5
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `LT` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+comparator/Solution/Cand35RKfinal.lean:11669:30: error: Function expected at
+  Ncount
+but this term has type
+  ?m.2
+
+Note: Expected a function because this term is being applied to the argument
+  T
+
+Hint: The identifier `Ncount` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+comparator/Solution/Cand35RKfinal.lean:11669:54: error: Function expected at
+  N0star
+but this term has type
+  ?m.3
+
+Note: Expected a function because this term is being applied to the argument
+  T
+
+Hint: The identifier `N0star` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+comparator/Solution/Cand35RKfinal.lean:11675:30: error: Function expected at
+  Ncount
+but this term has type
+  ?m.2
+
+Note: Expected a function because this term is being applied to the argument
+  0
+
+Hint: The identifier `Ncount` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+comparator/Solution/Cand35RKfinal.lean:11675:48: error: Function expected at
+  N0star
+but this term has type
+  ?m.3
+
+Note: Expected a function because this term is being applied to the argument
+  0
+
+Hint: The identifier `N0star` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+comparator/Solution/Cand35RKfinal.lean:11680:14: error(lean.unknownIdentifier): Unknown constant `candidate_strict_improvement`
+'candidate_critical_line_bound' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+     1260.39 real      1233.35 user        24.45 sys
+         10612178944  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              813767  page reclaims
+                  41  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               11697  voluntary context switches
+               71768  involuntary context switches
+       9103512155778  instructions retired
+       4382434395599  cycles elapsed
+          4959181552  peak memory footprint

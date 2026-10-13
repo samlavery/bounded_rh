@@ -1,0 +1,24 @@
+AMW/BrTau.lean:25:17: warning: Variable name `hx` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hx
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+       25.11 real        14.15 user        10.77 sys
+          6064390144  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              450060  page reclaims
+                4630  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   3  voluntary context switches
+                3525  involuntary context switches
+        185438898185  instructions retired
+         81947077886  cycles elapsed
+          1031819232  peak memory footprint

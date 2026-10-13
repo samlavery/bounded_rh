@@ -1,0 +1,21 @@
+  it   0: LP +975.282016 ||grad|| 2.058e+04 min eig -7.667e+01 step 5.00e-01
+  it  20: LP +951.041980 ||grad|| 4.021e+01 min eig -2.397e+03 step 1.00e+00
+  it  40: LP +937.971166 ||grad|| 2.279e+02 min eig -1.079e+03 step 1.00e+00
+  it  60: LP +921.532515 ||grad|| 7.245e+01 min eig -2.064e+03 step 1.00e+00
+  it  80: LP +899.355616 ||grad|| 3.642e+01 min eig -3.111e+03 step 1.00e+00
+  it 100: LP +881.152182 ||grad|| 8.968e+01 min eig -2.139e+03 step 1.00e+00
+  it 120: LP +870.643811 ||grad|| 3.642e+03 min eig -3.481e+01 step 1.25e-01
+  it 140: LP +865.919102 ||grad|| 5.086e+03 min eig -8.668e+02 step 1.00e+00
+  it 160: LP +862.041465 ||grad|| 2.757e+03 min eig -8.662e+02 step 5.00e-01
+  it 180: LP +858.669987 ||grad|| 5.124e+03 min eig -7.730e+02 step 5.00e-01
+  it 200: LP +855.521389 ||grad|| 2.659e+03 min eig -3.834e+02 step 1.00e+00
+  it 220: LP +853.061289 ||grad|| 2.460e+03 min eig -4.634e+02 step 1.00e+00
+  it 240: LP +851.039077 ||grad|| 2.741e+03 min eig -8.617e+02 step 1.00e+00
+  it 260: LP +848.996394 ||grad|| 3.626e+03 min eig -3.144e+02 step 5.00e-01
+  it 280: LP +847.140380 ||grad|| 1.808e+03 min eig -1.060e+03 step 1.00e+00
+  it 300: LP +845.091110 ||grad|| 1.735e+03 min eig -2.438e+03 step 1.00e+00
+  it 320: LP +842.822616 ||grad|| 5.324e+03 min eig -2.315e+02 step 2.50e-01
+  it 340: LP +839.486314 ||grad|| 4.446e+03 min eig -2.794e+03 step 1.00e+00
+  it 360: LP +834.023679 ||grad|| 1.743e+04 min eig -9.783e+02 step 5.00e-01
+  it 380: LP +818.055964 ||grad|| 6.897e+04 min eig -1.881e+03 step 1.00e+00
+(b) P=512 N=2048 saddle-free Newton: LP +790.174636 (fresh check +790.174636) | ||grad|| 2.910e+04 (ratio 4.60e+01) | min Hess eig -1.274e+04 | its 399 | depths max 1.927 | 225s

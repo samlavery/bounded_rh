@@ -1,0 +1,15 @@
+== AMW.PC9QB4Data export
+export exit 0
+       13.01 real         1.49 user        11.07 sys
+          1149125696  peak memory footprint
+export bytes 2775672
+== AMW.PC9QB4Data nanoda
+nanoda exit 0
+        0.04 real         0.04 user         0.00 sys
+             7635256  peak memory footprint
+== AMW.PC9QB4Data lean replay (full closure)
+parse_ms 89 constants 573
+replay_ms 42 OK
+replayx exit 0
+        0.15 real         0.14 user         0.00 sys
+            14074384  peak memory footprint

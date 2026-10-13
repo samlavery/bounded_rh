@@ -1,0 +1,3 @@
+== MvtDefs.lean exit=0 wall=9.87s peak=841MB
+== MvtCore.lean exit=0 wall=14.93s peak=1458MB
+== MvtT.lean exit=0 wall=51.68s peak=1834MB

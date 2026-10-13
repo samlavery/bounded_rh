@@ -1,0 +1,64 @@
+HYBRID R8 A=2.0 depth grid [0, 0.000]: delta' 0.485307 (97.97% of R8 delta_true) -> kappa_cert 0.670757 | min eig M -6.3e-05 | pair charge / double charge: y=0.000: 1.0000, y=0.050: 1.0135, y=0.100: 1.0550  (8s)
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+HYBRID R8 A=3.0 depth grid [0, 0.000]: delta' 0.490910 (99.11% of R8 delta_true) -> kappa_cert 0.674515 | min eig M -5.9e-05 | pair charge / double charge: y=0.000: 1.0000, y=0.050: 1.0106, y=0.100: 1.0332  (17s)
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/band1/hybrid_cert.py", line 84, in <module>
+    else: g0v = -res.fun; dlt = g0v / 2; kap = 1 - EINF_R8 / dlt
+                                                   ~~~~~~~~^~~~~
+ZeroDivisionError: division by zero
+HYBRID joint A=2.0 depth grid [0, 0.000]: delta' 0.500000 (g_on(0) normalised) -> kappa_cert 0.674919 | min eig M -7.2e-08 | pair charge / double charge: y=0.000: 1.0000, y=0.050: 1.0118, y=0.100: 1.0471  (18s)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+HYBRID joint A=3.0 depth grid [0, 0.000]: delta' 0.500000 (g_on(0) normalised) -> kappa_cert 0.675896 | min eig M -1.4e-05 | pair charge / double charge: y=0.000: 1.0000, y=0.050: 1.0098, y=0.100: 1.0302  (26s)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)
+LP failed: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)

@@ -1,0 +1,2 @@
+FIXED  Q=6 B=0.00405: inf F ~ 0.00679105 -> Phi_w' = 0.6730007 at m=153 (0s)
+WEIGHTED Q=6 B=0.00405: eps* achieved 0.00704757 (LP upper 0.00704762) -> Phi_w' = 0.6731666 at m=147 [upper 0.6731666] (41s)

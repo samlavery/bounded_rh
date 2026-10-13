@@ -1,0 +1,40 @@
+N=32
+y = 0.2
+  (a) block P=4, vacancies contiguous            W/defect (units 2d'): lattice +0.21955 relaxed +0.17568 | relaxed split per defect: P_h +0.0319 T_g +0.0284 fields +0.0842 B-B +0.0311
+  (a) block P=4, vacancies spread                W/defect (units 2d'): lattice +0.18116 relaxed +0.13735 | relaxed split per defect: P_h +0.0286 T_g +0.0242 fields +0.0520 B-B +0.0326
+  (a) block P=8, vacancies contiguous            W/defect (units 2d'): lattice +0.14363 relaxed +0.11131 | relaxed split per defect: P_h +0.0311 T_g +0.0163 fields +0.0458 B-B +0.0181
+  (a) block P=8, vacancies spread                W/defect (units 2d'): lattice +0.12566 relaxed +0.09501 | relaxed split per defect: P_h +0.0282 T_g +0.0145 fields +0.0334 B-B +0.0189
+  (a) block P=12, vacancies contiguous           W/defect (units 2d'): lattice +0.11208 relaxed +0.08657 | relaxed split per defect: P_h +0.0287 T_g +0.0119 fields +0.0335 B-B +0.0125
+  (a) block P=12, vacancies spread               W/defect (units 2d'): lattice +0.11223 relaxed +0.08770 | relaxed split per defect: P_h +0.0275 T_g +0.0117 fields +0.0360 B-B +0.0125
+  (a) block P=16, vacancies contiguous           W/defect (units 2d'): lattice +0.10546 relaxed +0.08379 | relaxed split per defect: P_h +0.0274 T_g +0.0103 fields +0.0375 B-B +0.0086
+  (b) all mass in pairs, spacing 2               W/defect (units 2d'): lattice +0.45546 relaxed +0.45546 | relaxed split per defect: P_h +0.0045 T_g +0.0000 fields +0.4092 B-B +0.0417
+y = 0.4
+  (a) block P=4, vacancies contiguous            W/defect (units 2d'): lattice +2.28221 relaxed +0.72874 | relaxed split per defect: P_h +0.0411 T_g +0.1947 fields +0.2057 B-B +0.2872
+  (a) block P=4, vacancies spread                W/defect (units 2d'): lattice +2.10705 relaxed +0.59574 | relaxed split per defect: P_h +0.0500 T_g +0.1973 fields +0.0432 B-B +0.3053
+  (a) block P=8, vacancies contiguous            W/defect (units 2d'): lattice +1.52669 relaxed +0.39989 | relaxed split per defect: P_h +0.0603 T_g +0.0962 fields +0.0991 B-B +0.1443
+  (a) block P=8, vacancies spread                W/defect (units 2d'): lattice +1.45455 relaxed +0.34742 | relaxed split per defect: P_h +0.0643 T_g +0.0978 fields +0.0350 B-B +0.1503
+  (a) block P=12, vacancies contiguous           W/defect (units 2d'): lattice +1.15532 relaxed +0.28510 | relaxed split per defect: P_h +0.0555 T_g +0.0636 fields +0.0725 B-B +0.0935
+  (a) block P=12, vacancies spread               W/defect (units 2d'): lattice +1.16663 relaxed +0.29241 | relaxed split per defect: P_h +0.0549 T_g +0.0645 fields +0.0814 B-B +0.0916
+  (a) block P=16, vacancies contiguous           W/defect (units 2d'): lattice +0.97640 relaxed +0.26203 | relaxed split per defect: P_h +0.0477 T_g +0.0473 fields +0.1063 B-B +0.0608
+  (b) all mass in pairs, spacing 2               W/defect (units 2d'): lattice +2.61923 relaxed +2.61923 | relaxed split per defect: P_h +0.0045 T_g +0.0000 fields +1.8038 B-B +0.8109
+WORST relaxed W per defect: +0.08379 at ('a', 0.2, 16, False)
+N=128
+y = 0.2
+  (a) block P=16, vacancies contiguous           W/defect (units 2d'): lattice +0.09882 relaxed +0.07604 | relaxed split per defect: P_h +0.0274 T_g +0.0138 fields +0.0238 B-B +0.0111
+  (a) block P=16, vacancies spread               W/defect (units 2d'): lattice +0.08209 relaxed +0.05713 | relaxed split per defect: P_h +0.0214 T_g +0.0106 fields +0.0132 B-B +0.0119
+  (a) block P=32, vacancies contiguous           W/defect (units 2d'): lattice +0.06479 relaxed +0.05070 | relaxed split per defect: P_h +0.0235 T_g +0.0081 fields +0.0129 B-B +0.0062
+  (a) block P=32, vacancies spread               W/defect (units 2d'): lattice +0.05638 relaxed +0.04188 | relaxed split per defect: P_h +0.0193 T_g +0.0067 fields +0.0093 B-B +0.0066
+  (a) block P=48, vacancies contiguous           W/defect (units 2d'): lattice +0.05170 relaxed +0.04142 | relaxed split per defect: P_h +0.0217 T_g +0.0061 fields +0.0094 B-B +0.0043
+  (a) block P=48, vacancies spread               W/defect (units 2d'): lattice +0.05015 relaxed +0.04023 | relaxed split per defect: P_h +0.0199 T_g +0.0058 fields +0.0103 B-B +0.0043
+  (a) block P=64, vacancies contiguous           W/defect (units 2d'): lattice +0.04887 relaxed +0.04035 | relaxed split per defect: P_h +0.0210 T_g +0.0053 fields +0.0111 B-B +0.0029
+  (b) all mass in pairs, spacing 2               W/defect (units 2d'): lattice +0.45546 relaxed +0.45546 | relaxed split per defect: P_h +0.0045 T_g +0.0000 fields +0.4092 B-B +0.0417
+y = 0.4
+  (a) block P=16, vacancies contiguous           W/defect (units 2d'): lattice +1.01090 relaxed +0.23050 | relaxed split per defect: P_h +0.0547 T_g +0.0558 fields +0.0408 B-B +0.0791
+  (a) block P=16, vacancies spread               W/defect (units 2d'): lattice +0.94085 relaxed +0.18477 | relaxed split per defect: P_h +0.0531 T_g +0.0529 fields -0.0082 B-B +0.0869
+  (a) block P=32, vacancies contiguous           W/defect (units 2d'): lattice +0.61228 relaxed +0.13278 | relaxed split per defect: P_h +0.0429 T_g +0.0291 fields +0.0196 B-B +0.0412
+  (a) block P=32, vacancies spread               W/defect (units 2d'): lattice +0.58573 relaxed +0.11452 | relaxed split per defect: P_h +0.0406 T_g +0.0284 fields +0.0021 B-B +0.0433
+  (a) block P=48, vacancies contiguous           W/defect (units 2d'): lattice +0.44635 relaxed +0.09820 | relaxed split per defect: P_h +0.0354 T_g +0.0209 fields +0.0145 B-B +0.0273
+  (a) block P=48, vacancies spread               W/defect (units 2d'): lattice +0.44939 relaxed +0.09925 | relaxed split per defect: P_h +0.0337 T_g +0.0210 fields +0.0182 B-B +0.0264
+  (a) block P=64, vacancies contiguous           W/defect (units 2d'): lattice +0.37354 relaxed +0.09205 | relaxed split per defect: P_h +0.0310 T_g +0.0166 fields +0.0273 B-B +0.0172
+  (b) all mass in pairs, spacing 2               W/defect (units 2d'): lattice +2.61923 relaxed +2.61923 | relaxed split per defect: P_h +0.0045 T_g +0.0000 fields +1.8038 B-B +0.8109
+WORST relaxed W per defect: +0.04023 at ('a', 0.2, 48, True)

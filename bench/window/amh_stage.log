@@ -1,0 +1,39 @@
+[stage] waiting 14:54:31
+[stage] waiting 14:55:01
+[stage] waiting 14:55:31
+[stage] waiting 14:56:01
+[stage] waiting 14:56:31
+[stage] waiting 14:57:01
+[stage] waiting 14:57:31
+[stage] waiting 14:58:01
+[stage] waiting 14:58:31
+[stage] waiting 14:59:01
+[stage] waiting 14:59:31
+[stage] waiting 15:00:01
+[stage] waiting 15:00:31
+[stage] waiting 15:01:01
+[stage] waiting 15:01:31
+[stage] waiting 15:02:01
+[stage] waiting 15:02:31
+[stage] waiting 15:03:01
+[stage] waiting 15:03:31
+[stage] waiting 15:04:01
+[stage] waiting 15:04:31
+[stage] waiting 15:05:01
+[stage] waiting 15:05:31
+[stage] waiting 15:06:01
+== CandAMH export
+export exit 0
+       37.74 real        24.14 user        12.36 sys
+          1553419680  peak memory footprint
+export bytes 608009563
+== CandAMH nanoda
+nanoda exit 0
+       53.58 real        52.64 user         0.81 sys
+          3263924936  peak memory footprint
+== CandAMH lean replay (full closure)
+parse_ms 14151 constants 71431
+replay_ms 68245 OK
+replayx exit 0
+       82.57 real        81.77 user         0.59 sys
+          2145437736  peak memory footprint

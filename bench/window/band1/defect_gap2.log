@@ -1,0 +1,32 @@
+k=4 sig<=0.5: Q2 -2.88 slack 0.500 | doubles at [-0.91  0.    0.91  2.99] | LP(y): y=0.1:+0.480 y=0.2:+0.540 y=0.3:+1.178 y=0.4:+3.835 y=0.5:+12.528 y=0.6:+38.447 y=0.8:+325.842
+    min LP at y=0.3 from here: +1.1775 (slack 0.484, Q2 -2.74)
+    min LP at y=0.4 from here: +3.6068 (slack 1.035, Q2 -5.90)
+    min LP at y=0.5 from here: +11.2553 (slack 1.713, Q2 -7.55)
+k=4 sig<=0.5: Q2 -2.83 slack 0.500 | doubles at [-0.92  0.    0.91  2.99] | LP(y): y=0.1:+0.480 y=0.2:+0.542 y=0.3:+1.184 y=0.4:+3.848 y=0.5:+12.552 y=0.6:+38.491 y=0.8:+325.979
+    min LP at y=0.3 from here: +1.1835 (slack 0.491, Q2 -2.74)
+    min LP at y=0.4 from here: +3.6126 (slack 1.041, Q2 -5.90)
+    min LP at y=0.5 from here: +11.2607 (slack 1.719, Q2 -7.55)
+k=4 sig<=2.0: Q2 -7.90 slack 2.000 | doubles at [-0.79  0.    0.79  2.97] | LP(y): y=0.1:+1.928 y=0.2:+1.809 y=0.3:+2.067 y=0.4:+3.991 y=0.5:+11.326 y=0.6:+34.788 y=0.8:+310.069
+    min LP at y=0.3 from here: +1.1775 (slack 0.484, Q2 -2.74)
+    min LP at y=0.4 from here: +3.6068 (slack 1.035, Q2 -5.90)
+    min LP at y=0.5 from here: +11.2553 (slack 1.713, Q2 -7.55)
+k=4 sig<=2.0: Q2 -7.89 slack 2.000 | doubles at [-0.79  0.    0.79  2.97] | LP(y): y=0.1:+1.928 y=0.2:+1.809 y=0.3:+2.067 y=0.4:+3.993 y=0.5:+11.330 y=0.6:+34.795 y=0.8:+310.098
+    min LP at y=0.3 from here: +1.1835 (slack 0.491, Q2 -2.74)
+    min LP at y=0.4 from here: +3.6126 (slack 1.041, Q2 -5.90)
+    min LP at y=0.5 from here: +11.2607 (slack 1.719, Q2 -7.55)
+k=6 sig<=0.5: Q2 -3.10 slack 0.500 | doubles at [-0.92  0.    0.92  1.97  3.    6.01] | LP(y): y=0.1:+0.478 y=0.2:+0.530 y=0.3:+1.151 y=0.4:+3.777 y=0.5:+12.411 y=0.6:+38.227 y=0.8:+325.147
+    min LP at y=0.3 from here: +1.1488 (slack 0.543, Q2 -3.49)
+    min LP at y=0.4 from here: +3.4793 (slack 1.092, Q2 -6.62)
+    min LP at y=0.5 from here: +10.9401 (slack 1.786, Q2 -8.30)
+k=6 sig<=0.5: Q2 -3.09 slack 0.500 | doubles at [-4.   -1.98 -0.92  0.    0.92  4.99] | LP(y): y=0.1:+0.478 y=0.2:+0.530 y=0.3:+1.153 y=0.4:+3.781 y=0.5:+12.420 y=0.6:+38.246 y=0.8:+325.209
+    min LP at y=0.3 from here: +1.1514 (slack 0.534, Q2 -3.40)
+    min LP at y=0.4 from here: +3.4952 (slack 1.084, Q2 -6.53)
+    min LP at y=0.5 from here: +10.9807 (slack 1.777, Q2 -8.21)
+k=6 sig<=2.0: Q2 -8.61 slack 2.000 | doubles at [-0.79  0.    0.79  1.95  2.97  5.98] | LP(y): y=0.1:+1.921 y=0.2:+1.778 y=0.3:+1.986 y=0.4:+3.821 y=0.5:+10.999 y=0.6:+34.185 y=0.8:+308.174
+    min LP at y=0.3 from here: +1.1488 (slack 0.543, Q2 -3.49)
+    min LP at y=0.4 from here: +3.4793 (slack 1.092, Q2 -6.62)
+    min LP at y=0.5 from here: +10.9401 (slack 1.786, Q2 -8.30)
+k=6 sig<=2.0: Q2 -8.52 slack 2.000 | doubles at [-3.98 -1.95 -0.79  0.    0.79  4.98] | LP(y): y=0.1:+1.921 y=0.2:+1.781 y=0.3:+1.996 y=0.4:+3.843 y=0.5:+11.041 y=0.6:+34.264 y=0.8:+308.430
+    min LP at y=0.3 from here: +1.1514 (slack 0.534, Q2 -3.39)
+    min LP at y=0.4 from here: +3.4952 (slack 1.084, Q2 -6.53)
+    min LP at y=0.5 from here: +10.9807 (slack 1.777, Q2 -8.21)

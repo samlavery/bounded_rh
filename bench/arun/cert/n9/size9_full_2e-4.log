@@ -1,0 +1,45 @@
+== size9 delta=0.0002 tag=full_2e-4 rootsel=all Sat Oct 10 11:38:32 PDT 2026
+delta=0.0002 cN=859177 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0, 0): 324 leaves (72s)
+  root 1 (0, 0, 0, 0, 0, 1, 0, 0): 654 leaves (212s)
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 1598 leaves (534s)
+  root 3 (0, 0, 0, 0, 1, 1, 0, 0): 1431 leaves (799s)
+  ... 5000 leaves (Z 0, M 4859, empty 0, refl 141) nodes 5009 LP 18723 (1022s)
+  root 4 (0, 0, 0, 1, 0, 0, 0, 0): 1654 leaves (1132s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 2086 leaves (1548s)
+  root 6 (0, 0, 0, 1, 1, 0, 0, 0): 1203 leaves (1781s)
+  root 7 (0, 0, 0, 1, 1, 1, 0, 0): 578 leaves (1886s)
+  ... 10000 leaves (Z 0, M 9734, empty 0, refl 266) nodes 10013 LP 37861 (1992s)
+  root 8 (0, 0, 1, 0, 0, 0, 0, 0): 662 leaves (2019s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1417 leaves (2295s)
+  root 10 (0, 0, 1, 0, 1, 0, 0, 0): 1979 leaves (2682s)
+  root 11 (0, 0, 1, 0, 1, 1, 0, 0): 786 leaves (2836s)
+  ... 15000 leaves (Z 0, M 14590, empty 0, refl 410) nodes 15008 LP 56562 (2971s)
+  root 12 (0, 0, 1, 1, 0, 0, 0, 0): 1080 leaves (3037s)
+  root 13 (0, 0, 1, 1, 0, 1, 0, 0): 792 leaves (3196s)
+  root 14 (0, 0, 1, 1, 1, 0, 0, 0): 462 leaves (3282s)
+  root 15 (0, 0, 1, 1, 1, 1, 0, 0): 866 leaves (3410s)
+  bisection: 17572 leaves (Z 0, M 17122, empty 0), 17556 splits, 8734 at region boundaries (3410s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 3657 points (41038 point cells); failing 0 (3425s)
+leaves 17572 kinds {6: 17122, 0: 450} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 17556 (pair 13062); walk bits 5254246 (299.0 per leaf; multipliers 16509 x 12 bits); M nonzero multipliers [(0, 4767), (1, 8780), (2, 3040), (3, 493), (4, 41), (6, 1)]; constraints per M cell [(28, 17122)]; w 1984 d 2240 pts 3657 ptc 41038 bad 0 MSTAT lp 67387 (3426s)
+nodes visited 35128 (leaves 17572 + splits 17556); explicit constraints per node: mean 28.00, dist [(28, 35128)]
+walk: 5254246 bits = 1.314 MB hex, 0.876 MB base64 (roots run); x8.73: 11.47 MB hex, 7.64 MB base64
+     3439.11 real      3401.66 user        25.40 sys
+          2644148224  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1325709  page reclaims
+                  71  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 195  voluntary context switches
+             1029177  involuntary context switches
+      47788633612161  instructions retired
+      11306548177967  cycles elapsed
+          3077196464  peak memory footprint
+== done Sat Oct 10 12:35:51 PDT 2026

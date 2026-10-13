@@ -1,0 +1,22 @@
+module constants: 6725; imports: 18
+imports loaded in 32637 ms
+kernel replay of 6725 constants: 174652 ms
+      215.11 real       166.86 user        18.93 sys
+          6526533632  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              446756  page reclaims
+              314179  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               52879  voluntary context switches
+              246469  involuntary context switches
+       1407487789879  instructions retired
+        630845644368  cycles elapsed
+          3821074320  peak memory footprint
+REPLAY EXIT 0

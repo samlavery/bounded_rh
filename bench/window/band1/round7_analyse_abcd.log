@@ -1,0 +1,40 @@
+490 runs from ['round7_ms_64_128.json', 'round7_ms_ab256.json', 'round7_ms_cd256.json']
+fam a N= 64 ( 48 runs): min LP +3.62756 [rb16 Y=0.2 k=1 centre yd=0.8; pairs 16, deep 1 at y=['0.800'], shallow y in ['0.001', '0.769']] = s(D) +5.2023 + Delta_B -1.5747  (lattice N*sigma 0.0875)
+        thinnest per-pair +0.22672 [rb16 Y=0.2 k=1 centre yd=0.8; LP +3.6276, pairs 16, deep 1]
+fam a N=128 ( 48 runs): min LP +2.87671 [rb32 Y=0.2 k=1 centre yd=0.8; pairs 32, deep 1 at y=['0.800'], shallow y in ['0.001', '0.776']] = s(D) +5.4577 + Delta_B -2.5810  (lattice N*sigma 0.1750)
+        thinnest per-pair +0.08990 [rb32 Y=0.2 k=1 centre yd=0.8; LP +2.8767, pairs 32, deep 1]
+fam a N=256 ( 48 runs): min LP +3.10457 [rb64 Y=0.4 k=1 centre yd=3.0; pairs 64, deep 1 at y=['0.800'], shallow y in ['0.001', '0.781']] = s(D) +6.3040 + Delta_B -3.1995  (lattice N*sigma 0.3499)
+        thinnest per-pair +0.04851 [rb64 Y=0.4 k=1 centre yd=3.0; LP +3.1046, pairs 64, deep 1]
+fam b N= 64 ( 18 runs): min LP +81.54203 [rb16 Y=0.4 flank gap 1 yd=0.8; pairs 18, deep 2 at y=['0.800', '0.800'], shallow y in ['0.695', '0.800']] = s(D) +10.3586 + Delta_B +71.1834  (lattice N*sigma 0.0875)
+        thinnest per-pair +4.53011 [rb16 Y=0.4 flank gap 1 yd=0.8; LP +81.5420, pairs 18, deep 2]
+fam b N=128 ( 18 runs): min LP +78.51752 [rb32 Y=0.2 flank gap 1 yd=1.2; pairs 34, deep 2 at y=['0.800', '0.800'], shallow y in ['0.630', '0.800']] = s(D) +25.9590 + Delta_B +52.5585  (lattice N*sigma 0.1750)
+        thinnest per-pair +2.30934 [rb32 Y=0.2 flank gap 1 yd=1.2; LP +78.5175, pairs 34, deep 2]
+fam b N=256 ( 18 runs): min LP +18.36422 [rb64 Y=0.2 flank gap 1 yd=2.0; pairs 66, deep 2 at y=['0.800', '0.800'], shallow y in ['0.001', '0.800']] = s(D) +11.8194 + Delta_B +6.5448  (lattice N*sigma 0.3499)
+        thinnest per-pair +0.27825 [rb64 Y=0.2 flank gap 1 yd=2.0; LP +18.3642, pairs 66, deep 2]
+fam c N= 64 ( 56 runs): min LP +0.42298 (mp50 +0.422980) [rb16 Y=0.2 on-line mult 2 end; pairs 16, deep 0 at y=[], shallow y in ['0.001', '0.001']] = s(D) +0.4229 + Delta_B +0.0000  (lattice N*sigma 0.0875)
+        thinnest per-pair +0.02644 [rb16 Y=0.2 on-line mult 2 end; LP +0.4230, pairs 16, deep 0]
+fam c N=128 ( 56 runs): min LP +0.87994 (mp50 +0.879945) [rb32 Y=0.2 on-line mult 2 end; pairs 32, deep 0 at y=[], shallow y in ['0.001', '0.001']] = s(D) +0.8799 + Delta_B +0.0001  (lattice N*sigma 0.1750)
+        thinnest per-pair +0.02750 [rb32 Y=0.2 on-line mult 2 end; LP +0.8799, pairs 32, deep 0]
+fam c N=256 ( 56 runs): min LP +1.80910 [rb64 Y=0.4 on-line mult 2 end; pairs 64, deep 0 at y=[], shallow y in ['0.001', '0.001']] = s(D) +1.8090 + Delta_B +0.0001  (lattice N*sigma 0.3499)
+        thinnest per-pair +0.02827 [rb64 Y=0.4 on-line mult 2 end; LP +1.8091, pairs 64, deep 0]
+fam d N= 64 ( 40 runs): min LP +0.09784 (mp50 +0.097837) [random Ps=3 Pd=1; pairs 4, deep 0 at y=[], shallow y in ['0.001', '0.001']] = s(D) +0.0978 + Delta_B +0.0001  (lattice N*sigma 0.0875)
+        thinnest per-pair +0.01648 [random Ps=7 Pd=4; LP +0.1813, pairs 11, deep 0]
+fam d N=128 ( 40 runs): min LP +0.17728 (mp50 +0.177283) [random Ps=0 Pd=1; pairs 1, deep 0 at y=[], shallow y in ['0.001', '0.001']] = s(D) +0.1773 + Delta_B +0.0000  (lattice N*sigma 0.1750)
+        thinnest per-pair +0.01646 [random Ps=15 Pd=4; LP +0.3127, pairs 19, deep 0]
+fam d N=256 ( 40 runs): min LP +0.35858 (mp50 +0.358580) [random Ps=1 Pd=1; pairs 2, deep 0 at y=[], shallow y in ['0.001', '0.001']] = s(D) +0.3586 + Delta_B +0.0000  (lattice N*sigma 0.3499)
+        thinnest per-pair +0.01787 [random Ps=28 Pd=1; LP +0.5181, pairs 29, deep 0]
+fam v N= 64 (  2 runs): min LP +1.95970 [rb16 Y=0.2 fixed depth; pairs 16, deep 0 at y=[], shallow y in ['0.200', '0.200']] = s(D) +1.0439 + Delta_B +0.9158  (lattice N*sigma 0.0875)
+        thinnest per-pair +0.12248 [rb16 Y=0.2 fixed depth; LP +1.9597, pairs 16, deep 0]
+fam v N=128 (  2 runs): min LP +2.65437 [rb32 Y=0.2 fixed depth; pairs 32, deep 0 at y=[], shallow y in ['0.200', '0.200']] = s(D) +1.6475 + Delta_B +1.0069  (lattice N*sigma 0.1750)
+        thinnest per-pair +0.08295 [rb32 Y=0.2 fixed depth; LP +2.6544, pairs 32, deep 0]
+runs with LP < 0 (float or mp50): 0
+mp50 re-evaluations: 132; max |mp50 - float| = 8.46e-13
+lowest 8 overall:
+  d N=64 random Ps=3 Pd=1                     LP +0.09784  s(D) +0.0978  Delta_B +0.0001  pairs 4 deep 0  shallow y ['0.001', '0.001']
+  d N=64 random Ps=0 Pd=2                     LP +0.09952  s(D) +0.0995  Delta_B +0.0000  pairs 2 deep 0  shallow y ['0.001', '0.001']
+  d N=64 random Ps=0 Pd=3                     LP +0.10030  s(D) +0.1003  Delta_B +0.0000  pairs 3 deep 0  shallow y ['0.001', '0.001']
+  d N=64 random Ps=1 Pd=1                     LP +0.10183  s(D) +0.1018  Delta_B +0.0000  pairs 2 deep 0  shallow y ['0.001', '0.001']
+  d N=64 random Ps=1 Pd=3                     LP +0.10230  s(D) +0.1022  Delta_B +0.0001  pairs 4 deep 0  shallow y ['0.001', '0.001']
+  d N=64 random Ps=2 Pd=2                     LP +0.10328  s(D) +0.1032  Delta_B +0.0001  pairs 4 deep 0  shallow y ['0.001', '0.001']
+  d N=64 random Ps=2 Pd=1                     LP +0.10657  s(D) +0.1065  Delta_B +0.0000  pairs 3 deep 0  shallow y ['0.001', '0.001']
+  d N=64 random Ps=0 Pd=3                     LP +0.11573  s(D) +0.1157  Delta_B +0.0000  pairs 3 deep 0  shallow y ['0.001', '0.001']

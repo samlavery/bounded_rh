@@ -1,0 +1,3 @@
+window /Users/samuellavery/work/riemann-submission/bench/arun/est/win_smooth_b0.1.json: H = 0.6723689743, K-terms 13
+R = 8 (n = 9): ceiling kappa* = 0.67346384  (gap to MOP 0.6735478: -8.40e-05); envelope at d = 1/kappa*: e = 0.001626, between d = (1.41, 1.51, 0.7486072730812403)
+   hull points near: d=1.410 e=0.001980 q=5; d=1.510 e=0.001507 q=2

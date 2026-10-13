@@ -1,0 +1,6 @@
+yc=0.8: sign-check cells on [0.1, yc] (uniform width 1.15e-03): 610 cells x N0 = 3 terms (+ tail) | magnitude regime y in [yc, 6]: min int qfB^2 / (8 sum_{n>=1}|L|) = 9.55
+yc=0.9: sign-check cells on [0.1, yc] (uniform width 1.15e-03): 697 cells x N0 = 3 terms (+ tail) | magnitude regime y in [yc, 6]: min int qfB^2 / (8 sum_{n>=1}|L|) = 17.37
+yc=1.0: sign-check cells on [0.1, yc] (uniform width 1.15e-03): 784 cells x N0 = 3 terms (+ tail) | magnitude regime y in [yc, 6]: min int qfB^2 / (8 sum_{n>=1}|L|) = 31.79
+series check y=0.1, n=1: L/(-y^2 K'') = 1.0049
+series check y=0.1, n=2: L/(-y^2 K'') = 1.0285
+series check y=0.1, n=3: L/(-y^2 K'') = 1.0321

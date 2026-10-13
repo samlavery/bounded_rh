@@ -1,0 +1,13 @@
+[build_check] waiting 22:00:42
+[build_check] waiting 22:01:12
+[build_check] waiting 22:01:42
+[build_check] waiting 22:02:12
+[build_check] waiting 22:02:42
+errors: 0
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      417.24 real       402.05 user        15.87 sys
+          9150873600  maximum resident set size
+          5229124120  peak memory footprint
+BUILD EXIT 0

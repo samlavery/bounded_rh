@@ -1,0 +1,10 @@
+abbabab q=7 (c_erg word)  mean gap 1.57981  eigen [0.9228, 1.3947]
+  per block: trPhi 0.458537 Eband 0.250796 PairSum 0.242363 Press 0.926257 (PairSum+Press 1.168620 vs c(m-q) 1.167430)
+  slack per block: L1 0.207741 L2c 0.008324 L2l 0.000252 L3 0.001178 total 0.217494
+  kappa ceilings: L1 9.276e-04  L2c 3.717e-05  L2l 1.125e-06  L2 3.829e-05  L3 5.258e-06  all 9.711e-04
+  kappa if L1 alone removed (ideal n = 9 limit): 0.6744108
+alternating [1.9745,1.0427]  mean gap 1.50860  eigen [0.9170, 1.4172]
+  per block: trPhi 0.527528 Eband 0.294567 PairSum 0.284904 Press 0.884503 (PairSum+Press 1.169408 vs c(m-q) 1.167430)
+  slack per block: L1 0.232961 L2c 0.009532 L2l 0.000282 L3 0.001956 total 0.244732
+  kappa ceilings: L1 1.040e-03  L2c 4.256e-05  L2l 1.261e-06  L2 4.382e-05  L3 8.736e-06  all 1.093e-03
+  kappa if L1 alone removed (ideal n = 9 limit): 0.6745234

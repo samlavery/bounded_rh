@@ -1,0 +1,3 @@
+[XR=20 tlow=0.008 XL=512] block64  N=128 Y=0.2 P=64 t=0.50 tlow=0.0080: joint lower bound +0.8907 (/sum y^2 +0.348) = Q_pp 2.0220 + T_pp 0.6691 + V_env -2.2627 + tails -0.3640 + density const +0.8263 | exact periodic LP 5.1160 (P_h 2.667) | 35085 cells 42s
+[XR=20 tlow=0.008 XL=512] block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0080: joint lower bound +1.1404 (/sum y^2 +0.111) = Q_pp 6.5585 + T_pp 2.0596 + V_env -8.5437 + tails -0.6717 + density const +1.7377 | exact periodic LP 11.6694 (P_h 3.927) | 34904 cells 42s
+[XR=40 tlow=0.008 XL=512] block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0080: joint lower bound +1.5017 (/sum y^2 +0.147) = Q_pp 6.5585 + T_pp 2.0596 + V_env -7.4384 + tails -0.6717 + density const +0.9938 | exact periodic LP 11.6694 (P_h 3.927) | 34904 cells 41s

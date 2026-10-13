@@ -1,0 +1,15 @@
+== CandOctW01 export
+export exit 0
+       43.65 real        31.75 user        10.64 sys
+          1592790456  peak memory footprint
+export bytes 654807093
+== CandOctW01 nanoda
+nanoda exit 0
+      299.01 real       289.32 user         9.64 sys
+          6033299312  peak memory footprint
+== CandOctW01 lean replay (full closure)
+parse_ms 15887 constants 73716
+replay_ms 268752 OK
+replayx exit 0
+      284.87 real       281.31 user         3.40 sys
+          4241067560  peak memory footprint

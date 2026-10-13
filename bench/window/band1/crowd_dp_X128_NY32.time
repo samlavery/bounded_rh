@@ -1,0 +1,1 @@
+nice -n 10 python3 crowd_dp.py 128 32 8,16,32 1e-8 > crowd_dp_X128_NY32.log 2  316.70s user 8.03s system 99% cpu 5:24.80 total

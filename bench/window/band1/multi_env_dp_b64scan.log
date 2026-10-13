@@ -1,0 +1,9 @@
+XR=10 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0030: joint lower bound -0.6355 (/sum y^2 -0.062) = Q_pp 6.5585 + T_pp 2.0596 + V_env -10.2393 + tails -0.9656 + density const +1.9513 | exact periodic LP
+XR=10 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0050: joint lower bound -0.3826 (/sum y^2 -0.037) = Q_pp 6.5585 + T_pp 2.0596 + V_env -10.0509 + tails -0.9656 + density const +2.0158 | exact periodic LP
+XR=10 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0080: joint lower bound -0.0626 (/sum y^2 -0.006) = Q_pp 6.5585 + T_pp 2.0596 + V_env -9.7683 + tails -0.9656 + density const +2.0532 | exact periodic LP 
+XR=20 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0030: joint lower bound -0.5301 (/sum y^2 -0.052) = Q_pp 6.5585 + T_pp 2.0596 + V_env -10.0331 + tails -0.9656 + density const +1.8504 | exact periodic LP
+XR=20 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0050: joint lower bound -0.2186 (/sum y^2 -0.021) = Q_pp 6.5585 + T_pp 2.0596 + V_env -9.7072 + tails -0.9656 + density const +1.8362 | exact periodic LP 
+XR=20 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0080: joint lower bound +0.1720 (/sum y^2 +0.017) = Q_pp 6.5585 + T_pp 2.0596 + V_env -9.2185 + tails -0.9656 + density const +1.7380 | exact periodic LP 
+XR=40 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0030: joint lower bound -0.3178 (/sum y^2 -0.031) = Q_pp 6.5585 + T_pp 2.0596 + V_env -9.5770 + tails -0.9656 + density const +1.6067 | exact periodic LP 
+XR=40 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0050: joint lower bound +0.1118 (/sum y^2 +0.011) = Q_pp 6.5585 + T_pp 2.0596 + V_env -8.9471 + tails -0.9656 + density const +1.4064 | exact periodic LP 
+XR=40 block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0080: joint lower bound +0.5298 (/sum y^2 +0.052) = Q_pp 6.5585 + T_pp 2.0596 + V_env -8.1168 + tails -0.9656 + density const +0.9941 | exact periodic LP 

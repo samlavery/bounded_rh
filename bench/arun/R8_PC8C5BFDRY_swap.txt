@@ -1,0 +1,2 @@
+/Users/samuellavery/work/riemann-submission/bench/arun/R8_PC8C5BFDRY_swap.lean: 1726129 B; NAME PC8C5BF; B = 404350/100000000, c = 805124/100000000; κ = 66812491/99194876 = 0.6735478050 (+0.000e+00); code κ literals replaced: 4
+spec: candidate 66812491 99194876, record 66812491 99194876

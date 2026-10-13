@@ -1,0 +1,12 @@
+N=16, window + 0 directions: min simple fraction 0.67856727 (slack 0.0e+00, 4 rounds, 7s)
+  support (weight, simple fraction p_c, window datum sum_j qf |S_j|^2 vs zeta 40.7624):
+    w 0.8572  p_c 0.6250  datum 47.5555
+    w 0.1428  p_c 1.0000  datum 0.0000
+N=24, window + 0 directions: min simple fraction 0.67793952 (slack 0.0e+00, 1 rounds, 9s)
+  support (weight, simple fraction p_c, window datum sum_j qf |S_j|^2 vs zeta 91.8938):
+    w 0.7729  p_c 0.5833  datum 118.8879
+    w 0.2271  p_c 1.0000  datum 0.0000
+N=32, window + 0 directions: min simple fraction 0.67773471 (slack 0.0e+00, 4 rounds, 60s)
+  support (weight, simple fraction p_c, window datum sum_j qf |S_j|^2 vs zeta 163.4772):
+    w 0.8594  p_c 0.6250  datum 190.2282
+    w 0.1406  p_c 1.0000  datum 0.0000

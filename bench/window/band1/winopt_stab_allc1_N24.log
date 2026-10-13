@@ -1,0 +1,5 @@
+winopt_general_allc1_N24.json as a spline: min on [0,1) +5.39e-04, int q a / int q 0.308457
+  N=24: d_min(k)/(k Delta_1) k2:1.00000 k3:1.00000 k4:1.00159 k5:1.00174 | kappa_D,N single 0.6818684, delta_true 0.6818684 | continuum-numerator: single 0.6814162, delta_true 0.6814162; delta_true (int q = 1/2) 0.484107
+  N=32: d_min(k)/(k Delta_1) k2:0.99131 k3:1.00017 k4:1.00004 k5:1.00148 | kappa_D,N single 0.6816544, delta_true 0.6788638 | continuum-numerator: single 0.6814027, delta_true 0.6786099; delta_true (int q = 1/2) 0.479880
+  N=48: d_min(k)/(k Delta_1) k2:0.99896 k3:0.99161 k4:1.00004 k5:1.00005 | kappa_D,N single 0.6815010, delta_true 0.6788056 | continuum-numerator: single 0.6813885, delta_true 0.6786922; delta_true (int q = 1/2) 0.480002
+  N=64: d_min(k)/(k Delta_1) k2:0.99995 k3:0.99669 k4:0.99162 k5:0.99660 | kappa_D,N single 0.6814478, delta_true 0.6787558 | continuum-numerator: single 0.6813847, delta_true 0.6786922; delta_true (int q = 1/2) 0.480002

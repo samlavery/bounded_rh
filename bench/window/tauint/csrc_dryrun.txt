@@ -1,0 +1,1 @@
+* pyramid lower-bound table adapted from five-point-pyramid-2 by typh (Apache-2.0) [DRY-RUN TEST FILE, not for upload];

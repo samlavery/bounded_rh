@@ -1,0 +1,12 @@
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e40_decisive.py:28: RuntimeWarning: invalid value encountered in divide
+  integ = np.where(al > 0, (B ** 2 + 4 * B) / np.sin(np.pi * A * al) ** 2, 16 * y ** 2 / A ** 2)
+C_end(0.99, 0.8) = 2127.1
+C_end(0.99, 1.0) = 22657.3
+C_end(0.99, 1.5) = 9.19818e+06
+C_end(0.99, 2.0) = 3.99156e+09
+C_end(0.99, 2.5) = 1.79683e+12
+C_end(0.99, 3.0) = 8.28462e+14
+P=   64: profile-min Q_pp  +1847.86999 (proj-grad 1.5e-01) | T_g     0.8741 | (1') =  +1848.74404 | end-ish Q_pp+T_g - tau P = +1847.5133 | depths ends 0.80/0.80 max 0.88
+P=  128: profile-min Q_pp  +1401.72194 (proj-grad 1.5e+00) | T_g     2.0442 | (1') =  +1403.76610 | end-ish Q_pp+T_g - tau P = +1401.3046 | depths ends 0.80/0.80 max 1.10
+P=  256: profile-min Q_pp   +946.73439 (proj-grad 7.3e+01) | T_g     4.4566 | (1') =   +951.19095 | end-ish Q_pp+T_g - tau P =  +946.2679 | depths ends 0.80/0.80 max 1.64
+P=  512: profile-min Q_pp   +890.54217 (proj-grad 1.6e+02) | T_g     9.3733 | (1') =   +899.91546 | end-ish Q_pp+T_g - tau P =  +890.0694 | depths ends 0.80/0.80 max 1.67

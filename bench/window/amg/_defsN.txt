@@ -1,0 +1,223 @@
+
+/-! ###### AM-window cell enclosures in natural-number arithmetic (definitions; kernel-evaluated)
+
+The kernel computes with natural-number literals natively and emulates `ℤ` through its constructors, so every
+quantity here is a signed integer `SZ` stored as a difference `p − n` of naturals, and an interval `IV` is a pair of
+them, at scale `DZ = 10¹⁵`.  The arithmetic is an exact replica of `amk.py` (floor / ceiling at the same places). -/
+
+namespace AMW.CN
+
+def SC : ℕ := 32768
+def KB : ℕ := 1048576
+def DZ : ℕ := 1000000000000000
+def DZ2 : ℕ := 500000000000000
+def PLN : ℕ := 314159265358979323846
+def PUN : ℕ := 314159265358979323847
+def ERRD : ℕ := 2262000
+def E20 : ℕ := 100000000000000000000
+def CD : ℕ := 2000000000
+
+def ndivc (a b : ℕ) : ℕ := (a + b - 1) / b
+
+def cosP (T : ℕ) : ℕ := 3628800 * DZ^10 + 151200 * T^4 * DZ^6 + 90 * T^8 * DZ^2
+def cosN (T : ℕ) : ℕ := 1814400 * T^2 * DZ^8 + 5040 * T^6 * DZ^4 + T^10
+def sinP (T : ℕ) : ℕ := 39916800 * T * DZ^10 + 332640 * T^5 * DZ^6 + 110 * T^9 * DZ^2
+def sinN (T : ℕ) : ℕ := 6652800 * T^3 * DZ^8 + 7920 * T^7 * DZ^4 + T^11
+def scP (T : ℕ) : ℕ := 39916800 * DZ^10 + 332640 * T^4 * DZ^6 + 110 * T^8 * DZ^2
+def scN (T : ℕ) : ℕ := 6652800 * T^2 * DZ^8 + 7920 * T^6 * DZ^4 + T^10
+def s1P (T : ℕ) : ℕ := 133056 * T^3 * DZ^6 + 88 * T^7 * DZ^2
+def s1N (T : ℕ) : ℕ := 1330560 * T * DZ^8 + 4752 * T^5 * DZ^4 + T^9
+def s2P (T : ℕ) : ℕ := 3991680 * T^2 * DZ^8 + 6160 * T^6 * DZ^4 + T^10
+def s2N (T : ℕ) : ℕ := 13305600 * DZ^10 + 237600 * T^4 * DZ^6 + 90 * T^8 * DZ^2
+
+/-- a signed integer `p − n` -/
+structure SZ where
+  (p n : ℕ)
+
+namespace SZ
+def ofN (m : ℕ) : SZ := ⟨m, 0⟩
+def add (a b : SZ) : SZ := ⟨a.p + b.p, a.n + b.n⟩
+def sub (a b : SZ) : SZ := ⟨a.p + b.n, a.n + b.p⟩
+def neg (a : SZ) : SZ := ⟨a.n, a.p⟩
+def mul (a b : SZ) : SZ := ⟨a.p * b.p + a.n * b.n, a.p * b.n + a.n * b.p⟩
+/-- multiplication by a natural -/
+def muln (m : ℕ) (a : SZ) : SZ := ⟨m * a.p, m * a.n⟩
+def le (a b : SZ) : Bool := Nat.ble (a.p + b.n) (b.p + a.n)
+def min (a b : SZ) : SZ := bif a.le b then a else b
+def max (a b : SZ) : SZ := bif a.le b then b else a
+/-- floor and ceiling of `a / d` -/
+def fl (a : SZ) (d : ℕ) : SZ := bif Nat.ble a.n a.p then ⟨(a.p - a.n) / d, 0⟩ else ⟨0, (a.n - a.p + d - 1) / d⟩
+def ce (a : SZ) (d : ℕ) : SZ := bif Nat.ble a.n a.p then ⟨(a.p - a.n + d - 1) / d, 0⟩ else ⟨0, (a.n - a.p) / d⟩
+def nonneg (a : SZ) : Bool := Nat.ble a.n a.p
+end SZ
+
+/-- an interval `[lo, hi]` of signed integers -/
+structure IV where
+  (lo hi : SZ)
+
+namespace IV
+def add (I J : IV) : IV := ⟨I.lo.add J.lo, I.hi.add J.hi⟩
+def sub (I J : IV) : IV := ⟨I.lo.sub J.hi, I.hi.sub J.lo⟩
+def neg (I : IV) : IV := ⟨I.hi.neg, I.lo.neg⟩
+/-- multiplication by a natural -/
+def muln (m : ℕ) (I : IV) : IV := ⟨I.lo.muln m, I.hi.muln m⟩
+/-- interval product at scale `DZ`, rounded outward -/
+def mul (I J : IV) : IV :=
+  ⟨(((I.lo.mul J.lo).min (I.lo.mul J.hi)).min ((I.hi.mul J.lo).min (I.hi.mul J.hi))).fl DZ,
+   (((I.lo.mul J.lo).max (I.lo.mul J.hi)).max ((I.hi.mul J.lo).max (I.hi.mul J.hi))).ce DZ⟩
+/-- division by a positive natural, rounded outward -/
+def divn (I : IV) (d : ℕ) : IV := ⟨I.lo.fl d, I.hi.ce d⟩
+/-- `I / E` at scale `DZ` for `E ∈ [e0, e1]`, `0 < e0` -/
+def divp (I : IV) (e0 e1 : ℕ) : IV :=
+  ⟨bif I.lo.nonneg then (I.lo.muln DZ).fl e1 else (I.lo.muln DZ).fl e0,
+   bif I.hi.nonneg then (I.hi.muln DZ).ce e0 else (I.hi.muln DZ).ce e1⟩
+/-- signed multiple `±m · I` -/
+def scl (neg : Bool) (m : ℕ) (I : IV) : IV := bif neg then (I.muln m).neg else I.muln m
+def zero : IV := ⟨⟨0, 0⟩, ⟨0, 0⟩⟩
+def ofN (a b : ℕ) : IV := ⟨⟨a, 0⟩, ⟨b, 0⟩⟩
+end IV
+
+/-- constants at scale `DZ`: π, π², 2γ, 1 + 2γ, 1 + 4γ, ρ, ρ/π, ρπ -/
+def PIC : IV := IV.ofN 3141592653589793 3141592653589794
+def PI2C : IV := IV.ofN 9869604401089357 9869604401089364
+def GAM0 : ℕ := 1654998581400000
+def GAM1 : ℕ := 1654998603600000
+def G1C : IV := IV.ofN 2654998581400000 2654998603600000
+def G2C : IV := IV.ofN 4309997162800000 4309997207200000
+def RHOC : IV := IV.ofN 1088464550157349 1088464557864635
+def SIGC : IV := IV.ofN 346469027075676 346469029528983
+def TAUC : IV := IV.ofN 3419512234467246 3419512258680401
+
+/-- `(j, |c_j| · 10⁹, sign of c_j (−1)^j is negative)` for `j = 1, …, 12` -/
+def CE : List (ℕ × ℕ × Bool) :=
+  [(1, 12378982, true), (2, 12602495, true), (3, 4164033, true), (4, 5741405, false), (5, 1724025, false),
+   (6, 6219280, false), (7, 8047828, false), (8, 6321519, false), (9, 5241981, false), (10, 892658, true),
+   (11, 560544, true), (12, 431207, true)]
+/-- `|c_j| · 10⁹` and the sign of `c_j` (`true` = negative) -/
+def CJ (j : ℕ) : ℕ × Bool :=
+  match j with
+  | 1 => (12378982, false) | 2 => (12602495, true) | 3 => (4164033, false) | 4 => (5741405, false)
+  | 5 => (1724025, true) | 6 => (6219280, false) | 7 => (8047828, true) | 8 => (6321519, false)
+  | 9 => (5241981, true) | 10 => (892658, true) | 11 => (560544, false) | 12 => (431207, true) | _ => (0, false)
+
+/-- four accumulators of a far sum: `lo = pl − nh`, `hi = ph − nl` -/
+structure Acc where
+  (pl ph nl nh : ℕ)
+
+/-- add `±e · [m0, m1]` (`m0 ≤ m1` magnitudes) -/
+def Acc.put (a : Acc) (neg : Bool) (e m0 m1 : ℕ) : Acc :=
+  bif neg then ⟨a.pl, a.ph, a.nl + e * m0, a.nh + e * m1⟩ else ⟨a.pl + e * m0, a.ph + e * m1, a.nl, a.nh⟩
+
+/-- `[DZ^(n+2) / Y1^(n+1), ⌈DZ^(n+2) / Y0^(n+1)⌉]`: the magnitude of `1 / y^(n+1)` for `|y| ∈ [Y0, Y1] / DZ` -/
+def rlo (Y1 n : ℕ) : ℕ := DZ ^ (n + 2) / Y1 ^ (n + 1)
+def rhi (Y0 n : ℕ) : ℕ := ndivc (DZ ^ (n + 2)) (Y0 ^ (n + 1))
+
+/-- the far terms of `j`: `y = x + j` always, `y = x − j` unless `2j = k` (the near pole) -/
+def accJ (k L U n : ℕ) (a : Acc) (j e : ℕ) (sg : Bool) : Acc :=
+  let a1 := a.put sg e (rlo (U + j * DZ) n) (rhi (L + j * DZ) n)
+  bif Nat.blt (2 * j) k then a1.put sg e (rlo (U - j * DZ) n) (rhi (L - j * DZ) n)
+  else bif Nat.blt k (2 * j) then a1.put (xor sg (n % 2 == 0)) e (rlo (j * DZ - L) n) (rhi (j * DZ - U) n)
+  else a1
+
+def farAcc (k L U n : ℕ) : List (ℕ × ℕ × Bool) → Acc → Acc
+  | [], a => a
+  | (j, e, sg) :: rest, a => farAcc k L U n rest (accJ k L U n a j e sg)
+
+/-- the separation of the far poles from the cell -/
+def okFar (k L U : ℕ) : List (ℕ × ℕ × Bool) → Bool
+  | [] => true
+  | (j, _, _) :: rest =>
+    (!(Nat.blt (2 * j) k) || Nat.blt (j * DZ) L) && (!(Nat.blt k (2 * j)) || Nat.blt U (j * DZ)) && okFar k L U rest
+
+structure Cell where
+  (key : ℕ) (WN : ℕ)
+
+namespace Cell
+def LN (c : Cell) : ℕ := c.key / KB
+def UN (c : Cell) : ℕ := c.key % KB
+def k (c : Cell) : ℕ := (2 * (c.LN + c.UN) + SC) / (2 * SC)
+def side (c : Cell) : Bool := Nat.ble (c.k * SC) (2 * c.LN)
+def LLO (c : Cell) : ℕ := c.LN * DZ / SC
+def UHI (c : Cell) : ℕ := ndivc (c.UN * DZ) SC
+def AD (c : Cell) : ℕ := c.k * DZ2
+def RLO (c : Cell) : ℕ := bif c.side then c.LLO - c.AD else c.AD - c.UHI
+def RHI (c : Cell) : ℕ := bif c.side then c.UHI - c.AD else c.AD - c.LLO
+def TLZ (c : Cell) : ℕ := PLN * c.RLO / E20
+def TUZ (c : Cell) : ℕ := ndivc (PUN * c.RHI) E20
+/-- `cos θ`, `sin θ` at `θ = π r`, `r = |x − k/2|` -/
+def CI (c : Cell) : IV :=
+  ⟨⟨(cosP c.TUZ - cosN c.TUZ) / (3628800 * DZ^9), ERRD⟩, ⟨ndivc (cosP c.TLZ - cosN c.TLZ) (3628800 * DZ^9) + ERRD, 0⟩⟩
+def SI (c : Cell) : IV :=
+  ⟨⟨(sinP c.TLZ - sinN c.TLZ) / (39916800 * DZ^10), ERRD⟩, ⟨ndivc (sinP c.TUZ - sinN c.TUZ) (39916800 * DZ^10) + ERRD, 0⟩⟩
+/-- `cos (π x)` and `sin (π x)` through the anchor `k/2` -/
+def CX (c : Cell) : IV :=
+  match c.k % 4 with
+  | 0 => c.CI
+  | 1 => bif c.side then c.SI.neg else c.SI
+  | 2 => c.CI.neg
+  | _ => bif c.side then c.SI else c.SI.neg
+def SX (c : Cell) : IV :=
+  match c.k % 4 with
+  | 0 => bif c.side then c.SI else c.SI.neg
+  | 1 => c.CI
+  | 2 => bif c.side then c.SI.neg else c.SI
+  | _ => c.CI.neg
+def BLZ (c : Cell) : ℕ := PLN * c.LLO / E20
+def BUZ (c : Cell) : ℕ := ndivc (PUN * c.UHI) E20
+/-- `b = π x`, `2γ b`, `N = cos b − 2γ b sin b`, `E = −D = 2b² − 1` -/
+def BI (c : Cell) : IV := IV.ofN c.BLZ c.BUZ
+def PG (c : Cell) : IV := IV.ofN (GAM0 * c.BLZ / DZ) (ndivc (GAM1 * c.BUZ) DZ)
+def NI (c : Cell) : IV := c.CX.sub (c.PG.mul c.SX)
+def E0 (c : Cell) : ℕ := 2 * c.BLZ * c.BLZ / DZ - DZ
+def E1 (c : Cell) : ℕ := ndivc (2 * c.BUZ * c.BUZ) DZ - DZ
+def EI (c : Cell) : IV := IV.ofN c.E0 c.E1
+def okB (c : Cell) : Bool :=
+  Nat.ble c.LN c.UN && Nat.ble c.TUZ DZ
+    && (bif c.side then Nat.ble (c.k * SC) (2 * c.LN) else Nat.ble (2 * c.UN) (c.k * SC))
+    && Nat.ble (cosN c.TUZ) (cosP c.TUZ) && Nat.ble (cosN c.TLZ) (cosP c.TLZ)
+    && Nat.ble (sinN c.TLZ) (sinP c.TLZ) && Nat.ble (sinN c.TUZ) (sinP c.TUZ)
+    && Nat.blt 0 c.E0
+def ok (c : Cell) : Bool := c.okB && okFar c.k c.LLO c.UHI CE
+/-- `A_n` -/
+def FA (c : Cell) (n : ℕ) : IV :=
+  let a := farAcc c.k c.LLO c.UHI n CE ⟨0, 0, 0, 0⟩
+  IV.divn ⟨⟨a.pl, a.nh⟩, ⟨a.ph, a.nl⟩⟩ CD
+/-- the near pole `j₀ = k/2` -/
+def nearOn (c : Cell) : Bool := c.k % 2 == 0 && Nat.ble 2 c.k && Nat.ble c.k 24
+def S0 (c : Cell) : IV :=
+  ⟨(SZ.fl ⟨scP c.TLZ, scN c.TUZ⟩ (39916800 * DZ^9)).sub (SZ.ofN ERRD),
+   (SZ.ce ⟨scP c.TUZ, scN c.TLZ⟩ (39916800 * DZ^9)).add (SZ.ofN ERRD)⟩
+def G1 (c : Cell) : IV :=
+  ⟨(SZ.fl ⟨s1P c.TLZ, s1N c.TUZ⟩ (3991680 * DZ^8)).sub (SZ.ofN (2 * ERRD)),
+   (SZ.ce ⟨s1P c.TUZ, s1N c.TLZ⟩ (3991680 * DZ^8)).add (SZ.ofN (2 * ERRD))⟩
+def G2 (c : Cell) : IV :=
+  ⟨(SZ.fl ⟨s2P c.TLZ, s2N c.TUZ⟩ (39916800 * DZ^9)).sub (SZ.ofN (5 * ERRD)),
+   (SZ.ce ⟨s2P c.TUZ, s2N c.TLZ⟩ (39916800 * DZ^9)).add (SZ.ofN (5 * ERRD))⟩
+def B0 (c : Cell) : IV := bif c.nearOn then (IV.scl (CJ (c.k / 2)).2 (CJ (c.k / 2)).1 c.S0).divn CD else IV.zero
+def B1 (c : Cell) : IV :=
+  bif c.nearOn then (IV.scl (CJ (c.k / 2)).2 (CJ (c.k / 2)).1 (PIC.mul (bif c.side then c.G1 else c.G1.neg))).divn CD
+  else IV.zero
+def B2 (c : Cell) : IV := bif c.nearOn then (IV.scl (CJ (c.k / 2)).2 (CJ (c.k / 2)).1 (PI2C.mul c.G2)).divn CD else IV.zero
+
+def K0 (c : Cell) : IV := (c.NI.neg.divp c.E0 c.E1).add ((SIGC.mul (c.SX.mul (c.FA 0))).add (RHOC.mul c.B0))
+def MI (c : Cell) : IV := (((G1C.mul c.SX).add (c.PG.mul c.CX)).neg.mul c.EI.neg).add ((c.BI.muln 4).mul c.NI)
+def E2 (c : Cell) : IV := c.EI.mul c.EI
+def K1 (c : Cell) : IV :=
+  (PIC.mul (c.MI.divp c.E2.lo.p c.E2.hi.p)).add
+    (((RHOC.mul (c.CX.mul (c.FA 0))).sub (SIGC.mul (c.SX.mul (c.FA 1)))).add (RHOC.mul c.B1))
+def N2 (c : Cell) : IV := (c.PG.mul c.SX).sub (G2C.mul c.CX)
+def E3 (c : Cell) : IV := c.E2.mul c.EI
+def K2 (c : Cell) : IV :=
+  (PI2C.mul ((((c.N2.mul c.E2).sub ((c.NI.mul c.EI).muln 4)).add ((c.BI.mul c.MI).muln 8)).divp c.E3.lo.p c.E3.hi.p)).neg.add
+    ((((TAUC.mul (c.SX.mul (c.FA 0))).neg).sub ((RHOC.mul (c.CX.mul (c.FA 1))).muln 2)).add
+      (((SIGC.mul (c.SX.mul (c.FA 2))).muln 2).add (RHOC.mul c.B2)))
+
+/-- `|k| ≥ KA` on the cell -/
+def KA (c : Cell) : SZ := (SZ.ofN 0).max ((c.K0.lo).max c.K0.hi.neg)
+def W1 (c : Cell) : IV := (c.K0.mul c.K1).muln 2
+def W2L (c : Cell) : SZ :=
+  let s := (SZ.ofN 0).max ((c.K1.lo).max c.K1.hi.neg)
+  (s.mul s).add ((c.K0.mul c.K2).lo.muln DZ)
+end Cell
+
+end AMW.CN

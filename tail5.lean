@@ -1,0 +1,143 @@
+
+/-! ###### the submission layer ###### -/
+
+noncomputable section
+
+namespace RiemannFail
+
+open Filter
+open Zeta23 Zeta23.ThmD Zeta23Ext.Bridge Zeta23Ext.BridgeW
+
+/-- The five-point certificate from the checked table. -/
+theorem five_point_cert :
+    ∀ g : Fin (5 - 1) → ℝ, (∀ i, 0 ≤ g i) → (3000 / 1000000 : ℝ) ≤ F 5 2500 g := by
+  intro g hg
+  rw [ThreePoint.F5_eq]
+  have h := ThreePoint.five_point_of_check ThreePoint.FiveData.table ThreePoint.FiveData.cover
+    ThreePoint.FiveData.bits ThreePoint.FiveData.fuel ThreePoint.FiveData.cQ ThreePoint.FiveData.pQ
+    ThreePoint.FiveData.SQ ThreePoint.FiveData.SQ_eq (by norm_num [ThreePoint.FiveData.pQ])
+    (by norm_num [ThreePoint.FiveData.cQ]) ThreePoint.FiveData.table_ok ThreePoint.FiveData.cover_ok
+    ⟨_, ThreePoint.FiveData.run_ok⟩ (g 0) (g 1) (g 2) (g 3) (hg 0) (hg 1) (hg 2) (hg 3)
+  unfold ThreePoint.G5 at h
+  simp only [ThreePoint.FiveData.cQ, ThreePoint.FiveData.pQ] at h
+  push_cast at h ⊢
+  linarith
+
+/-- `Phi_w' 5 (3000/10⁶) 337 (4/2500)` as an exact rational in `HD 1`. -/
+theorem Phi_five_w' :
+    Phi_w' 5 (3000 / 1000000 : ℝ) 337 (((5 : ℕ) - 1 : ℝ) / ((2500 : ℕ) : ℝ))
+      = (1685000 * HD 1 - 2664) / 1680005 := by
+  unfold Phi_w'
+  push_cast
+  rw [div_eq_div_iff (by norm_num) (by norm_num)]
+  ring
+
+/-- **The five-point bound, unconditional, with the window-count bookkeeping.** -/
+theorem five_point_bound_w' :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      ((1685000 * HD 1 - 2664) / 1680005 - ε) * (Zeta23.Ncount T (2 * T) : ℝ)
+        ≤ Zeta23.N0simple T (2 * T) := by
+  rw [← Phi_five_w']
+  exact n_point_bound_fixed' 5 (3000 / 1000000 : ℝ) 337 2500 (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) five_point_cert (by norm_num)
+
+/-- `(√2)⁻¹ = √2/2`. -/
+theorem inv_sqrt_two : (Real.sqrt 2)⁻¹ = Real.sqrt 2 / 2 := by
+  have hne : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num)).ne'
+  rw [inv_eq_one_div, div_eq_div_iff hne two_ne_zero, one_mul,
+    Real.mul_self_sqrt (by norm_num : (0:ℝ) ≤ 2)]
+
+/-- `HD 1 = 3/2 − γ` with `γ = (√2/2)·cot(√2/2)`, the constant `ThreePoint.gam`. -/
+theorem HD_one_eq_gam : HD 1 = 3 / 2 - ThreePoint.gam := by
+  rw [HD_one, inv_sqrt_two]
+  unfold ThreePoint.gam
+  ring
+
+/-- `H = HD 1` enclosed to `1.1·10⁻⁸`, from `ThreePoint.gam_bounds`. -/
+theorem HD_one_bounds :
+    (6725006982 / 10000000000 : ℝ) ≤ HD 1 ∧ HD 1 ≤ 6725007093 / 10000000000 := by
+  have hg := ThreePoint.gam_bounds
+  rw [HD_one_eq_gam]
+  norm_num at hg ⊢
+  constructor <;> linarith [hg.1, hg.2]
+
+/-- The library's Theorem-D constant `cStar 1` (division-safe form) equals the challenge's
+`cMT` (the tan form at ϑ = 1/√2): by `cStar_eq_tan_form` and unfolding `theta 1 = 1/√2`. -/
+theorem cStar_one_eq_cMT : Zeta23.ThmD.cStar 1 = cMT := by
+  rw [Zeta23.ThmD.cStar_eq_tan_form zero_le_one le_rfl]
+  unfold cMT Zeta23.ThmD.theta
+  rfl
+
+/-- The pinned record is `HD 1`. -/
+theorem currentRecordKappa_eq : currentRecordKappa = HD 1 := by
+  unfold currentRecordKappa Zeta23.ThmD.HD
+  rw [cStar_one_eq_cMT]
+
+/-- The candidate rational sits below the proved constant. -/
+theorem candidateKappa_le : candidateKappa ≤ (1685000 * HD 1 - 2664) / 1680005 := by
+  unfold candidateKappa
+  rw [le_div_iff₀ (by norm_num : (0:ℝ) < 1680005)]
+  linarith [HD_one_bounds.1]
+
+/-- Simple on-line zeros are among the distinct on-line zeros. -/
+theorem N0simple_le_N0star (T₁ T₂ : ℝ) : Zeta23.N0simple T₁ T₂ ≤ Zeta23.N0star T₁ T₂ := by
+  refine Set.ncard_le_ncard Set.inter_subset_left ?_
+  refine (Zeta23.zetaSeam.finite_window T₁ T₂).subset ?_
+  rintro ρ ⟨⟨h1, h2, h3⟩, _⟩
+  exact ⟨h1, h2, h3⟩
+
+/-- The dyadic bound at the candidate rational, in the library's vocabulary. -/
+theorem dyadic :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Zeta23.Ncount T (2 * T) : ℝ) ≤ Zeta23.N0star T (2 * T) := by
+  intro ε hε
+  obtain ⟨T₀, hT₀⟩ := five_point_bound_w' ε hε
+  refine ⟨T₀, fun T hT => ?_⟩
+  have h1 := hT₀ T hT
+  have hN : (0:ℝ) ≤ (Zeta23.Ncount T (2 * T) : ℝ) := Nat.cast_nonneg _
+  have h2 : (Zeta23.N0simple T (2 * T) : ℝ) ≤ Zeta23.N0star T (2 * T) := by
+    exact_mod_cast N0simple_le_N0star T (2 * T)
+  have h0 : (candidateKappa - ε) * (Zeta23.Ncount T (2 * T) : ℝ)
+      ≤ ((1685000 * HD 1 - 2664) / 1680005 - ε) * (Zeta23.Ncount T (2 * T) : ℝ) :=
+    mul_le_mul_of_nonneg_right (by linarith [candidateKappa_le]) hN
+  linarith
+
+/-- The cumulative form, through the library's dyadic-to-cumulative wrapper. -/
+theorem cumulative :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Zeta23.Ncount 0 T : ℝ) ≤ Zeta23.N0star 0 T :=
+  Zeta23.cumulative_of_dyadic Zeta23.zetaSeam Zeta23.paperInputs_zeta.RvM
+    (fun _ _ _ => Zeta23.N0star_add' Zeta23.zetaSeam) dyadic
+
+/-- Strict improvement over the record. -/
+theorem strict : currentRecordKappa < candidateKappa := by
+  rw [currentRecordKappa_eq]
+  unfold candidateKappa
+  linarith [HD_one_bounds.2]
+
+end RiemannFail
+
+end
+
+/-! ###### the three scored theorems, statements as generated by the trusted template ###### -/
+
+noncomputable section
+
+/-- The submitted bound is strictly larger than the current formal record. -/
+theorem candidate_strict_improvement :
+    currentRecordKappa < candidateKappa :=
+  RiemannFail.strict
+
+/-- The candidate proves a larger unconditional critical-line proportion on dyadic windows. -/
+theorem candidate_critical_line_bound :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Ncount T (2 * T) : ℝ) ≤ N0star T (2 * T) :=
+  RiemannFail.dyadic
+
+/-- The same unconditional bound in cumulative windows. -/
+theorem candidate_critical_line_bound_cumulative :
+    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
+      (candidateKappa - ε) * (Ncount 0 T : ℝ) ≤ N0star 0 T :=
+  RiemannFail.cumulative
+
+end

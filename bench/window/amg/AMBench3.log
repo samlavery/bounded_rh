@@ -1,0 +1,245 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:16:07)
+tacticAnalysis took 5.75ms
+linting took 24.3ms
+tacticAnalysis took 4.54ms
+linting took 25.9ms
+overlappingInstancesLinter took 1.08ms
+tacticAnalysis took 6.15ms
+linting took 23.7ms
+elaboration took 1.68ms
+overlappingInstancesLinter took 4.71ms
+tacticAnalysis took 3.59ms
+linting took 20.8ms
+overlappingInstancesLinter took 1.69ms
+tacticAnalysis took 1.34ms
+linting took 26.8ms
+elaboration took 1.12ms
+overlappingInstancesLinter took 1.73ms
+linting took 24.8ms
+linting took 25.3ms
+elaboration took 1.04ms
+overlappingInstancesLinter took 2.23ms
+linting took 22.5ms
+linting took 24.1ms
+linting took 3.43ms
+elaboration took 2.76ms
+linting took 2.72ms
+elaboration took 1.51ms
+linting took 2.44ms
+elaboration took 3.24ms
+linting took 1.47ms
+elaboration took 4ms
+linting took 1.3ms
+elaboration took 2.14ms
+linting took 1.66ms
+elaboration took 1.96ms
+linting took 1.37ms
+linting took 1.1ms
+linting took 1.21ms
+linting took 1.1ms
+linting took 1.07ms
+elaboration took 1.97ms
+linting took 2.14ms
+elaboration took 1.85ms
+linting took 1.33ms
+elaboration took 1.64ms
+linting took 1.22ms
+elaboration took 1.61ms
+linting took 1.21ms
+elaboration took 1.92ms
+linting took 1.37ms
+elaboration took 2.16ms
+linting took 1.57ms
+elaboration took 1.62ms
+linting took 1.89ms
+elaboration took 1.26ms
+linting took 2.06ms
+linting took 1.8ms
+linting took 1.62ms
+linting took 1.19ms
+elaboration took 1.22ms
+linting took 2.1ms
+linting took 1.71ms
+elaboration took 2.26ms
+tacticAnalysis took 1.21ms
+linting took 2.62ms
+elaboration took 2.11ms
+linting took 2.01ms
+elaboration took 2.53ms
+linting took 1.45ms
+linting took 1.16ms
+linting took 1.13ms
+elaboration took 1.02ms
+linting took 2.69ms
+linting took 3.18ms
+linting took 3.75ms
+linting took 3.12ms
+linting took 2.5ms
+elaboration took 3.32ms
+linting took 2.28ms
+elaboration took 3.26ms
+compilation (LCNF base) took 1.24ms
+linting took 2.35ms
+type checking took 3.97ms
+elaboration took 3.16ms
+linting took 1.33ms
+elaboration took 1.04ms
+linting took 1.42ms
+linting took 1.8ms
+linting took 1.55ms
+linting took 1.39ms
+linting took 1.01ms
+linting took 1.05ms
+linting took 1.58ms
+linting took 1.37ms
+linting took 1.33ms
+linting took 1.18ms
+linting took 1.24ms
+linting took 1.03ms
+linting took 1.3ms
+linting took 1.66ms
+linting took 1.34ms
+elaboration took 1.61ms
+linting took 2.03ms
+elaboration took 1.62ms
+linting took 2.11ms
+linting took 1.45ms
+linting took 1.65ms
+linting took 1.72ms
+elaboration took 1.05ms
+linting took 1.41ms
+linting took 1.13ms
+elaboration took 1.74ms
+linting took 1.32ms
+elaboration took 2.88ms
+compilation (LCNF base) took 1.75ms
+linting took 2.65ms
+elaboration took 1.95ms
+linting took 2.08ms
+linting took 1.63ms
+elaboration took 3.64ms
+tacticAnalysis took 1.17ms
+linting took 3.61ms
+typeclass inference of CoeT took 5.52ms
+elaboration took 1.66ms
+compilation (LCNF base) took 1.37ms
+linting took 2.38ms
+process pre-definitions took 1.14ms
+elaboration took 2.51ms
+linting took 2.42ms
+elaboration took 1.8ms
+linting took 1.67ms
+elaboration took 1.05ms
+linting took 1.4ms
+linting took 1.18ms
+elaboration took 2.21ms
+linting took 1.84ms
+elaboration took 2.68ms
+linting took 1.92ms
+elaboration took 2.81ms
+linting took 1.96ms
+elaboration took 1.06ms
+linting took 1.41ms
+elaboration took 1.43ms
+linting took 1.78ms
+elaboration took 1.22ms
+linting took 1.54ms
+linting took 1.1ms
+linting took 1.66ms
+elaboration took 1.04ms
+linting took 1.78ms
+linting took 1.02ms
+elaboration took 1.21ms
+linting took 2.32ms
+linting took 1.37ms
+elaboration took 1.61ms
+tacticAnalysis took 2.33ms
+linting took 4.66ms
+linting took 3.24ms
+linting took 3.28ms
+elaboration took 1.74ms
+linting took 4.98ms
+linting took 5.54ms
+linting took 4.87ms
+linting took 5.45ms
+tacticAnalysis took 1.17ms
+linting took 4.52ms
+elaboration took 1.47ms
+linting took 2.67ms
+process pre-definitions took 1.22ms
+elaboration took 4.05ms
+compilation (LCNF base) took 1.07ms
+linting took 3.11ms
+type checking took 2.27ms
+AMBench3.lean:200:36: warning: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+linting took 2.81ms
+type checking took 33.6ms
+linting took 1.53ms
+type checking took 61.7ms
+linting took 1.44ms
+elaboration took 1.11ms
+type checking took 66.9ms
+linting took 1.51ms
+elaboration took 1.07ms
+type checking took 176ms
+linting took 2.32ms
+elaboration took 1.13ms
+type checking took 220ms
+linting took 2.01ms
+type checking took 224ms
+linting took 1.53ms
+type checking took 225ms
+linting took 1.83ms
+type checking took 228ms
+linting took 1.95ms
+elaboration took 1.07ms
+type checking took 371ms
+linting took 2.03ms
+linting took 1.24ms
+linting took 1.46ms
+cumulative profiling times:
+	attribute application 0.284ms
+	compilation (IR) 2.09ms
+	compilation (LCNF base) 35ms
+	compilation (LCNF impure) 10.7ms
+	compilation (LCNF mono) 16.9ms
+	congr simp thm 0.0335ms
+	elaboration 138ms
+	fix level params 0.348ms
+	instantiate metavars 0.67ms
+	interpretation 0.282ms
+	let-to-have transformation 0.268ms
+	linting 455ms
+	module linting 0.000542ms
+	overlappingInstancesLinter 25.5ms
+	parsing 15.6ms
+	process pre-definitions 14.4ms
+	share common exprs 2.09ms
+	simp 0.157ms
+	tactic execution 2.16ms
+	tacticAnalysis 73.9ms
+	type checking 1.62s
+	typeclass inference 162ms
+       13.53 real         3.01 user        11.02 sys
+          5884002304  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              436286  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+               15912  involuntary context switches
+         63538952316  instructions retired
+         45353283745  cycles elapsed
+          1005441016  peak memory footprint

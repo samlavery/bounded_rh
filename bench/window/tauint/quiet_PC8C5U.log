@@ -1,0 +1,30 @@
+== quiet re-measure of window/tauint/PC8C5UTS.lean, load 3.38 5.04 4.39
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      420.63 real       405.47 user        15.64 sys
+          5219080704  peak memory footprint
+BUILD EXIT 0
+module constants: 5687; imports: 18
+kernel replay of 5687 constants: 201757 ms
+      221.20 real       200.43 user        14.63 sys
+          4221237496  peak memory footprint
+REPLAY EXIT 0
+== stage, load 3.29 3.22 3.59
+== CandPC8C5UTSq export
+export exit 0
+       40.90 real        27.29 user        10.39 sys
+          1593871848  peak memory footprint
+export bytes 661206317
+== CandPC8C5UTSq nanoda
+nanoda exit 0
+      219.55 real       210.06 user         9.37 sys
+          3892497528  peak memory footprint
+== CandPC8C5UTSq lean replay (full closure)
+parse_ms 15408 constants 76364
+replay_ms 259691 OK
+replayx exit 0
+      275.28 real       270.88 user         4.16 sys
+          2412857648  peak memory footprint
+== done, load 3.86 3.57 3.57
+build 420.63 export 40.9 nanoda 219.55 closure 275.28; conservative 2316.2 s

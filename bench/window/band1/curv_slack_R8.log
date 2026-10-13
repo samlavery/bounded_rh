@@ -1,0 +1,10 @@
+window R8 N=32 (units: slack in 2 delta' = 0.9810)
+  slack <= 0.02: max V''_D(s) -6.9285 (slack used 0.0200) -> second-order Lemma P covers y <= all y (V'' <= 0)
+  slack <= 0.05: max V''_D(s) -5.5884 (slack used 0.0500) -> second-order Lemma P covers y <= all y (V'' <= 0)
+  slack <= 0.10: max V''_D(s) -5.0646 (slack used 0.1000) -> second-order Lemma P covers y <= all y (V'' <= 0)
+  slack <= 0.20: max V''_D(s) -4.4807 (slack used 0.2000) -> second-order Lemma P covers y <= all y (V'' <= 0)
+  slack <= 0.50: max V''_D(s) -3.6527 (slack used 0.5000) -> second-order Lemma P covers y <= all y (V'' <= 0)
+  slack <= 1.00: max V''_D(s) -3.2342 (slack used 1.0000) -> second-order Lemma P covers y <= all y (V'' <= 0)
+  slack <= 2.00: max V''_D(s) -3.2843 (slack used 2.0000) -> second-order Lemma P covers y <= all y (V'' <= 0)
+  slack <= 4.00: max V''_D(s) +0.2909 (slack used 3.7134) -> second-order Lemma P covers y <= 2.502
+lambda* (largest V''/slack found, two-sided units) 0.0799

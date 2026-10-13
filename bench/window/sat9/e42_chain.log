@@ -1,0 +1,3 @@
+(i) P=128 N= 512: LP +1292.590907 (fresh +1292.590907) | ||grad|| 3.63e-06 (rel 4.4e-07) mineig +1.37e+00 its 2 | env density 0.6627, L_env 386.3 -> LP_chain = LP - L_env*s_env* = +1292.0576 | 17s
+(i) P=256 N=1024: LP +861.847048 (fresh +861.847048) | ||grad|| 2.32e-06 (rel 1.8e-09) mineig +6.01e-01 its 25 | env density 0.6636, L_env 771.5 -> LP_chain = LP - L_env*s_env* = +860.7818 | 78s
+(i) P=512 N=2048: LP +579.828392 (fresh +579.828394) | ||grad|| 5.70e+01 (rel 1.3e-02) mineig -2.11e+01 its 2999 | env density 0.6640, L_env 1542.1 -> LP_chain = LP - L_env*s_env* = +577.6993 | 2156s

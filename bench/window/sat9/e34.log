@@ -1,0 +1,23 @@
+witness a=0.60 P= 6: QP   +22.382 hard   +22.114 | |w|_inf 0.388, n=14
+  prob = cp.Problem(cp.Maximize(T + cp.sum(tau) - 4 * cp.sum_squares(cp.multiply(np.sqrt(ek), z))), cons); prob.solve(solver=cp.CLARABEL)
+witness a=0.60 P=12: QP   +34.598 hard   +34.036 | |w|_inf 0.41, n=20
+witness a=0.60 P=24: QP   +63.421 hard   +62.772 | |w|_inf 0.449, n=32
+witness a=0.60 P=48: QP  +126.051 hard  +123.271 | |w|_inf 0.424, n=56
+witness a=0.70 P= 6: QP   +13.696 hard   +13.634 | |w|_inf 0.328, n=14
+witness a=0.70 P=12: QP   +20.072 hard   +19.751 | |w|_inf 0.427, n=20
+witness a=0.70 P=24: QP   +38.222 hard   +37.569 | |w|_inf 0.395, n=32
+witness a=0.70 P=48: QP   +77.404 hard   +76.704 | |w|_inf 0.386, n=56
+witness a=0.76 P= 6: QP    +8.901 hard    +8.871 | |w|_inf 0.289, n=14
+witness a=0.76 P=12: QP   +13.632 hard   +13.627 | |w|_inf 0.437, n=20
+witness a=0.76 P=24: QP   +27.240 hard   +26.891 | |w|_inf 0.419, n=32
+witness a=0.76 P=48: QP   +56.980 hard   +56.304 | |w|_inf 0.4, n=56
+witness a=0.80 P= 6: QP    +5.922 hard    +5.915 | |w|_inf 0.404, n=14
+witness a=0.80 P=12: QP   +10.503 hard   +10.469 | |w|_inf 0.38, n=20
+witness a=0.80 P=24: QP   +20.389 hard   +20.116 | |w|_inf 0.416, n=32
+witness a=0.80 P=48: QP   +43.393 hard   +41.553 | |w|_inf 0.458, n=56
+Near-density-1 thinness (optimal depth profile, depths in [0.8, 3]):
+  a=0.85 tau(a) 0.6517 | truth(24) 36.218 truth(48) 61.532 truth(96) 93.416 | bulk per-pair margin 0.6643 | end term 29.647
+  a=0.90 tau(a) 0.3035 | truth(24) 88.594 truth(48) 82.298 truth(96) 92.718 | bulk per-pair margin 0.2171 | end term 71.878
+  a=0.95 tau(a) 0.0913 | truth(24) 374.440 truth(48) 185.548 truth(96) 182.219 | bulk per-pair margin -0.0693 | end term 188.876
+  a=1.00 tau(a) 0.0055 | truth(24) 4552.687 truth(48) 5674.046 truth(96) 6795.639 | bulk per-pair margin 23.3665 | end term 4552.454
+  a=1.05 tau(a) 0.0520 | truth(24) 20268.419 truth(48) 42003.565 truth(96) 85516.399 | bulk per-pair margin 906.5174 | end term -1509.269

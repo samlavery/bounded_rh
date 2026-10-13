@@ -1,0 +1,28 @@
+i+   N=128 M=16 Pnear=16 y0=0.4                         LP_lin +97.5459 (LP_pSq -124.3106 + shift 221.857) R_lin 0.6008  pairs 16 y 0.420-1.565 [nit 39449, 17s]
+i+   N=128 M=16 Pnear=16 y0=1.0                         LP_lin +97.4470 (LP_pSq -124.4095 + shift 221.857) R_lin 0.6014  pairs 16 y 0.419-1.564 [nit 40000, 18s]
+i+   N=128 M=16 Pnear=24 y0=0.4                         LP_lin +92.2150 (LP_pSq -129.6415 + shift 221.857) R_lin 0.6383  pairs 24 y 0.001-1.801 [nit 40000, 19s]
+i+   N=128 M=16 Pnear=24 y0=1.0                         LP_lin +85.3715 (LP_pSq -136.4850 + shift 221.857) R_lin 0.6568  pairs 24 y 0.001-1.878 [nit 40000, 19s]
+i+   N=128 M=16 Pnear=32 y0=0.4                         LP_lin +92.8238 (LP_pSq -129.0327 + shift 221.857) R_lin 0.6530  pairs 32 y 0.001-1.993 [nit 40000, 19s]
+i+   N=128 M=16 Pnear=32 y0=1.0                         LP_lin +89.7232 (LP_pSq -132.1333 + shift 221.857) R_lin 0.6603  pairs 32 y 0.001-1.912 [nit 40000, 20s]
+i+   N=128 M=24 Pnear=16 y0=0.4                         LP_lin +191.9844 (LP_pSq -330.9631 + shift 522.947) R_lin 0.6552  pairs 16 y 0.734-1.908 [nit 40000, 19s]
+i+   N=128 M=24 Pnear=16 y0=1.0                         LP_lin +193.3869 (LP_pSq -329.5606 + shift 522.947) R_lin 0.6523  pairs 16 y 0.509-1.930 [nit 40000, 17s]
+i+   N=128 M=24 Pnear=24 y0=0.4                         LP_lin +190.2417 (LP_pSq -332.7058 + shift 522.947) R_lin 0.6653  pairs 24 y 0.001-2.051 [nit 40000, 18s]
+i+   N=128 M=24 Pnear=24 y0=1.0                         LP_lin +173.1343 (LP_pSq -349.8132 + shift 522.947) R_lin 0.6906  pairs 24 y 0.001-2.088 [nit 40000, 17s]
+i+   N=128 M=24 Pnear=32 y0=0.4                         LP_lin +180.0079 (LP_pSq -342.9396 + shift 522.947) R_lin 0.6856  pairs 32 y 0.001-2.111 [nit 40000, 17s]
+i+   N=128 M=24 Pnear=32 y0=1.0                         LP_lin +175.4161 (LP_pSq -347.5313 + shift 522.947) R_lin 0.6909  pairs 32 y 0.001-2.031 [nit 40000, 18s]
+i+   N=128 M=32 Pnear=16 y0=0.4                         LP_lin +330.2775 (LP_pSq -620.5361 + shift 950.814) R_lin 0.6674  pairs 16 y 0.019-1.994 [nit 40000, 16s]
+i+   N=128 M=32 Pnear=16 y0=1.0                         LP_lin +340.6666 (LP_pSq -610.1470 + shift 950.814) R_lin 0.6568  pairs 16 y 0.001-1.956 [nit 40000, 16s]
+i+   N=128 M=32 Pnear=24 y0=0.4                         LP_lin +344.9731 (LP_pSq -605.8405 + shift 950.814) R_lin 0.6580  pairs 24 y 0.001-2.033 [nit 40000, 17s]
+i+   N=128 M=32 Pnear=24 y0=1.0                         LP_lin +306.1652 (LP_pSq -644.6484 + shift 950.814) R_lin 0.6923  pairs 24 y 0.001-2.164 [nit 40000, 16s]
+i+   N=128 M=32 Pnear=32 y0=0.4                         LP_lin +315.6187 (LP_pSq -635.1949 + shift 950.814) R_lin 0.6887  pairs 32 y 0.001-2.194 [nit 40000, 16s]
+i+   N=128 M=32 Pnear=32 y0=1.0                         LP_lin +312.9846 (LP_pSq -637.8290 + shift 950.814) R_lin 0.6901  pairs 32 y 0.021-2.144 [nit 40000, 17s]
+i+   N=128 M=48 Pnear=16 y0=0.4                         LP_lin +811.1503 (LP_pSq -1375.7210 + shift 2186.871) R_lin 0.6402  pairs 16 y 0.003-2.169 [nit 40000, 14s]
+i+   N=128 M=48 Pnear=16 y0=1.0                         LP_lin +777.3525 (LP_pSq -1409.5188 + shift 2186.871) R_lin 0.6548  pairs 16 y 0.001-2.195 [nit 40000, 14s]
+i+   N=128 M=48 Pnear=24 y0=0.4                         LP_lin +704.4557 (LP_pSq -1482.4156 + shift 2186.871) R_lin 0.6890  pairs 24 y 0.001-2.294 [nit 40000, 15s]
+i+   N=128 M=48 Pnear=24 y0=1.0                         LP_lin +698.2900 (LP_pSq -1488.5812 + shift 2186.871) R_lin 0.6901  pairs 24 y 0.001-2.267 [nit 40000, 15s]
+i+   N=128 M=48 Pnear=32 y0=0.4                         LP_lin +746.1012 (LP_pSq -1440.7701 + shift 2186.871) R_lin 0.6707  pairs 32 y 0.001-2.212 [nit 40000, 14s]
+i+   N=128 M=48 Pnear=32 y0=1.0                         LP_lin +742.8165 (LP_pSq -1444.0548 + shift 2186.871) R_lin 0.6721  pairs 32 y 0.173-2.222 [nit 40000, 14s]
+SUMMARY M=16: min LP_lin +85.372 (LP_lin/M^2 0.333) [M=16 Pnear=24 y0=1.0] R_lin there 0.657
+SUMMARY M=24: min LP_lin +173.134 (LP_lin/M^2 0.301) [M=24 Pnear=24 y0=1.0] R_lin there 0.691
+SUMMARY M=32: min LP_lin +306.165 (LP_lin/M^2 0.299) [M=32 Pnear=24 y0=1.0] R_lin there 0.692
+SUMMARY M=48: min LP_lin +698.290 (LP_lin/M^2 0.303) [M=48 Pnear=24 y0=1.0] R_lin there 0.690

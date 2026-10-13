@@ -1,0 +1,4 @@
+free depths in [0.80, 2.00] (N = 128)
+  free depths            P= 4: W/def    +3.926 | s    3.819 X     4.606 Q_pp  +3.691e+01 | M_near  2 ||S_near||  1.406 far     5.314 | chainCS      -68.58 chain2      +26.28 (2W      +31.10) | y [0.8  0.8  0.97 0.97]
+  free depths            P= 8: W/def    +1.400 | s    5.698 X     3.270 Q_pp  +2.149e+01 | M_near  2 ||S_near||  1.403 far     4.871 | chainCS     -100.49 chain2      +18.84 (2W      +22.18) | y [0.8  0.8  1.07 1.07 1.21 1.21]
+  free depths            P=16: W/def    +1.312 | s   17.187 X     3.356 Q_pp  +1.507e+01 | M_near  2 ||S_near||  1.403 far     2.210 | chainCS     -184.76 chain2      +37.82 (2W      +41.57) | y [0.8  0.8  0.84 0.86 1.07 1.09]

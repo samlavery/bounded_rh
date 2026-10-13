@@ -1,0 +1,3 @@
+Q=5 c=0.00343956: OK leaves=186908 tuples=108 bad-sizes=[2, 3, 3, 3, 2] (93s)
+Q=5 c=0.00351122: OK leaves=694468 tuples=108 bad-sizes=[2, 3, 3, 3, 2] (280s)
+Q=5 c=0.00354705: FAIL/limit leaves=3000001 tuples=108 bad-sizes=[2, 3, 3, 3, 2] (1140s)

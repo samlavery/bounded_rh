@@ -1,0 +1,12 @@
+window R8: K(0) = F(0)^2 = 1.00000000, qf(0) = 1.008264; lattice check sum_n K(n) = 1.00826378 (= qf(0))
+band-limited global certificate (A = 1, closed form): delta' = inf qf/(1-a) / 2 = 0.343977 at a = 0.9999  -> 69.44% of delta_true 0.495338
+  exact LP A=1.00 Dk=1/32: g(0) 0.688517 -> delta' 0.344259 = 69.50% of delta_true  (min T -9.0e-08, max(g^-qf) -7.9e-17, 29 refinements)
+  exact LP A=1.00 Dk=1/64: g(0) 0.689112 -> delta' 0.344556 = 69.56% of delta_true  (min T -8.8e-12, max(g^-qf) +0.0e+00, 29 refinements)
+  exact LP A=1.25 Dk=1/32: g(0) 0.843434 -> delta' 0.421717 = 85.14% of delta_true  (min T -9.0e-08, max(g^-qf) +0.0e+00, 29 refinements)
+  exact LP A=1.25 Dk=1/64: g(0) 0.844912 -> delta' 0.422456 = 85.29% of delta_true  (min T -5.9e-08, max(g^-qf) +3.3e-08, 29 refinements)
+  exact LP A=1.50 Dk=1/32: g(0) 0.969176 -> delta' 0.484588 = 97.83% of delta_true  (min T -7.3e-06, max(g^-qf) +0.0e+00, 29 refinements)
+  exact LP A=1.50 Dk=1/64: g(0) 0.969258 -> delta' 0.484629 = 97.84% of delta_true  (min T -4.2e-05, max(g^-qf) +1.4e-07, 29 refinements)
+  exact LP A=2.00 Dk=1/32: g(0) 0.969177 -> delta' 0.484588 = 97.83% of delta_true  (min T -5.4e-06, max(g^-qf) +6.2e-15, 29 refinements)
+  exact LP A=2.00 Dk=1/64: g(0) 0.969258 -> delta' 0.484629 = 97.84% of delta_true  (min T -5.3e-06, max(g^-qf) +4.4e-07, 29 refinements)
+  exact LP A=3.00 Dk=1/32: g(0) 0.981016 -> delta' 0.490508 = 99.02% of delta_true  (min T -9.0e-08, max(g^-qf) +5.8e-08, 29 refinements)
+  exact LP A=3.00 Dk=1/64: g(0) 0.981197 -> delta' 0.490598 = 99.04% of delta_true  (min T -3.5e-06, max(g^-qf) +1.0e-07, 29 refinements)

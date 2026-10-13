@@ -1,0 +1,14 @@
+y_s (L_y(1) = 0): 1.141924
+L_y(n) < 0 for n = 1..400 on 240 y-points in (0, y_s): yes
+tail cutoff: leading asymptotic qf'(1)B_y(1)/(2 pi^2 n^2) within 50% for n >= N0, worst N0 = 3  (qf'(1) = -0.6887)
+y-cell width needed (Lipschitz): >= 1.050e-05 * y  -> ~ log(y_s/y_min)/1.050e-05 cells; with y_min = 1e-3: ~670300 cells
+Psi(y) = int qf B^2 - 4 sum_n L_y(n)^+ on [y_s, 3]:
+  y=1.1419: Psi/int qf B^2 = 1.00000  (positive L_y(n) at n = [])
+  y=1.2335: Psi/int qf B^2 = 0.99962  (positive L_y(n) at n = [np.int64(1)])
+  y=1.3252: Psi/int qf B^2 = 0.99957  (positive L_y(n) at n = [np.int64(1)])
+  y=1.4168: Psi/int qf B^2 = 0.99964  (positive L_y(n) at n = [np.int64(1)])
+  y=1.5084: Psi/int qf B^2 = 0.99973  (positive L_y(n) at n = [np.int64(1)])
+  y=1.6000: Psi/int qf B^2 = 0.99981  (positive L_y(n) at n = [np.int64(1)])
+  y=2.0000: Psi/int qf B^2 = 0.99997  (positive L_y(n) at n = [np.int64(1)])
+  y=2.5000: Psi/int qf B^2 = 1.00000  (positive L_y(n) at n = [np.int64(1), np.int64(2)])
+  y=3.0000: Psi/int qf B^2 = 1.00000  (positive L_y(n) at n = [np.int64(1), np.int64(2)])

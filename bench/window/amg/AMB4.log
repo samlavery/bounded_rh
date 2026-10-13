@@ -1,0 +1,78 @@
+tacticAnalysis took 1.81ms
+linting took 11.5ms
+linting took 14.4ms
+linting took 14ms
+elaboration took 5.5ms
+compilation (LCNF base) took 1.11ms
+linting took 5.09ms
+type checking took 6.45ms
+linting took 1.71ms
+type checking took 11ms
+linting took 1.23ms
+type checking took 20ms
+linting took 1.65ms
+elaboration took 1.54ms
+type checking took 107ms
+linting took 2.15ms
+elaboration took 1.15ms
+type checking took 187ms
+linting took 1.96ms
+elaboration took 1.35ms
+type checking took 270ms
+linting took 2.01ms
+elaboration took 1.1ms
+type checking took 388ms
+linting took 2.27ms
+type checking took 433ms
+linting took 1.65ms
+type checking took 480ms
+linting took 1.73ms
+type checking took 531ms
+linting took 1.83ms
+type checking took 578ms
+linting took 1.62ms
+type checking took 614ms
+linting took 1.54ms
+type checking took 640ms
+linting took 1.35ms
+elaboration took 1.33ms
+type checking took 674ms
+linting took 1.62ms
+cumulative profiling times:
+	attribute application 0.0834ms
+	compilation (IR) 0.052ms
+	compilation (LCNF base) 1.11ms
+	compilation (LCNF impure) 0.259ms
+	compilation (LCNF mono) 0.378ms
+	elaboration 21.8ms
+	fix level params 0.0756ms
+	instantiate metavars 0.0847ms
+	let-to-have transformation 0.0962ms
+	linting 85.1ms
+	module linting 0.000541ms
+	overlappingInstancesLinter 4.06ms
+	parsing 2.24ms
+	process pre-definitions 1.5ms
+	share common exprs 0.338ms
+	tactic execution 3.7ms
+	tacticAnalysis 10ms
+	type checking 4.94s
+	typeclass inference 15ms
+       13.64 real         2.67 user        11.07 sys
+          5977751552  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              441891  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                6818  involuntary context switches
+         63102555553  instructions retired
+         44571790530  cycles elapsed
+          1106006152  peak memory footprint

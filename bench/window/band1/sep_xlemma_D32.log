@@ -1,0 +1,9 @@
+  y_q in [0.0875, 0.1000]: margin m 1.8884 | X charge R(b) 0.0042 | m - R +1.8842
+  y_q in [0.1875, 0.2000]: margin m 1.5139 | X charge R(b) 0.0205 | m - R +1.4934
+  y_q in [0.2875, 0.3000]: margin m 4.0041 | X charge R(b) 0.0634 | m - R +3.9407
+  y_q in [0.3875, 0.4000]: margin m 11.7824 | X charge R(b) 0.1733 | m - R +11.6091
+  y_q in [0.4875, 0.5000]: margin m 30.7093 | X charge R(b) 0.4608 | m - R +30.2485
+  y_q in [0.5875, 0.6000]: margin m 66.7567 | X charge R(b) 1.2337 | m - R +65.5230
+  y_q in [0.6875, 0.7000]: margin m 110.6750 | X charge R(b) 3.3722 | m - R +107.3028
+  y_q in [0.7875, 0.8000]: margin m 187.9064 | X charge R(b) 9.4248 | m - R +178.4816
+D0 = 32: min over intervals of (m - R) = +1.3663  -> class (i) CLOSED

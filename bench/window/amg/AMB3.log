@@ -1,0 +1,65 @@
+linting took 25.5ms
+linting took 22.4ms
+linting took 24.9ms
+linting took 26.6ms
+linting took 24.9ms
+linting took 25.7ms
+linting took 24.1ms
+linting took 24.2ms
+def tI : Int → Int → Bool :=
+fun a b => @decide (@LT.lt Int Int.instLTInt a b) (a.decLt b)
+linting took 24.5ms
+def tI2 : Int → Int → Bool :=
+fun a b => @decide (@LE.le Int Int.instLEInt a b) (a.decLe b)
+linting took 24.1ms
+def tm : Int → Int → Int :=
+fun a b => @min Int Int.instMin a b
+def tdiv : Int → Int → Int :=
+fun a b => @HDiv.hDiv Int Int Int (@instHDiv Int Int.instDiv) a b
+type checking took 21.2ms
+type checking took 83.8ms
+type checking took 87.1ms
+type checking took 87.4ms
+type checking took 91.1ms
+type checking took 93.9ms
+type checking took 149ms
+type checking took 212ms
+type checking took 260ms
+cumulative profiling times:
+	attribute application 0.0682ms
+	compilation (IR) 0.396ms
+	compilation (LCNF base) 6.08ms
+	compilation (LCNF impure) 2.93ms
+	compilation (LCNF mono) 3ms
+	elaboration 35.3ms
+	fix level params 0.0684ms
+	instantiate metavars 0.0923ms
+	let-to-have transformation 0.081ms
+	linting 306ms
+	module linting 0.000541ms
+	overlappingInstancesLinter 18.8ms
+	parsing 2.29ms
+	process pre-definitions 2.13ms
+	share common exprs 0.319ms
+	tactic execution 3.89ms
+	tacticAnalysis 49.6ms
+	type checking 1.09s
+	typeclass inference 16.5ms
+       13.06 real         2.26 user        10.96 sys
+          5846089728  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              434003  page reclaims
+                   3  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                9672  involuntary context switches
+         58955608578  instructions retired
+         42601008889  cycles elapsed
+           970723392  peak memory footprint

@@ -1,0 +1,25 @@
+window R8, N=24: certificate g(0) = 2 delta' = 0.981016, g^(0) = 0.981016, g_N(0) = 0.981016, kappa_cert 0.674248; budget for Lemma P' (per defect, units of 2 delta'): 0.229%
+(1) free depths in [0, 3]: min over positions and depths of W per defect (units of 2 delta')
+  P=1 pairs, k=0 on-line doubles: W/defect +0.00997 (slack +0.00997, Delta_B/2 +0.00000), depths at optimum [0.]
+  P=1 pairs, k=1 on-line doubles: W/defect +0.01001 (slack +0.01001, Delta_B/2 +0.00000), depths at optimum [0.]
+  P=2 pairs, k=0 on-line doubles: W/defect +0.01001 (slack +0.01001, Delta_B/2 -0.00000), depths at optimum [0. 0.]
+  P=2 pairs, k=1 on-line doubles: W/defect +0.01002 (slack +0.01002, Delta_B/2 -0.00000), depths at optimum [0. 0.]
+  P=3 pairs, k=0 on-line doubles: W/defect +0.01002 (slack +0.01002, Delta_B/2 +0.00000), depths at optimum [0. 0. 0.]
+  P=3 pairs, k=1 on-line doubles: W/defect +0.01008 (slack +0.01008, Delta_B/2 +0.00000), depths at optimum [0. 0. 0.]
+(2) fixed depth profile: min W per defect, and its split
+  y=0.01: P=1: +0.0107 (slack +0.0100, dB/2 +0.0007) | P=2: +0.0107 (slack +0.0100, dB/2 +0.0007) | P=3: +0.0107 (slack +0.0100, dB/2 +0.0007)
+  y=0.03: P=1: +0.0164 (slack +0.0100, dB/2 +0.0064) | P=2: +0.0165 (slack +0.0100, dB/2 +0.0064) | P=3: +0.0165 (slack +0.0100, dB/2 +0.0065)
+  y=0.05: P=1: +0.0280 (slack +0.0101, dB/2 +0.0179) | P=2: +0.0281 (slack +0.0101, dB/2 +0.0180) | P=3: +0.0261 (slack +0.0121, dB/2 +0.0140)
+  y=0.10: P=1: +0.0814 (slack +0.0132, dB/2 +0.0682) | P=2: +0.0620 (slack +0.0157, dB/2 +0.0463) | P=3: +0.0702 (slack +0.0159, dB/2 +0.0543)
+  y=0.20: P=1: +0.3461 (slack +0.0336, dB/2 +0.3125) | P=2: +0.3272 (slack +0.0310, dB/2 +0.2962) | P=3: +0.3277 (slack +0.0530, dB/2 +0.2747)
+  y=0.30: P=1: +1.0403 (slack +0.1055, dB/2 +0.9348) | P=2: +1.0828 (slack +0.1087, dB/2 +0.9740) | P=3: +1.0770 (slack +0.1069, dB/2 +0.9702)
+  y=0.50: P=1: +7.8008 (slack +0.3947, dB/2 +7.4061) | P=2: +2.5817 (slack +0.4799, dB/2 +2.1018) | P=3: +4.0223 (slack +0.2739, dB/2 +3.7484)
+  y=1.00: P=1: +1331.8866 (slack +11.0260, dB/2 +1320.8606) | P=2: +109.7169 (slack +5.3635, dB/2 +104.3535) | P=3: +463.0385 (slack +0.2185, dB/2 +462.8199)
+  y=2.00: P=1: +87019635.6047 (slack +8.6358, dB/2 +87019626.9689) | P=2: +1601588.3983 (slack +7.9167, dB/2 +1601580.4815) | P=3: +10195968.4961 (slack +0.0956, dB/2 +10195968.4005)
+  y=3.00: P=1: +9725409099723.6543 (slack +17.1582, dB/2 +9725409099706.4980) | P=2: +66515592853.3958 (slack +0.8915, dB/2 +66515592852.5043) | P=3: +646968092296.4818 (slack +0.1033, dB/2 +646968092296.3785)
+(3) Delta_B-seeking: minimise Delta_B alone at fixed depth (pair centre + environment), report the slack that pays for it
+  y=0.05: most negative Delta_B/2 found -0.0341 (units 2 delta': -0.0348); slack of that D(Z) +17.2919 -> W +17.2571
+  y=0.10: most negative Delta_B/2 found -0.0364 (units 2 delta': -0.0371); slack of that D(Z) +15.4165 -> W +15.3794
+  y=0.20: most negative Delta_B/2 found -0.8377 (units 2 delta': -0.8539); slack of that D(Z) +23.4032 -> W +22.5493
+  y=0.50: most negative Delta_B/2 found +6.0106 (units 2 delta': +6.1269); slack of that D(Z) +8.1579 -> W +14.2848
+WORST W per defect over (1)+(2): +0.00997 at ('free', 1, 0, (np.float64(0.0),))  (2s)

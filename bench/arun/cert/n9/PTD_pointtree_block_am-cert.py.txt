@@ -1,0 +1,30 @@
+if PTREE:
+    def pword(x, v):
+        if not PTD: return f"({x}, {hex(v)})"
+        a_, b_ = IVS[x]; tr = v & ((1 << 96) - 1); da, db = x - a_, b_ - x
+        assert 0 <= da < (1 << 20) and db >= 0
+        return f"({x & 1023}, {hex(tr | (da << 96) | (db << 116))})"
+    def plist(j): return "[" + ", ".join(pword(x, v) for x, v in sorted(blocks[j])) + "]"
+    TT, OKT, GET, SND, OKND = ("PTrD", "ptOkTD", "ptGetD", "ptTD_sound", "ptOkTD_nd") if PTD else ("PTr", "ptOkT", "ptGet", "ptT_sound", "ptOkT_nd")
+    def ptree(a_, b_, d_, sub):
+        # the subtree over js[a_:b_]; at depth PTREE the subtree is a named definition checked by its own theorem
+        if d_ == PTREE and sub is not None:
+            nm_ = f"PTT_{len(sub)}"; sub.append(nm_)
+            W(f"def {nm_} : {TT} := {ptree(a_, b_, d_ + 1, None)}")
+            W(f"theorem {nm_}_ok : {OKT} REG TOP BK TOPD BKD {ZNI} {CSHI} {nm_} = true := by decide +kernel")
+            return nm_
+        if b_ - a_ == 1: return f"(.lf {js[a_]} {plist(js[a_])})" if PTD else f"(.lf {plist(js[a_])})"
+        m_ = (a_ + b_) // 2
+        return f"(.nd {js[m_]} {ptree(a_, m_, d_ + 1, sub)} {ptree(m_, b_, d_ + 1, sub)})"
+    def pok(a_, b_, d_, it):
+        if d_ == PTREE or b_ - a_ == 1: return f"{next(it)}_ok"
+        m_ = (a_ + b_) // 2
+        return f"({OKND} {pok(a_, m_, d_ + 1, it)} {pok(m_, b_, d_ + 1, it)})"
+    assert len(js) >= (1 << PTREE)
+    subs = []
+    top_ = ptree(0, len(js), 0, subs)
+    W(f"/-- the point table: one dispatch tree over the blocks `x >> 10`, its {len(subs)} subtrees checked once each -/\ndef PTT : {TT} := {top_}")
+    W(f"theorem PTT_ok : {OKT} REG TOP BK TOPD BKD {ZNI} {CSHI} PTT = true := {pok(0, len(js), 0, iter(subs))}")
+    W(f"def PT (x : ℕ) : ℕ := {GET} PTT x")
+    W(f"theorem ptS : ∀ x, PVI x (PT x) := {SND} (n := {ZNI}) (csh := {CSHI}) lbS lbD hR (by decide) PTT PTT_ok\n")
+for j in ([] if PTREE else sorted(blocks)):

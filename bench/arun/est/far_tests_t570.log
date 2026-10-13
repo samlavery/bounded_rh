@@ -1,0 +1,16 @@
+w sampled on [0, 146.5] at 2^-14 (2416640 points); cN/SA = 0.00856382
+T1 table 2^-6: 9440 cells over [0, 146.5]; pyramid levels 14, total entries 115791 (452.3 KB at 4 B/entry; 36.9 KB base level only)
+T1 table 2^-8: 37760 cells over [0, 146.5]; pyramid levels 16, total entries 538641 (2104.1 KB at 4 B/entry; 147.5 KB base level only)
+T1 table 2^-10: 151040 cells over [0, 146.5]; pyramid levels 18, total entries 2456595 (9596.1 KB at 4 B/entry; 590.0 KB base level only)
+sub-frame minima (left points 0..r | right points r+1..8): ['0: 0.00000 | 0.00778', '1: 0.00029 | 0.00647', '2: 0.00083 | 0.00492', '3: 0.00178 | 0.00337', '4: 0.00337 | 0.00178', '5: 0.00492 | 0.00083', '6: 0.00647 | 0.00029', '7: 0.00778 | 0.00000']
+baseline leaves 14906 (perfect far test at 1e-1: 7,896)
+T1 2^-6                leaves  13574 (91.1% of 14906; removed 8.9%); nodes certified by the test 745
+T1 2^-8                leaves  13574 (91.1% of 14906; removed 8.9%); nodes certified by the test 812
+T1 2^-10               leaves  13574 (91.1% of 14906; removed 8.9%); nodes certified by the test 819
+T2 g*=2.0              leaves  12465 (83.6% of 14906; removed 16.4%); nodes certified by the test 799
+T2 g*=2.5              leaves  12465 (83.6% of 14906; removed 16.4%); nodes certified by the test 799
+T2 g*=3.0              leaves  12475 (83.7% of 14906; removed 16.3%); nodes certified by the test 781
+T1 2^-8 + T2 g*=2.0    leaves  12283 (82.4% of 14906; removed 17.6%); nodes certified by the test 1109
+T1 2^-8 + T2 g*=2.5    leaves  12283 (82.4% of 14906; removed 17.6%); nodes certified by the test 1109
+T1 2^-10 + T2 g*=2.0   leaves  12283 (82.4% of 14906; removed 17.6%); nodes certified by the test 1116
+T1 2^-10 + T2 g*=2.5   leaves  12283 (82.4% of 14906; removed 17.6%); nodes certified by the test 1116

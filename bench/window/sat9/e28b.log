@@ -1,0 +1,150 @@
+  hole a=1.00 flat seed              P= 3 y∈[0.85,0.85] | L_primary     +4.266 (d*=0.500) | L_diag     +4.266 | truth Q_pp+T_g      +2319 | T_g 0.02
+     -> local adversary (primary)    P= 3 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 0.00
+      min gap after: 154.618  verdict(primary): FAIL
+     -> local adversary (diag)       P= 3 y∈[0.80,1.05] | L_primary     -1.735 (d*=0.500) | L_diag     +2.166 | truth Q_pp+T_g      +7503 | T_g 0.41
+      min gap after: 1.358  verdict(diag): PASS
+  hole a=1.00 arch seed              P= 3 y∈[0.80,1.40] | L_primary     -151.8 (d*=0.500) | L_diag     +30.08 | truth Q_pp+T_g +2.248e+05 | T_g 0.02
+     -> local adversary (primary)    P= 3 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 0.00
+      min gap after: 30.067  verdict(primary): FAIL
+     -> local adversary (diag)       P= 3 y∈[0.80,1.05] | L_primary     -1.735 (d*=0.500) | L_diag     +2.166 | truth Q_pp+T_g      +7503 | T_g 0.41
+      min gap after: 1.358  verdict(diag): PASS
+  hole a=1.10 flat seed              P= 3 y∈[0.85,0.85] | L_primary      +4.22 (d*=0.500) | L_diag      +4.22 | truth Q_pp+T_g      +3409 | T_g 0.08
+     -> local adversary (primary)    P= 3 y∈[0.80,20.00] | L_primary -5.785e+100 (d*=0.250) | L_diag +3.867e+50 | truth Q_pp+T_g +3.021e+104 | T_g 0.03
+      min gap after: 1.887  verdict(primary): FAIL
+     -> local adversary (diag)       P= 3 y∈[0.80,1.05] | L_primary     -1.735 (d*=0.500) | L_diag     +2.166 | truth Q_pp+T_g      +7503 | T_g 0.41
+      min gap after: 1.358  verdict(diag): PASS
+  hole a=1.10 arch seed              P= 3 y∈[0.80,1.40] | L_primary     -156.5 (d*=0.500) | L_diag      +25.3 | truth Q_pp+T_g +2.322e+05 | T_g 0.08
+     -> local adversary (primary)    P= 3 y∈[0.80,20.00] | L_primary -9.409e+100 (d*=0.250) | L_diag +1.174e+50 | truth Q_pp+T_g +4.863e+104 | T_g 6.84
+      min gap after: 0.229  verdict(primary): FAIL
+     -> local adversary (diag)       P= 3 y∈[0.80,1.05] | L_primary     -1.735 (d*=0.500) | L_diag     +2.166 | truth Q_pp+T_g      +7503 | T_g 0.41
+      min gap after: 1.358  verdict(diag): PASS
+  hole a=1.25 flat seed              P= 3 y∈[0.85,0.85] | L_primary     +4.127 (d*=0.500) | L_diag     +4.127 | truth Q_pp+T_g      +3420 | T_g 0.35
+     -> local adversary (primary)    P= 3 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 0.29
+      min gap after: 1.548  verdict(primary): FAIL
+     -> local adversary (diag)       P= 3 y∈[0.80,1.05] | L_primary     -1.735 (d*=0.500) | L_diag     +2.166 | truth Q_pp+T_g      +7503 | T_g 0.41
+      min gap after: 1.358  verdict(diag): PASS
+  hole a=1.25 arch seed              P= 3 y∈[0.80,1.40] | L_primary     -160.1 (d*=0.500) | L_diag     +21.88 | truth Q_pp+T_g +2.306e+05 | T_g 0.35
+     -> local adversary (primary)    P= 3 y∈[0.80,20.00] | L_primary -1.24e+101 (d*=0.250) | L_diag +4.311e+50 | truth Q_pp+T_g +6.579e+104 | T_g 0.01
+      min gap after: 4.274  verdict(primary): FAIL
+     -> local adversary (diag)       P= 3 y∈[0.80,1.05] | L_primary     -1.735 (d*=0.500) | L_diag     +2.166 | truth Q_pp+T_g      +7503 | T_g 0.41
+      min gap after: 1.358  verdict(diag): PASS
+  hole a=1.00 flat seed              P= 4 y∈[0.85,0.85] | L_primary     +4.815 (d*=0.500) | L_diag     +4.815 | truth Q_pp+T_g      +2870 | T_g 0.03
+     -> local adversary (primary)    P= 4 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 0.00
+      min gap after: 9.236  verdict(primary): FAIL
+     -> local adversary (diag)       P= 4 y∈[0.80,0.99] | L_primary     +1.445 (d*=0.500) | L_diag     +2.601 | truth Q_pp+T_g      +5507 | T_g 0.22
+      min gap after: 0.971  verdict(diag): PASS
+  hole a=1.00 arch seed              P= 4 y∈[0.80,1.33] | L_primary     -171.4 (d*=0.500) | L_diag     +10.38 | truth Q_pp+T_g +3.299e+05 | T_g 0.03
+     -> local adversary (primary)    P= 4 y∈[0.80,20.00] | L_primary -6.292e+100 (d*=0.250) | L_diag +3.201e+50 | truth Q_pp+T_g +3.381e+104 | T_g 5.25
+      min gap after: 0.582  verdict(primary): FAIL
+     -> local adversary (diag)       P= 4 y∈[0.80,1.16] | L_primary     -30.34 (d*=0.500) | L_diag     +2.006 | truth Q_pp+T_g +3.114e+04 | T_g 0.68
+      min gap after: 1.319  verdict(diag): PASS
+  hole a=1.10 flat seed              P= 4 y∈[0.85,0.85] | L_primary      +4.36 (d*=0.500) | L_diag      +4.36 | truth Q_pp+T_g      +5046 | T_g 0.10
+     -> local adversary (primary)    P= 4 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 7.31
+      min gap after: 0.175  verdict(primary): FAIL
+     -> local adversary (diag)       P= 4 y∈[0.80,0.99] | L_primary     +1.445 (d*=0.500) | L_diag     +2.601 | truth Q_pp+T_g      +5507 | T_g 0.22
+      min gap after: 0.971  verdict(diag): PASS
+  hole a=1.10 arch seed              P= 4 y∈[0.80,1.33] | L_primary     -239.7 (d*=0.500) | L_diag     +5.979 | truth Q_pp+T_g +3.968e+05 | T_g 0.10
+     -> local adversary (primary)    P= 4 y∈[0.80,20.00] | L_primary -2.795e+100 (d*=0.250) | L_diag  +1.97e+50 | truth Q_pp+T_g +1.52e+104 | T_g 0.00
+      min gap after: 3.780  verdict(primary): FAIL
+     -> local adversary (diag)       P= 4 y∈[0.80,1.16] | L_primary     -30.33 (d*=0.500) | L_diag     +2.006 | truth Q_pp+T_g +3.113e+04 | T_g 0.68
+      min gap after: 1.319  verdict(diag): PASS
+  hole a=1.25 flat seed              P= 4 y∈[0.85,0.85] | L_primary     +3.899 (d*=0.500) | L_diag     +3.899 | truth Q_pp+T_g      +4736 | T_g 0.57
+     -> local adversary (primary)    P= 4 y∈[0.80,20.00] | L_primary -5.795e+100 (d*=0.250) | L_diag +1.287e+50 | truth Q_pp+T_g +3.101e+104 | T_g 0.08
+      min gap after: 1.826  verdict(primary): FAIL
+     -> local adversary (diag)       P= 4 y∈[0.80,1.17] | L_primary     -31.43 (d*=0.500) | L_diag     +1.996 | truth Q_pp+T_g +3.198e+04 | T_g 0.68
+      min gap after: 1.342  verdict(diag): PASS
+  hole a=1.25 arch seed              P= 4 y∈[0.80,1.33] | L_primary     -272.8 (d*=0.500) | L_diag      +4.04 | truth Q_pp+T_g +3.439e+05 | T_g 0.57
+     -> local adversary (primary)    P= 4 y∈[0.80,20.00] | L_primary -9.552e+100 (d*=0.250) | L_diag +4.944e+50 | truth Q_pp+T_g +5.176e+104 | T_g 0.04
+      min gap after: 3.496  verdict(primary): FAIL
+     -> local adversary (diag)       P= 4 y∈[0.80,1.16] | L_primary     -30.34 (d*=0.500) | L_diag     +2.006 | truth Q_pp+T_g +3.114e+04 | T_g 0.68
+      min gap after: 1.319  verdict(diag): PASS
+  hole a=1.00 flat seed              P= 8 y∈[0.85,0.85] | L_primary     +4.738 (d*=0.500) | L_diag     +4.738 | truth Q_pp+T_g      +5104 | T_g 0.08
+     -> local adversary (primary)    P= 8 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 0.38
+      min gap after: 0.894  verdict(primary): FAIL
+     -> local adversary (diag)       P= 8 y∈[0.80,1.68] | L_primary      -7312 (d*=0.500) | L_diag     -1.527 | truth Q_pp+T_g  +6.54e+06 | T_g 1.40
+      min gap after: 0.960  verdict(diag): FAIL
+  hole a=1.00 arch seed              P= 8 y∈[0.80,1.39] | L_primary     -415.8 (d*=0.500) | L_diag     +3.709 | truth Q_pp+T_g +1.165e+06 | T_g 0.08
+     -> local adversary (primary)    P= 8 y∈[0.80,20.00] | L_primary -2.849e+101 (d*=0.250) | L_diag +5.937e+50 | truth Q_pp+T_g +1.522e+105 | T_g 0.00
+      min gap after: 11865.406  verdict(primary): FAIL
+     -> local adversary (diag)       P= 8 y∈[0.80,1.68] | L_primary      -7315 (d*=0.500) | L_diag     -1.527 | truth Q_pp+T_g +6.542e+06 | T_g 1.40
+      min gap after: 0.960  verdict(diag): FAIL
+  hole a=1.10 flat seed              P= 8 y∈[0.85,0.85] | L_primary     +4.622 (d*=0.500) | L_diag     +4.622 | truth Q_pp+T_g +1.266e+04 | T_g 0.55
+     -> local adversary (primary)    P= 8 y∈[0.80,20.00] | L_primary -5.376e+100 (d*=0.250) | L_diag +1.446e+50 | truth Q_pp+T_g +2.878e+104 | T_g 8.55
+      min gap after: 0.168  verdict(primary): FAIL
+     -> local adversary (diag)       P= 8 y∈[0.80,1.27] | L_primary     -123.2 (d*=0.500) | L_diag    +0.5724 | truth Q_pp+T_g +1.405e+05 | T_g 1.18
+      min gap after: 0.951  verdict(diag): PASS
+  hole a=1.10 arch seed              P= 8 y∈[0.80,1.39] | L_primary     -811.3 (d*=0.500) | L_diag     +3.467 | truth Q_pp+T_g +1.684e+06 | T_g 0.55
+     -> local adversary (primary)    P= 8 y∈[0.80,20.00] | L_primary -9.804e+100 (d*=0.250) | L_diag +2.567e+49 | truth Q_pp+T_g +5.243e+104 | T_g 3.40
+      min gap after: 0.517  verdict(primary): FAIL
+     -> local adversary (diag)       P= 8 y∈[0.80,1.68] | L_primary      -7304 (d*=0.500) | L_diag     -1.527 | truth Q_pp+T_g +6.532e+06 | T_g 1.40
+      min gap after: 0.960  verdict(diag): FAIL
+  hole a=1.25 flat seed              P= 8 y∈[0.85,0.85] | L_primary     +5.158 (d*=0.500) | L_diag     +5.158 | truth Q_pp+T_g      +9839 | T_g 1.49
+     -> local adversary (primary)    P= 8 y∈[0.80,20.00] | L_primary -2.974e+101 (d*=0.250) | L_diag +5.425e+50 | truth Q_pp+T_g +1.587e+105 | T_g 0.00
+      min gap after: 5613342.713  verdict(primary): FAIL
+     -> local adversary (diag)       P= 8 y∈[0.80,1.27] | L_primary     -123.2 (d*=0.500) | L_diag    +0.5724 | truth Q_pp+T_g +1.405e+05 | T_g 1.18
+      min gap after: 0.951  verdict(diag): PASS
+  hole a=1.25 arch seed              P= 8 y∈[0.80,1.39] | L_primary     -882.6 (d*=0.500) | L_diag     +4.172 | truth Q_pp+T_g +9.664e+05 | T_g 1.49
+     -> local adversary (primary)    P= 8 y∈[0.80,20.00] | L_primary -1.702e+101 (d*=0.250) | L_diag +7.555e+48 | truth Q_pp+T_g +9.111e+104 | T_g 11.52
+      min gap after: 0.360  verdict(primary): FAIL
+     -> local adversary (diag)       P= 8 y∈[0.80,1.68] | L_primary      -7316 (d*=0.500) | L_diag     -1.527 | truth Q_pp+T_g +6.543e+06 | T_g 1.40
+      min gap after: 0.960  verdict(diag): FAIL
+  hole a=1.00 flat seed              P=16 y∈[0.85,0.85] | L_primary     +5.299 (d*=0.500) | L_diag     +5.299 | truth Q_pp+T_g      +7083 | T_g 0.20
+     -> local adversary (primary)    P=16 y∈[0.80,20.00] | L_primary -4.649e+101 (d*=0.250) | L_diag +9.003e+50 | truth Q_pp+T_g +2.488e+105 | T_g 0.00
+      min gap after: 7493084635.224  verdict(primary): FAIL
+     -> local adversary (diag)       P=16 y∈[0.80,2.36] | L_primary -6.397e+06 (d*=0.500) | L_diag     -13.61 | truth Q_pp+T_g +7.337e+09 | T_g 1.80
+      min gap after: 0.957  verdict(diag): FAIL
+  hole a=1.00 arch seed              P=16 y∈[0.80,1.40] | L_primary     -539.7 (d*=0.500) | L_diag     +4.558 | truth Q_pp+T_g +2.165e+06 | T_g 0.20
+     -> local adversary (primary)    P=16 y∈[0.80,15.03] | L_primary -8.293e+73 (d*=0.250) | L_diag +6.878e+36 | truth Q_pp+T_g +4.315e+77 | T_g 53.72
+      min gap after: 0.003  verdict(primary): FAIL
+     -> local adversary (diag)       P=16 y∈[0.80,2.03] | L_primary -3.162e+05 (d*=0.500) | L_diag     -11.32 | truth Q_pp+T_g  +3.95e+08 | T_g 5.89
+      min gap after: 0.468  verdict(diag): FAIL
+  hole a=1.10 flat seed              P=16 y∈[0.85,0.85] | L_primary     +5.745 (d*=0.500) | L_diag     +5.745 | truth Q_pp+T_g +2.808e+04 | T_g 1.38
+     -> local adversary (primary)    P=16 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 25.98
+      min gap after: 0.191  verdict(primary): FAIL
+     -> local adversary (diag)       P=16 y∈[0.80,2.05] | L_primary -3.686e+05 (d*=0.500) | L_diag     -13.67 | truth Q_pp+T_g +4.009e+08 | T_g 2.34
+      min gap after: 1.059  verdict(diag): FAIL
+  hole a=1.10 arch seed              P=16 y∈[0.80,1.40] | L_primary      -1833 (d*=0.500) | L_diag     +4.329 | truth Q_pp+T_g +4.894e+06 | T_g 1.38
+     -> local adversary (primary)    P=16 y∈[0.80,20.00] | L_primary -4.17e+100 (d*=0.250) | L_diag +1.357e+50 | truth Q_pp+T_g +2.231e+104 | T_g 59.54
+      min gap after: 0.027  verdict(primary): FAIL
+     -> local adversary (diag)       P=16 y∈[0.80,2.05] | L_primary -3.685e+05 (d*=0.500) | L_diag     -13.67 | truth Q_pp+T_g  +4.01e+08 | T_g 2.34
+      min gap after: 1.060  verdict(diag): FAIL
+  hole a=1.25 flat seed              P=16 y∈[0.85,0.85] | L_primary     +7.164 (d*=0.500) | L_diag     +7.164 | truth Q_pp+T_g +2.061e+04 | T_g 3.33
+     -> local adversary (primary)    P=16 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 19.41
+      min gap after: 0.045  verdict(primary): FAIL
+     -> local adversary (diag)       P=16 y∈[0.80,1.39] | L_primary     -408.5 (d*=0.500) | L_diag     -4.429 | truth Q_pp+T_g +4.681e+05 | T_g 2.56
+      min gap after: 0.940  verdict(diag): FAIL
+  hole a=1.25 arch seed              P=16 y∈[0.80,1.40] | L_primary      -1996 (d*=0.500) | L_diag     +7.525 | truth Q_pp+T_g +1.852e+06 | T_g 3.33
+     -> local adversary (primary)    P=16 y∈[0.80,20.00] | L_primary -5.799e+100 (d*=0.250) | L_diag +1.053e+50 | truth Q_pp+T_g +3.102e+104 | T_g 24.62
+      min gap after: 0.066  verdict(primary): FAIL
+     -> local adversary (diag)       P=16 y∈[0.80,2.27] | L_primary -2.214e+06 (d*=0.500) | L_diag     -13.87 | truth Q_pp+T_g +2.136e+09 | T_g 1.69
+      min gap after: 0.937  verdict(diag): FAIL
+  hole a=1.00 flat seed              P=32 y∈[0.85,0.85] | L_primary     +4.965 (d*=0.500) | L_diag     +4.965 | truth Q_pp+T_g      +9822 | T_g 0.33
+     -> local adversary (primary)    P=32 y∈[0.80,20.00] | L_primary -5.149e+101 (d*=0.250) | L_diag +1.118e+51 | truth Q_pp+T_g +2.751e+105 | T_g 0.00
+      min gap after: 170324092243719905054873608848437006804451328.000  verdict(primary): FAIL
+     -> local adversary (diag)       P=32 y∈[0.80,2.73] | L_primary -2.436e+09 (d*=0.500) | L_diag     -19.13 | truth Q_pp+T_g +6.589e+12 | T_g 16.38
+      min gap after: 0.240  verdict(diag): FAIL
+  hole a=1.00 arch seed              P=32 y∈[0.80,1.40] | L_primary       -699 (d*=0.500) | L_diag     +4.754 | truth Q_pp+T_g +3.342e+06 | T_g 0.33
+     -> local adversary (primary)    P=32 y∈[0.80,20.00] | L_primary -9.871e+100 (d*=0.250) | L_diag +2.086e+50 | truth Q_pp+T_g +5.422e+104 | T_g 14.42
+      min gap after: 0.121  verdict(primary): FAIL
+     -> local adversary (diag)       P=32 y∈[0.80,2.45] | L_primary -1.072e+08 (d*=0.500) | L_diag     -29.04 | truth Q_pp+T_g +3.229e+11 | T_g 4.88
+      min gap after: 0.845  verdict(diag): FAIL
+  hole a=1.10 flat seed              P=32 y∈[0.85,0.85] | L_primary     +7.392 (d*=0.500) | L_diag     +7.392 | truth Q_pp+T_g +5.885e+04 | T_g 3.12
+     -> local adversary (primary)    P=32 y∈[0.80,20.00] | L_primary -5.791e+100 (d*=0.250) | L_diag +1.205e+50 | truth Q_pp+T_g +3.098e+104 | T_g 75.36
+      min gap after: 0.069  verdict(primary): FAIL
+     -> local adversary (diag)       P=32 y∈[0.80,2.57] | L_primary -6.899e+07 (d*=0.500) | L_diag     -41.94 | truth Q_pp+T_g +8.554e+10 | T_g 2.82
+      min gap after: 1.365  verdict(diag): FAIL
+  hole a=1.10 arch seed              P=32 y∈[0.80,1.40] | L_primary      -4189 (d*=0.500) | L_diag     +5.907 | truth Q_pp+T_g +1.071e+07 | T_g 3.12
+     -> local adversary (primary)    P=32 y∈[0.80,20.00] | L_primary -5.846e+100 (d*=0.250) | L_diag +9.988e+49 | truth Q_pp+T_g +3.128e+104 | T_g 21.40
+      min gap after: 0.166  verdict(primary): FAIL
+     -> local adversary (diag)       P=32 y∈[0.80,2.20] | L_primary -7.386e+05 (d*=0.500) | L_diag     -33.75 | truth Q_pp+T_g   +7.1e+08 | T_g 6.74
+      min gap after: 0.781  verdict(diag): FAIL
+  hole a=1.25 flat seed              P=32 y∈[0.85,0.85] | L_primary     +10.68 (d*=0.500) | L_diag     +10.68 | truth Q_pp+T_g +4.181e+04 | T_g 7.10
+     -> local adversary (primary)    P=32 y∈[0.80,20.00] | L_primary -7.465e+101 (d*=0.250) | L_diag +1.291e+51 | truth Q_pp+T_g +3.991e+105 | T_g 0.00
+      min gap after: 336.288  verdict(primary): FAIL
+     -> local adversary (diag)       P=32 y∈[0.80,1.76] | L_primary      -9802 (d*=0.500) | L_diag     -23.11 | truth Q_pp+T_g +4.372e+06 | T_g 7.73
+      min gap after: 0.833  verdict(diag): FAIL
+  hole a=1.25 arch seed              P=32 y∈[0.80,1.40] | L_primary      -4200 (d*=0.500) | L_diag      +8.61 | truth Q_pp+T_g +3.801e+06 | T_g 7.10
+     -> local adversary (primary)    P=32 y∈[0.80,20.00] | L_primary -5.538e+100 (d*=0.250) | L_diag +1.222e+50 | truth Q_pp+T_g +2.963e+104 | T_g 45.24
+      min gap after: 0.091  verdict(primary): FAIL
+     -> local adversary (diag)       P=32 y∈[0.80,2.95] | L_primary -2.566e+09 (d*=0.500) | L_diag      -26.4 | truth Q_pp+T_g +3.698e+12 | T_g 11.51
+      min gap after: 0.590  verdict(diag): FAIL

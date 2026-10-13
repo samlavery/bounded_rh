@@ -1,0 +1,29 @@
+(a) two depth classes {0.80, y2}
+  y2=0.90 P= 4: min Q_pp +6.0846e+01 | T_g 4.487 | Q_pp/P +15.211 | depth order abba
+  y2=0.90 P= 8: min Q_pp +5.1145e+01 | T_g 39.013 | Q_pp/P +6.393 | depth order ababbaba
+  y2=0.90 P=12: min Q_pp +5.0938e+01 | T_g 56.584 | Q_pp/P +4.245 | depth order aabbaababbba
+  y2=0.90 P=16: min Q_pp +4.6599e+01 | T_g 76.004 | Q_pp/P +2.912 | depth order abbbabbbaabbaaaa
+  y2=0.90 P=24: min Q_pp +4.4270e+01 | T_g 204.726 | Q_pp/P +1.845 | depth order ababbaabbbbabbbaaaabaaba
+  y2=1.00 P= 4: min Q_pp +3.9334e+01 | T_g 6.624 | Q_pp/P +9.834 | depth order abba
+  y2=1.00 P= 8: min Q_pp +3.0752e+01 | T_g 29.439 | Q_pp/P +3.844 | depth order abbaabba
+  y2=1.00 P=12: min Q_pp +3.4021e+01 | T_g 68.840 | Q_pp/P +2.835 | depth order abbaaabbabba
+  y2=1.00 P=16: min Q_pp +2.8980e+01 | T_g 92.038 | Q_pp/P +1.811 | depth order ababbaaaabbbbaba
+  y2=1.00 P=24: min Q_pp +2.4220e+01 | T_g 187.317 | Q_pp/P +1.009 | depth order abbbbaaabbaabbbaaaababba
+  y2=1.20 P= 4: min Q_pp +1.1121e+03 | T_g 8.383 | Q_pp/P +278.031 | depth order abba
+  y2=1.20 P= 8: min Q_pp +9.4261e+01 | T_g 42.890 | Q_pp/P +11.783 | depth order aabbbbaa
+  y2=1.20 P=12: min Q_pp +9.3617e+01 | T_g 98.679 | Q_pp/P +7.801 | depth order aabbbaabbbaa
+  y2=1.20 P=16: min Q_pp +1.3252e+02 | T_g 184.616 | Q_pp/P +8.283 | depth order aaabbbaaaabbbbba
+  y2=1.20 P=24: min Q_pp +5.3457e+01 | T_g 289.353 | Q_pp/P +2.227 | depth order aaabbbbaaaabbbbaaabbbbaa
+  y2=1.50 P= 4: min Q_pp +3.8656e+04 | T_g 10.191 | Q_pp/P +9664.027 | depth order abba
+  y2=1.50 P= 8: min Q_pp +6.4018e+03 | T_g 50.720 | Q_pp/P +800.227 | depth order aabbbbaa
+  y2=1.50 P=12: min Q_pp +4.5987e+03 | T_g 114.512 | Q_pp/P +383.222 | depth order aabbbaabbbaa
+  y2=1.50 P=16: min Q_pp +4.3946e+03 | T_g 157.969 | Q_pp/P +274.662 | depth order aaaabbbbbaaabbba
+  y2=1.50 P=24: min Q_pp +1.5028e+03 | T_g 273.560 | Q_pp/P +62.615 | depth order aaaaaabbbbbaaaabbbbbbbaa
+(b) free depths in [0.80, 3.00]
+  P= 3: min Q_pp +5.2557e+01 | T_g 4.414 | Q_pp/P +17.519 | y [0.8   0.912 0.8  ]
+  P= 4: min Q_pp +3.6114e+01 | T_g 6.260 | Q_pp/P +9.028 | y [0.8   0.979 0.979 0.8  ]
+  P= 6: min Q_pp +2.3813e+01 | T_g 9.309 | Q_pp/P +3.969 | y [0.8   1.058 1.167 1.167 1.058 0.8  ]
+  P= 8: min Q_pp +2.2897e+01 | T_g 20.201 | Q_pp/P +2.862 | y [0.8   1.033 1.087 0.8   1.214 1.203 1.076 0.8  ]
+  P=12: min Q_pp +1.0756e+01 | T_g 74.486 | Q_pp/P +0.896 | y [0.8   1.022 0.8   0.8   0.8   0.8   1.322 1.387 1.312 0.8   1.049 0.8  ]
+  P=16: min Q_pp -6.6341e+00 | T_g 185.704 | Q_pp/P -0.415 | y [0.82  1.056 0.8   0.8   0.8   0.8   0.8   1.335 1.335 0.8   0.8   0.8
+ 0.8   0.8   1.056 0.82 ]

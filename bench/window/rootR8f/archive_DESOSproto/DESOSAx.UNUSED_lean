@@ -1,0 +1,7 @@
+import AMW.DESOSData
+#print axioms AMW.DESOS.cos_poly_ge_int
+#print axioms AMW.DESOS.DESOSData.chk
+#print axioms AMW.DESOS.DESOSData.Ccos_ge
+#print axioms AMW.DESOS.DESOSData.Ccos_nonneg
+#check @AMW.DESOS.DESOSData.Ccos_nonneg
+#print AMW.DESOS.DESOSData.Ccos

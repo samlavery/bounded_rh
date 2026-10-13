@@ -1,0 +1,8 @@
+R8 N=32 y=0.05: Delta_B/2 <= -0.001: min W none found (slack -) | Delta_B/2 <= -0.010: min W none found (slack -) | Delta_B/2 <= -0.100: min W none found (slack -)
+R8 N=32 y=0.10: Delta_B/2 <= -0.001: min W none found (slack -) | Delta_B/2 <= -0.010: min W none found (slack -) | Delta_B/2 <= -0.100: min W none found (slack -)
+R8 N=32 y=0.20: Delta_B/2 <= -0.001: min W +2.4568 (slack +2.4626) | Delta_B/2 <= -0.010: min W +2.5285 (slack +2.5505) | Delta_B/2 <= -0.100: min W +6.7692 (slack +6.9690)
+R8 N=32 y=0.30: Delta_B/2 <= -0.001: min W none found (slack -) | Delta_B/2 <= -0.010: min W none found (slack -) | Delta_B/2 <= -0.100: min W +4.8164 (slack +5.0163)
+joint N=32 y=0.05: Delta_B/2 <= -0.001: min W none found (slack -) | Delta_B/2 <= -0.010: min W none found (slack -) | Delta_B/2 <= -0.100: min W none found (slack -)
+joint N=32 y=0.10: Delta_B/2 <= -0.001: min W none found (slack -) | Delta_B/2 <= -0.010: min W none found (slack -) | Delta_B/2 <= -0.100: min W none found (slack -)
+joint N=32 y=0.20: Delta_B/2 <= -0.001: min W +2.4554 (slack +2.4611) | Delta_B/2 <= -0.010: min W +2.5306 (slack +2.5527) | Delta_B/2 <= -0.100: min W none found (slack -)
+joint N=32 y=0.30: Delta_B/2 <= -0.001: min W none found (slack -) | Delta_B/2 <= -0.010: min W none found (slack -) | Delta_B/2 <= -0.100: min W +4.8508 (slack +5.0508)

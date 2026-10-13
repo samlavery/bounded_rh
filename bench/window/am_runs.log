@@ -1,0 +1,55 @@
+window AM  H = 0.6721881581  Q = 5 (n = 6)  B = 0.0030000
+LP  eps* achieved 0.006175033  LP upper 0.006175102  (25s)  gmin [1.046 1.989 1.992 1.05  1.984]
+  strong seed 1: floor 0.006175033 (3s)
+  strong seed 2: floor 0.006175033 (3s)
+  strong seed 3: floor 0.006175033 (3s)
+RESULT AM n=6 B=0.0030000: H=0.6721881581 eps_strong=0.006175033 (LP upper 0.006175102) -> Phi_w' = 0.6733110 at m=166 [from LP upper 0.6733110]  | h_m law 0.6733124 at m=178
+window AM  H = 0.6721881581  Q = 5 (n = 6)  B = 0.0036000
+LP  eps* achieved 0.007082177  LP upper 0.007082323  (25s)  gmin [1.035 1.041 1.971 1.046 1.978]
+  strong seed 1: floor 0.007082177 (3s)
+  strong seed 2: floor 0.007082177 (3s)
+  strong seed 3: floor 0.007082177 (3s)
+RESULT AM n=6 B=0.0036000: H=0.6721881581 eps_strong=0.007082177 (LP upper 0.007082323) -> Phi_w' = 0.6733167 at m=146 [from LP upper 0.6733168]  | h_m law 0.6733183 at m=157
+window AM  H = 0.6721881581  Q = 5 (n = 6)  B = 0.0042000
+LP  eps* achieved 0.007898507  LP upper 0.007898808  (24s)  gmin [1.971 1.034 1.031 1.035 1.971]
+  strong seed 1: floor 0.007898507 (3s)
+  strong seed 2: floor 0.007898507 (3s)
+  strong seed 3: floor 0.007898507 (3s)
+RESULT AM n=6 B=0.0042000: H=0.6721881581 eps_strong=0.007898507 (LP upper 0.007898808) -> Phi_w' = 0.6732633 at m=131 [from LP upper 0.6732635]  | h_m law 0.6732653 at m=142
+window AM  H = 0.6721881581  Q = 6 (n = 7)  B = 0.0036000
+LP  eps* achieved 0.007241257  LP upper 0.007242397  (50s)  gmin [1.977 1.044 1.973 1.046 1.975 1.042]
+  strong seed 1: floor 0.007241257 (4s)
+  strong seed 2: floor 0.007241257 (4s)
+  strong seed 3: floor 0.007241257 (4s)
+RESULT AM n=7 B=0.0036000: H=0.6721881581 eps_strong=0.007241257 (LP upper 0.007242397) -> Phi_w' = 0.6734113 at m=144 [from LP upper 0.6734121]  | h_m law 0.6734137 at m=157
+window AM  H = 0.6721881581  Q = 6 (n = 7)  B = 0.0040435
+LP  eps* achieved 0.007910108  LP upper 0.007912733  (50s)  gmin [1.042 1.975 1.046 1.975 1.045 1.978]
+  strong seed 1: floor 0.007910108 (4s)
+  strong seed 2: floor 0.007910108 (4s)
+  strong seed 3: floor 0.007910108 (4s)
+RESULT AM n=7 B=0.0040435: H=0.6721881581 eps_strong=0.007910108 (LP upper 0.007912733) -> Phi_w' = 0.6734131 at m=132 [from LP upper 0.6734148]  | h_m law 0.6734161 at m=145
+window AM  H = 0.6721881581  Q = 6 (n = 7)  B = 0.0046000
+LP  eps* achieved 0.008694565  LP upper 0.008695596  (50s)  gmin [1.964 1.035 1.037 1.962 1.039 1.033]
+  strong seed 1: floor 0.008694565 (4s)
+  strong seed 2: floor 0.008694565 (4s)
+  strong seed 3: floor 0.008694565 (4s)
+RESULT AM n=7 B=0.0046000: H=0.6721881581 eps_strong=0.008694565 (LP upper 0.008695596) -> Phi_w' = 0.6733807 at m=121 [from LP upper 0.6733814]  | h_m law 0.6733840 at m=134
+window AM  H = 0.6721881581  Q = 7 (n = 8)  B = 0.0040435
+LP  eps* achieved 0.007966930  LP upper 0.007968631  (208s)  gmin [1.041 1.975 1.044 1.972 1.044 1.974 1.04 ]
+  strong seed 1: floor 0.007966930 (3s)
+  strong seed 2: floor 0.007966930 (3s)
+  strong seed 3: floor 0.007966930 (3s)
+RESULT AM n=8 B=0.0040435: H=0.6721881581 eps_strong=0.007966930 (LP upper 0.007968631) -> Phi_w' = 0.6734398 at m=132 [from LP upper 0.6734409]  | h_m law 0.6734439 at m=147
+window AM  H = 0.6721881581  Q = 7 (n = 8)  B = 0.0046000
+LP  eps* achieved 0.008790017  LP upper 0.008790435  (207s)  gmin [1.973 1.043 1.964 1.036 1.035 1.963 1.039]
+  strong seed 1: floor 0.008790017 (3s)
+  strong seed 2: floor 0.008790017 (3s)
+  strong seed 3: floor 0.008790017 (3s)
+RESULT AM n=8 B=0.0046000: H=0.6721881581 eps_strong=0.008790017 (LP upper 0.008790435) -> Phi_w' = 0.6734307 at m=120 [from LP upper 0.6734309]  | h_m law 0.6734357 at m=135
+window AM  H = 0.6721881581  Q = 7 (n = 8)  B = 0.0036000
+LP  eps* achieved 0.007291985  LP upper 0.007292185  (198s)  gmin [1.983 1.044 1.974 1.047 1.984 1.986 1.043]
+  strong seed 1: floor 0.007281915 (3s)
+  strong seed 2: floor 0.007281915 (3s)
+  strong seed 3: floor 0.007281915 (3s)
+RESULT AM n=8 B=0.0036000: H=0.6721881581 eps_strong=0.007281915 (LP upper 0.007292185) -> Phi_w' = 0.6734286 at m=144 [from LP upper 0.6734353]  | h_m law 0.6734320 at m=159
+DONE

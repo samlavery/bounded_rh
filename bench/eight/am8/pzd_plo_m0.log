@@ -1,0 +1,13 @@
+delta=0.001 cN=855860 env GSH=5 TWOGRID=1 JSH=3 WMIN=9 MINR=0 QB=12 SPLIT=err PFK=None ROOTSEL=4
+  ... 5000 leaves (Z 100, M 3921, empty 740, refl 239) nodes 5063 LP 16639 (31s)
+  ... 10000 leaves (Z 426, M 7367, empty 1759, refl 448) nodes 10018 LP 31649 (52s)
+  ... 15000 leaves (Z 806, M 10740, empty 2895, refl 559) nodes 15017 LP 46438 (72s)
+  stuck ((139808, 162240), (29184, 44800), (29696, 43520), (89920, 125056), (29696, 43520), (29184, 44800), (139808, 162240)) {6: (541720, 541721), 5: (385087, 389936), 12: (389936, None), 4: (343960, 356788), 8: (None, 74496), 23: (None, 74496)}
+   LP rel 0.08327693563132739 zlow rel -0.04461116623711822
+   err 5.170e-04 axis 13 term (0, 7) range (541720, 541721) width 1 cands 1 inreg False w(s*) 0.000258 z* -0.000000
+   err 5.169e-04 axis 26 term (3, 5) range (119616, 168576) width 48960 cands 1 inreg False w(s*) 0.000867 z* -0.000000
+   err 5.169e-04 axis 21 term (2, 4) range (119616, 168576) width 48960 cands 1 inreg False w(s*) 0.000867 z* -0.000000
+   err 5.123e-04 axis 23 term (2, 6) range (178496, 256896) width 78400 cands 1 inreg False w(s*) 0.000778 z* -0.000000
+   err 5.123e-04 axis 17 term (1, 5) range (178496, 256896) width 78400 cands 1 inreg False w(s*) 0.000778 z* -0.000000
+   err 5.073e-04 axis 18 term (1, 6) range (207680, 301696) width 94016 cands 1 inreg False w(s*) 0.000809 z* -0.000000
+  root 4 (0, 0, 0, 1, 0, 0, 0): 19304 leaves (89s)

@@ -1,0 +1,18 @@
+180 runs from ['round7_ms_e64.json', 'round7_ms_e128.json', 'round7_ms_e256.json']
+fam e N= 64 ( 60 runs): min LP +4.51516 [ylo=0.05 Ps=11 Pd=2 block a=0.989; pairs 13, deep 2 at y=['0.800', '0.800'], shallow y in ['0.050', '0.733']] = s(D) +5.3863 + Delta_B -0.8711  (lattice N*sigma 0.0875)
+        thinnest per-pair +0.34732 [ylo=0.05 Ps=11 Pd=2 block a=0.989; LP +4.5152, pairs 13, deep 2]
+fam e N=128 ( 60 runs): min LP +3.52948 [ylo=0.05 Ps=22 Pd=1 block a=0.952; pairs 23, deep 1 at y=['0.800'], shallow y in ['0.050', '0.780']] = s(D) +5.5300 + Delta_B -2.0005  (lattice N*sigma 0.1750)
+        thinnest per-pair +0.12649 [ylo=0.10 Ps=28 Pd=1 block a=0.950; LP +3.6681, pairs 29, deep 1]
+fam e N=256 ( 60 runs): min LP +3.82180 [ylo=0.10 Ps=36 Pd=1 block a=0.964; pairs 37, deep 1 at y=['0.800'], shallow y in ['0.100', '0.777']] = s(D) +5.9458 + Delta_B -2.1240  (lattice N*sigma 0.3499)
+        thinnest per-pair +0.07128 [ylo=0.10 Ps=61 Pd=1 block a=0.953; LP +4.4192, pairs 62, deep 1]
+runs with LP < 0 (float or mp50): 0
+mp50 re-evaluations: 0; max |mp50 - float| = 0.00e+00
+lowest 8 overall:
+  e N=128 ylo=0.05 Ps=22 Pd=1 block a=0.952    LP +3.52948  s(D) +5.5300  Delta_B -2.0005  pairs 23 deep 1  shallow y ['0.050', '0.780']
+  e N=128 ylo=0.10 Ps=28 Pd=1 block a=0.950    LP +3.66812  s(D) +5.5554  Delta_B -1.8872  pairs 29 deep 1  shallow y ['0.100', '0.782']
+  e N=256 ylo=0.10 Ps=36 Pd=1 block a=0.964    LP +3.82180  s(D) +5.9458  Delta_B -2.1240  pairs 37 deep 1  shallow y ['0.100', '0.777']
+  e N=128 ylo=0.05 Ps=15 Pd=1 block a=0.972    LP +4.16026  s(D) +5.4290  Delta_B -1.2688  pairs 16 deep 1  shallow y ['0.050', '0.787']
+  e N=256 ylo=0.10 Ps=61 Pd=1 block a=0.953    LP +4.41925  s(D) +6.8357  Delta_B -2.4164  pairs 62 deep 1  shallow y ['0.100', '0.788']
+  e N=64 ylo=0.05 Ps=11 Pd=2 block a=0.989    LP +4.51516  s(D) +5.3863  Delta_B -0.8711  pairs 13 deep 2  shallow y ['0.050', '0.733']
+  e N=128 ylo=0.05 Ps=22 Pd=1 block a=0.928    LP +4.75338  s(D) +5.9202  Delta_B -1.1668  pairs 23 deep 1  shallow y ['0.050', '0.800']
+  e N=256 ylo=0.10 Ps=19 Pd=1 block a=0.939    LP +5.10066  s(D) +5.6651  Delta_B -0.5644  pairs 20 deep 1  shallow y ['0.100', '0.800']

@@ -1,0 +1,29 @@
+X = 128; |g''| <= 7.730; min g on [0,1] = 6.628e-04; quadrature check (600 vs 1000 nodes) max diff 1.57e-12; EPS 1e-10
+  c_j tables on 264193 points [1s]
+  tail check y=0.05: A2 2.9129 A3 9.8238; max over [X, X+40] of |psi|/(A2/u^2 + A3/u^3) = 0.9338 (must be < 1)
+  tail check y=0.40: A2 4.7688 A3 15.1387; max over [X, X+40] of |psi|/(A2/u^2 + A3/u^3) = 0.9348 (must be < 1)
+  7296 cells on (0, 128]; [1s]
+(1) periodic decomposition, N = 64
+   trial 0 y=0.1: slack 81.0499100666  P_h + T_g 81.0490854494 (P_h 0.6325, T_g 80.4166) | Delta_B 0.3283415943  field form 0.3283415943
+   trial 0 y=0.3: slack 81.0499100666  P_h + T_g 81.0490854494 (P_h 0.6325, T_g 80.4166) | Delta_B 4.0725458570  field form 4.0725458570
+   trial 1 y=0.1: slack 52.3680789634  P_h + T_g 52.3673105511 (P_h 0.6995, T_g 51.6678) | Delta_B 0.2306545928  field form 0.2306545928
+   trial 1 y=0.3: slack 52.3680789634  P_h + T_g 52.3673105511 (P_h 0.6995, T_g 51.6678) | Delta_B 3.1082349493  field form 3.1082349493
+   trial 2 y=0.1: slack 54.2939904888  P_h + T_g 54.2932235551 (P_h 0.5575, T_g 53.7357) | Delta_B 0.1981112446  field form 0.1981112446
+   trial 2 y=0.3: slack 54.2939904888  P_h + T_g 54.2932235551 (P_h 0.5575, T_g 53.7357) | Delta_B 2.8668098401  field form 2.8668098401
+(2) psi normalisation: line-model psi (Taylor coefficients) vs periodic phi_N/y^2 at N = 2048
+   y=0.05: max |psi_line - phi_N/y^2| = 2.18e-06 ; S0 line 24.504651 periodic 24.504646
+   y=0.25: max |psi_line - phi_N/y^2| = 2.64e-06 ; S0 line 33.043759 periodic 33.043750
+   y=0.40: max |psi_line - phi_N/y^2| = 3.56e-06 ; S0 line 54.155569 periodic 54.155543
+(3) exact objectives on the DP binding chains
+   y in [0.00,0.05] R=2 d0=0.1016: DP bound +7.4239 | binding chains (60 + 61 points): NN objective +177.874 +48.720 | all-pairs objective +296.368 +78.344
+   y in [0.00,0.05] R=2 d0=0.1484: DP bound +13.1694 | binding chains (60 + 61 points): NN objective +181.388 +54.844 | all-pairs objective +319.149 +89.284
+   y in [0.00,0.05] R=2 d0=0.2031: DP bound +14.9664 | binding chains (60 + 61 points): NN objective +187.420 +56.813 | all-pairs objective +308.510 +87.085
+   y in [0.15,0.20] R=2 d0=0.1016: DP bound +1.2272 | binding chains (60 + 61 points): NN objective +18.212 +13.537 +10.947 | all-pairs objective +23.552 +17.460 +13.951
+   y in [0.15,0.20] R=2 d0=0.1484: DP bound +2.9101 | binding chains (60 + 61 points): NN objective +20.545 +15.477 +12.642 | all-pairs objective +26.055 +19.525 +15.742
+   y in [0.15,0.20] R=2 d0=0.2031: DP bound +4.4894 | binding chains (60 + 61 points): NN objective +21.191 +16.764 +14.387 | all-pairs objective +26.226 +20.464 +17.220
+   y in [0.20,0.25] R=2 d0=0.1016: DP bound +0.4756 | binding chains (60 + 61 points): NN objective +11.517 +9.619 +8.800 | all-pairs objective +15.298 +12.606 +11.220
+   y in [0.20,0.25] R=2 d0=0.1484: DP bound +1.8044 | binding chains (60 + 61 points): NN objective +13.495 +11.234 +10.153 | all-pairs objective +18.098 +14.871 +13.099
+   y in [0.20,0.25] R=2 d0=0.2031: DP bound +3.6089 | binding chains (60 + 61 points): NN objective +15.740 +13.219 +11.965 | all-pairs objective +20.648 +17.097 +15.106
+   y in [0.35,0.40] R=2 d0=0.1016: DP bound +5.4717 | binding chains (60 + 61 points): NN objective +12.624 +14.520 +17.261 | all-pairs objective +15.058 +16.639 +19.124
+   y in [0.35,0.40] R=2 d0=0.1484: DP bound +5.4717 | binding chains (60 + 61 points): NN objective +12.624 +14.520 +17.261 | all-pairs objective +15.058 +16.639 +19.124
+   y in [0.35,0.40] R=2 d0=0.2031: DP bound +6.1343 | binding chains (60 + 61 points): NN objective +14.031 +15.528 +17.922 | all-pairs objective +17.210 +18.297 +20.355

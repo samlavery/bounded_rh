@@ -1,0 +1,27 @@
+lattice a=0.60 P=6     QP optimum     +22.3814 | D_hard(w*) fine grid     +22.2144 | PASS (certified) | depths at D: ends 3.00/3.00, #at cap 2/6
+  prob.solve(solver=cp.CLARABEL)
+lattice a=0.60 P=12    QP optimum     +34.5964 | D_hard(w*) fine grid     +34.2170 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 5/12
+lattice a=0.60 P=24    QP optimum     +63.4102 | D_hard(w*) fine grid     +63.0017 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 8/24
+lattice a=0.60 P=48    QP optimum    +125.8674 | D_hard(w*) fine grid    +124.6806 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 18/48
+lattice a=0.70 P=6     QP optimum     +13.6961 | D_hard(w*) fine grid     +13.6336 | PASS (certified) | depths at D: ends 3.00/3.00, #at cap 2/6
+lattice a=0.70 P=12    QP optimum     +20.0634 | D_hard(w*) fine grid     +19.8717 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 4/12
+lattice a=0.70 P=24    QP optimum     +38.2100 | D_hard(w*) fine grid     +37.6614 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 9/24
+lattice a=0.70 P=48    QP optimum     +77.4006 | D_hard(w*) fine grid     +76.7390 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 22/48
+lattice a=0.76 P=6     QP optimum      +8.9007 | D_hard(w*) fine grid      +8.8707 | PASS (certified) | depths at D: ends 3.00/3.00, #at cap 2/6
+lattice a=0.76 P=12    QP optimum     +13.6317 | D_hard(w*) fine grid     +13.6279 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 0/12
+lattice a=0.76 P=24    QP optimum     +27.2316 | D_hard(w*) fine grid     +26.9579 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 4/24
+lattice a=0.76 P=48    QP optimum     +56.9794 | D_hard(w*) fine grid     +56.3376 | PASS (certified) | depths at D: ends 2.52/2.52, #at cap 21/48
+lattice a=0.80 P=6     QP optimum      +5.9217 | D_hard(w*) fine grid      +5.9145 | PASS (certified) | depths at D: ends 0.83/0.83, #at cap 0/6
+lattice a=0.80 P=12    QP optimum     +10.5028 | D_hard(w*) fine grid     +10.4822 | PASS (certified) | depths at D: ends 3.00/3.00, #at cap 2/12
+lattice a=0.80 P=24    QP optimum     +20.3880 | D_hard(w*) fine grid     +20.2108 | PASS (certified) | depths at D: ends 2.47/2.48, #at cap 4/24
+lattice a=0.80 P=48    QP optimum     +43.3721 | D_hard(w*) fine grid     +41.6787 | PASS (certified) | depths at D: ends 2.56/0.80, #at cap 16/48
+lattice a=0.90 P=6     QP optimum     +68.0387 | D_hard(w*) fine grid     +67.9835 | PASS (certified) | depths at D: ends 0.80/0.80, #at cap 0/6
+lattice a=0.90 P=12    QP optimum      -0.1610 | D_hard(w*) fine grid      -0.1853 | FAIL (certified) | depths at D: ends 2.31/2.31, #at cap 0/12
+lattice a=0.90 P=24    QP optimum      +1.8337 | D_hard(w*) fine grid      +1.8293 | PASS (certified) | depths at D: ends 1.95/1.95, #at cap 4/24
+lattice a=0.90 P=48    QP optimum      +1.3606 | D_hard(w*) fine grid      -1.0185 | UNDECIDED | depths at D: ends 0.98/1.99, #at cap 20/48
+e23 minimiser P=6      QP optimum     +15.7256 | D_hard(w*) fine grid     +15.6627 | PASS (certified) | depths at D: ends 3.00/3.00, #at cap 2/6
+e23 minimiser P=8      QP optimum     +14.8492 | D_hard(w*) fine grid     +14.8409 | PASS (certified) | depths at D: ends 3.00/3.00, #at cap 2/8
+e23 minimiser P=12     QP optimum      -5.4082 | D_hard(w*) fine grid      -5.6432 | FAIL (certified) | depths at D: ends 1.99/3.00, #at cap 2/12
+e23 minimiser P=16     QP optimum     -58.9653 | D_hard(w*) fine grid     -60.3670 | FAIL (certified) | depths at D: ends 0.80/2.87, #at cap 4/16
+e23 minimiser P=24     QP optimum     -95.7545 | D_hard(w*) fine grid     -97.3899 | FAIL (certified) | depths at D: ends 1.63/1.22, #at cap 2/24
+e23 minimiser P=32     QP optimum    -108.6496 | D_hard(w*) fine grid    -109.4241 | FAIL (certified) | depths at D: ends 1.51/1.89, #at cap 3/32

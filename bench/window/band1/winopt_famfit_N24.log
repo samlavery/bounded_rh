@@ -1,0 +1,6 @@
+fit to the general window: max rel. residual 4.89e-05; kappa_D,N(fit) 0.6819161; kappa_D,N(R8) 0.6779590
+  N=24: fit kappa_D,N 0.6819161 (Delta_1/N 0.964066) | R8 0.6779590 (0.990793)
+  N=32: fit kappa_D,N 0.5312506 (Delta_1/N 0.656893) | R8 0.6777384 (0.990783)
+  N=48: fit kappa_D,N 0.3653622 (Delta_1/N 0.485390) | R8 0.6775812 (0.990777)
+  N=64: fit kappa_D,N 0.3383251 (Delta_1/N 0.465614) | R8 0.6775262 (0.990774)
+  continuum (Delta_1/N at N=64): fit kappa_D 0.3382248  delta 0.232807  int q a 0.154066  int q 0.500000 | R8 kappa_D 0.6774565  delta 0.495387  int q a 0.159784

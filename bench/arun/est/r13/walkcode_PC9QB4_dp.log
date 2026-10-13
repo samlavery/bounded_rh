@@ -1,0 +1,10 @@
+parsed 32 walks: 10077 leaves (9732 M), original layout re-encodes bit-exactly
+original 3154179 bits = 313.0 bits/leaf
+A       2928413 bits =  290.6 bits/leaf ( 92.8% of original; 732 KB hex, saves 56 KB); per M leaf: 17.0 codewords, 44.8 length-loop steps, 17.0 context reads; 0 escapes; round trip bit-exact
+B       2631460 bits =  261.1 bits/leaf ( 83.4% of original; 658 KB hex, saves 131 KB); per M leaf: 22.9 codewords, 106.7 length-loop steps, 22.9 context reads; 0 escapes; round trip bit-exact
+C       3084205 bits =  306.1 bits/leaf ( 97.8% of original; 771 KB hex, saves 17 KB); per M leaf: 6.9 codewords, 61.7 length-loop steps, 6.9 context reads; 0 escapes; round trip bit-exact
+A+B     2405694 bits =  238.7 bits/leaf ( 76.3% of original; 601 KB hex, saves 187 KB); per M leaf: 39.9 codewords, 151.5 length-loop steps, 39.9 context reads; 0 escapes; round trip bit-exact
+A+B+C   2335720 bits =  231.8 bits/leaf ( 74.1% of original; 584 KB hex, saves 205 KB); per M leaf: 46.8 codewords, 213.2 length-loop steps, 46.8 context reads; 0 escapes; round trip bit-exact
+table A: 17 contexts, 286 listed symbols (incl. ESC), max length 14; literals 1041 bytes + dispatch ~1173 bytes = 2.2 KB
+table B: 68 contexts, 3777 listed symbols (incl. ESC), max length 13; literals 11206 bytes + dispatch ~4692 bytes = 15.9 KB
+table C: 2 contexts, 1537 listed symbols (incl. ESC), max length 14; literals 4352 bytes + dispatch ~138 bytes = 4.5 KB

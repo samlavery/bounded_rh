@@ -1,0 +1,24 @@
+  P=16 N=64 Y=0.2 start a: exact LP 2.3230  (nit 63, success True, max|grad| 9.1e-06, 0s)
+  P=16 N=64 Y=0.2 start b: exact LP 1.9597  (nit 67, success True, max|grad| 2.1e-05, 0s)
+  P=16 N=64 Y=0.2 start c: exact LP 2.0979  (nit 72, success True, max|grad| 8.4e-06, 0s)
+P=16 N=  64 Y=0.2: exact LP 1.9597 (start b) | sum m_bulk(a_p) 1.3825 (t_L 0.008) -> LP - sum +0.5772 | with t_L 0.016: sum 1.4608, LP - sum +0.4989 | centre spacing 0.9900, end spacings 0.951 0.952 | env density within 40 of the ends 0.400 | env locking |mean e(x)| 0.970, phase vs block +0.01 rad, |sum_p e(s_p)|/P 0.916
+  P=16 N=64 Y=0.4 start a: exact LP 7.1961  (nit 116, success True, max|grad| 2.0e-05, 0s)
+  P=16 N=64 Y=0.4 start b: exact LP 6.2469  (nit 119, success True, max|grad| 7.1e-05, 0s)
+  P=16 N=64 Y=0.4 start c: exact LP 6.8414  (nit 139, success True, max|grad| 3.7e-05, 0s)
+P=16 N=  64 Y=0.4: exact LP 6.2469 (start b) | sum m_bulk(a_p) 3.8586 (t_L 0.012) -> LP - sum +2.3883 | with t_L 0.016: sum 3.8910, LP - sum +2.3559 | centre spacing 0.9734, end spacings 0.854 0.856 | env density within 40 of the ends 0.400 | env locking |mean e(x)| 0.831, phase vs block +0.02 rad, |sum_p e(s_p)|/P 0.524
+  P=32 N=128 Y=0.2 start a: exact LP 3.2134  (nit 90, success True, max|grad| 3.7e-05, 0s)
+  P=32 N=128 Y=0.2 start b: exact LP 2.6544  (nit 92, success False, max|grad| 6.5e-05, 0s)
+  P=32 N=128 Y=0.2 start c: exact LP 2.7876  (nit 99, success True, max|grad| 1.0e-04, 0s)
+P=32 N= 128 Y=0.2: exact LP 2.6544 (start b) | sum m_bulk(a_p) 1.8547 (t_L 0.008) -> LP - sum +0.7997 | with t_L 0.016: sum 2.0040, LP - sum +0.6504 | centre spacing 0.9951, end spacings 0.952 0.953 | env density within 40 of the ends 0.650 | env locking |mean e(x)| 0.962, phase vs block +0.00 rad, |sum_p e(s_p)|/P 0.910
+  P=32 N=128 Y=0.4 start a: exact LP 8.4166  (nit 171, success True, max|grad| 9.5e-05, 0s)
+  P=32 N=128 Y=0.4 start b: exact LP 7.2595  (nit 170, success True, max|grad| 8.8e-05, 0s)
+  P=32 N=128 Y=0.4 start c: exact LP 7.3422  (nit 209, success True, max|grad| 7.1e-05, 0s)
+P=32 N= 128 Y=0.4: exact LP 7.2595 (start b) | sum m_bulk(a_p) 4.7703 (t_L 0.016) -> LP - sum +2.4891 | with t_L 0.016: sum 4.7703, LP - sum +2.4891 | centre spacing 0.9864, end spacings 0.856 0.859 | env density within 40 of the ends 0.650 | env locking |mean e(x)| 0.783, phase vs block +0.01 rad, |sum_p e(s_p)|/P 0.503
+  P=64 N=256 Y=0.2 start a: exact LP 4.7631  (nit 121, success True, max|grad| 7.5e-05, 0s)
+  P=64 N=256 Y=0.2 start b: exact LP 3.8243  (nit 117, success True, max|grad| 6.9e-05, 0s)
+  P=64 N=256 Y=0.2 start c: exact LP 3.9477  (nit 136, success True, max|grad| 3.8e-05, 0s)
+P=64 N= 256 Y=0.2: exact LP 3.8243 (start b) | sum m_bulk(a_p) 2.8156 (t_L 0.012) -> LP - sum +1.0087 | with t_L 0.016: sum 2.8987, LP - sum +0.9256 | centre spacing 0.9975, end spacings 0.953 0.954 | env density within 40 of the ends 0.650 | env locking |mean e(x)| 0.935, phase vs block +0.01 rad, |sum_p e(s_p)|/P 0.906
+  P=64 N=256 Y=0.4 start a: exact LP 10.3110  (nit 248, success True, max|grad| 2.6e-04, 0s)
+  P=64 N=256 Y=0.4 start b: exact LP 8.7637  (nit 230, success True, max|grad| 3.3e-04, 0s)
+  P=64 N=256 Y=0.4 start c: exact LP 8.8748  (nit 272, success True, max|grad| 5.5e-04, 0s)
+P=64 N= 256 Y=0.4: exact LP 8.7637 (start b) | sum m_bulk(a_p) 6.0154 (t_L 0.016) -> LP - sum +2.7483 | with t_L 0.016: sum 6.0154, LP - sum +2.7483 | centre spacing 0.9931, end spacings 0.858 0.860 | env density within 40 of the ends 0.650 | env locking |mean e(x)| 0.602, phase vs block +0.02 rad, |sum_p e(s_p)|/P 0.491

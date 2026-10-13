@@ -1,0 +1,2 @@
+(ii) a=0.99 P= 256: Q_pp +946.731018 | ||grad|| 5.48e-07 (rel 2.1e-10) | mineig +3.927e+02 (PD) | its 5 | end layer (|y - y_mid| > 1% of max dev) 113 sites | depths ends 0.800 mid 1.641 max 1.641 | 259s
+(ii) a=0.99 P= 512: Q_pp +655.090837 | ||grad|| 5.66e+03 (rel 1.4e+00) | mineig -2.425e+01 (NOT PD) | its 399 | end layer (|y - y_mid| > 1% of max dev) 220 sites | depths ends 0.800 mid 2.486 max 2.486 | 451s

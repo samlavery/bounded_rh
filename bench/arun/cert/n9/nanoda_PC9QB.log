@@ -1,0 +1,18 @@
+[stage] waiting 11:33:27
+[stage] waiting 11:33:57
+[stage] waiting 11:34:27
+== AMW.PC9QBData export
+export exit 0
+       46.43 real        13.72 user        14.67 sys
+          1356956808  peak memory footprint
+export bytes 304693174
+== AMW.PC9QBData nanoda
+nanoda exit 0
+      203.17 real       193.09 user         9.67 sys
+          6396646344  peak memory footprint
+== AMW.PC9QBData lean replay (full closure)
+parse_ms 7556 constants 47571
+replay_ms 236717 OK
+replayx exit 0
+      244.48 real       240.35 user         3.82 sys
+          3982544232  peak memory footprint

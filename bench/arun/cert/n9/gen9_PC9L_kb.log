@@ -1,0 +1,82 @@
+== E emit Sat Oct 10 13:57:26 PDT 2026
+  root 0 (0, 0, 0, 0, 0, 0, 0, 0): 318 leaves (1s)
+  root 1 (0, 0, 0, 0, 0, 1, 0, 0): 665 leaves (1s)
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 1610 leaves (1s)
+  root 3 (0, 0, 0, 0, 1, 1, 0, 0): 1428 leaves (2s)
+  root 4 (0, 0, 0, 1, 0, 0, 0, 0): 1656 leaves (2s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 2028 leaves (2s)
+  root 6 (0, 0, 0, 1, 1, 0, 0, 0): 1198 leaves (2s)
+  root 7 (0, 0, 0, 1, 1, 1, 0, 0): 466 leaves (2s)
+  root 8 (0, 0, 1, 0, 0, 0, 0, 0): 675 leaves (3s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1413 leaves (3s)
+  root 10 (0, 0, 1, 0, 1, 0, 0, 0): 2116 leaves (3s)
+  root 11 (0, 0, 1, 0, 1, 1, 0, 0): 823 leaves (3s)
+  root 12 (0, 0, 1, 1, 0, 0, 0, 0): 1086 leaves (3s)
+  root 13 (0, 0, 1, 1, 0, 1, 0, 0): 843 leaves (4s)
+  root 14 (0, 0, 1, 1, 1, 0, 0, 0): 478 leaves (4s)
+  root 15 (0, 0, 1, 1, 1, 1, 0, 0): 748 leaves (4s)
+  bisection: 17551 leaves (Z 0, M 17071, empty 0), 0 splits, 0 at region boundaries (4s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 3674 points (38101 point cells); failing 0 (20s)
+replay: {'split': 17535, 6: 17071, 0: 480}; leaves 17551 kinds {6: 17071, 0: 480}; verification failures 0 (20s)
+walks: 16 roots, 5023670 bits = 1255.9 KB hex; encode/decode round trip OK
+wrote /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/DATA_PC9L.json: 1.53 MB json; points 3674, w 1984 cells, d 2240 cells
+       57.65 real        56.64 user         0.98 sys
+          2117173248  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              173564  page reclaims
+                  45  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  77  voluntary context switches
+                1496  involuntary context switches
+        807883897844  instructions retired
+        199579052770  cycles elapsed
+          2095613920  peak memory footprint
+== D data module Sat Oct 10 13:58:24 PDT 2026
+chunks 16 boundaries 0
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LData.lean bytes 1731911 walks 16 bads [1, 1, 2, 2, 2, 2, 1, 1] point blocks 246
+        4.89 real         4.82 user         0.07 sys
+            55689216  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                4207  page reclaims
+                  42  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+                 120  involuntary context switches
+         70952277909  instructions retired
+         16537324306  cycles elapsed
+            47612336  peak memory footprint
+== I instance module Sat Oct 10 13:58:29 PDT 2026
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean bytes 141228 pairs 36 constraints 28 active terms 34 SIG 6250000000000000 table entries 0 0 0 FIXED 
+        0.04 real         0.03 user         0.00 sys
+            25280512  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2351  page reclaims
+                  42  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+                  33  involuntary context switches
+           443657357  instructions retired
+           142256822  cycles elapsed
+            17154432  peak memory footprint
+== done Sat Oct 10 13:58:29 PDT 2026

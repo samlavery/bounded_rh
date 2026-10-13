@@ -1,0 +1,16 @@
+a=0.99 N=4P fixed P= 16 N=  64: LP  +2299.3118 (per pair +143.7070) | slope    -    | env density near chain 0.600, nominal far 0.651 | pair span 14.85
+a=0.99 N=4P fixed P= 32 N= 128: LP  +2096.3007 (per pair +65.5094) | slope -12.6882 | env density near chain 0.600, nominal far 0.658 | pair span 30.69
+a=0.99 N=4P fixed P= 64 N= 256: LP  +1734.5860 (per pair +27.1029) | slope -11.3036 | env density near chain 0.600, nominal far 0.661 | pair span 62.37
+a=0.99 N=4P fixed P=128 N= 512: LP  +1298.4371 (per pair +10.1440) | slope -6.8148 | env density near chain 0.600, nominal far 0.663 | pair span 125.73
+a=0.99 N=4P free  P= 16 N=  64: LP    +26.6244 (per pair +1.6640) | slope    -    | env density near chain 0.500, nominal far 0.619 | pair span 12.30
+a=0.99 N=4P free  P= 32 N= 128: LP    +30.1175 (per pair +0.9412) | slope +0.2183 | env density near chain 0.550, nominal far 0.641 | pair span 28.17
+a=0.99 N=4P free  P= 64 N= 256: LP    +35.0428 (per pair +0.5475) | slope +0.1539 | env density near chain 0.500, nominal far 0.652 | pair span 59.78
+a=0.99 N=4P free  P=128 N= 512: LP    +43.9592 (per pair +0.3434) | slope +0.1393 | env density near chain 0.550, nominal far 0.659 | pair span 123.39
+a=0.99 N=8P fixed P= 16 N= 128: LP  +2420.2910 (per pair +151.2682) | slope    -    | env density near chain 0.700, nominal far 0.848 | pair span 14.85
+a=0.99 N=8P fixed P= 32 N= 256: LP  +2173.1277 (per pair +67.9102) | slope -15.4477 | env density near chain 0.700, nominal far 0.852 | pair span 30.69
+a=0.99 N=8P fixed P= 64 N= 512: LP  +1782.1224 (per pair +27.8457) | slope -12.2189 | env density near chain 0.700, nominal far 0.854 | pair span 62.37
+a=0.99 N=8P fixed P=128 N=1024: LP  +1344.8316 (per pair +10.5065) | slope -6.8327 | env density near chain 0.700, nominal far 0.855 | pair span 125.73
+a=0.99 N=8P free  P= 16 N= 128: LP    +29.6630 (per pair +1.8539) | slope    -    | env density near chain 0.700, nominal far 0.829 | pair span 12.19
+a=0.99 N=8P free  P= 32 N= 256: LP    +37.1595 (per pair +1.1612) | slope +0.4685 | env density near chain 0.700, nominal far 0.843 | pair span 28.11
+a=0.99 N=8P free  P= 64 N= 512: LP    +47.1853 (per pair +0.7373) | slope +0.3133 | env density near chain 0.700, nominal far 0.849 | pair span 59.73
+a=0.99 N=8P free  P=128 N=1024: LP    +66.6775 (per pair +0.5209) | slope +0.3046 | env density near chain 0.700, nominal far 0.853 | pair span 123.37

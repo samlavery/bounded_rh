@@ -1,0 +1,22 @@
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      425.10 real       411.06 user        14.11 sys
+          3119093264  peak memory footprint
+BUILD EXIT 0
+module constants: 4108; imports: 10
+kernel replay of 4108 constants: 285270 ms
+      300.48 real       283.45 user        14.66 sys
+          3103176616  peak memory footprint
+REPLAY EXIT 0
+== CandRKFc export
+export exit 0
+       40.43 real        29.63 user         9.81 sys
+          1570147768  peak memory footprint
+export bytes 633797411
+== CandRKFc nanoda
+nanoda/stage.sh: line 18: 87499 Terminated: 15          /usr/bin/time -l nice -n 10 $T/nanoda/target/release/nanoda_bin nanoda/nanoda_cfg.json < $EXP > nanoda/nanoda_$MOD.out 2> nanoda/nanoda_$MOD.err
+nanoda exit 143
+== CandRKFc lean replay (full closure)
+nanoda/stage.sh: line 21:  2666 Terminated: 15          /usr/bin/time -l nice -n 10 $T/replayx/.lake/build/bin/replayx $EXP 2> nanoda/replayx_$MOD.err
+replayx exit 143

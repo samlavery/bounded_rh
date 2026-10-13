@@ -1,0 +1,42 @@
+walk bits 3435015 over 11078 leaves (10735 M, 343 reflected) = 310.1 bits/leaf; 11062 splits
+bits by field per leaf: {'split_flag': 1.0, 'split_axis': 5.99, 'split_mode': 1.0, 'leaf_flag': 0.03, 'leaf_head': 1.94, 'kappa': 65.89, 'j': 151.25, 'lambda': 65.28, 'mult_blocks': 16.73, 'mult_stop': 0.97}
+KINDS (per term, 2-bit field):
+  kappa                                          n  364990  width  2.00  H0  1.70  H|ctx  1.70  adaptive  1.70  static Huffman|ctx  1.74
+  kappa | position                               n  364990  width  2.00  H0  1.70  H|ctx  1.37  adaptive  1.37  static Huffman|ctx  1.55
+  kappa | position, prev leaf kappa              n  364990  width  2.00  H0  1.70  H|ctx  1.13  adaptive  1.14  static Huffman|ctx  1.39
+  kappa | pair distance                          n  364990  width  2.00  H0  1.70  H|ctx  1.46  adaptive  1.46  static Huffman|ctx  1.62
+POINT CODES (per jj field, 7 bits):
+  codes 239363; p None 0; p not in arithmetic list 0; non-canonical code 0
+  arithmetic list size: mean 61.1, median 61, mean log2 5.93; first hit 0.5%, nearest-mid hit 0.8%
+  table list: chosen point inside 239363, outside 0; size mean 16.41 median 15 mean log2 3.62; first hit 10.7%, nearest-mid 18.9%; blocks spanned per range mean 34.3
+  previous leaf same position: available 182584 (76.3%), same jj 37.8%, same point 37.1%, prev point in current list 70.4%
+  jj (order 0)                                   n  239363  width  7.00  H0  5.16  H|ctx  5.16  adaptive  5.17  static Huffman|ctx  5.21
+  jj | position, slot                            n  239363  width  7.00  H0  5.16  H|ctx  4.69  adaptive  4.79  static Huffman|ctx  4.72
+  jj | position, slot, prev jj                   n  239363  width  7.00  H0  5.16  H|ctx  3.54  adaptive  4.54  static Huffman|ctx  3.58
+  index in arithmetic list | list size           n  239363  width  7.00  H0  5.15  H|ctx  4.95  adaptive  4.98  static Huffman|ctx  4.99
+  same-point flag + index in arithmetic list otherwise: P(same) 0.283, flag 0.86 + miss index 5.18 -> 4.58 bits per code
+  index in table list | list size                n  239363  width  7.00  H0  4.26  H|ctx  2.94  adaptive  3.00  static Huffman|ctx  3.00
+  rank in arithmetic list by distance from prev point n  239363  width  7.00  H0  4.23  H|ctx  3.75  adaptive  3.85  static Huffman|ctx  3.79
+  point delta from prev point (fine-grid units) | position n  182584  width  7.00  H0  5.06  H|ctx  4.81  adaptive  6.09  static Huffman|ctx  4.85
+  delta from prev point, escape bit + Elias gamma (+ sign), else 1 + 7: 8.47 bits per code; deltas off the fine grid 150
+  rank in table list by distance from prev point n  239363  width  7.00  H0  3.22  H|ctx  3.03  adaptive  3.14  static Huffman|ctx  3.06
+  index in table list | position, slot, size     n  239363  width  7.00  H0  4.26  H|ctx  2.48  adaptive  3.27  static Huffman|ctx  2.55
+LAMBDA (10 bits):
+  lambda (order 0)                               n   72317  width 10.00  H0  9.37  H|ctx  9.37  adaptive  9.43  static Huffman|ctx  9.41
+  lambda | kappa                                 n   72317  width 10.00  H0  9.37  H|ctx  9.03  adaptive  9.13  static Huffman|ctx  9.06
+  lambda | kappa, position                       n   72317  width 10.00  H0  9.37  H|ctx  8.20  adaptive  9.11  static Huffman|ctx  8.24
+  lambda same as previous leaf (same position): 15.0% of 44062
+MULTIPLIERS and SPLITS:
+  blocks per M leaf: {0: 3166, 1: 6012, 2: 1426, 3: 124, 4: 7}
+  mult c                                         n    9264  width  5.00  H0  4.38  H|ctx  4.38  adaptive  4.39  static Huffman|ctx  4.41
+  mult side | c                                  n    9264  width  1.00  H0  0.88  H|ctx  0.86  adaptive  0.87  static Huffman|ctx  1.00
+  mult Yq (order 0)                              n    9264  width 13.00  H0  8.68  H|ctx  8.68  adaptive  9.90  static Huffman|ctx  8.72
+  split axis                                     n   11062  width  6.00  H0  4.95  H|ctx  4.95  adaptive  4.98  static Huffman|ctx  4.98
+  split axis | parent axis                       n   11062  width  6.00  H0  4.95  H|ctx  4.61  adaptive  5.03  static Huffman|ctx  4.65
+  split mode                                     n   11062  width  1.00  H0  1.00  H|ctx  1.00  adaptive  1.00  static Huffman|ctx  1.00
+BOUND (bits per leaf; per-leaf counts: 32.95 kinds, 21.61 point codes, 6.53 lambdas, 0.836 multiplier blocks, 0.999 splits; fixed 4.94):
+  today (fixed widths)                                                     310.1  (kappa 2.00, jj 7.00, lambda 10.00; hex KB in the file at 11078 leaves: 859)
+  order 0 (adaptive)                                                       252.8  (kappa 1.70, jj 5.17, lambda 9.43; hex KB in the file at 11078 leaves: 700)
+  kernel-cheap contexts (position, previous leaf, arithmetic list)         203.8  (kappa 1.14, jj 3.85, lambda 9.13; hex KB in the file at 11078 leaves: 564)
+  kernel-cheap, static prefix codes (Huffman per context; delta-gamma points)   229.2  (kappa 1.39, jj 4.72, lambda 9.06; hex KB in the file at 11078 leaves: 635)
+  plus the table list (not <= 2 reads)                                     185.3  (kappa 1.14, jj 3.00, lambda 9.13; hex KB in the file at 11078 leaves: 513)

@@ -1,0 +1,6 @@
+delta=0.001 cN=855860 env GSH=5 TWOGRID=1 JSH=6 WMIN=9 MINR=0 PLO=1 YFRAC=20 SPLIT=pf PFK=4 ROOTSEL=4,17
+  root 4 (0, 0, 0, 1, 0, 0, 0): 2091 leaves (121s)
+  root 17 (0, 1, 0, 0, 0, 1, 0): 1471 leaves (203s)
+  bisection: 3562 leaves (Z 41, M 2708, empty 678), 3560 splits (203s)
+  fix-up: 25 re-decided; tables: w 992 cells, d 1102 cells, 976 points (38953 point cells); failing 0 (205s)
+leaves 3563 kinds {6: 2709, 7: 678, 0: 135, 1: 41} (0 refl, 1 Z, 6 M, 7 empty); splits 3561 (pair 2750); walk bits 744082 (208.8 per leaf; multipliers 4822 x 18 bits); M nonzero multipliers [(0, 235), (1, 912), (2, 946), (3, 463), (4, 136), (5, 17)]; constraints per M cell [(1, 2), (2, 3), (3, 6), (4, 20), (5, 71), (6, 173), (7, 200), (8, 242), (9, 350), (10, 396), (11, 455), (12, 285), (13, 168), (14, 104), (15, 61), (16, 29), (17, 29), (18, 26), (19, 27), (20, 28), (21, 34)]; w 992 d 1102 pts 976 ptc 38953 bad 0 MSTAT lp 10647 (205s)

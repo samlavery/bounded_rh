@@ -1,0 +1,10 @@
+N = 4096: h-hat(0) = 0.01647; lattice P_h = 0.0000 (low 0.0000, Bragg 0.0000), T_g = 5.5990
+L =   16: Delta P_h = +4.7421 (per unit length +0.29638) = low band +0.1487 (+0.00929/L) + Bragg region +4.5934 (+0.28709/L) | Delta T_g = +5.2312 (+0.32695/L)
+L =   64: Delta P_h = +18.4558 (per unit length +0.28837) = low band +0.8988 (+0.01404/L) + Bragg region +17.5571 (+0.27433/L) | Delta T_g = +10.1578 (+0.15872/L)
+L =  256: Delta P_h = +11.6028 (per unit length +0.04532) = low band +4.2464 (+0.01659/L) + Bragg region +7.3564 (+0.02874/L) | Delta T_g = +69.5305 (+0.27160/L)
+L =   16 B2 contiguous vacancies : Delta P_h = +0.5108 (+0.03193/L) = low +0.2939 (+0.01837/L) + Bragg +0.2169 | Delta T_g = +0.0405 (+0.00253/L)
+L =   16 B3 spread vacancies     : Delta P_h = +0.4085 (+0.02553/L) = low +0.1693 (+0.01058/L) + Bragg +0.2392 | Delta T_g = +0.0202 (+0.00126/L)
+L =   64 B2 contiguous vacancies : Delta P_h = +2.0920 (+0.03269/L) = low +1.7713 (+0.02768/L) + Bragg +0.3207 | Delta T_g = +0.1712 (+0.00268/L)
+L =   64 B3 spread vacancies     : Delta P_h = +1.6584 (+0.02591/L) = low +0.9715 (+0.01518/L) + Bragg +0.6870 | Delta T_g = +0.0856 (+0.00134/L)
+L =  256 B2 contiguous vacancies : Delta P_h = +8.4154 (+0.03287/L) = low +7.9870 (+0.03120/L) + Bragg +0.4284 | Delta T_g = +0.6957 (+0.00272/L)
+L =  256 B3 spread vacancies     : Delta P_h = +6.6573 (+0.02601/L) = low +4.3858 (+0.01713/L) + Bragg +2.2715 | Delta T_g = +0.3479 (+0.00136/L)

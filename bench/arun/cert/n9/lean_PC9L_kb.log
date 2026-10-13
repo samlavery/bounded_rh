@@ -1,0 +1,28 @@
+== PC9LInst Sat Oct 10 13:58:41 PDT 2026
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:522:46: warning: Variable name `L02` is not explicitly referenced.
+
+
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:522:97: warning: Variable name `U02` is not explicitly referenced.
+
+
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:549:46: warning: Variable name `L68` is not explicitly referenced.
+
+
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:549:97: warning: Variable name `U68` is not explicitly referenced.
+
+
+       65.18 real        35.88 user        13.49 sys
+          6896648192  maximum resident set size
+             1327368  peak memory footprint
+exit 
+== PC9LData Sat Oct 10 13:59:46 PDT 2026
+      496.50 real       486.45 user       105.01 sys
+         11634622464  maximum resident set size
+             1327368  peak memory footprint
+exit 
+== PC9LAx Sat Oct 10 14:08:02 PDT 2026
+'AMW.Cert.PC9L_cert_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+       32.10 real         2.05 user        12.38 sys
+          5716983808  maximum resident set size
+             1327368  peak memory footprint
+exit 

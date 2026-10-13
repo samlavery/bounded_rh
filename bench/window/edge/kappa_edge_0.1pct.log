@@ -1,0 +1,7 @@
+edge set ()           best m 152: kappa 0.673483205068  -> 7-digit target 0.6734832  (gain over no-edge best 0.0)
+edge set (6,)         best m 150: kappa 0.67349657355  -> 7-digit target 0.6734965  (gain over no-edge best 1.337e-5)
+edge set (5, 6)       best m 148: kappa 0.673503404746  -> 7-digit target 0.6735034  (gain over no-edge best 2.02e-5)
+edge set (4, 5, 6)    best m 147: kappa 0.673504170678  -> 7-digit target 0.6735041  (gain over no-edge best 2.097e-5)
+edge set (3, 4, 5, 6) best m 147: kappa 0.673501262669  -> 7-digit target 0.6735012  (gain over no-edge best 1.806e-5)
+main delta 0.005% (cN 805124): no edge 0.6734832051 (m 152); with edge {4,5,6} 0.6735041707 (m 147)
+main delta 0.003% (cN 805140): no edge 0.6734833076 (m 152); with edge {4,5,6} 0.6735042734 (m 147)

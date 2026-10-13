@@ -1,0 +1,19 @@
+leaves 14906, roots 16; window ../cert/rwin9_t570.json; c = 0.008564249493
+  leaf 0 / 14906
+  leaf 2000 / 14906
+  leaf 4000 / 14906
+  leaf 6000 / 14906
+  leaf 8000 / 14906
+  leaf 10000 / 14906
+  leaf 12000 / 14906
+  leaf 14000 / 14906
+LEAF distribution by box-min relative excess:
+   (-, 0.001]:      3 leaves (0.0%), leaf-volume share 1.01e-17
+   (0.001, 0.01]:    118 leaves (0.8%), leaf-volume share 3.13e-10
+   (0.01, 0.1]:   2160 leaves (14.5%), leaf-volume share 9.36e-07
+   (0.1, inf]:  12625 leaves (84.7%), leaf-volume share 1.00e+00
+VOLUME distribution (uniform on the 16 root polytopes, 199995 feasible samples):
+   (-, 0.001]: 0.0000% of volume
+   (0.001, 0.01]: 0.0000% of volume
+   (0.01, 0.1]: 0.0000% of volume
+   (0.1, inf]: 100.0000% of volume

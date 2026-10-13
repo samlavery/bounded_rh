@@ -1,0 +1,27 @@
+== S sizing Sat Oct 10 16:04:54 PDT 2026
+delta=5e-05 cN=808720 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=18
+  root 18 (0, 1, 0, 0, 1, 0, 0): 225 leaves (39s)
+  bisection: 225 leaves (Z 0, M 216, empty 0), 224 splits, 112 at region boundaries (39s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 656 points (6021 point cells); failing 0 (40s)
+leaves 225 kinds {6: 216, 0: 9} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 224 (pair 150); walk bits 63835 (283.7 per leaf; multipliers 151 x 11 bits); M nonzero multipliers [(0, 88), (1, 109), (2, 15), (3, 4)]; constraints per M cell [(21, 216)]; w 1984 d 2240 pts 656 ptc 6021 bad 0 MSTAT lp 739 (40s)
+nodes visited 449 (leaves 225 + splits 224); explicit constraints per node: mean 21.00, dist [(21, 449)]
+walk: 63835 bits = 0.016 MB hex, 0.011 MB base64 (roots run); x8.73: 0.14 MB hex, 0.09 MB base64
+       50.93 real        49.67 user         0.76 sys
+          1842790400  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              128252  page reclaims
+                1477  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 910  voluntary context switches
+               36303  involuntary context switches
+        745128637813  instructions retired
+        166010788774  cycles elapsed
+          1853753144  peak memory footprint
+== done Sat Oct 10 16:05:45 PDT 2026

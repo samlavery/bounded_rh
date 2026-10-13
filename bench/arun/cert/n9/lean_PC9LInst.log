@@ -1,0 +1,42 @@
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:522:46: warning: Variable name `L02` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _L02
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:522:97: warning: Variable name `U02` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _U02
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:549:46: warning: Variable name `L68` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _L68
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LInst.lean:549:97: warning: Variable name `U68` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _U68
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+       50.83 real        37.25 user        13.72 sys
+          6919421952  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              349256  page reclaims
+              159649  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   2  signals received
+               31965  voluntary context switches
+              193659  involuntary context switches
+            29854428  instructions retired
+            14674621  cycles elapsed
+             1327368  peak memory footprint

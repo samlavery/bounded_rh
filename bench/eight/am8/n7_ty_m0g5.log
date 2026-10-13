@@ -1,0 +1,24 @@
+delta=3e-05 cN=787387 regions=16 env AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin_typh7_n7_B398386.json GSH=5 TWOGRID=1 WMIN=9 DLO=8 DHI=9
+  stuck ((64450, 64487), (33908, 33960), (33957, 33968), (64441, 64456), (34220, 34233), (64632, 64650))
+  stuck mtest: LP rel -0.0248298966878676 meval -1.0 zlow-CSU rel -0.07883846648645572
+   term 0 (0, 1) range (64450, 64487) w 0.0012050504775306548 cands 2 inreg True
+   term 1 (0, 2) range (98358, 98447) w 4.4328958312181345e-05 cands 4 inreg True
+   term 2 (0, 3) range (132315, 132415) w 6.498137910469044e-05 cands 4 inreg True
+   term 3 (0, 4) range (196756, 196871) w 6.543930206587086e-06 cands 5 inreg True
+   term 4 (0, 5) range (230976, 231104) w 7.227893140933378e-05 cands 6 inreg True
+   term 5 (0, 6) range (295608, 295754) w 1.8602424527153627e-05 cands 6 inreg True
+   term 6 (1, 2) range (33908, 33960) w 0.0007268319921922739 cands 3 inreg True
+   term 7 (1, 3) range (67865, 67928) w 6.744768903245716e-05 cands 3 inreg True
+   term 8 (1, 4) range (132306, 132384) w 6.414116881002216e-05 cands 4 inreg True
+   term 9 (1, 5) range (166526, 166617) w 0.00014283040848617085 cands 4 inreg True
+   term 10 (1, 6) range (231158, 231267) w 8.331337616404977e-05 cands 5 inreg True
+   term 11 (2, 3) range (33957, 33968) w 0.000654413222698926 cands 1 inreg True
+   term 12 (2, 4) range (98398, 98424) w 4.0196248929762795e-05 cands 2 inreg True
+   term 13 (2, 5) range (132618, 132657) w 9.632045136585502e-05 cands 2 inreg True
+   term 14 (2, 6) range (197250, 197307) w 2.0512184881465168e-05 cands 2 inreg True
+   term 15 (3, 4) range (64441, 64456) w 0.0012132029901195604 cands 2 inreg True
+   term 16 (3, 5) range (98661, 98689) w 1.810060785366216e-05 cands 2 inreg True
+   term 17 (3, 6) range (163293, 163339) w 1.0761035313076006e-05 cands 3 inreg True
+   term 18 (4, 5) range (34220, 34233) w 0.00033322166564189054 cands 1 inreg True
+   term 19 (4, 6) range (98852, 98883) w 7.5391429861709976e-06 cands 2 inreg True
+   term 20 (5, 6) range (64632, 64650) w 0.0010462556291181181 cands 2 inreg True

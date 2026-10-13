@@ -1,0 +1,72 @@
+AMW/CEngine.lean:359:94: warning: This simp argument is unused:
+  Nat.add_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/CEngine.lean:479:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+AMW/CEngine.lean:800:90: warning: '(try rfl)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+AMW/CEngine.lean:1051:94: warning: This simp argument is unused:
+  Nat.add_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/CEngine.lean:1168:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+AMW/CEngine.lean:1552:90: warning: '(try rfl)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+AMW/CEngine.lean:1772:27: warning: Variable name `QS` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _QS
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AMW/CEngine.lean:1989:28: warning: This simp argument is unused:
+  Nat.cast_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [tval, selXf, mul_zero, zero_mul, add_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/CEngine.lean:2086:28: warning: This simp argument is unused:
+  Nat.cast_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [tval, selXf, mul_zero, zero_mul, add_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+       21.58 real        32.46 user        11.56 sys
+          6287507456  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              467996  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   3  voluntary context switches
+               85412  involuntary context switches
+        245507627339  instructions retired
+        134928516423  cycles elapsed
+          1281639896  peak memory footprint

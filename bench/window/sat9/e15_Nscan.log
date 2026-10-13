@@ -1,0 +1,4 @@
+stacks m=8 k=6         N=256 items= 8 mult=[8, 1, 1, 1, 1, 1, 1, 8] | LP = E(Z) - F_C(D(Z)) =    +40.839 (per defect, units g(0): +0.9371) | s(D)   +133.332 | E(Z)-E(D)    -92.493
+stacks m=16 k=6        N=256 items= 8 mult=[16, 1, 1, 1, 1, 1, 1, 16] | LP = E(Z) - F_C(D(Z)) =   -206.480 (per defect, units g(0): -2.7431) | s(D)   +347.632 | E(Z)-E(D)   -554.112
+stacks m=16 k=6        N=384 items= 8 mult=[16, 1, 1, 1, 1, 1, 1, 16] | LP = E(Z) - F_C(D(Z)) =   -206.028 (per defect, units g(0): -2.7371) | s(D)   +347.707 | E(Z)-E(D)   -553.735
+stacks m=32 k=6        N=384 items= 8 mult=[32, 1, 1, 1, 1, 1, 1, 32] | LP = E(Z) - F_C(D(Z)) =  -1046.098 (per defect, units g(0): -7.5443) | s(D)   +907.339 | E(Z)-E(D)  -1953.437

@@ -1,0 +1,3 @@
+R8 control: best fit with f >= 0: max |f*f - q| / max q = 3.64e-07 (rms 1.18e-07); implied q(0) = int f^2 = 1.0083; min f 0.829, f(+-1/2) 0.831
+joint window: best fit with f >= 0: max |f*f - q| / max q = 3.59e-02 (rms 5.60e-03); implied q(0) = int f^2 = 1.0808; min f 0.000, f(+-1/2) 0.000
+joint window knots q(a)/q(1/32) at a = 1/32, 1/8, 1/4, 1/2, 3/4, 7/8, 31/32: 1.0000 0.9458 0.8108 0.5074 0.2179 0.0904 0.0180

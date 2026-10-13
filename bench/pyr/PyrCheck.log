@@ -1,0 +1,32 @@
+PyrCheck.lean:353:94: warning: This simp argument is unused:
+  Nat.add_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+PyrCheck.lean:473:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+       13.37 real         6.50 user         9.52 sys
+          6063505408  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              445780  page reclaims
+                6871  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                1597  voluntary context switches
+               27735  involuntary context switches
+         88902637366  instructions retired
+         54917950325  cycles elapsed
+          1036980168  peak memory footprint

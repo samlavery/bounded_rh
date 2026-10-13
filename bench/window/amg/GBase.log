@@ -1,0 +1,48 @@
+AMW/GBase.lean:148:43: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+AMW/GBase.lean:150:6: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+AMW/GBase.lean:148:43: warning: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+AMW/GBase.lean:150:6: warning: 'skip' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+AMW/GBase.lean:185:17: warning: This simp argument is unused:
+  one_ne_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [if_true, if_false, show ¬((1 : ℕ) = 0) by norm_num, show ¬((2 : ℕ) = 0) by norm_num,
+    show ¬((3 : ℕ) = 0) by norm_num, show ¬((2 : ℕ) = 1) by norm_num, show ¬((3 : ℕ) = 1) by norm_num,
+    show ¬((3 : ℕ) = 2) by norm_num, show ¬((0 : ℕ) = 1) by norm_num, show ¬((0 : ℕ) = 3) by norm_num,
+    show ¬((1 : ℕ) = 3) by norm_num, show ¬((2 : ℕ) = 3) by norm_num, show ¬((0 : ℕ) = 2) by norm_num,
+    show ¬((1 : ℕ) = 2) by norm_num]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/GBase.lean:349:20: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+       24.54 real        17.87 user        11.37 sys
+          6683049984  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              492982  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+               40250  involuntary context switches
+        168415595066  instructions retired
+         91792588173  cycles elapsed
+          1685063296  peak memory footprint

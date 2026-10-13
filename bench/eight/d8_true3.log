@@ -1,0 +1,3 @@
+delta=0.003 CRAD=0.25 basins=34
+  bisection: 32 leaves (Z 0, S 0, basin 0); face nodes 0 (collapses 0) (1s)
+dumped 32 {'nleaves': 32, 'nZ': 0, 'nS': 0, 'nB': 0, 'n2': 0, 'nface': 0} (1s)

@@ -1,0 +1,25 @@
+# Build artefacts (regenerable with lake / lean)
+*.olean
+*.ilean
+*.olean.*
+*.trace
+*.hash
+.lake/
+.leanlock
+
+# Large intermediate data (sizer dumps, kernel exports, numeric caches)
+*.pkl
+*.ndjson
+*.npz
+
+# Third-party repositories (see README for upstream URL and commit)
+/zeta23/
+/tools/
+
+# Copies of published papers (copyright belongs to their authors)
+*.pdf
+/route3_refs/
+
+# Python / OS noise
+__pycache__/
+.DS_Store

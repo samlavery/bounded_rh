@@ -1,0 +1,63 @@
+--- /Users/samuellavery/work/riemann-submission/bench/eight/am8/genpcellC.py	2026-10-07 21:57:19
++++ eight/am8/genpcellC.py (DFAST)	2026-10-08 00:20:07
+@@ -42,6 +42,9 @@
+ CLOSE = os.environ.get("CLOSE") == "1"   # the exact closure in place of T1 (TZ.md §5)
+ BSPLIT = os.environ.get("BSPLIT") == "1"  # (with CLOSE, DATA) split layout [1][axis 5][mode 1]; mode 1 cuts at the region boundary
+ MD = "md " if BSPLIT else ""
++DFAST = int(os.environ.get("DFAST", "0"))  # (bridge-port, PCDF/PCDZ) 1: the derivative reads with their covers forced
++                                         # (cache-shared, same value); 2: the pyramid reads too; 3: and the coarse-first sides
++CSH = int(os.environ.get("CSH", "3"))      # (DFAST=3) the coarse end: a multiple of 2^j, 2^j about 1/2^CSH of the side
+ NR = int(os.environ.get("NR", "2"))
+ QB = int(os.environ.get("QB", "12"))
+ QBF = int(os.environ.get("QBF", "4"))
+@@ -181,7 +184,7 @@
+   simp [Fg, BS, TS, tA, tI, tJ, gsum_range, G, SA, Finset.sum_range_succ]
+   ring
+ """
+-imp = (("import AMW.PCellCloseB\n" if BSPLIT else "import AMW.PCellClose\n") if CLOSE else "import AMW.PCellT1\n") + ("" if FIXED else "import AMW.PCellHuff\n") + ("import AMW.AMT8Inst\n" if BENCH else "")
++imp = (("import AMW.PCellCloseB\n" if BSPLIT else "import AMW.PCellClose\n") if CLOSE else "import AMW.PCellT1\n") + (("import AMW.PCDZ\n" if DFAST == 3 else "import AMW.PCDF\n") if DFAST else "") + ("" if FIXED else "import AMW.PCellHuff\n") + ("import AMW.AMT8Inst\n" if BENCH else "")
+ def slot_of(i, j): return i if j == i + 1 else Q + SUMS.index((i, j))
+ SLV = [slot_of(a, b) if a < b else 0 for a in range(Q + 1) for b in range(Q + 1)]
+ SLDEF = (f"""
+@@ -495,8 +498,9 @@
+     ls = isumK([f"Nat.mul {AW[t]} (mslK f {F(t)})" if inT(t, r) else None for t in ACT])
+     return f"Nat.sub (Nat.add (Nat.mul 2000000000 ({ws})) P{r}) (Nat.add (Nat.add (Nat.mul 1024000000000 {BW[r]}) ({ls})) S{r})"
+ boxK = iallK([f"Nat.ble s.l{r} s.u{r}" for r in range(Q)])
+-MOKN = "mokTZb" if TCHKV else "mokTZ"
+-termK = iallK([f"{MOKN} R top bk tD bD f {ZN} {Le(t, 's.')} {Ue(t, 's.')} {F(t)}" for t in ACT])
++MOKN = "mokTZb" if TCHKV else {0: "mokTZ", 1: "mokTZF", 2: "mokTZG", 3: "mokTZC"}[DFAST]
++MVKN = "mvKF" if DFAST >= 2 else "mvK"
++termK = iallK([f"{MOKN} R top bk tD bD f {ZN}{' ' + str(CSH) if DFAST == 3 and not TCHKV else ''} {Le(t, 's.')} {Ue(t, 's.')} {F(t)}" for t in ACT])
+ if TCHKV:
+     zR = "true" if TCHKV in ("noz", "nod") else "zside top bk (lo32 X) (hi32 (hi32 X)) p (rgB R k) U n true"
+     zL = "true" if TCHKV in ("noz", "nod") else "zside top bk (lo32 X) (lo32 (hi32 X)) p L (rgA R k) n false"
+@@ -518,7 +522,7 @@
+ lhsK = (f"Nat.add (Nat.mul 335544320000000000 cN) (Nat.mul 10 (Nat.add (Nat.add ({isumK([f'Nat.mul {AW[t]} (mcK f false {L0K(t)} {F(t)})' for t in ACT])}) Cp) "
+         f"({isumK([f'Nat.mul (Nat.sub s.u{r} s.l{r}) ({NgK(r)})' for r in range(Q)])})))")
+ rhsK = (f"Nat.add (Nat.add (Nat.mul 10240000000000 ({isumK([f'Nat.mul {BW[r]} s.l{r}' for r in range(Q)])})) "
+-        f"(Nat.mul 32768 ({isumK([f'Nat.mul {AW[t]} (mvK top bk f {Le(t, chr(115) + chr(46))} (uc {Le(t, chr(115) + chr(46))} {Ue(t, chr(115) + chr(46))}) {F(t)})' for t in ACT])}))) "
++        f"(Nat.mul 32768 ({isumK([f'Nat.mul {AW[t]} ({MVKN} top bk f {Le(t, chr(115) + chr(46))} (uc {Le(t, chr(115) + chr(46))} {Ue(t, chr(115) + chr(46))}) {F(t)})' for t in ACT])}))) "
+         f"(Nat.mul 10 (Nat.add ({isumK([f'Nat.mul {AW[t]} (mcK f true {L0K(t)} {F(t)})' for t in ACT])}) Cm))")
+ W(f"""/-- (3) the minorant leaf on the polytope cell (`mcheckG` unrolled): per term its kind, weight and points on its
+ effective range; the accumulated multipliers `P, S, Cp, Cm` -/
+@@ -528,9 +532,9 @@
+ if not DEFS:
+     W(f"""theorem mcheckP_ok {{top : ℕ}} {{bk : ℕ → ℕ}} {{tD : ℕ}} {{bD : ℕ → ℕ}} {{f : ℕ → ℕ}} {{R : ℕ × ℕ × List (List ℕ)}} (s : St)
+     ({FL} : ℕ) ({" ".join(PV + SV)} Cp Cm : ℕ) (h : mcheckP top bk tD bD f R s {FL} {" ".join(PV + SV)} Cp Cm = true) :
+-    mcheckGZ top bk tD bD f R {ZN} {Q} BS TS cN (toCl s) [{", ".join(f"(k{nm(t)}, m{nm(t)}, p{nm(t)}, r{nm(t)})" for t in ACT)}]
++    {f"mcheckGX (mokTZC R top bk tD bD f {ZN} {CSH}) top bk f" if DFAST == 3 else f"mcheckGZ top bk tD bD f R {ZN}"} {Q} BS TS cN (toCl s) [{", ".join(f"(k{nm(t)}, m{nm(t)}, p{nm(t)}, r{nm(t)})" for t in ACT)}]
+       [{", ".join(PV)}] [{", ".join(SV)}] Cp Cm = true := by
+-  simp only [mcheckP, mvK_eq, mcpK_eq, mcnK_eq, mslK_eq] at h; exact h""")
++  simp only [mcheckP, mvK_eq, mcpK_eq, mcnK_eq, mslK_eq{["", ", mokTZF_eq", ", mokTZG_eq, mvKF_eq", ", mvKF_eq"][DFAST]}] at h; exact h""")
+ 
+ # ---- the leaf decoder ----
+ dec = []
+@@ -556,7 +560,7 @@
+     (h : mleafP top bk tD bD pb R w s ≠ 0) : Covered (toCl s) := by
+   unfold mleafP at h
+   simp only [{"dec4F" if FIXED else "dec4S"}, forceR_eq] at h
+-  exact mcheckGZ_sound (f := {PTFN}) hlb hD hpt hR (by decide : 0 < {ZN}) hPR hTS (ydec_ok s {QB} w {YFUEL} _ (MulOK_zero s _)) (mcheckP_ok _ {" ".join(["_"] * (4 * NA + 2 * Q + 2))} (brec_ne h))""")
++  exact {"mcheckGX_sound (f := " + PTFN + ") (mtermTZC hlb hD hpt hR (by decide : 0 < " + str(ZN) + "))" if DFAST == 3 else "mcheckGZ_sound (f := " + PTFN + ") hlb hD hpt hR (by decide : 0 < " + str(ZN) + ")"} hPR hTS (ydec_ok s {QB} w {YFUEL} _ (MulOK_zero s _)) (mcheckP_ok _ {" ".join(["_"] * (4 * NA + 2 * Q + 2))} (brec_ne h))""")
+ 
+ # ---- the walk ----
+ box = " ".join(f"l{r} u{r}" for r in range(Q))

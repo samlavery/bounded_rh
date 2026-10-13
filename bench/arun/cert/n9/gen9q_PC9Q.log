@@ -1,0 +1,64 @@
+== E emit Sat Oct 10 19:43:00 PDT 2026
+  root 0 (0, 0, 0, 0, 0, 0, 0, 0): 234 leaves (1s)
+  root 1 (0, 0, 0, 0, 0, 1, 0, 0): 515 leaves (1s)
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 856 leaves (1s)
+  root 3 (0, 0, 0, 0, 1, 1, 0, 0): 671 leaves (2s)
+  root 4 (0, 0, 0, 1, 0, 0, 0, 0): 894 leaves (2s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 1071 leaves (2s)
+  root 6 (0, 0, 0, 1, 1, 0, 0, 0): 858 leaves (2s)
+  root 7 (0, 0, 0, 1, 1, 1, 0, 0): 386 leaves (2s)
+  root 8 (0, 0, 1, 0, 0, 0, 0, 0): 546 leaves (2s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1141 leaves (2s)
+  root 10 (0, 0, 1, 0, 1, 0, 0, 0): 1034 leaves (2s)
+  root 11 (0, 0, 1, 0, 1, 1, 0, 0): 542 leaves (3s)
+  root 12 (0, 0, 1, 1, 0, 0, 0, 0): 568 leaves (3s)
+  root 13 (0, 0, 1, 1, 0, 1, 0, 0): 553 leaves (3s)
+  root 14 (0, 0, 1, 1, 1, 0, 0, 0): 407 leaves (3s)
+  root 15 (0, 0, 1, 1, 1, 1, 0, 0): 176 leaves (3s)
+  bisection: 10452 leaves (Z 0, M 10122, empty 0), 0 splits, 0 at region boundaries (3s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 0 cells, 3285 points (24613 point cells); failing 0 (10s)
+replay: {'split': 10436, 6: 10122, 0: 330}; leaves 10452 kinds {6: 10122, 0: 330}; verification failures 0 (10s)
+walks: 16 roots, 3278324 bits = 819.6 KB hex; encode/decode round trip OK
+wrote /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/DATA_PC9Q.json: 1.00 MB json; points 3285, w 1984 cells, d 0 cells
+       35.90 real        32.99 user         0.97 sys
+          2215149568  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              193160  page reclaims
+                1074  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                1080  voluntary context switches
+               26321  involuntary context switches
+        454751422696  instructions retired
+        110015692047  cycles elapsed
+          2233043032  peak memory footprint
+== D data module Sat Oct 10 19:43:36 PDT 2026
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/make9qC.py", line 128, in <module>
+    assert x < 524288
+           ^^^^^^^^^^
+AssertionError
+        0.10 real         0.04 user         0.02 sys
+            25395200  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2216  page reclaims
+                 190  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 113  voluntary context switches
+                 159  involuntary context switches
+           438856132  instructions retired
+           207277574  cycles elapsed
+            17187224  peak memory footprint

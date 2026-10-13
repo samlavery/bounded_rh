@@ -1,0 +1,20 @@
+uncaught exception: failed to open file 'specroot_pc8c5bfe4t/CandPC8C5BFE4T.olean': No such file or directory
+        5.32 real         0.46 user         1.62 sys
+          1332314112  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               62300  page reclaims
+               26762  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                8325  voluntary context switches
+               18649  involuntary context switches
+         11431327417  instructions retired
+          6379917079  cycles elapsed
+           228501176  peak memory footprint
+REPLAY EXIT 1

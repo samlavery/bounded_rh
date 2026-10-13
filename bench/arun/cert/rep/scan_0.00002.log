@@ -1,0 +1,62 @@
+== S sizing delta=0.00002 Sat Oct 10 10:35:43 PDT 2026
+delta=2e-05 cN=805148 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0): 126 leaves (21s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 51 leaves (30s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 139 leaves (54s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 92 leaves (69s)
+  ... 5000 leaves (Z 0, M 4849, empty 0, refl 151) nodes 5058 LP 22818 (233s)
+  ... 10000 leaves (Z 0, M 9756, empty 0, refl 244) nodes 10055 LP 47102 (359s)
+  root 4 (0, 0, 0, 1, 0, 0, 0): 10017 leaves (380s)
+  root 5 (0, 0, 0, 1, 0, 1, 0): 179 leaves (410s)
+  root 6 (0, 0, 0, 1, 1, 0, 0): 132 leaves (432s)
+  root 7 (0, 0, 0, 1, 1, 1, 0): 103 leaves (447s)
+  root 8 (0, 0, 1, 0, 0, 0, 0): 121 leaves (467s)
+  root 9 (0, 0, 1, 0, 0, 1, 0): 177 leaves (497s)
+  ... 15000 leaves (Z 0, M 14586, empty 0, refl 414) nodes 15059 LP 69065 (610s)
+  ... 20000 leaves (Z 0, M 19439, empty 0, refl 561) nodes 20054 LP 92611 (733s)
+  ... 25000 leaves (Z 0, M 24256, empty 0, refl 744) nodes 25053 LP 116063 (889s)
+  ... 30000 leaves (Z 0, M 29256, empty 0, refl 744) nodes 30053 LP 139799 (994s)
+  ... 35000 leaves (Z 0, M 34256, empty 0, refl 744) nodes 35056 LP 164231 (1097s)
+  root 10 (0, 0, 1, 0, 1, 0, 0): 27585 leaves (1219s)
+  root 11 (0, 0, 1, 0, 1, 1, 0): 174 leaves (1246s)
+  root 12 (0, 0, 1, 1, 0, 0, 0): 122 leaves (1265s)
+  root 13 (0, 0, 1, 1, 0, 1, 0): 169 leaves (1290s)
+  root 14 (0, 0, 1, 1, 1, 0, 0): 138 leaves (1311s)
+  root 15 (0, 0, 1, 1, 1, 1, 0): 30 leaves (1315s)
+  root 16 (0, 1, 0, 0, 0, 0, 0): 51 leaves (1323s)
+  root 17 (0, 1, 0, 0, 0, 1, 0): 179 leaves (1352s)
+  ... 40000 leaves (Z 0, M 39200, empty 0, refl 800) nodes 40065 LP 186487 (1377s)
+  ... 45000 leaves (Z 0, M 44200, empty 0, refl 800) nodes 45064 LP 205567 (1443s)
+  ... 50000 leaves (Z 0, M 49200, empty 0, refl 800) nodes 50065 LP 224762 (1510s)
+  ... 55000 leaves (Z 0, M 54200, empty 0, refl 800) nodes 55065 LP 243455 (1568s)
+  ... 60000 leaves (Z 0, M 59200, empty 0, refl 800) nodes 60062 LP 262215 (1631s)
+  ... 65000 leaves (Z 0, M 64200, empty 0, refl 800) nodes 65064 LP 281419 (1698s)
+  ... 70000 leaves (Z 0, M 69200, empty 0, refl 800) nodes 70063 LP 300192 (1757s)
+  ... 75000 leaves (Z 0, M 74200, empty 0, refl 800) nodes 75064 LP 319138 (1819s)
+  ... 80000 leaves (Z 0, M 79200, empty 0, refl 800) nodes 80063 LP 338179 (1883s)
+  ... 85000 leaves (Z 0, M 84200, empty 0, refl 800) nodes 85061 LP 356866 (1945s)
+  ... 90000 leaves (Z 0, M 89200, empty 0, refl 800) nodes 90061 LP 375632 (2006s)
+  ... 95000 leaves (Z 0, M 94200, empty 0, refl 800) nodes 95062 LP 394613 (2072s)
+  ... 100000 leaves (Z 0, M 99200, empty 0, refl 800) nodes 100064 LP 413448 (2135s)
+  ... 105000 leaves (Z 0, M 104200, empty 0, refl 800) nodes 105060 LP 432494 (2200s)
+  ... 110000 leaves (Z 0, M 109200, empty 0, refl 800) nodes 110058 LP 451158 (2260s)
+time: command terminated abnormally
+     2316.72 real      2305.43 user         6.87 sys
+          2768715776  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              320073  page reclaims
+                 176  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 423  voluntary context switches
+              222918  involuntary context switches
+      33562479572692  instructions retired
+       7701978336058  cycles elapsed
+          3170290376  peak memory footprint
+./rep_pc8c5bf.sh: line 27: 42526 Terminated: 15          SAVE=$R/dump_$TAG.pkl /usr/bin/time -l nice -n 5 python3 $A8/run8pz.py $B/window/rwin8.json $D 2>&1

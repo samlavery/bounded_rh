@@ -1,0 +1,31 @@
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root9/AMW/PC9LData.lean:3208:35: error: Tactic `decide` failed for proposition
+  ∀ r < 8, coverChk cN (tA TS (ADJ.getD r 0)) (SC / 2) (SMAX r) (COV.getD r []) = true
+because its `Decidable` instance
+  Nat.decidableBallLT 8 fun r a => coverChk cN (tA TS (ADJ.getD r 0)) (SC / 2) (SMAX r) (COV.getD r []) = true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match coverChk cN (tA TS (ADJ.getD 0 0)) (SC / 2) (SMAX 0) (COV.getD 0 []), true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+      470.50 real       481.38 user       104.21 sys
+         12935888896  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             6100708  page reclaims
+                2516  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   1  signals received
+                3391  voluntary context switches
+             3187373  involuntary context switches
+            29921013  instructions retired
+            20960548  cycles elapsed
+             1327368  peak memory footprint
+exit 1

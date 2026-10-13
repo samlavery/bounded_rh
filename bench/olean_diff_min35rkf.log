@@ -1,0 +1,9 @@
+HYGIENE-ONLY (example) _private.Cand35RKF.0.Zeta23Ext.Bridge.ThreePoint.treeCheck.match_1.eq_1: (some (x._@.Cand35RKF.356416950._hygCtx.15.Cand35RKF.356416950._hygCtx._hyg.35 vs x._@.CandMin35RKF.2577485881._hygCtx.15.CandMin35RKF.2577485881._hygCtx._hyg.35))
+HYGIENE-ONLY (example) Zeta23Ext.Bridge.ThreePoint.CTN.find: (some (x._@.Cand35RKF.1364543548._hygCtx._hyg.10 vs x._@.CandMin35RKF.1364543548._hygCtx._hyg.10))
+HYGIENE-ONLY (example) Zeta23Ext.Bridge.offset_average._proof_12: (some (inst._@.Cand35RKF.3058703533._hygCtx._hyg.3 vs inst._@.CandMin35RKF.1188880251._hygCtx._hyg.3))
+SCORED candidate_strict_improvement: theorem/theorem; type Expr.equal (no renaming applied) = true; value Expr.equal modulo renaming = true
+SCORED candidate_critical_line_bound: theorem/theorem; type Expr.equal (no renaming applied) = true; value Expr.equal modulo renaming = true
+SCORED candidate_critical_line_bound_cumulative: theorem/theorem; type Expr.equal (no renaming applied) = true; value Expr.equal modulo renaming = true
+syntax machinery (parser / macro / unexpander definitions): orig 6, new 33
+orig constants 4108, new constants 4135: identical 3568, identical up to hygienic binder-name suffixes 534, alpha-only 0, different 0, missing 0, extra non-syntax 0
+exit=0

@@ -1,0 +1,20 @@
+uncaught exception: failed to open file 'specroot_int9q4/CandINT9Q4.olean': No such file or directory
+        3.84 real         0.48 user         1.57 sys
+          1331298304  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               74785  page reclaims
+               14159  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                2823  voluntary context switches
+               11181  involuntary context switches
+         10710074887  instructions retired
+          6251815181  cycles elapsed
+           227485440  peak memory footprint
+REPLAY EXIT 1

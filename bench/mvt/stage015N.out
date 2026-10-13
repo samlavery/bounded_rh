@@ -1,0 +1,15 @@
+== Cand015N export
+export exit 0
+       35.31 real        24.51 user         9.32 sys
+          1575685632  peak memory footprint
+export bytes 644335553
+== Cand015N nanoda
+nanoda exit 0
+      290.83 real       281.04 user         9.76 sys
+          4782985200  peak memory footprint
+== Cand015N lean replay (full closure)
+parse_ms 14722 constants 74294
+replay_ms 411455 OK
+replayx exit 0
+      426.35 real       424.48 user         1.44 sys
+          1298187728  peak memory footprint

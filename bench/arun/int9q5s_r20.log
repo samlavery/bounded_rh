@@ -1,0 +1,13 @@
+== r20 private check INT9Q5S Sun Oct 11 20:04:29 PDT 2026
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      541.54 real       435.10 user        25.59 sys
+          4323415952  peak memory footprint
+BUILD EXIT 0
+module constants: 4482; imports: 26
+kernel replay of 4482 constants: 298534 ms
+      378.92 real       236.99 user        47.71 sys
+          3712939920  peak memory footprint
+REPLAY EXIT 0
+== r20 done Sun Oct 11 20:20:51 PDT 2026

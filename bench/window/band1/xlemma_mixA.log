@@ -1,0 +1,16 @@
+  y_q in [0.0000, 0.0125]: margin 2.6860 | X charge 0.0092 | m - R +2.6768
+  y_q in [0.0125, 0.0250]: margin 1.9711 | X charge 0.0280 | m - R +1.9431
+  y_q in [0.0250, 0.0375]: margin 1.8308 | X charge 0.0546 | m - R +1.7762
+  y_q in [0.0375, 0.0500]: margin 1.6780 | X charge 0.0895 | m - R +1.5885
+  y_q in [0.0500, 0.0625]: margin 1.5734 | X charge 0.1331 | m - R +1.4403
+  y_q in [0.0625, 0.0750]: margin 1.4837 | X charge 0.1860 | m - R +1.2977
+  y_q in [0.0750, 0.0875]: margin 1.3986 | X charge 0.2488 | m - R +1.1498
+  y_q in [0.0875, 0.1000]: margin 1.3149 | X charge 0.3224 | m - R +0.9925
+  y_q in [0.1000, 0.1125]: margin 1.2502 | X charge 0.4077 | m - R +0.8425
+  y_q in [0.1125, 0.1250]: margin 1.1946 | X charge 0.5057 | m - R +0.6889
+  y_q in [0.1250, 0.1375]: margin 1.1645 | X charge 0.6178 | m - R +0.5467
+  y_q in [0.1375, 0.1500]: margin 1.1493 | X charge 0.7455 | m - R +0.4038
+  y_q in [0.1500, 0.1625]: margin 1.1644 | X charge 0.8903 | m - R +0.2741
+  y_q in [0.1625, 0.1750]: margin 1.2051 | X charge 1.0542 | m - R +0.1509
+  y_q in [0.1750, 0.1875]: margin 1.2771 | X charge 1.2393 | m - R +0.0378
+D0 = 4 (annuli start 4 width 4): min (m - R) = +0.0378 -> CLOSED

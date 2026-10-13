@@ -1,0 +1,5 @@
+== cfx9 tag=t570_QVL3 wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9so.py PFK=8 LPACCEPT= EXACTV=1 EXACTC= SO= Sat Oct 10 18:23:22 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=2,5,9
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 888 leaves (393s)
+./cfx9.sh: line 16: 50243 Terminated: 15          /usr/bin/time -l nice -n 5 python3 $SZ $WJ $DELTA 2>&1
+== done Sat Oct 10 18:35:00 PDT 2026

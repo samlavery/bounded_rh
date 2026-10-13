@@ -1,0 +1,66 @@
+[private_check] waiting 19:33:32
+[private_check] waiting 19:34:02
+[private_check] waiting 19:34:32
+[private_check] waiting 19:35:02
+[private_check] waiting 19:35:32
+[private_check] waiting 19:36:02
+[private_check] waiting 19:36:32
+[private_check] waiting 19:37:02
+[private_check] waiting 19:37:32
+[private_check] waiting 19:38:02
+[private_check] waiting 19:38:32
+[private_check] waiting 19:39:02
+[private_check] waiting 19:39:32
+[private_check] waiting 19:40:02
+[private_check] waiting 19:40:32
+[private_check] waiting 19:41:02
+[private_check] waiting 19:41:32
+[private_check] waiting 19:42:02
+[private_check] waiting 19:42:32
+[private_check] waiting 19:43:02
+[private_check] waiting 19:43:32
+[private_check] waiting 19:44:02
+[private_check] waiting 19:44:32
+[private_check] waiting 19:45:02
+[private_check] waiting 19:45:32
+[private_check] waiting 19:46:02
+[private_check] waiting 19:46:32
+[private_check] waiting 19:47:02
+[private_check] waiting 19:47:32
+[private_check] waiting 19:48:02
+[private_check] waiting 19:48:32
+[private_check] waiting 19:49:02
+[private_check] waiting 19:49:32
+[private_check] waiting 19:50:02
+[private_check] waiting 19:50:32
+[private_check] waiting 19:51:02
+[private_check] waiting 19:51:32
+[private_check] waiting 19:52:02
+[private_check] waiting 19:52:32
+[private_check] waiting 19:53:02
+[private_check] waiting 19:53:32
+[private_check] waiting 19:54:02
+[private_check] waiting 19:54:32
+[private_check] waiting 19:55:02
+[private_check] waiting 19:55:32
+[private_check] waiting 19:56:02
+[private_check] waiting 19:56:32
+[private_check] waiting 19:57:02
+[private_check] waiting 19:57:32
+[private_check] waiting 19:58:02
+[private_check] waiting 19:58:32
+[private_check] waiting 19:59:02
+[private_check] waiting 19:59:32
+[private_check] waiting 20:00:02
+[private_check] waiting 20:00:32
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      520.18 real       509.49 user        13.03 sys
+          5015411104  peak memory footprint
+BUILD EXIT 0
+module constants: 4653; imports: 18
+kernel replay of 4653 constants: 206255 ms
+      222.93 real       206.73 user        14.07 sys
+          4006099072  peak memory footprint
+REPLAY EXIT 0

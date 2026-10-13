@@ -1,0 +1,397 @@
+tactic execution of Mathlib.Tactic.nlinarith took 357ms
+tactic execution of Mathlib.Tactic.nlinarith took 279ms
+tactic execution of Mathlib.Tactic.nlinarith took 270ms
+tactic execution of Mathlib.Tactic.nlinarith took 1.04s
+tactic execution of Mathlib.Tactic.nlinarith took 224ms
+tactic execution of Mathlib.Tactic.nlinarith took 257ms
+tactic execution of Mathlib.Tactic.nlinarith took 352ms
+tactic execution of Mathlib.Tactic.nlinarith took 426ms
+tactic execution of Mathlib.Tactic.nlinarith took 472ms
+tactic execution of Mathlib.Tactic.nlinarith took 840ms
+tactic execution of Mathlib.Tactic.nlinarith took 224ms
+tactic execution of Mathlib.Tactic.nlinarith took 1.21s
+tactic execution of Mathlib.Tactic.nlinarith took 1.16s
+tactic execution of Mathlib.Tactic.nlinarith took 1.47s
+tactic execution of Mathlib.Tactic.nlinarith took 1.35s
+tactic execution of Mathlib.Tactic.nlinarith took 551ms
+simp took 512ms
+simp took 482ms
+tactic execution of Mathlib.Tactic.nlinarith took 416ms
+tactic execution of Mathlib.Tactic.nlinarith took 545ms
+tactic execution of Lean.Parser.Tactic.exact took 201ms
+tactic execution of Mathlib.Tactic.nlinarith took 319ms
+tactic execution of Mathlib.Tactic.nlinarith took 524ms
+comparator/Solution/Cand15P.lean:5214:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15P.lean:5524:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Cand15P.lean:5822:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15P.lean:5835:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15P.lean:5936:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 363ms
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 312ms
+tactic execution of Mathlib.Tactic.linarith took 2.68s
+comparator/Solution/Cand15P.lean:6590:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15P.lean:6620:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15P.lean:6650:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15P.lean:6680:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15P.lean:6710:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+tactic execution of Mathlib.Tactic.linarith took 209ms
+tactic execution of Mathlib.Tactic.linarith took 210ms
+tactic execution of Mathlib.Tactic.linarith took 226ms
+tactic execution of Mathlib.Tactic.linarith took 237ms
+tactic execution of Mathlib.Tactic.linarith took 251ms
+tactic execution of Mathlib.Tactic.linarith took 254ms
+tactic execution of Mathlib.Tactic.linarith took 271ms
+tactic execution of Mathlib.Tactic.linarith took 277ms
+tactic execution of Mathlib.Tactic.linarith took 293ms
+tactic execution of Mathlib.Tactic.linarith took 299ms
+tactic execution of Mathlib.Tactic.linarith took 314ms
+tactic execution of Mathlib.Tactic.linarith took 325ms
+tactic execution of Mathlib.Tactic.linarith took 338ms
+tactic execution of Mathlib.Tactic.linarith took 355ms
+tactic execution of Mathlib.Tactic.linarith took 352ms
+tactic execution of Mathlib.Tactic.linarith took 319ms
+tactic execution of Lean.calcTactic took 635ms
+tactic execution of Mathlib.Tactic.linarith took 361ms
+tactic execution of Mathlib.Tactic.linarith took 333ms
+tactic execution of Mathlib.Tactic.linarith took 371ms
+tactic execution of Mathlib.Tactic.linarith took 362ms
+tactic execution of Mathlib.Tactic.linarith took 329ms
+tactic execution of Lean.calcTactic took 597ms
+tactic execution of Mathlib.Tactic.linarith took 387ms
+tactic execution of Mathlib.Tactic.linarith took 346ms
+tactic execution of Mathlib.Tactic.linarith took 386ms
+tactic execution of Mathlib.Tactic.linarith took 387ms
+tactic execution of Mathlib.Tactic.linarith took 350ms
+tactic execution of Lean.calcTactic took 594ms
+tactic execution of Mathlib.Tactic.linarith took 403ms
+tactic execution of Mathlib.Tactic.linarith took 362ms
+tactic execution of Mathlib.Tactic.linarith took 398ms
+tactic execution of Mathlib.Tactic.linarith took 408ms
+tactic execution of Mathlib.Tactic.linarith took 366ms
+tactic execution of Lean.calcTactic took 598ms
+tactic execution of Mathlib.Tactic.linarith took 429ms
+tactic execution of Mathlib.Tactic.linarith took 376ms
+tactic execution of Mathlib.Tactic.linarith took 459ms
+tactic execution of Mathlib.Tactic.linarith took 430ms
+tactic execution of Mathlib.Tactic.linarith took 381ms
+tactic execution of Lean.calcTactic took 607ms
+tactic execution of Mathlib.Tactic.linarith took 450ms
+tactic execution of Mathlib.Tactic.linarith took 397ms
+tactic execution of Mathlib.Tactic.linarith took 446ms
+tactic execution of Mathlib.Tactic.linarith took 451ms
+share common exprs took 367ms
+type checking took 1.01s
+type checking took 1.02s
+type checking took 1.01s
+type checking took 979ms
+type checking took 940ms
+type checking took 988ms
+type checking took 1.01s
+type checking took 1.04s
+type checking took 1e+03ms
+type checking took 992ms
+type checking took 1.01s
+type checking took 957ms
+type checking took 960ms
+type checking took 971ms
+type checking took 953ms
+type checking took 954ms
+type checking took 968ms
+type checking took 972ms
+type checking took 1.02s
+type checking took 1s
+type checking took 1.05s
+type checking took 1.02s
+type checking took 1.01s
+type checking took 1.01s
+type checking took 979ms
+type checking took 983ms
+type checking took 962ms
+type checking took 989ms
+type checking took 991ms
+type checking took 970ms
+type checking took 984ms
+type checking took 1.02s
+type checking took 4.78s
+type checking took 886ms
+type checking took 942ms
+type checking took 1.27s
+type checking took 5.49s
+type checking took 824ms
+type checking took 697ms
+type checking took 1.97s
+type checking took 4.3s
+type checking took 5.23s
+type checking took 3.62s
+type checking took 576ms
+type checking took 4.96s
+type checking took 734ms
+type checking took 419ms
+type checking took 1.91s
+type checking took 1.14s
+type checking took 996ms
+type checking took 579ms
+type checking took 6.26s
+type checking took 661ms
+type checking took 1.22s
+type checking took 809ms
+type checking took 4.59s
+type checking took 3.33s
+type checking took 5.35s
+type checking took 3.33s
+type checking took 5.32s
+type checking took 655ms
+type checking took 986ms
+type checking took 1.08s
+type checking took 1.22s
+type checking took 671ms
+type checking took 5.37s
+type checking took 495ms
+type checking took 370ms
+type checking took 1.15s
+type checking took 854ms
+type checking took 4.26s
+type checking took 2.17s
+type checking took 6.26s
+type checking took 2.77s
+type checking took 624ms
+type checking took 3.69s
+type checking took 2.32s
+type checking took 347ms
+type checking took 704ms
+type checking took 5.42s
+type checking took 823ms
+type checking took 408ms
+type checking took 749ms
+type checking took 2.26s
+type checking took 1.09s
+type checking took 1.12s
+type checking took 548ms
+type checking took 5.41s
+type checking took 1.51s
+type checking took 599ms
+type checking took 547ms
+type checking took 1.62s
+type checking took 862ms
+type checking took 927ms
+type checking took 6.08s
+type checking took 2.96s
+type checking took 5.41s
+type checking took 824ms
+type checking took 1.1s
+type checking took 663ms
+type checking took 907ms
+type checking took 5.41s
+type checking took 979ms
+type checking took 295ms
+type checking took 5.53s
+type checking took 920ms
+type checking took 3.21s
+type checking took 715ms
+type checking took 353ms
+type checking took 5.58s
+type checking took 3.92s
+type checking took 960ms
+type checking took 289ms
+type checking took 565ms
+type checking took 1.17s
+type checking took 5.7s
+type checking took 915ms
+type checking took 675ms
+type checking took 5.91s
+type checking took 5.58s
+type checking took 3.42s
+type checking took 1.28s
+type checking took 958ms
+type checking took 5.47s
+type checking took 631ms
+type checking took 826ms
+type checking took 1.12s
+type checking took 5.54s
+type checking took 5.87s
+type checking took 3.87s
+type checking took 7.39s
+type checking took 6.66s
+type checking took 1.1s
+type checking took 1.15s
+type checking took 971ms
+type checking took 491ms
+type checking took 5.18s
+type checking took 1.86s
+type checking took 574ms
+type checking took 506ms
+type checking took 1.74s
+type checking took 809ms
+type checking took 877ms
+type checking took 5.73s
+type checking took 3.24s
+type checking took 5.68s
+type checking took 524ms
+type checking took 417ms
+type checking took 493ms
+type checking took 2.05s
+type checking took 2.36s
+type checking took 549ms
+type checking took 368ms
+type checking took 3.64s
+type checking took 788ms
+type checking took 596ms
+type checking took 4.61s
+type checking took 281ms
+type checking took 637ms
+type checking took 529ms
+type checking took 902ms
+type checking took 640ms
+type checking took 4.15s
+type checking took 2.04s
+type checking took 5.35s
+type checking took 278ms
+type checking took 315ms
+type checking took 1.03s
+type checking took 1.39s
+type checking took 446ms
+type checking took 216ms
+type checking took 2.72s
+type checking took 531ms
+type checking took 2.05s
+type checking took 470ms
+type checking took 504ms
+type checking took 5.86s
+type checking took 655ms
+type checking took 1.2s
+type checking took 971ms
+type checking took 3.79s
+type checking took 2.78s
+type checking took 5.6s
+type checking took 598ms
+type checking took 621ms
+type checking took 463ms
+type checking took 1.91s
+type checking took 2.85s
+type checking took 551ms
+type checking took 383ms
+type checking took 4.93s
+type checking took 656ms
+type checking took 250ms
+type checking took 3.12s
+type checking took 499ms
+type checking took 3.47s
+type checking took 936ms
+type checking took 249ms
+tactic execution of Lean.Parser.Tactic.refine took 201ms
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+tactic execution of Mathlib.Tactic.normNum took 265ms
+cumulative profiling times:
+	attribute application 33.3ms
+	compilation (IR) 4.64ms
+	compilation (LCNF base) 64.2ms
+	compilation (LCNF impure) 25ms
+	compilation (LCNF mono) 37.4ms
+	congr simp thm 206ms
+	dsimp 57.5ms
+	elaboration 7.35s
+	fix level params 61.2ms
+	instantiate metavars 338ms
+	interpretation 1.19ms
+	let-to-have transformation 9.04ms
+	linting 621ms
+	module linting 0.000458ms
+	norm_num 18.3s
+	parsing 821ms
+	process pre-definitions 773ms
+	ring 2.81s
+	share common exprs 1.46s
+	simp 5.15s
+	tactic execution 60.2s
+	tacticAnalysis 47.6ms
+	type checking 395s
+	typeclass inference 20s
+      525.38 real       513.35 user        11.83 sys
+          8519057408  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              609063  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+               47287  involuntary context switches
+       4294983764320  instructions retired
+       1753403827038  cycles elapsed
+          3608073576  peak memory footprint

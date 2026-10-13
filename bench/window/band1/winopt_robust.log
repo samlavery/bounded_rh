@@ -1,0 +1,8 @@
+R8: N=32 Delta_1/N 0.990783 kappa_D,N 0.6777384 | N=48 Delta_1/N 0.990777 kappa_D,N 0.6775812 | N=64 Delta_1/N 0.990774 kappa_D,N 0.6775262
+smooth family fit: N=32 Delta_1/N 0.968914 kappa_D,N 0.6810466 | N=48 Delta_1/N 0.968899 kappa_D,N 0.6808827 | N=64 Delta_1/N 0.968893 kappa_D,N 0.6808262
+general N=32 window as a spline: min on [0,1) +5.46e-04
+  general spline N=24: Delta_1/N 0.984421 (in units int_0^1 q = 1/2: 0.964031)  kappa_D,N 0.6802475  continuum-numerator kappa 0.6797881
+  general spline N=32: Delta_1/N 0.989598 (in units int_0^1 q = 1/2: 0.969101)  kappa_D,N 0.6817217  continuum-numerator kappa 0.6814635
+  general spline N=48: Delta_1/N 0.989564 (in units int_0^1 q = 1/2: 0.969067)  kappa_D,N 0.6815673  continuum-numerator kappa 0.6814523
+  general spline N=64: Delta_1/N 0.989551 (in units int_0^1 q = 1/2: 0.969055)  kappa_D,N 0.6815129  continuum-numerator kappa 0.6814481
+general spline: int q a / int q = 0.308694

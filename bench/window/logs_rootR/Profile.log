@@ -1,0 +1,25 @@
+rootR/AMW/Profile.lean:52:0: warning: automatically included section variable(s) unused in theorem `AMW.fP_eq_sqrt_of_mem`:
+  hp
+  hL
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit hp hL in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+rootR/AMW/Profile.lean:52:33: warning: Variable name `hu` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hu
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+rootR/AMW/Profile.lean:56:0: warning: automatically included section variable(s) unused in theorem `AMW.hasDerivAt_comp_div`:
+  hL
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit hL in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+rootR/AMW/Profile.lean:85:0: warning: automatically included section variable(s) unused in theorem `AMW.core_abs`:
+  hp
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit hp in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`

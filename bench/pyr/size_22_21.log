@@ -1,0 +1,8 @@
+cN=350405: covers done (0s) bad sizes [2, 3, 3, 3, 2]
+  bisection: 220851 leaves (15s)
+  table: {'blocks': 495, 'finest': 7972, 'entries': 15449, 'top': 511, 'bits': 508330}; distinct queries 176569; leaves failing on the built table: 0 (19s)
+[SixW22P] delta=0.022 cN=350405 leaves=220851 table={'blocks': 495, 'finest': 7972, 'entries': 15449, 'top': 511, 'bits': 508330} chunks=492 (max 1993 leaves) bits=1102779 order=[5, 12, 9, 0, 4, 14, 3, 7, 2, 8, 11, 1, 10, 13, 6] bytes=716674 (22s)
+cN=350763: covers done (0s) bad sizes [2, 3, 3, 3, 2]
+  bisection: 244346 leaves (16s)
+  table: {'blocks': 495, 'finest': 8059, 'entries': 15623, 'top': 511, 'bits': 513899}; distinct queries 183568; leaves failing on the built table: 0 (21s)
+[SixW21P] delta=0.021 cN=350763 leaves=244346 table={'blocks': 495, 'finest': 8059, 'entries': 15623, 'top': 511, 'bits': 513899} chunks=535 (max 2000 leaves) bits=1220125 order=[5, 12, 9, 0, 4, 14, 3, 7, 2, 8, 11, 1, 10, 13, 6] bytes=764935 (25s)

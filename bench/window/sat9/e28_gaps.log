@@ -1,0 +1,25 @@
+== e24b gap configurations (P = 26): at seed, then free adversary from the seed
+  gap seed Y=5 G=1                   P=26 y∈[0.80,5.00] | L_primary -5.724e+20 (d*=0.500) | L_diag +1.307e+10 | truth Q_pp+T_g +2.395e+24 | T_g 70.13
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -1.901e+101 (d*=0.250) | L_diag +2.004e+49 | truth Q_pp+T_g +1.016e+105 | T_g 81.51
+    -> adversary, deep pinned        P=26 y∈[0.80,5.00] | L_primary -5.756e+20 (d*=0.500) | L_diag +1.415e+10 | truth Q_pp+T_g +2.435e+24 | T_g 70.13
+  gap seed Y=5 G=2                   P=26 y∈[0.80,5.00] | L_primary -5.498e+20 (d*=0.500) | L_diag +7.712e+10 | truth Q_pp+T_g +2.343e+24 | T_g 55.21
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -7.294e+99 (d*=0.250) | L_diag +2.437e+50 | truth Q_pp+T_g +4.013e+103 | T_g 57.91
+    -> adversary, deep pinned        P=26 y∈[0.80,5.00] | L_primary -5.498e+20 (d*=0.500) | L_diag +7.709e+10 | truth Q_pp+T_g +2.344e+24 | T_g 55.21
+  gap seed Y=5 G=3                   P=26 y∈[0.80,5.00] | L_primary -5.239e+20 (d*=0.500) | L_diag +2.335e+10 | truth Q_pp+T_g +2.267e+24 | T_g 54.95
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -5.318e+100 (d*=0.250) | L_diag +9.303e+49 | truth Q_pp+T_g +2.741e+104 | T_g 64.33
+    -> adversary, deep pinned        P=26 y∈[0.80,5.00] | L_primary -5.258e+20 (d*=0.500) | L_diag +2.218e+10 | truth Q_pp+T_g +2.255e+24 | T_g 54.95
+  gap seed Y=5 G=4                   P=26 y∈[0.80,5.00] | L_primary  -4.98e+20 (d*=0.500) | L_diag +6.739e+10 | truth Q_pp+T_g +2.179e+24 | T_g 53.83
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -2.175e+101 (d*=0.250) | L_diag +2.875e+49 | truth Q_pp+T_g +1.166e+105 | T_g 79.24
+    -> adversary, deep pinned        P=26 y∈[0.80,5.00] | L_primary -5.042e+20 (d*=0.500) | L_diag +6.969e+10 | truth Q_pp+T_g +2.172e+24 | T_g 53.83
+  gap seed Y=10 G=1                  P=26 y∈[0.80,10.00] | L_primary -2.296e+47 (d*=0.250) | L_diag +3.604e+22 | truth Q_pp+T_g +1.116e+51 | T_g 70.13
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -1.182e+101 (d*=0.250) | L_diag +4.844e+49 | truth Q_pp+T_g +6.235e+104 | T_g 81.52
+    -> adversary, deep pinned        P=26 y∈[0.80,10.00] | L_primary -2.597e+47 (d*=0.250) | L_diag +4.528e+22 | truth Q_pp+T_g +1.282e+51 | T_g 70.25
+  gap seed Y=10 G=2                  P=26 y∈[0.80,10.00] | L_primary  -2.34e+47 (d*=0.250) | L_diag  +9.67e+23 | truth Q_pp+T_g  +1.14e+51 | T_g 55.21
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -2.297e+101 (d*=0.250) | L_diag +4.792e+50 | truth Q_pp+T_g +1.229e+105 | T_g 76.63
+    -> adversary, deep pinned        P=26 y∈[0.80,10.00] | L_primary -2.559e+47 (d*=0.250) | L_diag +9.498e+23 | truth Q_pp+T_g +1.266e+51 | T_g 55.28
+  gap seed Y=10 G=3                  P=26 y∈[0.80,10.00] | L_primary -2.365e+47 (d*=0.250) | L_diag  +6.12e+22 | truth Q_pp+T_g +1.156e+51 | T_g 54.95
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -2.062e+101 (d*=0.250) | L_diag +1.168e+49 | truth Q_pp+T_g +1.102e+105 | T_g 79.78
+    -> adversary, deep pinned        P=26 y∈[0.80,10.00] | L_primary -2.517e+47 (d*=0.250) | L_diag +8.271e+22 | truth Q_pp+T_g +1.248e+51 | T_g 54.93
+  gap seed Y=10 G=4                  P=26 y∈[0.80,10.00] | L_primary -2.373e+47 (d*=0.250) | L_diag +9.321e+23 | truth Q_pp+T_g +1.164e+51 | T_g 53.83
+    -> free adversary                P=26 y∈[0.80,20.00] | L_primary -2.297e+101 (d*=0.250) | L_diag +5.621e+48 | truth Q_pp+T_g +1.23e+105 | T_g 63.15
+    -> adversary, deep pinned        P=26 y∈[0.80,10.00] | L_primary -2.473e+47 (d*=0.250) | L_diag +9.093e+23 | truth Q_pp+T_g +1.228e+51 | T_g 53.83

@@ -1,0 +1,4 @@
+start seed=0: Phi=0.6734633 H=0.6722600526 eps=0.007889947 m=133 S1=0.054979 D1=3.048 D2=66.025 PV=0.044541 V0=0.8042 (346s)
+it 1: infeasible step, rad 6.7e-04
+it 2: infeasible step, rad 2.2e-04
+it 3: infeasible step, rad 7.4e-05

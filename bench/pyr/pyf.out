@@ -1,0 +1,21 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:46:31)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:47:01)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:47:31)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:48:01)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:48:31)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:49:01)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:49:31)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:50:01)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:50:31)
+== PYF wall=1.70s peak=206MB
+PYF	wk0	0.209
+PYF	wk5	0.134
+PYF	wk13	0.036
+PYF	wk14	0.629
+PYF	wk15	0.008
+PYF	wk18	0.021
+PYF	wk21	0.147
+PYF	wk22	0.041
+PYF	wk27	0.008
+PYF	wk46	0.230
+PYF	TOTAL	1.463

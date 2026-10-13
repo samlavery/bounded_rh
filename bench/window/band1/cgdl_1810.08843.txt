@@ -1,0 +1,956 @@
+                                              PAIR CORRELATION ESTIMATES FOR THE ZEROS OF THE ZETA FUNCTION
+                                                              VIA SEMIDEFINITE PROGRAMMING
+
+                                                                       ANDRÉS CHIRRE, FELIPE GONÇALVES AND DAVID DE LAAT
+
+
+
+
+arXiv:1810.08843v2 [math.NT] 18 Nov 2019
+                                                    Abstract. In this paper we study the distribution of the non-trivial zeros of the Riemann zeta-function ζ(s)
+                                                    (and other L-functions) using Montgomery’s pair correlation approach. We use semideﬁnite programming
+                                                    to improve upon numerous asymptotic bounds in the theory of ζ(s), including the proportion of distinct
+                                                    zeros, counts of small gaps between zeros, and sums involving multiplicities of zeros.
+
+
+
+
+                                                                                                1. Introduction
+
+                                              In this paper we give improved asymptotic bounds for several quantities related to the zeros of the
+                                           Riemann zeta-function (and other functions) using Montgomery’s pair correlation approach [36]. The key
+                                           idea is to replace the usual bandlimited auxiliary functions by the class of functions used in the linear
+                                           programming bounds developed by Cohn and Elkies [20] for the sphere packing problem. The advantage
+                                           of this framework is that it reduces the problems to convex optimization problems that can be solved
+                                           numerically via semideﬁnite programming. For all problems we considered this produces better bounds than
+                                           any bandlimited construction.
+
+                                           1.1. Background. Let ζ(s) be the Riemann zeta-function. It is well known that all non-trivial zeros of ζ(s)
+                                           are located in the critical strip 0 < Re s < 1, and the Riemann Hypothesis (RH) is the statement that all
+                                           these zeros are aligned on the line Re s = 1/2. Let N (T ) count the number of zeros ρ = β + iγ of ζ(s),
+                                           repeated according the multiplicity, such that 0 < β < 1 and 0 < γ ≤ T . The Riemann-von Mangoldt
+                                           formula (in its weaker form) states that
+                                                                                                                     T
+                                                                                           N (T ) = (1 + o(1))          log T.                                          (1)
+                                                                                                                     2π
+                                           Let
+                                                                                                                 X
+                                                                                               N ∗ (T ) :=            mρ ,
+                                                                                                             0<γ≤T
+
+                                           where the sum is over the non-trivial zeros of ζ(s) counting multiplicities1 and mρ is the multiplicity of ρ.
+                                           In addition to RH, it is also conjectured that all zeros of ζ(s) are simple, therefore it is conjectured that
+
+                                                                                                  N ∗ (T ) ∼ N (T ),                                                    (2)
+
+                                           as T → ∞. To study the distribution of the zeros of the Riemann zeta-function, Montgomery deﬁned the
+                                           pair correlation function
+                                                                                                                 X
+                                                                                            N (x, T ) :=                     1                                          (3)
+                                                                                                             0<γ,γ ′ ≤T
+                                                                                                                      2πx
+                                                                                                           0<γ ′ −γ≤ log T
+
+
+
+
+                                              Date: November 19, 2019.
+                                           1For every sum over zeros in this article the involved quantities should be repeated according to the multiplicity of the zero.
+
+                                                                                                             1
+for x > 0 and conjectured that
+                                                        Z x             
+                                                               sin2 (πy)
+                                   N (x, T ) ∼ N (T )       1−             dy,
+                                                         0       (πy)2
+                                                             2π
+as T → ∞. Note that by (1) the average gap between zeros is log T , hence N (x, T ) is counting pairs of zeros
+not greater than x times the average gap.
+  One line of research to understand and give evidence for the conjectures above is to produce bounds of
+the form
+                                          N ∗ (T ) ≤ (c + o(1)) N (T ),                                      (4)
+and
+                                               N (x, T ) ≫ N (T ),                                           (5)
+with c > 1 and x > 0 as small as possible, as T → ∞.
+  These two problems have been widely studied with several improvements being made over the years. One
+approach is to use a formula relating sums and integrals involving an auxiliary function f from a class A,
+and then use this to derive an inequality involving the quantities we want to compare and the value of some
+functional Q evaluated at f . Minimizing (or maximizing) the functional over the class A would then produce
+the best possible bound with that speciﬁc approach. Nowadays, this idea is a standard technique in analytic
+number theory (introduced ﬁrst by Beurling and Selberg) and the following are some references (clearly not
+a complete list) where the main approach is exactly that: Large sieve inequalities [31, 32]; Erdős-Turán
+inequalities [15, 42]; Hilbert-type inequalities [12, 13, 15, 30, 31, 42]; Tauberian theorems [31]; Bounds in the
+theory of the Riemann zeta-function and L-functions [5, 6, 7, 8, 9, 10, 11, 17, 19, 26, 27]; Prime gaps [14].
+  For problem (4) Montgomery [36] uses Fourier analysis to derive the inequality
+                                                 Z 1                   
+                                     1
+                        N ∗ (T ) ≤        fb(0) +     fb(x)|x| dx + o(1) N (T ),
+                                   f (0)           −1
+
+for any non-negative function f ∈ L1 (R) with fb supported in [−1, 1], where
+                                                Z ∞
+                                        fb(x) =      f (y)e−2πxy dy.
+                                                   −∞
+
+Montgomery then gives a function f that proves the bound (4) with c ≤ 4/3. In [37] the optimal function in
+this class is found and as mentioned in [18] gives the bound c ≤ 1.3275. We relax the condition on the support
+of fb to the requirement fb(x) ≤ 0 for |x| ≥ 1, which matches exactly with the conditions required by the
+linear programming bounds for the sphere packing problem (see Section 3 for a detailed explanation). This
+connection is what ultimately inspired us to attack the problem numerically and to ﬁnd good test functions
+for the functionals derived in Section 3. From our point of view, our main contribution is the realization
+that methods from the sphere packing problem can applied in the theory of the Riemann zeta-function to
+improve several asymptotic bounds and, to the best of our knowledge, it is the ﬁrst time it has been done.
+
+
+
+
+                                                          2
+                                              2. Main Results
+
+  We now state our main results.
+
+Theorem 1. Assuming RH, we have
+
+                                        N ∗ (T ) ≤ (1.3208 + o(1))N (T ).
+
+Assuming the Generalized Riemann Hypothesis for Dirichlet L-functions (GRH), we have
+
+                                        N ∗ (T ) ≤ (1.3155 + o(1))N (T ).
+
+  Montgomery [36] was the ﬁrst to show the constant 4/3 = 1.3333.... Later Montgomery and Taylor [37]
+improved on this and found the bound 1.3275 as mentioned by Cheer and Goldston in [18]. Assuming the
+generalized Riemann Hypothesis GRH, Goldston, Gonek, Özlük and Snyder [28] improved it to 1.3262.
+  Theorem 1 has an important application to estimating the quantity of simple zeros of ζ(s). Let
+                                                     X
+                                         Ns (T ) :=       1.
+                                                               0<γ≤T
+                                                                mρ =1
+
+Using the fact that
+                                             X
+                                Ns (T ) ≥           (2 − mρ ) = 2N (T ) − N ∗ (T ).                    (6)
+                                            0<γ≤T
+we obtain the following corollary.
+
+Corollary 2. Assuming RH, we have
+
+                                        Ns (T ) ≥ (0.6792 + o(1))N (T ).
+
+Assuming GRH, we have
+                                        Ns (T ) ≥ (0.6845 + o(1))N (T ).
+
+  Using the pair correlation approach, the previous best result known is due by Cheer and Goldston [18]
+showing that 67.27% of the zeros are simple. Assuming GRH, Goldston, Gonek, Özlük and Snyder [28] showed
+that 67.38% are simple. In this way, we improved all these bounds. However, by a diﬀerent technique, still
+assuming RH, Bui and Heath-Brown [4] improved the result to 19/27 = 70.37...%, which currently is the
+best.
+  Combining the above result of Bui and Heath-Brown with Theorem 1 and an argument of Ghosh, we can
+bound the proportion of distinct zeros of the Riemann zeta-function. Let
+                                                       X 1
+                                            Nd (T ) :=        ,
+                                                           mρ
+                                                           0<γ≤T
+
+be the number of distinct zeros of ζ(s) with 0 < γ ≤ T . Using the inequality
+                                 X (mρ − 2)(mρ − 3)
+                    2Ns (T ) ≤                           = N ∗ (T ) − 5N (T ) + 6Nd (T ).              (7)
+                                              mρ
+                                0<γ≤T
+
+in conjunction with the estimate                                 
+                                                         19
+                                         Ns (T ) ≥          + o(1) N (T )
+                                                         27
+and Theorem 1, we deduce the following corollary.
+                                                           3
+Corollary 3. Assuming RH, we have
+
+                                        Nd (T ) ≥ (0.8477 + o(1))N (T ).
+
+Assuming GRH, we have
+                                        Nd (T ) ≥ (0.8486 + o(1))N (T ).
+
+   Using the pair correlation approach, the best previous result known is due to Farmer, Gonek and Lee
+[24] with constant 0.8051. By a diﬀerent technique, assuming RH, Bui and Heath-Brown [4] improved the
+constant to 0.8466.
+  We also obtain the best known results for the minimal nonzero value of Montgomery’s pair correlation
+function.
+
+Theorem 4. Assuming RH and (2), we have
+
+                                            N (0.6039, T ) ≫ N (T ).
+
+Assuming GRH and (2), we have
+                                            N (0.5769, T ) ≫ N (T ).
+
+   Montgomery [36] showed that N (0.68..., T ) ≫ N (T ), and in [28] it is pointed out that it is not diﬃcult
+to modify Montgomery’s argument to derive the sharper constant 0.6695. This result was improved by
+Goldston, Gonek, Özlük and Snyder [28] with constant 0.6072. Later, Carneiro, Chandee, Littmann and
+Milinovich [8] improved the constant to 0.6068.... Assuming GRH and (2), Goldston, Gonek, Özlük and
+Snyder showed the constant 0.5781....
+
+2.1. Results for zeros of Dirichlet L-functions. To obtain averaged bounds for the percentage of simple
+zeros of primitive Dirichlet L-functions we use the framework established by Chandee, Lee, Liu and Radziwiłł
+[16]. Let Φ be a real-valued smooth function supported in the interval [a, b] with 0 < a < b < ∞. Deﬁne its
+Mellin transform by                              Z       ∞
+                                         MΦ(s) =             Φ(x)xs−1 dx.
+                                                     0
+For a character χ mod q, let L(s, χ) be its associated Dirichlet L-function. Under GRH, all non-trivial zeros
+of L(s, χ) lie on the critical line Re s = 1/2. Let
+                                           X W (q/Q) X            X             2
+                              NΦ (Q) :=                               MΦ(iγχ ) ,
+                                                   ϕ(q)            γ
+                                       Q≤q≤2Q                χ (mod q)    χ
+                                                              primitive
+
+where W is a non-negative smooth function supported in (1, 2), and where the last sum is over all non-trivial
+zeros 12 + iγχ of the Dirichlet L-function L(s, χ). In [16, Lemma 2.1] it is shown that
+                                                         Z ∞
+                                              A                        2
+                                    NΦ (Q) ∼     Q log Q      MΦ(ix) dx,
+                                             2π           −∞
+
+where                                                      
+                                               Y    1   1
+                                    A = MW (1)    1− 2 − 3 .
+                                                    p   p
+                                                   p prime
+Let
+                                        X       W (q/Q)         X         X              2
+                          NΦ,s (Q) =                                             MΦ(iγχ ) .
+                                                 ϕ(q)                     γχ
+                                       Q≤q≤2Q                χ (mod q)
+                                                              primitive simple
+                                                         4
+The quantity
+                                                    NΦ,s (Q)
+                                                    lim inf
+                                                     NΦ (Q)
+                                                    Q→∞
+
+then measures (in average) the proportion of simple zeros among all primitive Dirichlet L-functions.
+  In addition, for the following theorem, we require that Φ(x) and MΦ(ix) are non-negative functions.
+We note that we can also further relax the conditions on Φ so to include the function given by MΦ(ix) =
+(sin x/x)2 , as was established in [16] and [41].
+
+Theorem 5. Assuming GRH, we have
+
+                                       NΦ,s (Q) ≥ (0.9350 + o(1))NΦ (Q).
+
+   Using the pair correlation approach, Chandee, Lee, Liu and Radziwiłł [16] showed that 91.66% of the
+zeros are simple. The best previous result known is due to Sono [41], showing that 93.22% of the zeros are
+simple. On another hand, Özlük [39] obtained a similar lower bound but for all Dirichlet L-functions rather
+than just the primitive L-functions, showing that 91.66% of the zeros are simple (in some sense).
+
+2.2. Results for zeros of ξ ′ (s). We can extend our analysis to the zeros of ξ ′ (s), where
+                                                             
+                                            1           s    s
+                                     ξ(s) = s(s − 1)π − 2 Γ      ζ(s).
+                                            2                2
+It is known that ξ ′ (s) has only zeros in the critical strip 0 < Re s < 1 and that RH implies that all its
+zeros are also on the line Re s = 1/2. Let N1 (T ) count the number of zeros ρ1 = β1 + iγ1 of ξ ′ (s) (with
+multiplicity) such that 0 < γ1 ≤ T . It is also known that
+                                                                      T
+                                          N1 (T ) = (1 + o(1))           log T.
+                                                                      2π
+We can then similarly deﬁne the function
+                                                                  X
+                                             N1∗ (T ) :=                mρ1 ,
+                                                              0<γ1 ≤T
+
+where mρ1 is the multiplicity of the zero ρ1 , and derive the sharpest known upper bound for N1∗ (T ).
+
+Theorem 6. Assuming RH, we have
+
+                                        N1∗ (T ) ≤ (1.1175 + o(1))N1 (T ).
+
+  Deﬁning the functions N1,s (T ) and N1,d (T ) (quantity of simple and distinct zeros respectively) for ξ ′ (s)
+and using the inequalities
+                                          N1,s (T ) ≥ 2N1 (T ) − N1∗ (T )
+and
+                                                 3            1
+                                                   N1 (T ) − N1∗ (T ),
+                                         N1,d (T ) ≥
+                                                 2            2
+that can be derived using the analogues of (6) and (7) for ξ ′ (s), we obtain the following corollary.
+
+Corollary 7. Assuming RH, we have
+
+                                        N1,s (T ) ≥ (0.8825 + o(1))N1 (T ).
+
+and
+                                        N1,d (T ) ≥ (0.9412 + o(1))N1 (T ).
+                                                              5
+   The best previous result is due to Farmer, Gonek and Lee [24], showing that more than 85.83% of the
+zeros of ξ ′ (s) are simple.
+
+
+                               3. Derivation of the optimization problems
+
+   Let ALP be the class of even continuous functions f ∈ L1 (R) satisfying the following conditions:
+    (1) fb(0) = f (0) = 1;
+    (2) fb ≥ 0;
+    (3) f is eventually non-positive.
+By eventually non-positive we mean that f (x) ≤ 0 for all suﬃciently large |x|. We then deﬁne the last sign
+change of f by
+                                           
+                                r(f ) = inf r > 0 : f (x) ≤ 0 for |x| ≥ r .
+It is easy to show that if f ∈ ALP , then fb ∈ L1 (R).
+   A remarkable breakthrough in the sphere problem was achieved by Cohn and Elkies in [20], where they
+showed that if ∆(Rd ) is the highest sphere packing density in Rd , then
+
+                                                 ∆(Rd ) ≤ Q(f )
+
+for any f ∈ ALP (Rd ) (this is the analogous class in higher dimensions deﬁned for radial functions f ), where
+                                                         π d/2
+                                             Q(f ) =            r(f )d .
+                                                       (d/2)!2d
+With this approach they generated numerical upper bounds, called linear programming bounds, for the
+packing density for dimensions up to 36 (nowadays it goes much higher) that improved every single upper
+bound known at the time and still are the current best. These upper bounds in dimensions 8 and 24 revealed
+to be extremely close to the lower bounds given by the E8 root lattice and the Λ24 Leech lattice, revealing
+that in these special dimensions the linear programming approach could exactly act as the dual problem.
+This is what inspired Viazovska et. al. [43, 23] to follow their program and solve the sphere packing problem
+in dimensions 8 and 24. What is interesting and surprising to us is that the same space ALP can be used
+(but with a functional diﬀerent than Q(f )) to produce numerical bounds in analytic number theory.
+   The general strategy to study problems (4) and (5) is based on Montgomery’s function
+                                             1    X              ′
+                               F (x, T ) =               T ix(γ−γ ) w(γ − γ ′ ),
+                                           N (T )
+                                                   0<γ,γ ≤T
+                                                    ′
+
+
+                                                                                            4
+where the sum is over pairs of ordinates of zeros (with multiplicity) of ζ(s) and w(u) = 4+u  2 . For each
+
+T , the function x 7→ F (x, T ) is even, real, and as observed independently by Mueller and Heath-Brown,
+non-negative. The ﬁrst step is to use Fourier inversion to obtain
+                       X                                             Z ∞
+                                           log T
+                              g (γ − γ ′ )        w(γ − γ ′ ) = N (T )     gb(x)F (x, T ) dx,             (8)
+                                             2π                         −∞
+                        0<γ,γ ≤T
+                          ′
+
+
+for suitable functions g, and use some known asymptotic estimate for F (x, T ) as T → ∞ (which is proven
+only under RH or GRH). Secondly, after a series of inequalities, we produce a minimization problem over
+ALP for some functional Z. We then approach the problem numerically, using the class of functions used
+for the sphere packing problem in [20] and sum-of-squares/semideﬁnite programming techniques to optimize
+over these functions. The same basic strategy can be, in principle, carried out for other functions where we
+                                                          6
+have a pair correlation approach. Indeed, we will also derive functionals related to the zeros of ξ ′ (s) and a
+certain average of primitive Dirichlet L-functions.
+
+
+
+
+3.1. Bounding N ∗ (T ) and N (x, T ). Ultimately, the functionals we need to deﬁne depend on the asymptotic
+behavior of F (x, T ). To analyze the function N ∗ (T ) we deﬁne the functionals
+                                                           Z r(f )
+                                                        2
+                                     Z(f ) = r(f ) +               f (x)x dx
+                                                      r(f ) 0
+and                                        Z r(f )                   Z 23 r(f )                        Z 23 r(f )
+                 e                   2                                                           2
+                 Z(f ) = r(f ) +                     f (x)x dx + 3                f (x) dx −                        f (x)x dx.
+                                   r(f )     0                           r(f )                 r(f )    r(f )
+
+
+
+
+Lemma 8. Let f ∈ ALP . Assuming RH, we have
+
+                                                 N ∗ (T ) ≤ (Z(f ) + o(1))N (T ).
+
+Assuming GRH, for every fixed sufficiently small δ > 0, we have
+
+                                            N ∗ (T ) ≤ ( e
+                                                        Z(f ) + O(δ) + o(1))N (T ).
+
+
+
+Proof. We start assuming only RH. Reﬁning the original work of Montgomery [36], Goldston and Mont-
+gomery [29, Lemma 8] proved that
+                                                                          
+                                           F (x, T ) = T −2|x| log T + |x| (1 + o(1)),                                            (9)
+
+uniformly for |x| ≤ 1. Let f ∈ ALP and let g(x) = fb(x/r(f ))/r(f ). We can then use formula (8) in
+conjunction with the asymptotic formula above to obtain
+                                              "        Z 1               Z                               #
+      X
+                     ′ log T         ′
+            g (γ − γ )        w(γ − γ ) = N (T ) gb(0) +     gb(x)|x| dx +         gb(x)F (x, T ) dx + o(1) ,
+                         2π                               −1                 |x|>1
+   0<γ,γ ≤T
+        ′
+
+
+
+where the o(1) above is justiﬁed since gb is continuous and T −2|x| log T → δ 0 (x) as T → ∞ (in the distribu-
+tional sense). Moreover, since F (x, T ) is non-negative and gb(x) ≤ 0 for |x| ≥ 1 we deduce that
+       X                                                  Z 1                                       
+                     ′ log T             ′                                                   Z(f )
+             g (γ − γ )        w(γ − γ ) ≤ N (T ) gb(0) + 2      gb(x)x dx + o(1) = N (T )         + o(1) .
+                         2π                                    0                             r(f )
+      0<γ,γ ≤T
+         ′
+
+
+On the other hand, clearly we have
+                        X                                          X
+                                           log T                            N ∗ (T )
+                              g (γ − γ ′ )        w(γ − γ ′ ) ≥ g(0)   mρ =          .                                           (10)
+                                             2π                              r(f )
+                        0<γ,γ ≤T
+                          ′                                                           0<γ≤T
+
+Combining these results we show the ﬁrst inequality in the theorem.
+  Assume now GRH. It is then shown in [28] that for any ﬁxed and suﬃciently small δ > 0 we have
+                                                                   3
+                                                     F (x, T ) ≥     − |x| − o(1),                                               (11)
+                                                                   2
+                                                                     7
+uniformly for 1 ≤ |x| ≤ 23 − δ as T → ∞. Using this estimate together with (9) and the fact that gb(x) ≤ 0
+for |x| ≥ 3/2 − δ, we obtain
+                                                    "         Z 1               Z 32 −δ                      #
+     X                   log T                                                                    3
+            g (γ − γ ′ )         w(γ − γ ′ ) ≤ N (T ) gb(0) + 2     gb(x)x dx + 2         gb(x)     − x dx + o(1)
+                           2π                                    0                 1              2
+  0<γ,γ ≤T
+        ′
+                                                      "                     #
+                                                        e )
+                                                        Z(f
+                                             = N (T )         + o(1) + O(δ) .
+                                                        r(f )
+
+Arguing as before, using (10), we complete the proof of the lemma.                                                                    
+
+
+
+
+  To analyze N (x, T ) we deﬁne the functional
+                                                       
+                                            P(f ) = inf λ > 0 : pf (λ) > 0 ,
+
+where                                                                         Z r(f
+                                                                                 λ
+                                                           λ      2r(f )            )
+                                  pf (λ) = −1 +                 +                       fb(x)x dx,
+                                                          r(f )     λ           0
+and the functional
+                                                       
+                                            e
+                                            P(f ) = inf λ > 0 : pef (λ) > 0 ,
+where
+                                            Z     λ                      Z     3λ                          Z     3λ
+                            λ      2r(f )        r(f )                        2r(f )              2r(f )        2r(f )
+          pef (λ) = −1 +         +                       fb(x)x dx + 3                 fb(x) dx −                        fb(x)x dx.
+                           r(f )     λ       0                                λ
+                                                                             r(f )
+                                                                                                    λ           λ
+                                                                                                               r(f )
+
+
+Note that these functionals are well deﬁned since pf and pef are C 1 functions that assume −1 at λ = 0, and
+using the fact that fb ∈ L1 (R) one can show
+                                          pf (λ)       pef (λ)     1
+                                      lim        = lim         =       > 0.
+                                      λ→∞   λ     λ→∞     λ      r(f )
+
+
+
+Lemma 9. Let f ∈ ALP and ε > 0. Assuming RH and (2), we have
+
+                                                 N (P(f ) + ε, T ) ≫ N (T ).
+
+Assuming GRH and (2), we have
+                                                    e ) + ε, T ) ≫ N (T ).
+                                                 N (P(f
+
+
+
+Proof. Let f ∈ ALP , λ > 0, and set g(x) = f (r(f )x/λ). Assuming RH, we have
+                 X                                          Z ∞
+                                  ′ log T           ′
+                          g (γ − γ )       w(γ − γ ) = N (T )       gb(x)F (x, T ) dx
+                                      2π                        −∞
+               0<γ,γ ′ ≤T
+                                                                        Z 1                 
+                                                      ≥ N (T ) gb(0) + 2     gb(x)x dx + o(1)
+                                                                                               0
+
+                                                                 = N (T ) [1 + pf (λ) + o(1)] .
+                                                                  8
+Applying formula (8) in conjunction with (9), while assuming GRH, and using in addition (11), we have
+    X                                               Z ∞
+                         log T
+            g (γ − γ ′ )         w(γ − γ ′ ) = N (T )      gb(x)F (x, T ) dx
+                           2π                          −∞
+ 0<γ,γ ′ ≤T
+                                                      "         Z 1               Z 32 −δ                      #
+                                                                                                  3
+                                             ≥ N (T ) gb(0) + 2     gb(x)x dx + 2         gb(x)     − x dx + o(1)
+                                                                  0                1              2
+                                          = N (T ) [1 + pef (λ) + o(1)] .
+
+Since fb ≥ 0, we have kf k∞ = f (0) = 1. Recall now the pair correlation function N (x, T ) deﬁned in (3). We
+have
+          X                                              X                             
+                         ′ log T          ′     ∗                           ′ r(f ) log T
+                g (γ − γ )        w(γ − γ ) = N (T ) + 2          f (γ − γ )               w(γ − γ ′ )
+                             2π                                                  2πλ
+      0<γ,γ ≤T
+            ′                                                 ′
+                                                                     0<γ,γ ≤T
+                                                                      0<γ−γ ′
+                                                                          X                                     
+                                                                                                     r(f ) log T
+                                                ≤ N ∗ (T ) + 2                          f (γ − γ ′ )              w(γ − γ ′ )
+                                                                                                        2πλ
+                                                                       0<γ,γ ′ ≤T
+                                                                                2πλ
+                                                                     0<γ−γ ′ ≤ log T
+
+
+                                                ≤ N ∗ (T ) + 2N (λ, T )
+                                                = (1 + o(1))N (T ) + 2N (λ, T ),
+
+where in the last step we have used (2). We then obtain, assuming RH, that
+                                              N (λ, T )   pf (λ)
+                                                        ≥        + o(1).
+                                               N (T )       2
+Similarly assuming GRH. Noting that N (λ, T ) increases with λ, so we can choose λ arbitrarily close to P(f ),
+we obtain the desired result.                                                                              
+
+3.2. Bounding NΦ,s (Q). Deﬁne the following functional over ALP
+                                                      Z r(f2 )                     Z r(f )
+                                      r(f )     4
+                            L(f ) =         +                    f (x)x dx + 2                  f (x) dx.
+                                        2     r(f )    0                               r(f )
+                                                                                        2
+
+We have the following lemma.
+
+Lemma 10. Let f ∈ ALP . Assuming GRH, for every fixed small δ > 0 we have
+
+                                  NΦ,s (Q) ≥ (2 − L(f ) + O(δ) + o(1))NΦ (Q).
+
+Proof. For Q > 1 and x ∈ R, we deﬁne the pair correlation function FΦ by
+                                               X                         X          X                        2
+                                       1                W (q/Q)
+                    FΦ (Qx , W ) =                                                             MΦ(iγχ )Qiγχ x .
+                                     NΦ (Q)              ϕ(q)                          γχ
+                                              Q≤q≤2Q                  χ (mod q)
+                                                                       primitive
+
+Using the asymptotic large sieve, Chandee, Lee, Liu and Radziwiłł [16] showed the following asymptotic
+formula under GRH
+
+    FΦ (Qx , W )                                                                                 (12)
+                                                   Z ∞           −1                       
+                                         2        1           2
+    = (1 + o(1)) 1 − (1 − |x|)+ + Φ Q−|x| log Q          MΦ(it) dt       + O Φ(Q−|x| ) log1/2 Q ,
+                                                  2π −∞
+                                                                 9
+which holds uniformly for |x| ≤ 2 − δ as Q → ∞, for any ﬁxed and suﬃciently small δ > 0. Let
+                                      X W (q/Q) X X                          2
+                        NΦ∗ (Q) :=                             mρχ MΦ(iγχ ) ,
+                                             ϕ(q)           γ
+                                         Q≤q≤2Q                     χ (mod q)     χ
+                                                                     primitive
+
+where mρχ denote the multiplicity of the nontrivial zero ρχ = 21 + iγχ of L(s, χ). Since
+                              X               2    X                        2
+                                    MΦ(iγχ ) ≥         (2 − mρχ ) MΦ(iγχ )
+                                      γχ                            γχ
+                                    simple
+
+we obtain
+
+                                              NΦ,s (Q) ≥ 2NΦ (Q) − NΦ∗ (Q).                                                    (13)
+
+For any g ∈ L1 (R) with gb ∈ L1 (R) we have the following formula (Fourier inversion):
+   X W (q/Q) X               X                                                     Z ∞
+                                                        (γχ − γχ′ ) log Q
+                                                  ′
+                                   MΦ(iγχ )MΦ(iγχ ) gb                      = NΦ (Q)     g(x)FΦ (Qx , W ) dx.
+           ϕ(q)                                               2π                      −∞
+ Q≤q≤2Q              χ (mod q) γχ ,γχ
+                                 ′
+                      primitive
+
+Letting f ∈ ALP and g(x) = f (r(f )x/(2 − δ)), for any primitive character χ (mod q) we obtain
+                X                                            
+                                            (γχ − γχ′ ) log Q
+                      MΦ(iγχ )MΦ(iγχ′ ) gb
+                                                  2π
+               γχ ,γχ
+                    ′
+
+
+                   X                           X                                             
+                                     2                                      (γχ − γχ′ ) log Q
+               =      mρχ MΦ(iγχ ) gb(0) +            MΦ(iγχ )MΦ(iγχ′ ) gb
+                    γ
+                                                                                  2π
+                       χ                           ′      γχ 6=γχ
+
+                      2−δ X                           2
+                 ≥                 mρχ MΦ(iγχ ) .
+                      r(f )   γχ
+
+This implies that
+             X                      X        X                                                          
+                     W (q/Q)                                                         (γχ − γχ′ ) log Q           2−δ ∗
+                                                    MΦ(iγχ )MΦ(iγχ′ )g                                       ≥        N (Q).
+                      ϕ(q)                                                                 2π                    r(f ) Φ
+            Q≤q≤2Q             χ (mod q) γχ ,γχ
+                                              ′
+                                primitive
+
+On the other hand, observing that
+                                                                  Z ∞            
+                                             2                1               2
+                                   Φ Q−|x|        log Q                  MΦ(it) dt → δ(x),
+                                                              2π   −∞
+
+as Q → ∞ (in the distributional sense) and that
+                     Z 2−δ                                  Z 1
+                                                                                                  dt
+            log1/2 Q         g(x)Φ(Q−|x| ) dx ≤ 2 log−1/2 Q                                Φ(t)      = O(log−1/2 Q),
+                           −(2−δ)                                                Q−(2−δ)          t
+we can use the asymptotic estimate (12) to obtain
+          Z ∞                        Z 2−δ
+               g(x)FΦ (Qx , W ) dx ≤        g(x)FΦ (Qx , W ) dx
+            −∞                               −(2−δ)
+                                                     Z 2−δ
+                                        = g(0) +                   g(x)(1 − (1 − |x|)+ ) dx + O(log−1/2 Q) + o(1)
+                                                      −(2−δ)
+                                             2L(f )
+                                        =           + O(δ) + o(1).
+                                              r(f )
+
+
+                                                                    10
+We then conclude that
+                                         NΦ∗ (Q) ≤ NΦ (Q) (L(f ) + O(δ) + o(1)) .
+Using (13) we ﬁnish the proof.                                                                                         
+
+3.3. Bounding N1∗ (T ). Similarly to the case of the Riemann zeta-function, the functionals that we need to
+deﬁne depend on the asymptotic behavior of the function F1 (x, T ) deﬁned by
+                                                 X                ′
+                         F1 (x, T ) = N1 (T )−1         T ix(γ1 −γ1 ) w(γ1 − γ1′ ),                                  (14)
+                                                        0<γ1 ,γ1′ ≤T
+
+where x ∈ R, T > 0 and the sum is over pairs of ordinates of zeros (with multiplicity) of ξ ′ (s). To analyze
+N1∗ (T ) we deﬁne the following functional
+                             Z r(f )                    Z r(f )              ∞
+                                                                             X          Z r(f )
+                          2                         8            2                2ck
+      Z1 (f ) = r(f ) +              x f (x) dx −               x f (x) dx +                    x2k+1 f (x) dx,
+                        r(f ) 0                   r(f )2 0                     r(f )2k+1 0
+                                                                                   k=1
+
+where ck = 22k+1 (k−1)!
+                  (2k)! .
+
+
+Lemma 11. Let f ∈ ALP . Assuming RH, for every fixed small δ > 0 we have
+
+                                         N1∗ (T ) ≤ (Z1 (f ) + O(δ) + o(1))N1 (T ).
+
+Proof. A result similar to (9) for the function F1 (x, T ) deﬁned in (14) is also known (see [24, Theorem 1.1]),
+which is the following: for any ﬁxed small δ > 0 we have
+                                                                ∞
+                                                                X
+                                 −2|x|                    2
+                F1 (x, T ) = T           log T + |x| − 4|x| +          ck |x|2k+1 + o(1)(1 + T −2|x| log T ),
+                                                                k=1
+
+uniformly for |x| ≤ 1 − δ as T → ∞, where ck = 22k+1 (k−1)!
+                                                      (2k)! .                 The proof then follows the same strategy as
+the proof for ζ(s) and we leave the details to the reader.                                                             
+
+
+                                    4. Numerically optimizing the bounds
+
+   Going back to the sphere packing problem, since we obviously have ∆(R1 ) = 1, this shows r(f ) ≥ 1 for
+all f ∈ ALP . The last sign change equals 1 for two (suspiciously) well-known functions: the hat function
+
+                                                   H(x) = (1 − |x|)+ ,
+                                             2
+                           b
+whose Fourier transform is H(x) = sin (πx)
+                                    (πx)2 , and Selberg’s function
+
+                                                            sin2 (πx)
+                                                 S(x) =                   ,
+                                                          (πx)2 (1 − x2 )
+                                                             b
+whose Fourier transform is supported in [−1, 1] and given by S(x) = 1 − |x| + sin(2πx)
+                                                                                 2π    for |x| < 1. In
+particular, we can use these two functions to evaluate the functionals derived in Section 3 to obtain bounds,
+but this does not result in the best possible bounds. To obtain better bounds we use the class of functions
+used in the linear programming bounds by Cohn and Elkies [20] for sphere packing. That is, we consider
+the subspace ALP (d) consisting of the functions f ∈ ALP of the form
+                                                                          2
+                                                    f (x) = p(x)e−πx ,                                               (15)
+
+where p is an even polynomial of degree 2d.
+                                                              11
+   In [20], optimization over a closely related class of functions is done by specifying the functions by their
+real roots and optimizing the root locations. For the sphere packing problem this works very well, where in
+R24 it leads to a density upper bound that is sharp to within a factor 1 + 10−51 of the optimal conﬁguration
+[22]. We have also tried this approach for the optimization problems in this paper, but this did not work
+very well because the optimal functions seem to have very few real roots, which produces a strange eﬀect in
+the numerical computations, where the last forced root tends to diverge when you increase the degree of the
+polynomial2. Instead we use sum-of-squares characterizations and semideﬁnite programming, as was done
+in [34] for the binary sphere packing problem.
+   Semidefinite programming is the optimization of a linear functional over the intersection of a cone of
+positive semideﬁnite matrices (real symmetric matrices with nonnegative eigenvalues) and an aﬃne space.
+A semideﬁnite program is often given in block form, which can be written as
+                                    I
+                                    X                    I
+                                                         X
+                        minimize          tr(Xi Ci ) :         tr(Xi Ai,j ) = bj for j ∈ [m],
+                                    i=1                  i=1
+
+                                                         X1 , . . . , XI ∈ Rn×n positive semideﬁnite,
+
+where I ∈ N gives the number of blocks, {Ci } ⊆ Rn×n is the objective, and {Ai,j } ⊆ Rn×n , b ∈ Rm
+give the linear constraints (for notational simplicity we take all blocks to have the same size). Semideﬁnite
+programming is a broad generalization of linear programming (which we recover by setting n = 1 in the above
+formulation), and, as for linear programming, there exist eﬃcient algorithms for solving them. The reason
+semideﬁnite programming comes into play here, is that we can model polynomial inequality constraints as
+sum-of-squares constraints, which in turn can be written as semideﬁnite constraints; see, e.g., [2].
+
+4.1. Proof of Theorems 1, 5, and 6. To obtain the ﬁrst part of Theorem 1 from Lemma 8 we need to
+minimize the functional Z over the space ALP (d). We can see this as a bilevel optimization problem, where
+we optimize over scalars R ≥ 1 in the outer problem, and over functions f ∈ ALP (d) satisfying r(f ) = R in
+the inner problem. The outer problem is a simple one dimensional optimization problem for which we use
+Brent’s method [3].
+  A polynomial p that is nonnegative on [R, ∞) can be written as s1 (x) + (x − R)s2 (x), where s1 and s2 are
+sum-of-squares polynomials with deg(s1 ), deg(s2 (x)) + 1 ≤ deg(p); see, e.g., [40]. This shows that functions
+of the form (15) that are non-positive on [R, ∞) can be written as
+                                                                                 2
+                                      f (x) = − s1 (x2 ) + (x2 − R2 )s2 (x2 ) e−πx .
+
+   Let v(x) be a vector whose entries form a basis of the univariate polynomials of degree at most d. The
+polynomials s1 and s2 are sum-of-squares if and only if they can be written as si (x) = v(x)T Xi v(x) for some
+positive semideﬁnite matrices Xi of size d + 1. That is, we can parameterize functions of the form (15) that
+are non-positive on [R, ∞) by two positive semideﬁnite matrices X1 and X2 of size d + 1.
+   The space of functions of the form (15) is invariant under the Fourier transform. Since a polynomial of
+degree 2d that is nonnegative on [0, ∞) can be written as s3 (x) + xs4 (x), where si (x) = v(x)T Xi v(x) for
+i = 3, 4 are sum-of-squares polynomials of degree 2d, we have that fb is of the form
+                                                                       2
+                                     fb(x) = s3 (x2 ) + x2 s4 (x2 ) e−πx .
+
+2It is worth mentioning that, in a related uncertainty problem, Cohn and Gonçalves [21] discovered the same kind of instability
+in low dimensions.
+                                                                  12
+                                                                   −1/2
+   Let T be the operator that maps x2k to the function πk!k Lk (πx2 ), where Lk is the Laguerre polynomial
+                                                                                            2
+of degree k with parameter −1/2. Then, for p an even polynomial, we have that (T p)(x)e−πx is the Fourier
+                        2
+transform of p(x)e−πx . We can now describe the functions of the form (15) that are non-positive on [R, ∞)
+and have nonnegative Fourier transform by positive semideﬁnite matrices X1 , . . . , X4 of size d + 1 whose
+entries satisfy the linear relations coming from the identity I(X1 , . . . , X4 ) = 0, where
+                                                                                                  
+                   I(X1 , . . . , X4 ) = T − s1 (x2 ) − (x2 − R2 )s2 (x2 ) − s3 (x2 ) + x2 s4 (x2 ) .
+
+Here T (−s1 (x2 ) − (x2 − R2 )s2 (x2 )) is a polynomial whose coeﬃcients are linear combinations in the entries
+of X1 and X2 , and the same for s3 (x2 ) + x2 s4 (x2 ) with X3 and X4 . The linear constraints on the entries
+of X1 , . . . , X4 are then obtained by expressing I(X1 , . . . , X4 ) in some polynomial basis and setting the
+coeﬃcients to zero.
+   The conditions f (0) = 1 and f (R) = 0 are linear in the entries of X1 and X2 , and the condition fb(0) = 1
+is a linear condition on the entries of X3 and X4 . Finally, the objective Z(f ) is a linear combination in the
+entries of X1 and X2 , which can be implemented by using the identity
+                                Z                                m + 1       
+                                           2            1
+                                   xm e−πx dx = − m/2+1/2 Γ              , πx2 ,                           (16)
+                                                    2π               2
+where Γ is the upper incomplete gamma function. Hence, the problem of minimizing Z(f ) over functions
+f ∈ ALP (d) that satisfy r(f ) = R is a semideﬁnite program.
+   To obtain the second part of Theorem 1 from Lemma 8 and to obtain Theorem 5 from Lemma 10 we use
+the same approach with a diﬀerent functional. To obtain Theorem 6 from Lemma 11 we also do the same
+as above, but now truncate the series in the functional Z1 at k = 15 and add the easy to compute upper
+bound 10−10 on the remainder of the terms.
+
+4.1.1. Implementation and numerical issues. In implementing the above as a semideﬁnite program we have
+to make two choices for the polynomial basis that we use: the basis deﬁning the vector v(x), and the basis
+to enforce the identity I(X1 , . . . , X4 ) = 0. This choice of bases is important for the numerical conditioning
+                                                                                                  −1/2
+of the resulting semideﬁnite program. Following [34] we choose the Laguerre basis {Ln (2πx2 )}, as this
+                                                                  2
+seems natural and performs well in practice (it multiplied by e−πx is the complete set of even eigenfunctions
+of the Fourier transform). We solve the semideﬁnite programs using sdpa-gmp [38], which is a primal-dual
+interior point solver using high precision ﬂoating point arithmetic. For the code to generate the semideﬁnite
+programs and to perform the post processing we use Julia [1], Nemo [25], and Arb [33] (where we use Arb for
+the ball arithmetic used in the veriﬁcation procedure). For all computations we use d = 40. In solving the
+systems we observe that X1 can be set to zero everywhere without aﬀecting the bounds, so that r(f ) = R
+                                                                           2
+holds exactly for the function f (x) = (R2 − x2 )v(x2 )T X2 v(x2 )e−πx deﬁned by X2 .
+   The above optimization approach uses ﬂoating point arithmetic and a numerical interior point solver. This
+means the identity I(0, X2 , X3 , X4 ) = 0 will not be satisﬁed exactly, and, moreover, because the solver can
+take infeasible steps the matrices X2 , X3 , and X4 typically have some eigenvalues that are slightly negative.
+In practice this leads to incorrect upper bounds if the ﬂoating point precision is not high enough in relation
+to the degree d. Here we explain the procedure we use to obtain bounds that are guaranteed to be correct.
+This is an adaptation of the method from [35] and [34].
+  We ﬁrst solve the above optimization problem numerically to ﬁnd R and f for which we have a good
+objective value v = L(f ). Then we solve the semideﬁnite program again for the same value of R, but now
+we solve it as a feasibility problem with the additional constraint L(f ) ≤ v + 10−6 . The interior point
+                                                           13
+solver will try to give the analytical center of the semideﬁnite program, so that typically the matrices are
+all positive deﬁnite; that is, the eigenvalues are all strictly positive. Then we use interval arithmetic to
+check rigorously that X2 , X3 , and X4 are positive deﬁnite, and we compute a rigorous lower bound b on the
+smallest eigenvalues of X3 and X4 .
+  Using interval arithmetic we compute an upper bound B on the largest coeﬃcient of I(0, X2 , X3 , X4 ) in
+the basis given by the 2d + 1 entries on the diagonal and upper diagonal of the matrix (R2 − x2 )v(x2 )v(x2 )T .
+If b ≥ (1 + 2d)B, then it follows that it is possible to modify the corresponding entries in X3 and X4 such
+that these matrices stay positive deﬁnite and such that I(0, X2 , X3 , X4 ) = 0 holds exactly [35]. This proves
+                                                                                  2
+that the Fourier transform of the function f (x) = (R2 − x2 )v(x2 )T X2 v(x2 )e−πx is nonnegative.
+   The only remaining problem is that the identities f (0) = 1 and T f (0) = 1 will not hold exactly. We
+can, however, for instance write the ﬁrst part of Theorem 1 as follows: Suppose f is a continuous function
+in L1 (R) with f (x) ≤ 0 for |x| ≥ R and with fb ≥ 0, then N ∗ (T ) ≤ (Z(f ) + o(1))N (T ), where we use the
+following modiﬁed deﬁnition for Z(f ):
+                                                                    Z r(f )           !
+                                         1                    2
+                               Z(f ) =         f (0)r(f ) +                   f (x)x dx .
+                                       b
+                                       f (0)                r(f )    0
+
+Since the function f deﬁned by X1 has been veriﬁed to satisfy all the constraints, the only thing we still
+need to do is to compute a rigorous upper bound on Z(f ) (or on similar modiﬁcations of the functionals
+Z̃(f ), Z1 (f ), or L(f )), for which we use identity (16) and interval arithmetic.
+
+Remark 1. In the arXiv version of this paper we attach the files ‘Z-40.txt’, ‘tildeZ-40.txt’, ‘L-40.txt’, and
+‘Z1-40.txt’ that contain the value of R on the first line and the matrices X2 , X3 and X4 on the next 3 lines (all
+in 100 decimal floating point values). For convenience it also contains the coefficients of f in the monomial
+basis on the last line (but these are not used in the verification procedure). We include a script to perform
+the above verification and compute the bounds rigorously, as well as the code for setting up the semidefinite
+programs, using a custom semidefinite programming specification library.
+
+4.2. Proof of Theorem 4. To obtain the ﬁrst part of Theorem 4 from Lemma 9 we need to minimize
+the function P over the space ALP . We can formulate this as a bilevel optimization problem in which we
+optimize over R ≥ 1 in the outer problem. In the inner problem we perform a binary search over Λ to ﬁnd
+the smallest Λ for which there exists a function f ∈ ALP (d) that satisﬁes f (R) = 0, f (x) ≤ 0 for |x| ≥ R,
+and pf (Λ) ≥ 0.
+  To get a bound whose correctness we can verify rigorously we replace the constraints f (0) = 1, fb(0) = 1,
+and pf (Λ) ≥ 0 by f (0) = 1 − 10−10 , fb(0) = 1 + 10−10 , and pf (Λ) ≥ 10−10 . We then use the above
+optimization approach to ﬁnd good values for R and Λ. We then add 10−6 to Λ and solve the feasibility
+problem again to get the strictly feasible matrices X2 , X3 , and X4 . By performing the same procedure as in
+4.1.1 we can verify that the Fourier transform of the function f deﬁned by X2 is nonnegative everywhere,
+and using interval arithmetic we can check that the inequalities f (0) ≤ 1, fb(0) ≥ 1, and pf (Λ) > 0 all hold.
+Note that this veriﬁcation procedure does not actually check that Λ is equal to or even close to P(f ), but
+the proof of Lemma 9 also works if we replace P(f ) by any Λ for which pf (Λ) is strictly positive. To obtain
+the second part of the theorem, we do the same except that we replace pf by pef .
+
+Remark 2. In the arXiv version of this paper we attach the files ‘P-40.txt’, ‘tildeP-40.txt’, that have the
+same layout as the files mentioned in 4.1.1, with an additional line containing the value of Λ. We again
+include the code to perform the verification and to produce the files.
+                                                        14
+                                                  Acknowledgments
+
+  We are very thankful to Emanuel Carneiro and Micah Milinovich for the helpful discussions, suggestions
+and references. We also thank the anonymous referee for valuable suggestions.
+
+
+                                                      References
+ [1] J. Bezanson, A. Edelman, S. Karpinski and V.B. Shah, Julia: A fresh approach to numerical computing, SIAM Rev. 59
+    (2017), 65–98.
+ [2] G. Blekherman, P. Parrilo, R. Thomas, Semideﬁnite Optimization and Convex Algebraic Geometry, Society for Industrial
+    and Applied Mathematics, 2012.
+ [3] R. P. Brent, Algorithms for Minimization Without Derivatives, Englewood Cliﬀs, NJ: Prentice-Hall, 1973. Ch. 3-4.
+ [4] H. M. Bui and D. R. Heath-Brown, On simple zeros of the Riemann zeta-function, Bull. Lond. Math. Soc. 45 (2013), no.
+    5, 953–961.
+ [5] E. Carneiro and V. Chandee, Bounding ζ(s) in the critical strip, J. Number Theory 131 (2011), no. 3, 363–384.
+ [6] E. Carneiro and A. Chirre, Bounding Sn (t) on the Riemann hypothesis, Math. Proc. Cambridge Philos. Soc. 164 (2018),
+    no. 2, 259–283.
+ [7] E. Carneiro, A. Chirre and M. B. Milinovich, Bandlimited approximations and estimates for the Riemann zeta-function,
+    Publ. Mat. 63 (2019), no. 2, 601–661.
+ [8] E. Carneiro, V. Chandee, F. Littmann and M. B. Milinovich, Hilbert spaces and the pair correlation of zeros of the
+    Riemann zeta-function, J. Reine Angew. Math. 725 (2017), 143–182.
+ [9] E. Carneiro, V. Chandee and M. B. Milinovich, Bounding S(t) and S1 (t) on the Riemann Hypothesis, Math. Ann. 356
+    (2013), no. 3, 939–968.
+[10] E. Carneiro, V. Chandee and M. Milinovich, A note on the zeros of zeta and L-functions, Math. Z. 281 (2015), no. 1-2,
+    315–332.
+[11] E. Carneiro and R. Finder, On the argument of L-functions, Bull. Braz. Math. Soc. (N.S.) 46 (2015), no. 4, 601âĂŞ-620.
+[12] E. Carneiro and F. Littmann, Extremal functions in de Branges and Euclidean spaces, Adv. Math. 260 (2014), 281–349.
+[13] E. Carneiro, F. Littmann, and J. D. Vaaler, Gaussian subordination for the Beurling-Selberg extremal problem, Trans.
+    Amer. Math. Soc. 365 (2013), no. 7, 3493–3534.
+[14] E. Carneiro, M.B. Milinovich, K. Soundararajan, Fourier optimization and prime gaps, Comment. Math. Helv., to appear.
+[15] E. Carneiro and J. D. Vaaler, Some extremal functions in Fourier analysis II, Trans. Amer. Math. Soc. 362 (2010), no.
+    11, 5803–5843.
+[16] V. Chandee, Y. Lee, S.-C. Liu and M. Radziwiłł, Simple zeros of primitive Dirichlet L-functions and the asymptotic large
+    sieve, Q. J. Math 65 (2014), no. 1, 63–87.
+[17] V. Chandee and K. Soundararajan, Bounding |ζ(1/2+it)| on the Riemann hypothesis, Bull. London Math. Soc. 43 (2011),
+    no. 2, 243–250.
+[18] A. Y. Cheer and D. A. Goldston, Simple zeros of the Riemann zeta-function, Proc. Amer. Math. Soc. 118 (1993), no. 2,
+    365–372.
+[19] A. Chirre, A note on Entire L-functions, Bull. Braz. Math. Soc. (N.S.) 50 (2019), no.1, 67–93.
+[20] H. Cohn and N. Elkies, New upper bounds on sphere packings I, Ann. of Math. (2) 157 (2003), no. 2, 689–714.
+[21] H. Cohn and F. Gonçalves, An optimal uncertainty principle in twelve dimensions via modular forms, Invent. math.
+    (2019) 217: 799.
+[22] H. Cohn and S. D. Miller, Some properties of optimal functions for sphere packing in dimensions 8 and 24, arXiv:1603.04759
+    [math.MG], 23 pp.
+[23] H. Cohn, A. Kumar, S. D. Miller, D. Radchenko, and M. Viazovska, The sphere packing problem in dimension 24, Ann.
+    of Math. (2) 185 (2017), no. 3, 1017–1033.
+[24] D. Farmer, S. Gonek and Y. Lee, Pair correlation of the zeros of the derivative of the Riemann ξ-function, J. Lond. Math.
+    Soc.(2) 90 (2014), no. 1, 241–269.
+[25] C. Fieker, W. Hart, T. Hofmann and F. Johansson, Nemo/Hecke: Computer Algebra and Number Theory Packages for
+    the Julia Programming Language, Proceedings of ISSAC ’17 (2017), 157–164.
+[26] P. X. Gallagher, Pair correlation of zeros of the zeta function, J. Reine Angew. Math. 362 (1985), 72–86.
+                                                             15
+[27] D. A. Goldston and S. M. Gonek, A note on S(t) and the zeros of the Riemann zeta-function, Bull. Lond. Math. Soc. 39
+    (2007), no. 3, 482–486.
+[28] D. A. Goldston, S. M. Gonek, A. E. Özlük and C. Snyder, On the pair correlation of zeros of the Riemann zeta-function,
+    Proc. London Math. Soc. (3) 80 (2000), no. 1, 31–49.
+[29] D. A. Goldston and H. L. Montgomery, Pair correlation of zeros and primes in short intervals, in Analytic number theory
+    and Diophantine problems (ed. A. C. Adolphson, J. B. Conrey, A. Ghosh and R. I. Yager), Birkhaüser, Boston (1987),
+    183–203.
+[30] F. Gonçalves, M. Kelly and J. Madrid, One-sided band-limited approximations of some radial functions, Bull. Braz. Math.
+    Soc. (N.S.) 46 (2015), no. 4, 563–599.
+[31] S. W. Graham and J. D. Vaaler, A class of extremal functions for the Fourier transform, Trans. Amer. Math. Soc. 265
+    (1981), no. 1, 283–302.
+[32] J. Holt and J. D. Vaaler, The Beurling-Selberg extremal functions for a ball in the Euclidean space, Duke Math. J. 83
+    (1996), no. 1, 202–248.
+[33] F. Johansson, Arb: eﬃcient arbitrary-precision midpoint-radius interval arithmetic, IEEE Transactions on Computers,
+    66 (2017), no. 8, 1281–1292.
+[34] D. de Laat, F. Oliveira, F. Vallentin, Upper bounds for packings of spheres of several radii, Forum Math. Sigma 2 (2014),
+    e23, 42 pp.
+[35] J. Löfberg, Pre- and post-processing sums-of-squares programs in practice IEEE Trans. Automat. Control 54 (2009),
+    1007âĂŞ1011.
+[36] H. L. Montgomery, The pair correlation of zeros of the zeta function, Proc. Symp. Pure Math. 24, Providence (1973),
+    181–193.
+[37] H. L. Montgomery, Distribution of the zeros of the Riemann zeta function, Proc. of the ICM 1, Vancouver (1974), 379–381.
+[38] M. Nakata, A numerical evaluation of highly accurate multiple-precision arithmetic version of semideﬁnite program-
+    ming solver: SDPA-GMP,-QD and-DD, In Computer-Aided Control System Design (CACSD), 2010 IEEE International
+    Symposium on, pages 29âĂŞ34. IEEE, 2010.
+[39] A. E. Özlük, On the q-analogue of the pair correlation conjecture, J. Number Theory, 59 (1996), no. 2, 319–351.
+[40] G. Pólya, G. Szegö, Problems and theorems in analysis. II, Classics in Mathematics, Springer-Verlag, 1998; Translated
+    from German by C. E. Billigheimer; Reprint of the 1976 English translation.
+[41] K. Sono, A note on simple zeros of primitive Dirichlet L-functions, Bull. Aust. Math. Soc. 93 (2016), no. 1, 19–30.
+[42] J. D. Vaaler, Some extremal functions in Fourier analysis, Bull. Amer. Math. Soc. (N.S.) 12 (1985), no. 2, 183–216.
+[43] M. S. Viazovska, The sphere packing problem in dimension 8, Ann. of Math. (2) 185 (2017), no. 3, 991–1015.
+
+  IMPA - Instituto Nacional de Matemática Pura e Aplicada - Estrada Dona Castorina, 110, Rio de Janeiro,
+RJ, Brazil 22460-320
+  E-mail address: achirre@impa.br
+
+  Hausdorff Center for Mathematics, Universität Bonn, Endenicher Allee 60, 53115 Bonn, Germany
+  E-mail address: goncalve@math.uni-bonn.de
+
+  Massachusetts Institute of Technology, Department of Mathematics, 77 Massachusetts Avenue, Simons
+building (Building 2), Room 2-241
+  E-mail address: mail@daviddelaat.nl
+
+
+
+
+                                                             16
+

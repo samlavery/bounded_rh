@@ -1,0 +1,6 @@
+q decreasing on [0,1]: True  g0 = 0.9904308  h0 = 0.0095692
+P=  8: LL holds for L <= 1.3000
+P= 16: LL holds for L <= 2.4709
+P= 32: LL holds for L <= 4.3961
+P= 64: LL holds for L <= 7.1426
+P=128: LL holds for L <= 10.3575

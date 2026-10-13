@@ -1,0 +1,4 @@
+k=3: grid 8489664 pts step 0.02 (6s) grid-best 0.002154515; refined floor c_t = 0.0021055119 at [1.05184 1.04902 1.0517 ]; perturbed-restart min 0.0021055119; B_t = 161696/SA
+k=4: grid 116985856 pts step 0.04 (88s) grid-best 0.003732583; refined floor c_t = 0.0037198862 at [1.0454  1.04071 1.03589 1.04289]; perturbed-restart min 0.0037198862; B_t = 242654/SA
+k=5: grid 459165024 pts step 0.08 (384s) grid-best 0.005661823; refined floor c_t = 0.0055279045 at [1.04651 1.04594 1.97377 1.03916 1.04084]; perturbed-restart min 0.0055279045; B_t = 318180/SA
+k=6: grid 594823321 pts step 0.16 (627s) grid-best 0.010468107; refined floor c_t = 0.0076709919 at [1.05025 2.00175 1.99894 1.99815 1.99624 1.05132]; perturbed-restart min 0.0072583810; B_t = 375452/SA

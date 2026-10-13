@@ -1,0 +1,12 @@
+== delta 0.03
+cN=347538: covers done (0s) bad sizes [2, 3, 3, 3, 2]
+  bisection: 113696 leaves (9s)
+  table: {'blocks': 496, 'finest': 6661, 'entries': 12826, 'top': 511, 'bits': 424401}; distinct queries 142546; leaves failing on the built table: 0 (12s)
+== delta 0.025
+cN=349330: covers done (0s) bad sizes [2, 3, 3, 3, 2]
+  bisection: 167720 leaves (12s)
+  table: {'blocks': 495, 'finest': 7374, 'entries': 14253, 'top': 511, 'bits': 470058}; distinct queries 158072; leaves failing on the built table: 0 (16s)
+== delta 0.02
+cN=351121: covers done (0s) bad sizes [2, 3, 3, 3, 2]
+  bisection: 272175 leaves (19s)
+  table: {'blocks': 495, 'finest': 8722, 'entries': 16949, 'top': 511, 'bits': 556332}; distinct queries 190690; leaves failing on the built table: 0 (24s)

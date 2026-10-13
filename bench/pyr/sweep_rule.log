@@ -1,0 +1,5 @@
+PE=5 WFRAC=4: leaves 272175 finest 8722 entries 16949 distinct q 190690 reads/q 4.55 (25s)
+PE=6 WFRAC=4: leaves 257559 finest 13587 entries 26679 distinct q 183731 reads/q 5.96 (25s)
+PE=5 WFRAC=2: leaves 282413 finest 8668 entries 16841 distinct q 186463 reads/q 4.55 (25s)
+PE=5 WFRAC=8: leaves 269621 finest 8907 entries 17319 distinct q 193506 reads/q 4.54 (25s)
+PE=4 WFRAC=4: leaves 315553 finest 5826 entries 11157 distinct q 212142 reads/q 3.66 (28s)

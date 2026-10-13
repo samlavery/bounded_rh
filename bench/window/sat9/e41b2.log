@@ -1,0 +1,1 @@
+(b) P=512 N=2048: LP   +968.461249 (fresh-Model check +968.461249) | ||grad|| 4.40e+03 (ratio 7.0e+00 to 6.32e+02) | min Hess eig -1.55e+03 | Newton its 300 | depths max 1.800 | 376s

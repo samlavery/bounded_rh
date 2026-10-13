@@ -1,0 +1,5 @@
+window famcg: H = 0.6718819775, K-terms 25
+R = 7 (n = 8): ceiling kappa* = 0.67321839  (gap to MOP 0.6735478: -3.29e-04); envelope at d = 1/kappa*: e = 0.001985, between d = (1.35, 1.52, 0.7964829085027672)
+   hull points near: d=1.520 e=0.001844 q=2
+R = inf (n = inf): ceiling kappa* = 0.67399175  (gap to MOP 0.6735478: +4.44e-04); envelope at d = 1/kappa*: e = 0.003130, between d = (1.4, 1.5, 0.8369768329499286)
+   hull points near: d=1.375 e=0.003914 q=8; d=1.400 e=0.003658 q=5; d=1.500 e=0.003027 q=8; d=1.600 e=0.002491 q=5

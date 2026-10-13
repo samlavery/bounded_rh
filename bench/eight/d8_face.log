@@ -1,0 +1,13 @@
+delta=0.006 CRAD=0.25 basins=34
+  ... 20000 leaves (Z 6785, S 12637, B 0) faces 5952 (204s)
+  ... 40000 leaves (Z 16160, S 22637, B 0) faces 10823 (401s)
+  ... 60000 leaves (Z 23895, S 34186, B 5) faces 15847 (622s)
+  ... 80000 leaves (Z 31448, S 45790, B 5) faces 20691 (850s)
+  ... 100000 leaves (Z 38556, S 57904, B 17) faces 26116 (1078s)
+  ... 120000 leaves (Z 45722, S 69881, B 36) faces 30640 (1322s)
+  ... 140000 leaves (Z 53148, S 81624, B 36) faces 35936 (1531s)
+  ... 160000 leaves (Z 63168, S 90579, B 57) faces 40049 (1727s)
+  ... 180000 leaves (Z 70788, S 101870, B 80) faces 44484 (1961s)
+  ... 200000 leaves (Z 80101, S 111318, B 88) faces 48160 (2174s)
+  bisection: 208006 leaves (Z 84104, S 114904, basin 88); face nodes 49298 (collapses 56969) (2267s)
+dumped 208006 {'nleaves': 208006, 'nZ': 84104, 'nS': 114904, 'nB': 88, 'nface': 49298} (2269s)

@@ -1,0 +1,6 @@
+  y_q in [0.7375, 0.7500]: margin 111.7789 | X charge 137.9862 | m - R -26.2073
+  y_q in [0.7500, 0.7625]: margin 118.9194 | X charge 157.0277 | m - R -38.1083
+  y_q in [0.7625, 0.7750]: margin 125.9652 | X charge 178.7504 | m - R -52.7852
+  y_q in [0.7750, 0.7875]: margin 134.0107 | X charge 203.5389 | m - R -69.5282
+  y_q in [0.7875, 0.8000]: margin 141.4259 | X charge 231.8334 | m - R -90.4075
+D0 = 16 (annuli start 10 width 4): min (m - R) = -90.4075 -> NOT closed

@@ -1,0 +1,4 @@
+delta=0.003 CRAD=0.25 basins=34
+  ... 20000 leaves (Z 4983, S 2735, B 1, 2nd 0, M 11143) mtests [31154, 11143, np.int64(198)] (302s)
+  bisection: 34197 leaves (Z 8913, S 4390, basin 7); face nodes 0 (collapses 0) (506s)
+dumped 34197 {'nleaves': 34197, 'nZ': 8913, 'nS': 4390, 'nB': 7, 'n2': 0, 'nM': 18901, 'nface': 0} (506s)

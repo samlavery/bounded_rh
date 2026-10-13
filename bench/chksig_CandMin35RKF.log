@@ -1,0 +1,45 @@
+candidate_strict_improvement : currentRecordKappa < candidateKappa
+candidate_strict_improvement : @LT.lt.{0} Real Real.instLT currentRecordKappa candidateKappa
+candidate_critical_line_bound : ∀ ε > 0,
+  ∃ T₀, ∀ T ≥ T₀, (candidateKappa - ε) * ↑(Ncount T (2 * T)) ≤ ↑(N0star T (2 * T))
+candidate_critical_line_bound : ∀ (ε : Real),
+  @GT.gt.{0} Real Real.instLT ε (@OfNat.ofNat.{0} Real (nat_lit 0) (@Zero.toOfNat0.{0} Real Real.instZero)) →
+    @Exists.{1} Real fun (T₀ : Real) =>
+      ∀ (T : Real),
+        @GE.ge.{0} Real Real.instLE T T₀ →
+          @LE.le.{0} Real Real.instLE
+            (@HMul.hMul.{0, 0, 0} Real Real Real (@instHMul.{0} Real Real.instMul)
+              (@HSub.hSub.{0, 0, 0} Real Real Real (@instHSub.{0} Real Real.instSub) candidateKappa ε)
+              (@Nat.cast.{0} Real Real.instNatCast
+                (Ncount T
+                  (@HMul.hMul.{0, 0, 0} Real Real Real (@instHMul.{0} Real Real.instMul)
+                    (@OfNat.ofNat.{0} Real (nat_lit 2)
+                      (@instOfNatAtLeastTwo.{0} Real (nat_lit 2) Real.instNatCast
+                        (@Nat.instAtLeastTwoHAddOfNat (@OfNat.ofNat.{0} Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))
+                          (@Nat.instNeZeroSucc (@OfNat.ofNat.{0} Nat (nat_lit 0) (instOfNatNat (nat_lit 0)))))))
+                    T))))
+            (@Nat.cast.{0} Real Real.instNatCast
+              (N0star T
+                (@HMul.hMul.{0, 0, 0} Real Real Real (@instHMul.{0} Real Real.instMul)
+                  (@OfNat.ofNat.{0} Real (nat_lit 2)
+                    (@instOfNatAtLeastTwo.{0} Real (nat_lit 2) Real.instNatCast
+                      (@Nat.instAtLeastTwoHAddOfNat (@OfNat.ofNat.{0} Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))
+                        (@Nat.instNeZeroSucc (@OfNat.ofNat.{0} Nat (nat_lit 0) (instOfNatNat (nat_lit 0)))))))
+                  T)))
+candidate_critical_line_bound_cumulative : ∀ ε > 0, ∃ T₀, ∀ T ≥ T₀, (candidateKappa - ε) * ↑(Ncount 0 T) ≤ ↑(N0star 0 T)
+candidate_critical_line_bound_cumulative : ∀ (ε : Real),
+  @GT.gt.{0} Real Real.instLT ε (@OfNat.ofNat.{0} Real (nat_lit 0) (@Zero.toOfNat0.{0} Real Real.instZero)) →
+    @Exists.{1} Real fun (T₀ : Real) =>
+      ∀ (T : Real),
+        @GE.ge.{0} Real Real.instLE T T₀ →
+          @LE.le.{0} Real Real.instLE
+            (@HMul.hMul.{0, 0, 0} Real Real Real (@instHMul.{0} Real Real.instMul)
+              (@HSub.hSub.{0, 0, 0} Real Real Real (@instHSub.{0} Real Real.instSub) candidateKappa ε)
+              (@Nat.cast.{0} Real Real.instNatCast
+                (Ncount (@OfNat.ofNat.{0} Real (nat_lit 0) (@Zero.toOfNat0.{0} Real Real.instZero)) T)))
+            (@Nat.cast.{0} Real Real.instNatCast
+              (N0star (@OfNat.ofNat.{0} Real (nat_lit 0) (@Zero.toOfNat0.{0} Real Real.instZero)) T))
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+exit=0

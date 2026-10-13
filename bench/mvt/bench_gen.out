@@ -1,0 +1,16 @@
+cN=357750: covers done (0s) bad sizes [2, 3, 3, 3, 2]
+  bisection: 173730 leaves (Z 68699, M 96435) (53s)
+  tables: w {'blocks': 496, 'finest': 6004, 'entries': 11512, 'top': 511, 'bits': 382369}
+          d+ {'blocks': 309, 'finest': 2433, 'entries': 4557, 'top': 511, 'bits': 160296}
+          d- {'blocks': 309, 'finest': 2433, 'entries': 4557, 'top': 511, 'bits': 160450}
+          points 2469; leaves failing on the built tables: 0 (64s)
+469 chunks; sample:
+bw0: trivial 0 Z 10 M 1906 splits 1915
+bw1: trivial 0 Z 1 M 1862 splits 1862
+bw2: trivial 0 Z 15 M 1801 splits 1815
+bw3: trivial 0 Z 0 M 1790 splits 1789
+bw4: trivial 54 Z 1638 M 74 splits 1765
+bw5: trivial 0 Z 1587 M 41 splits 1627
+bw6: trivial 0 Z 1160 M 71 splits 1230
+bw7: trivial 28 Z 882 M 84 splits 993
+tables: {'w': {'blocks': 496, 'finest': 6004, 'entries': 11512, 'top': 511, 'bits': 382369}, 'dP': {'blocks': 309, 'finest': 2433, 'entries': 4557, 'top': 511, 'bits': 160296}, 'dM': {'blocks': 309, 'finest': 2433, 'entries': 4557, 'top': 511, 'bits': 160450}, 'points': 2469} point blocks 54 bytes 546415

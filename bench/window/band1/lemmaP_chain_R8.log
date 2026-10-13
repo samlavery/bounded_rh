@@ -1,0 +1,23 @@
+window R8, N=32: certificate g(0) = 2 delta' = 0.981016, g^(0) = 0.981016, g_N(0) = 0.981016, kappa_cert 0.674248; budget for Lemma P' (per defect, units of 2 delta'): 0.229%
+window R8 N=32: g(0) 0.981016
+I1-I3 identities (max abs error over 6 configs): I1 7.1e-15  I2 1.2e-14  I3 1.5e-14;  P_h >= 0 and T_g >= 0 in all: True
+I4 Poisson: max |sum_n L_y(n + t)| over t in [0,1), y in {0.05, 0.3, 1}: 2.5e-13
+I5 pair block pointwise: min[(A1^2-4)+(A2^2-4)+2c(A1A2-4) - (A1-A2)^2] over 2000 samples 8.37e-03 (>= 0)
+S_b (global Cauchy-Schwarz, step (b)) on: one pair at depth y on a lattice site (its own vacancy at -2) + K remote dipoles
+  K=0 y=0.05: W (two-sided) +0.0698 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = +0.0334  (||S_env^fl||^2 1.87 vs slack 0.0371)
+  K=0 y=0.10: W (two-sided) +0.1763 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = +0.0282  (||S_env^fl||^2 1.87 vs slack 0.0371)
+  K=0 y=0.30: W (two-sided) +2.3174 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = +0.7392  (||S_env^fl||^2 1.87 vs slack 0.0371)
+  K=1 y=0.05: W (two-sided) +0.1069 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = +0.0421  (||S_env^fl||^2 3.87 vs slack 0.0742)
+  K=1 y=0.10: W (two-sided) +0.2134 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = -0.0498  (||S_env^fl||^2 3.87 vs slack 0.0742)
+  K=1 y=0.30: W (two-sided) +2.3546 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = -0.4090  (||S_env^fl||^2 3.87 vs slack 0.0742)
+  K=3 y=0.05: W (two-sided) +0.1811 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = +0.0765  (||S_env^fl||^2 7.87 vs slack 0.1483)
+  K=3 y=0.10: W (two-sided) +0.2877 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = -0.1365  (||S_env^fl||^2 7.87 vs slack 0.1483)
+  K=3 y=0.30: W (two-sided) +2.4304 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = -1.9922  (||S_env^fl||^2 7.87 vs slack 0.1483)
+  K=6 y=0.05: W (two-sided) +0.2896 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = +0.1411  (||S_env^fl||^2 13.87 vs slack 0.2565)
+  K=6 y=0.10: W (two-sided) +0.3972 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = -0.2046  (||S_env^fl||^2 13.87 vs slack 0.2565)
+  K=6 y=0.30: W (two-sided) +2.5536 | step-(b) bound slack + pair block - 2||B|| ||S_env^fl|| = -3.7008  (||S_env^fl||^2 13.87 vs slack 0.2565)
+T  termwise kernel Lambda_y(n) = 4 g(n) + 2 L_y(n) at n = 1, 2, 3 (g(n) ~ 0 by lattice tightness):
+  y=0.05: g(1..3) [-0.  0.  0.] | L_y(1..3) [-0.005393 -0.000931 -0.000359] -> Lambda [-0.010785 -0.001861 -0.000718]
+  y=0.10: g(1..3) [-0.  0.  0.] | L_y(1..3) [-0.02165  -0.003802 -0.00147 ] -> Lambda [-0.043299 -0.007604 -0.002941]
+  y=0.30: g(1..3) [-0.  0.  0.] | L_y(1..3) [-0.202084 -0.04247  -0.016901] -> Lambda [-0.404168 -0.084941 -0.033801]
+V  second order on the lattice dipole: Delta_B / y^2 = 12.8329 vs -2 V''_D(s) = 12.8328

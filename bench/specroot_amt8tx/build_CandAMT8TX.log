@@ -1,0 +1,258 @@
+specroot_amt8tx/CandAMT8TX.lean:2289:20: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:2829:16: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:4233:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:4922:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:7335:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:7365:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:7395:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:7425:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:7455:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:7485:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:7515:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:8548:79: error: Tactic `decide` failed for proposition
+  (allFrom 0 211 fun j => blockOk (BK j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 0 211 fun j => blockOk (BK j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 0 211 fun j => blockOk (BK j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:8549:81: error: Tactic `decide` failed for proposition
+  (allFrom 211 200 fun j => blockOk (BK j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 211 200 fun j => blockOk (BK j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 211 200 fun j => blockOk (BK j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9124:77: error: Tactic `decide` failed for proposition
+  (allFrom 0 61 fun j => blockOk2 (BKD j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 0 61 fun j => blockOk2 (BKD j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 0 61 fun j => blockOk2 (BKD j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9125:78: error: Tactic `decide` failed for proposition
+  (allFrom 61 70 fun j => blockOk2 (BKD j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 61 70 fun j => blockOk2 (BKD j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 61 70 fun j => blockOk2 (BKD j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9126:79: error: Tactic `decide` failed for proposition
+  (allFrom 131 86 fun j => blockOk2 (BKD j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 131 86 fun j => blockOk2 (BKD j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 131 86 fun j => blockOk2 (BKD j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9127:80: error: Tactic `decide` failed for proposition
+  (allFrom 217 114 fun j => blockOk2 (BKD j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 217 114 fun j => blockOk2 (BKD j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 217 114 fun j => blockOk2 (BKD j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9198:80: error: Tactic `decide` failed for proposition
+  (allFrom 0 63 fun j => pt3BlockOk (PT3B j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 0 63 fun j => pt3BlockOk (PT3B j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 0 63 fun j => pt3BlockOk (PT3B j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9199:81: error: Tactic `decide` failed for proposition
+  (allFrom 63 32 fun j => pt3BlockOk (PT3B j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 63 32 fun j => pt3BlockOk (PT3B j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 63 32 fun j => pt3BlockOk (PT3B j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9200:81: error: Tactic `decide` failed for proposition
+  (allFrom 95 34 fun j => pt3BlockOk (PT3B j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 95 34 fun j => pt3BlockOk (PT3B j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 95 34 fun j => pt3BlockOk (PT3B j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9201:83: error: Tactic `decide` failed for proposition
+  (allFrom 129 216 fun j => pt3BlockOk (PT3B j) j) = true
+because its `Decidable` instance
+  instDecidableEqBool (allFrom 129 216 fun j => pt3BlockOk (PT3B j) j) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match allFrom 129 216 fun j => pt3BlockOk (PT3B j) j, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:9209:35: error: Tactic `decide` failed for proposition
+  rgOk REG = true
+because its `Decidable` instance
+  instDecidableEqBool (rgOk REG) true
+did not reduce to `isTrue` or `isFalse`.
+
+Reduction got stuck at the `Decidable` instance
+  match rgOk REG, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+specroot_amt8tx/CandAMT8TX.lean:11375:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:11480:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_amt8tx/CandAMT8TX.lean:12443:56: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+      214.35 real       204.02 user        12.64 sys
+          8102871040  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              588255  page reclaims
+                1261  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+               66009  involuntary context switches
+       2002445896599  instructions retired
+        727627124247  cycles elapsed
+          3160200240  peak memory footprint
+BUILD EXIT 1

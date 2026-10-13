@@ -1,0 +1,540 @@
+comparator/Solution/Cand15D.lean:5211:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:5521:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Cand15D.lean:5831:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:5844:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:5945:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:6602:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:6632:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:6662:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:6692:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15D.lean:6722:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+75525015
+75525220
+75525425
+75525634
+75525842
+75526050
+75526261
+75526472
+75526684
+75526902
+75527129
+75527344
+75527551
+75527757
+75527962
+75528167
+75528371
+75528577
+75528784
+75528990
+75529195
+75529401
+75529606
+75529811
+75530017
+75530223
+75530428
+75530635
+75530841
+75531045
+75531250
+75531456
+75531662
+75531683
+75532558
+75533431
+75534301
+75535135
+75535978
+75536818
+75537691
+75538566
+75539478
+75540354
+75541224
+75542056
+75542885
+75543715
+75544544
+75545373
+75546213
+75547066
+75547959
+75548873
+75549757
+75550635
+75551516
+75552396
+75553271
+75554135
+75554969
+75555800
+75556630
+75557464
+75558382
+75559316
+75559394
+75559411
+75559423
+75559444
+75559458
+75559481
+75559496
+75559517
+75559531
+75559546
+75559557
+75559692
+75559699
+75562706
+75562713
+75573204
+75573211
+75577951
+75577958
+75585393
+75585400
+75587401
+75587408
+75588579
+75588585
+75592549
+75592556
+75599533
+75599540
+75601845
+75601852
+75602852
+75602858
+75603095
+75603101
+75603118
+75603124
+75604539
+75604546
+75605319
+75605326
+75605462
+75605469
+75605486
+75605492
+75605507
+75605514
+75605530
+75605536
+75610390
+75610396
+75620218
+75620225
+75624009
+75624016
+75625994
+75626000
+75626360
+75626367
+75626478
+75626485
+75628941
+75628948
+75630103
+75630109
+75630396
+75630403
+75630419
+75630425
+75630441
+75630447
+75630464
+75630470
+75630613
+75630619
+75630637
+75630643
+75630659
+75630665
+75630681
+75630687
+75630703
+75630709
+75630726
+75630732
+75632778
+75632784
+75634207
+75634213
+75634568
+75634575
+75634690
+75634696
+75634713
+75634719
+75634736
+75634742
+75634955
+75634961
+75634978
+75634985
+75635001
+75635007
+75635023
+75635030
+75635046
+75635052
+75635069
+75635075
+75635090
+75635097
+75635112
+75635118
+75635134
+75635140
+75635157
+75635163
+75635177
+75635184
+75635199
+75635206
+75645421
+75645428
+75645434
+75645441
+75645447
+75645453
+75645459
+75645465
+75645472
+75652775
+75652781
+75656755
+75656762
+75656769
+75659582
+75659590
+75659597
+75662044
+75662053
+75662059
+75662437
+75662445
+75662451
+75662868
+75662876
+75662882
+75662898
+75662905
+75662911
+75662927
+75662934
+75662940
+75672356
+75672362
+75678496
+75678503
+75680028
+75680035
+75680351
+75680357
+75688202
+75688208
+75692784
+75692791
+75693861
+75693867
+75694060
+75694067
+75694083
+75694090
+75694107
+75694114
+75694854
+75694861
+75695042
+75695049
+75695066
+75695073
+75695088
+75695095
+75695110
+75695117
+75695133
+75695139
+75702201
+75702208
+75708351
+75708358
+75710214
+75710220
+75710485
+75710492
+75710590
+75710597
+75710615
+75710621
+75711726
+75711733
+75711923
+75711930
+75711945
+75711951
+75711967
+75711974
+75711990
+75711996
+75712012
+75712019
+75712036
+75712042
+75712058
+75712064
+75712080
+75712086
+75712102
+75712108
+75712124
+75712131
+75712149
+75712155
+75713486
+75713493
+75713814
+75713820
+75713917
+75713923
+75713941
+75713947
+75713964
+75713971
+75713987
+75713994
+75714010
+75714016
+75714034
+75714040
+75714056
+75714062
+75714078
+75714084
+75714101
+75714108
+75714124
+75714130
+75714147
+75714153
+75714169
+75714175
+75714193
+75714199
+75714217
+75714223
+75714239
+75714245
+75714261
+75714268
+75714276
+75714283
+75714291
+75714298
+75714308
+75714318
+75714328
+75714338
+75714348
+75714359
+75714369
+75714379
+75714389
+75714399
+75714410
+75714421
+75714431
+75714442
+75714453
+75714464
+75714475
+75714486
+75714496
+75714506
+75714516
+75714526
+75714537
+75714548
+75714557
+75714568
+75714578
+75714589
+75714600
+75714611
+75714621
+75714632
+75714643
+75714654
+75714665
+75714677
+75714687
+75714697
+75714708
+75714719
+75714730
+75714740
+75714751
+75714762
+75714773
+75714784
+75714795
+75714806
+75714817
+75714828
+75714839
+75714852
+75714863
+75714875
+75714885
+75714895
+75714905
+75714916
+75714927
+75714938
+75714948
+75714958
+75714969
+75714980
+75714991
+75715002
+75715012
+75715023
+75715034
+75715045
+75715057
+75715068
+75715079
+75715089
+75715099
+75715110
+75715121
+75715132
+75715143
+75715153
+75715164
+75715175
+75715186
+75715197
+75715208
+75715219
+75715230
+75715242
+75715253
+75715265
+75715275
+75715286
+75715297
+75715308
+75715319
+75715331
+75715342
+75715353
+75715364
+75715375
+75715387
+75715398
+75715410
+75715421
+75715433
+75715445
+75715456
+75715468
+75715769
+75715781
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      309.43 real       299.39 user        10.12 sys
+          9589506048  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              674510  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+               24444  involuntary context switches
+       2562011523260  instructions retired
+       1040101051539  cycles elapsed
+          4649228224  peak memory footprint

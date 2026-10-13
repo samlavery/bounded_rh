@@ -1,0 +1,39 @@
+== cfx9 tag=PZ64bS wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9pr.py PFK=8 LPACCEPT= EXACTV= EXACTC= SO= Sun Oct 11 13:32:22 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=4,5,10,11,18,19,36,37,42,43,50,51
+root covers (bad intervals): [[(26112, 52056), (52056, 1040384)], [(28672, 557056)], [(29184, 45056), (52224, 425984)], [(29696, 44032), (53248, 376832)], [(29696, 44032), (53248, 376832)], [(29184, 45056), (52224, 425984)], [(28672, 557056)], [(26112, 52056), (52056, 1040384)]]
+  root 4 (0, 0, 0, 0, 1, 0, 0, 0): 343 leaves (134s)
+  root 5 (0, 0, 0, 0, 1, 0, 0, 1): 341 leaves (270s)
+  root 10 (0, 0, 0, 1, 0, 1, 0, 0): 407 leaves (432s)
+  root 11 (0, 0, 0, 1, 0, 1, 0, 1): 523 leaves (632s)
+  root 18 (0, 0, 1, 0, 0, 1, 0, 0): 272 leaves (736s)
+  root 19 (0, 0, 1, 0, 0, 1, 0, 1): 305 leaves (857s)
+  root 36 (1, 0, 0, 0, 1, 0, 0, 0): 317 leaves (978s)
+  root 37 (1, 0, 0, 0, 1, 0, 0, 1): 232 leaves (1070s)
+  root 42 (1, 0, 0, 1, 0, 1, 0, 0): 334 leaves (1188s)
+  root 43 (1, 0, 0, 1, 0, 1, 0, 1): 322 leaves (1307s)
+  root 50 (1, 0, 1, 0, 0, 1, 0, 0): 322 leaves (1425s)
+  root 51 (1, 0, 1, 0, 0, 1, 0, 1): 248 leaves (1512s)
+  bisection: 3966 leaves (Z 0, M 3789, empty 0), 3954 splits, 1911 at region boundaries (1512s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2404 points (11422 point cells); failing 0 (1523s)
+leaves 3966 kinds {6: 3789, 0: 177} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 3954 (pair 3105); walk bits 1198444 (302.2 per leaf; multipliers 3204 x 12 bits); M nonzero multipliers [(0, 1071), (1, 2246), (2, 458), (3, 14)]; constraints per M cell [(28, 3789)]; w 1984 d 2240 pts 2404 ptc 11422 bad 0 MSTAT lp 12533 (1524s)
+nodes visited 7920 (leaves 3966 + splits 3954); explicit constraints per node: mean 28.00, dist [(28, 7920)]
+walk: 1198444 bits = 0.300 MB hex, 0.200 MB base64 (roots run); x8.73: 2.62 MB hex, 1.74 MB base64
+     1537.92 real      1479.10 user        26.43 sys
+          2883223552  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1917682  page reclaims
+                 112  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 320  voluntary context switches
+             2241729  involuntary context switches
+      20923053705314  instructions retired
+       4863988122730  cycles elapsed
+          3738913936  peak memory footprint
+== done Sun Oct 11 13:58:03 PDT 2026

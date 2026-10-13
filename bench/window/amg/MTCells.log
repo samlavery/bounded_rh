@@ -1,0 +1,69 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:54:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:55:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:55:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:56:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:56:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:57:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:57:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:58:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:58:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:59:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:59:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:00:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:00:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:01:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:01:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:02:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:02:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:03:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:03:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:04:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:04:30)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:05:00)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (15:05:30)
+linting took 18.6ms
+linting took 18.1ms
+linting took 18.3ms
+overlappingInstancesLinter took 1.34ms
+linting took 15.2ms
+type checking took 1.18s
+linting took 1.92ms
+type checking took 2.26s
+linting took 1.82ms
+type checking took 2.28s
+linting took 1.37ms
+linting took 12.1ms
+cumulative profiling times:
+	attribute application 0.0238ms
+	elaboration 4.37ms
+	fix level params 0.0214ms
+	instantiate metavars 0.0234ms
+	let-to-have transformation 0.0281ms
+	linting 98.3ms
+	module linting 0.000625ms
+	overlappingInstancesLinter 2.64ms
+	parsing 0.543ms
+	process pre-definitions 0.276ms
+	share common exprs 0.0788ms
+	tactic execution 0.913ms
+	tacticAnalysis 8.12ms
+	type checking 5.72s
+	typeclass inference 3.09ms
+       15.09 real         4.14 user        10.95 sys
+          6057590784  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              446681  page reclaims
+                  56  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  14  voluntary context switches
+                4561  involuntary context switches
+         70796643407  instructions retired
+         48857050439  cycles elapsed
+          1183961368  peak memory footprint

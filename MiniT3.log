@@ -1,0 +1,55 @@
+simp took 804ms
+simp took 748ms
+tactic execution of Mathlib.Tactic.nlinarith took 253ms
+tactic execution of Mathlib.Tactic.nlinarith took 241ms
+tactic execution of Mathlib.Tactic.nlinarith took 537ms
+tactic execution of Mathlib.Tactic.nlinarith took 611ms
+tactic execution of Mathlib.Tactic.nlinarith took 208ms
+tactic execution of Lean.Parser.Tactic.exact took 279ms
+tactic execution of Lean.Parser.Tactic.rewriteSeq took 205ms
+tactic execution of Mathlib.Tactic.nlinarith took 356ms
+tactic execution of Mathlib.Tactic.nlinarith took 654ms
+share common exprs took 420ms
+type checking took 229ms
+cumulative profiling times:
+	attribute application 4.96ms
+	compilation (IR) 0.402ms
+	compilation (LCNF base) 9.74ms
+	compilation (LCNF impure) 1.38ms
+	compilation (LCNF mono) 4.18ms
+	congr simp thm 50.6ms
+	elaboration 810ms
+	fix level params 119ms
+	instantiate metavars 130ms
+	interpretation 2.83ms
+	let-to-have transformation 2.16ms
+	linting 205ms
+	module linting 0.000583ms
+	norm_num 28.4s
+	parsing 233ms
+	process pre-definitions 2.12s
+	ring 4.62s
+	share common exprs 2.93s
+	simp 2.54s
+	tactic execution 64.4s
+	tacticAnalysis 13.2ms
+	type checking 5.45s
+	typeclass inference 13.8s
+       82.26 real       118.05 user        18.24 sys
+          5577441280  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              496782  page reclaims
+              331186  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                2847  voluntary context switches
+              868255  involuntary context switches
+        775257052297  instructions retired
+        440119946891  cycles elapsed
+          3059569760  peak memory footprint

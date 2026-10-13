@@ -1,0 +1,142 @@
+import took 18.6s
+.olean serialization took 356ms
+type checking took 11.4s
+elaboration took 517ms
+type checking took 13.5s
+elaboration took 636ms
+type checking took 1.35s
+elaboration took 15.6ms
+type checking took 750ms
+type checking took 52.9ms
+type checking took 15.7ms
+type checking took 15s
+elaboration took 591ms
+type checking took 5.44s
+elaboration took 104ms
+type checking took 377ms
+type checking took 4.52s
+elaboration took 82.1ms
+type checking took 1.66s
+elaboration took 19.9ms
+type checking took 562ms
+type checking took 30.8ms
+type checking took 16.5ms
+type checking took 12.2s
+elaboration took 411ms
+type checking took 6.39s
+elaboration took 134ms
+type checking took 8.34s
+elaboration took 208ms
+type checking took 322ms
+type checking took 5.52s
+elaboration took 108ms
+type checking took 4.57s
+elaboration took 60.7ms
+type checking took 718ms
+type checking took 1.73s
+elaboration took 15.3ms
+type checking took 40.1ms
+type checking took 670ms
+type checking took 16.3ms
+type checking took 12.5s
+elaboration took 450ms
+type checking took 2.76s
+elaboration took 30.4ms
+type checking took 1.73s
+elaboration took 14.1ms
+type checking took 395ms
+type checking took 755ms
+type checking took 292ms
+type checking took 173ms
+type checking took 12.2ms
+type checking took 12.9s
+elaboration took 401ms
+type checking took 1.73s
+elaboration took 12.8ms
+type checking took 291ms
+type checking took 227ms
+type checking took 154ms
+type checking took 15.4ms
+type checking took 3.98s
+elaboration took 45.2ms
+type checking took 12.1s
+elaboration took 517ms
+type checking took 3.48s
+elaboration took 44.8ms
+type checking took 1.07s
+type checking took 34.5ms
+type checking took 710ms
+elaboration took 10.8ms
+type checking took 12.8ms
+type checking took 12s
+elaboration took 379ms
+type checking took 2.6s
+elaboration took 25.8ms
+type checking took 1.96s
+elaboration took 13.7ms
+type checking took 523ms
+type checking took 469ms
+type checking took 484ms
+type checking took 20.4ms
+type checking took 198ms
+type checking took 3.26s
+elaboration took 33.1ms
+type checking took 10.2s
+elaboration took 307ms
+type checking took 379ms
+type checking took 2.59s
+elaboration took 27.9ms
+type checking took 284ms
+type checking took 1.71s
+elaboration took 19.4ms
+type checking took 477ms
+type checking took 305ms
+type checking took 22.5ms
+type checking took 182ms
+type checking took 5.31s
+elaboration took 96.8ms
+type checking took 11.6s
+elaboration took 435ms
+type checking took 5.83s
+elaboration took 112ms
+type checking took 3.61s
+elaboration took 40ms
+type checking took 687ms
+cumulative profiling times:
+	.olean serialization 356ms
+	attribute application 0.892ms
+	elaboration 6.11s
+	fix level params 1.23ms
+	import 18.6s
+	initialization 34.7ms
+	instantiate metavars 2.2ms
+	interpretation 1.03s
+	let-to-have transformation 0.479ms
+	linting 21.8ms
+	module linting 0.000583ms
+	overlappingInstancesLinter 16.6ms
+	parsing 79.7ms
+	process pre-definitions 15.8ms
+	share common exprs 7.76ms
+	tactic execution 66.4ms
+	tacticAnalysis 51.6ms
+	type checking 215s
+	typeclass inference 107ms
+      242.08 real       208.42 user        18.76 sys
+          7221379072  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              707252  page reclaims
+                1267  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 327  voluntary context switches
+              163079  involuntary context switches
+       1046553555070  instructions retired
+        683788660193  cycles elapsed
+          2689861968  peak memory footprint

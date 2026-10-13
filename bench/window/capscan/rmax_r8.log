@@ -1,0 +1,32 @@
+/opt/homebrew/lib/python3.14/site-packages/scipy/optimize/_numdiff.py:686: RuntimeWarning: invalid value encountered in subtract
+  df = [f_eval - f0 for f_eval in f_evals]
+R_max    7: R = 1.177029  kappa(m=152) = 0.6735267  [best m 240: 0.6735365]  binding word q=7 gaps [1.0452 1.9869 1.9869 1.0452 1.9762 1.0437 1.9762] (period 11.0602, a+b-type sums [3.0321 3.9737 3.0321 3.0213]) Eb 0.2506 Eo 0.0000 beta 1.000 (7s)
+R_max    8: R = 1.183546  kappa(m=152) = 0.6735558  [best m 240: 0.6735661]  binding word q=7 gaps [1.0451 1.9866 1.9866 1.0451 1.9758 1.0436 1.9759] (period 11.0587, a+b-type sums [3.0317 3.9732 3.0317 3.0209]) Eb 0.2508 Eo 0.0065 beta 1.000 (14s)
+R_max   10: R = 1.194621  kappa(m=152) = 0.6736052  [best m 240: 0.6736124]  binding word q=2 gaps [1.04 1.97] (period 3.0100, a+b-type sums [3.01 3.01]) Eb 0.3054 Eo 0.0069 beta 1.000 (21s)
+R_max   12: R = 1.199403  kappa(m=152) = 0.6736266  [best m 240: 0.6736344]  binding word q=2 gaps [1.04 1.97] (period 3.0100, a+b-type sums [3.01 3.01]) Eb 0.3054 Eo 0.0116 beta 1.000 (28s)
+R_max   15: R = 1.206323  kappa(m=152) = 0.6736575  [best m 240: 0.6736665]  binding word q=2 gaps [1.04 1.97] (period 3.0100, a+b-type sums [3.01 3.01]) Eb 0.3054 Eo 0.0186 beta 1.000 (35s)
+R_max   20: R = 1.212438  kappa(m=152) = 0.6736848  [best m 240: 0.6736925]  binding word q=2 gaps [1.04  1.965] (period 3.0050, a+b-type sums [3.005 3.005]) Eb 0.3212 Eo 0.0103 beta 1.000 (42s)
+R_max   30: R = 1.217882  kappa(m=152) = 0.6737091  [best m 240: 0.6737186]  binding word q=2 gaps [1.04  1.965] (period 3.0050, a+b-type sums [3.005 3.005]) Eb 0.3212 Eo 0.0157 beta 1.000 (49s)
+R_max   60: R = 1.227104  kappa(m=152) = 0.6737503  [best m 240: 0.6737602]  binding word q=7 gaps [1.04 1.97 1.04 1.97 1.04 1.97 1.97] (period 11.0000, a+b-type sums [3.01 3.01 3.01 3.01]) Eb 0.2983 Eo 0.0075 beta 1.000 (56s)
+R_max  inf: R = 1.227364  kappa(m=152) = 0.6737515  [best m 240: 0.6737621]  binding word q=7 gaps [1.04 1.97 1.04 1.97 1.04 1.97 1.97] (period 11.0000, a+b-type sums [3.01 3.01 3.01 3.01]) Eb 0.2983 Eo 0.0078 beta 1.000 (63s)
+
+ergodic word abbabab: window excess over c per cyclic window (%): [0.068 0.076 0.184 0.077 0.069 0.102 0.102]
+  delta 0.5%: 7/7 windows in U; run length infinite (all windows)
+  delta 1.0%: 7/7 windows in U; run length infinite (all windows)
+  delta 2.0%: 7/7 windows in U; run length infinite (all windows)
+
+alternating: window excess over c per cyclic window (%): [0.141 0.188]
+  delta 0.5%: 2/2 windows in U; run length infinite (all windows)
+  delta 1.0%: 2/2 windows in U; run length infinite (all windows)
+  delta 2.0%: 2/2 windows in U; run length infinite (all windows)
+
+forced long-range energy per point e(l) = min over periodic words with ALL windows F <= c(1+delta) of the per-point ordered-pair energy at ranks 8 .. l+6 (within a run of l windows):
+  delta 0.5%  l =  8: no feasible word found
+  delta 0.5%  l = 16: e = 0.000403 per point (q=2 gaps [1.0419 1.9715]; consecutive sums [3.0134 3.0134])
+  delta 0.5%  l = 32: e = 0.000781 per point (q=2 gaps [1.9714 1.042 ]; consecutive sums [3.0134 3.0134])
+  delta 1.0%  l =  8: e = 0.000464 per point (q=3 gaps [1.9582 1.0342 1.0342]; consecutive sums [2.9924 2.0683 2.9924])
+  delta 1.0%  l = 16: e = 0.000263 per point (q=2 gaps [1.9695 1.0411]; consecutive sums [3.0106 3.0106])
+  delta 1.0%  l = 32: e = 0.000514 per point (q=4 gaps [1.0412 1.9694 1.0412 1.9694]; consecutive sums [3.0106 3.0106 3.0106 3.0106])
+  delta 2.0%  l =  8: no feasible word found
+  delta 2.0%  l = 16: e = 0.000125 per point (q=8 gaps [1.9669 1.0398 1.9669 1.0398 1.9669 1.0398 1.9669 1.0398]; consecutive sums [3.0067 3.0067 3.0067 3.0067 3.0067 3.0067 3.0067 3.0067])
+  delta 2.0%  l = 32: e = 0.000236 per point (q=2 gaps [1.9667 1.0401]; consecutive sums [3.0067 3.0067])

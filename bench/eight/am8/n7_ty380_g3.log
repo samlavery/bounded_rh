@@ -1,0 +1,6 @@
+delta=3.927e-05 cN=787380 regions=16 env AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin_typh7_n7_B398386.json GSH=3 TWOGRID=1 WMIN=9 DLO=8 DHI=9
+  ... 20000 leaves (Z 4090, S 0, B 0, 2nd 0, M 14445) mtests [34453, 14492, 14445] (236s)
+  bisection: 25360 leaves (Z 5429, S 0, basin 0); face nodes 0 (collapses 0) (294s)
+  fix-up: 0 re-decided; tables: w 992 cells, d 878 cells, 2910 points (9877 point cells); failing 0 (299s)
+leaves 25360 Z 5429 M 18102 reflected 1829 w 992 d 878 pts 2910 ptc 9877 bad 0 (299s)
+saved lv7_ty380_g3.pkl

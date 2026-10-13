@@ -1,0 +1,11 @@
+window winopt_smoothfit_single_N24.json: K(0) = F(0)^2 = 1.00000000, qf(0) = 1.023971; lattice check sum_n K(n) = 1.02397147 (= qf(0))
+band-limited global certificate (A = 1, closed form): delta' = inf qf/(1-a) / 2 = 0.270524 at a = 0.9596  -> 55.84% of delta_true 0.484424
+  exact LP A=1.00 Dk=1/32: g(0) 0.541193 -> delta' 0.270596 = 55.86% of delta_true  (min T -1.3e-13, max(g^-qf) +0.0e+00, 5 refinements)
+  exact LP A=1.00 Dk=1/64: g(0) 0.541492 -> delta' 0.270746 = 55.89% of delta_true  (min T -4.3e-12, max(g^-qf) +5.1e-08, 29 refinements)
+  exact LP A=1.25 Dk=1/32: g(0) 0.685354 -> delta' 0.342677 = 70.74% of delta_true  (min T -9.5e-08, max(g^-qf) +0.0e+00, 29 refinements)
+  exact LP A=1.25 Dk=1/64: g(0) 0.686108 -> delta' 0.343054 = 70.82% of delta_true  (min T -7.4e-08, max(g^-qf) +5.0e-08, 29 refinements)
+  exact LP A=1.50 Dk=1/32: g(0) 0.808314 -> delta' 0.404157 = 83.43% of delta_true  (min T -9.8e-08, max(g^-qf) +0.0e+00, 29 refinements)
+  exact LP A=1.50 Dk=1/64: g(0) 0.809619 -> delta' 0.404810 = 83.57% of delta_true  (min T -9.4e-08, max(g^-qf) +0.0e+00, 29 refinements)
+  exact LP A=2.00 Dk=1/32: g(0) 0.912951 -> delta' 0.456476 = 94.23% of delta_true  (min T -9.6e-08, max(g^-qf) +4.9e-08, 29 refinements)
+  exact LP A=2.00 Dk=1/64: g(0) 0.914581 -> delta' 0.457290 = 94.40% of delta_true  (min T -1.1e-07, max(g^-qf) +1.9e-08, 29 refinements)
+  exact LP A=3.00 Dk=1/32: g(0) 0.923514 -> delta' 0.461757 = 95.32% of delta_true  (min T -8.8e-08, max(g^-qf) +1.4e-16, 29 refinements)

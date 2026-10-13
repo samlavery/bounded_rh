@@ -1,0 +1,23 @@
+allocation: L=2 WINC=0.8 CW=0.1 DEL=0.5 D0=4: sup sum cluster weights 0.9112, sup sum non-cluster weights 1.0000 (both <= 1)
+banded crowd_dp4: L=2 WINC=0.8 CW=0.1 DEL=0.5, cap 32, y in [0.0000, 0.1875] (15 intervals), r in [inf, 4.0, 2.0, 1.0]
+  y in [0.0000, 0.0125]: X charge 0.0092 | r=inf: LP_p/y^2 >= +2.6860, m-R +2.6768 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +2.6860, m-R +2.6768 | r=2: LP_p/y^2 >= +2.6860, m-R +2.6768 | r=1: LP_p/y^2 >= +2.4105, m-R +2.4013 |
+  y in [0.0125, 0.0250]: X charge 0.0280 | r=inf: LP_p/y^2 >= +1.9711, m-R +1.9431 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.9711, m-R +1.9431 | r=2: LP_p/y^2 >= +1.9711, m-R +1.9431 | r=1: LP_p/y^2 >= +1.8524, m-R +1.8244 |
+  y in [0.0250, 0.0375]: X charge 0.0546 | r=inf: LP_p/y^2 >= +1.8308, m-R +1.7762 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.8308, m-R +1.7762 | r=2: LP_p/y^2 >= +1.8308, m-R +1.7762 | r=1: LP_p/y^2 >= +1.7151, m-R +1.6605 |
+  y in [0.0375, 0.0500]: X charge 0.0895 | r=inf: LP_p/y^2 >= +1.6780, m-R +1.5885 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.6780, m-R +1.5885 | r=2: LP_p/y^2 >= +1.6780, m-R +1.5885 | r=1: LP_p/y^2 >= +1.5733, m-R +1.4838 |
+  y in [0.0500, 0.0625]: X charge 0.1331 | r=inf: LP_p/y^2 >= +1.5734, m-R +1.4403 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.5734, m-R +1.4403 | r=2: LP_p/y^2 >= +1.5734, m-R +1.4403 | r=1: LP_p/y^2 >= +1.4773, m-R +1.3442 |
+  y in [0.0625, 0.0750]: X charge 0.1860 | r=inf: LP_p/y^2 >= +1.4837, m-R +1.2977 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.4837, m-R +1.2977 | r=2: LP_p/y^2 >= +1.4837, m-R +1.2977 | r=1: LP_p/y^2 >= +1.3942, m-R +1.2082 |
+  y in [0.0750, 0.0875]: X charge 0.2488 | r=inf: LP_p/y^2 >= +1.3986, m-R +1.1498 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.3986, m-R +1.1498 | r=2: LP_p/y^2 >= +1.3986, m-R +1.1498 | r=1: LP_p/y^2 >= +1.3185, m-R +1.0697 |
+  y in [0.0875, 0.1000]: X charge 0.3224 | r=inf: LP_p/y^2 >= +1.3149, m-R +0.9925 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.3149, m-R +0.9925 | r=2: LP_p/y^2 >= +1.3149, m-R +0.9925 | r=1: LP_p/y^2 >= +1.2416, m-R +0.9192 |
+  y in [0.1000, 0.1125]: X charge 0.4077 | r=inf: LP_p/y^2 >= +1.2502, m-R +0.8425 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.2502, m-R +0.8425 | r=2: LP_p/y^2 >= +1.2502, m-R +0.8425 | r=1: LP_p/y^2 >= +1.1855, m-R +0.7778 |
+  y in [0.1125, 0.1250]: X charge 0.5057 | r=inf: LP_p/y^2 >= +1.1946, m-R +0.6889 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.1946, m-R +0.6889 | r=2: LP_p/y^2 >= +1.1946, m-R +0.6889 | r=1: LP_p/y^2 >= +1.1403, m-R +0.6346 |
+  y in [0.1250, 0.1375]: X charge 0.6178 | r=inf: LP_p/y^2 >= +1.1645, m-R +0.5467 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.1645, m-R +0.5467 | r=2: LP_p/y^2 >= +1.1645, m-R +0.5467 | r=1: LP_p/y^2 >= +1.1162, m-R +0.4984 |
+  y in [0.1375, 0.1500]: X charge 0.7455 | r=inf: LP_p/y^2 >= +1.1493, m-R +0.4038 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.1493, m-R +0.4038 | r=2: LP_p/y^2 >= +1.1493, m-R +0.4038 | r=1: LP_p/y^2 >= +1.1097, m-R +0.3642 |
+  y in [0.1500, 0.1625]: X charge 0.8903 | r=inf: LP_p/y^2 >= +1.1644, m-R +0.2741 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.1644, m-R +0.2741 | r=2: LP_p/y^2 >= +1.1644, m-R +0.2741 | r=1: LP_p/y^2 >= +1.1336, m-R +0.2433 |
+  y in [0.1625, 0.1750]: X charge 1.0542 | r=inf: LP_p/y^2 >= +1.2051, m-R +0.1509 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.2051, m-R +0.1509 | r=2: LP_p/y^2 >= +1.2051, m-R +0.1509 | r=1: LP_p/y^2 >= +1.1789, m-R +0.1247 |
+  y in [0.1750, 0.1875]: X charge 1.2393 | r=inf: LP_p/y^2 >= +1.2771, m-R +0.0378 | [C3: max decrease in p 0.00e+00 (0 cells), p* max 1] | r=4: LP_p/y^2 >= +1.2771, m-R +0.0378 | r=2: LP_p/y^2 >= +1.2771, m-R +0.0378 | r=1: LP_p/y^2 >= +1.2598, m-R +0.0205 |
+r = inf: min (margin - X charge) = +0.0378 at y in [0.1750, 0.1875] -> CLOSED
+r = 4: min (margin - X charge) = +0.0378 at y in [0.1750, 0.1875] -> CLOSED
+r = 2: min (margin - X charge) = +0.0378 at y in [0.1750, 0.1875] -> CLOSED
+r = 1: min (margin - X charge) = +0.0205 at y in [0.1750, 0.1875] -> CLOSED
+C3: W[m, p, k] non-decreasing in p: YES (max decrease 0.00e+00); saturation level p* histogram over all (m, k, y-intervals): {0: 215100, 1: 3780}
+total 393s

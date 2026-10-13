@@ -1,0 +1,26 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:59:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:00:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:00:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:01:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:01:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:02:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:02:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:03:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:03:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:04:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:04:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:05:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:05:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:06:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:06:33)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:07:03)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:07:34)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:08:04)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:08:34)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:09:04)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:09:34)
+module constants: 2853; imports: 10
+kernel replay of 2853 constants: 272958 ms
+      286.45 real       267.58 user        18.42 sys
+          3032118752  peak memory footprint
+exit=0

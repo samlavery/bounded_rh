@@ -1,0 +1,12 @@
+a=0.90 N=256 P=16: min LP +130.0665 (per pair +8.1292) | marginal per added pair    -    | tau(a) = 0.3035
+a=0.90 N=256 P=32: min LP  +69.9763 (per pair +2.1868) | marginal per added pair -3.7556 | tau(a) = 0.3035
+a=0.90 N=256 P=48: min LP  +90.6624 (per pair +1.8888) | marginal per added pair +1.2929 | tau(a) = 0.3035
+a=0.90 N=256 P=64: min LP  +86.8967 (per pair +1.3578) | marginal per added pair -0.2354 | tau(a) = 0.3035
+a=0.95 N=256 P=16: min LP +467.6550 (per pair +29.2284) | marginal per added pair    -    | tau(a) = 0.0913
+a=0.95 N=256 P=32: min LP +244.6942 (per pair +7.6467) | marginal per added pair -13.9351 | tau(a) = 0.0913
+a=0.95 N=256 P=48: min LP +176.4063 (per pair +3.6751) | marginal per added pair -4.2680 | tau(a) = 0.0913
+a=0.95 N=256 P=64: min LP +154.2679 (per pair +2.4104) | marginal per added pair -1.3836 | tau(a) = 0.0913
+a=0.99 N=256 P=16: min LP +2445.9838 (per pair +152.8740) | marginal per added pair    -    | tau(a) = 0.0192
+a=0.99 N=256 P=32: min LP +2173.1254 (per pair +67.9102) | marginal per added pair -17.0536 | tau(a) = 0.0192
+a=0.99 N=256 P=48: min LP +1922.0923 (per pair +40.0436) | marginal per added pair -15.6896 | tau(a) = 0.0192
+a=0.99 N=256 P=64: min LP +1734.0085 (per pair +27.0939) | marginal per added pair -11.7552 | tau(a) = 0.0192

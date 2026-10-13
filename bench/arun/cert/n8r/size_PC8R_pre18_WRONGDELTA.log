@@ -1,0 +1,29 @@
+== S sizing Sat Oct 10 15:58:43 PDT 2026
+delta=3e-05 cN=808736 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=18
+  ... 5000 leaves (Z 0, M 4997, empty 0, refl 3) nodes 5076 LP 23925 (149s)
+  ... 10000 leaves (Z 0, M 9997, empty 0, refl 3) nodes 10074 LP 46951 (269s)
+  root 18 (0, 1, 0, 0, 1, 0, 0): 11962 leaves (338s)
+  bisection: 11962 leaves (Z 0, M 11953, empty 0), 11961 splits, 112 at region boundaries (338s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2765 points (21733 point cells); failing 0 (342s)
+leaves 11962 kinds {6: 11953, 0: 9} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 11961 (pair 195); walk bits 3421755 (286.1 per leaf; multipliers 8568 x 11 bits); M nonzero multipliers [(0, 4430), (1, 6540), (2, 923), (3, 58), (4, 2)]; constraints per M cell [(21, 11953)]; w 1984 d 2240 pts 2765 ptc 21733 bad 0 MSTAT lp 55980 (342s)
+nodes visited 23923 (leaves 11962 + splits 11961); explicit constraints per node: mean 21.00, dist [(21, 23923)]
+walk: 3421755 bits = 0.855 MB hex, 0.570 MB base64 (roots run); x8.73: 7.47 MB hex, 4.98 MB base64
+      353.40 real       348.83 user         3.70 sys
+          1871396864  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              212034  page reclaims
+                1230  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 947  voluntary context switches
+               74045  involuntary context switches
+       4945157031526  instructions retired
+       1171418495844  cycles elapsed
+          1856161592  peak memory footprint
+== done Sat Oct 10 16:04:36 PDT 2026

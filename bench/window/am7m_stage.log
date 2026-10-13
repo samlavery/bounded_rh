@@ -1,0 +1,15 @@
+== CandAM7m export
+export exit 0
+       43.93 real        30.68 user        11.15 sys
+          1613073992  peak memory footprint
+export bytes 689177247
+== CandAM7m nanoda
+nanoda exit 0
+      218.66 real       211.81 user         6.82 sys
+          4484927112  peak memory footprint
+== CandAM7m lean replay (full closure)
+parse_ms 16271 constants 75057
+replay_ms 255146 OK
+replayx exit 0
+      271.60 real       269.80 user         1.61 sys
+          2265942176  peak memory footprint

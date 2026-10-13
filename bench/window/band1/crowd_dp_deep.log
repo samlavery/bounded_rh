@@ -1,0 +1,4 @@
+y in [0.400, 0.425]: ALL D: LP/y^2 >= +12.5282  (crowding R=2 d0=0.1484: +12.5282)  free chain 0.834(m2) 1.908(m2) 2.932(m2) 3.943(m2) 4.951(m2) ...  [2s]
+y in [0.425, 0.450]: ALL D: LP/y^2 >= +16.1372  (crowding R=2 d0=0.1484: +16.1372)  free chain 0.822(m2) 1.904(m2) 2.932(m2) 3.943(m2) 4.951(m2) ...  [2s]
+y in [0.450, 0.475]: ALL D: LP/y^2 >= +20.6274  (crowding R=2 d0=0.1484: +20.6274)  free chain 0.811(m2) 1.904(m2) 2.932(m2) 3.943(m2) 4.951(m2) ...  [2s]
+y in [0.475, 0.500]: DP precondition fails (same-cell loop not positive)

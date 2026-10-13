@@ -1,0 +1,14 @@
+Q=5 c=0.00336790: OK leaves=32612 tuples=108 bad-sizes=[2, 3, 3, 3, 2] (82s)
+[SixW6S] cells=8220 leaves=32612 bits=162628 walk_thms=358 bytes=1512014
+params: 5 100000000 25326800,62369200,40126500,99999900,200000000,48244400,37630700,119746800,99999900,52857300,37630700,40126500,48244400,62369200,25326800 24896,42034,46137,42034,24896 336790 SixW6S 96 3 256
+
+[SixW6] cells=8220 leaves=32612 walk_thms=358 bytes=478262 SCE=15 CH=1000
+wrote checker_SixW6.lean (72059 bytes)
+n=6 c=33679/10000000 m=301 B=179997/100000000 Phi=(3762500000*H-6659889)/3750038770 = 0.6729594393 kappa=3364797/5000000 = 0.6729594
+wrote head_SixW6.lean
+wrote tail_SixW6.lean
+[chunk] pair_0_1: 453 leaves -> 34 chunks
+[chunk] pair_1_1: 16 leaves -> 1 chunks
+[chunk] pair_0_0: 12 leaves -> 1 chunks
+[chunk] pair_0_2: 6 leaves -> 1 chunks
+wrote Solution.lean: 820595 bytes; imports: ['Zeta23.ZeroSide.RankTraceMult', 'Zeta23.ThmD.Mult', 'Zeta23.ThmD.ZeroSideD', 'Zeta23.PrimeSideA.EndsE1', 'Mathlib.Analysis.SpecialFunctions.Integrals.Basic', 'Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc', 'Mathlib.Analysis.Real.Pi.Bounds']

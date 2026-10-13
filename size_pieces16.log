@@ -1,0 +1,2 @@
+[pieces16] delta=0.02
+Q=5 c=0.00351122: OK leaves=675284 tuples=108 bad-sizes=[2, 3, 3, 3, 2] (289s)

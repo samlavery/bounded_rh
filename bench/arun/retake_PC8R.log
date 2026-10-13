@@ -1,0 +1,46 @@
+== assemble 16:26:23
+final6 PC8R: SA 100000000 cN 808720 B 406753 m 130 Phi 0.6734731391 kappa 6734731/10000000 = 0.6734731
+/Users/samuellavery/work/riemann-submission/bench/arun/R8_PC8R_full.lean: 1754502 bytes (layer 1733864, mt block 0); modules ['Window', 'Kernel', 'Moments', 'Swap', 'Constant', 'Floor', 'Params', 'Trig', 'Adm', 'Profile', 'PV', 'ZeroSide', 'Concrete', 'BHalf', 'BrA', 'BrB', 'BrC', 'AMTail', 'GIv', 'GCell', 'GSinc', 'GMT', 'GTaylor', 'GBase', 'GConst', 'GFar', 'GNear', 'GAsm1', 'GAsm2', 'GCellSound', 'CFacade', 'CEngine', 'CMin', 'CMinX', 'CWindow', 'PCellCore', 'PCellGen', 'PCellLeaf', 'PCellRoot', 'PCellTZ', 'PCellZ', 'PCellLeafZ', 'PCellT1', 'PCellClose', 'PCellCloseB', 'PCDF', 'PCDZ', 'PC8RInst', 'PC8RData']; dropped ['AMS02Data', 'AMS02Inst', 'AMS02Line', 'AMS02Min', 'AMT8BP', 'AMT8Data', 'AMT8Inst', 'AMT8MC', 'AMT8MO', 'AMT8MP', 'AMT8MS', 'AMT8MZ', 'AMT8S', 'AMT8S3', 'AMT8S4', 'AMT8V1', 'AMT8V2', 'AMT8V3', 'AMT8VB', 'AMT8VC', 'AMT8VK', 'AMT8VL', 'AMT8VP', 'AMT8VQ', 'AMT8VS', 'AMT8VS2', 'AMT8VW', 'AMT8VW2', 'AMT8VZ', 'AMX002Data', 'AMX002Inst', 'AMX003Data', 'AMX003Inst', 'AMX005Data', 'AMX005Inst', 'AMX01Data', 'AMX01Inst', 'AMX05Data', 'AMX05Inst', 'BrEdge', 'BrEdgeAx', 'BrEdgeChain', 'BrEdgeChainT', 'BrEdgeT', 'BrProf', 'BrSqrtWS', 'BrSqrtWSK', 'BrTau', 'CMLeaf', 'DEAx', 'DECert', 'DECertSOS', 'DEData', 'DEDefs', 'DEDensity', 'DEFourier', 'DEObj', 'DEObjA', 'DEObjB', 'DEObjC', 'DEObjMain', 'DEPInterface', 'DEPLin', 'DEPLinAx', 'DEPSq', 'DEPSqAx', 'DEQf', 'DEQfCells', 'DEQfH', 'DEQfIv', 'DEQfR8', 'DEQfZero', 'DER8', 'DER8Ax', 'DER8K', 'DESOS', 'DESOSR8', 'DESOSR8Ax', 'DESlack', 'DefectEnergy', 'DefectEnergyAx', 'GBench', 'GChk', 'GChk2', 'GChk3', 'GChk4', 'GXchk', 'LeverAM', 'LeverOracle', 'LeverTable', 'LineMode', 'MemT_D', 'MemT_N', 'MemT_P', 'MemT_W', 'MinMode', 'Minorant', 'PC8C5Ax', 'PC8C5BAx', 'PC8C5BData', 'PC8C5BFAx', 'PC8C5BFData', 'PC8C5BFInst', 'PC8C5BInst', 'PC8C5Data', 'PC8C5Inst', 'PC8C5UAx', 'PC8C5UData', 'PC8C5UInst', 'PC8CFAx', 'PC8CFData', 'PC8CFInst', 'PC8FAx', 'PC8FB', 'PC8FData', 'PC8FInst', 'PCBias', 'PCE3Ax', 'PCE3Data', 'PCE3Inst', 'PCE4Ax', 'PCE4Data', 'PCE4GAx', 'PCE4GData', 'PCE4GInst', 'PCE4Inst', 'PCE5Ax', 'PCE5Data', 'PCE5Inst', 'PCE5KAx', 'PCE5KData', 'PCE5KInst', 'PCE5KPAx', 'PCE5KPData', 'PCE5KPInst', 'PCE5UAx', 'PCE5UData', 'PCE5UInst', 'PCE6Ax', 'PCE6Data', 'PCE6HAx', 'PCE6HData', 'PCE6HInst', 'PCE6HPAx', 'PCE6HPCAx', 'PCE6HPCData', 'PCE6HPCInst', 'PCE6HPData', 'PCE6HPInst', 'PCE6Inst', 'PCE6KAx', 'PCE6KData', 'PCE6KInst', 'PCE6KPAx', 'PCE6KPData', 'PCE6KPInst', 'PCE6UAx', 'PCE6UData', 'PCE6UInst', 'PCE6UPCAx', 'PCE6UPCData', 'PCE6UPCInst', 'PCF2Ax', 'PCF2Data', 'PCF2Inst', 'PCF3Ax', 'PCF3Data', 'PCF3Inst', 'PCell3', 'PCell3Ax', 'PCell3H', 'PCell3HAx', 'PCell3HI', 'PCell3HR', 'PCell3HRI', 'PCell3I', 'PCell3R', 'PCell3RI', 'PCell3T', 'PCell3TAx', 'PCell3TI', 'PCell3TR', 'PCell3TRI', 'PCellGK', 'PCellH7', 'PCellH7Ax', 'PCellH8B', 'PCellHB7', 'PCellHG7', 'PCellHGN', 'PCellHGT', 'PCellHL7', 'PCellHW8B', 'PCellHuff', 'PCellM8B', 'PCellNoRefl', 'PCellT7', 'PCellT7Ax', 'PCellT7B', 'PCellT7BE', 'PCellT7BL', 'PCellT7BP', 'PCellT7Z', 'PCellTZG', 'PCellV8B', 'PCellV8K0', 'PCellV8N0', 'PCellV8N1', 'PCellV8N2', 'PCellZAx', 'PFBenchDEC', 'PFBenchNM', 'PFBenchNO', 'PFBenchNP', 'PFBenchSK', 'PFDECInst', 'PFHuffBench', 'PFHuffBenchL10', 'PFHuffBenchL8', 'PFHuffBenchX', 'PFNMInst', 'PFNOInst', 'PFNPInst', 'PQ7HAx', 'PQ7HBAx', 'PQ7HBData', 'PQ7HBFAx', 'PQ7HBFData', 'PQ7HBFInst', 'PQ7HBG', 'PQ7HBInst', 'PQ7HData', 'PQ7HInst', 'PS8Data', 'PS8HAx', 'PS8HData', 'PS8HInst', 'PS8Inst', 'PS9Ax', 'PS9Data', 'PS9HAx', 'PS9HData', 'PS9HInst', 'PS9Inst', 'PSDBasin', 'TanChord']; imports 16
+== swap 16:26:23
+/Users/samuellavery/work/riemann-submission/bench/arun/R8_PC8R_swap.lean: 1724342 B; NAME PC8R; B = 406753/100000000, c = 808720/100000000; κ = 8351261/12398910 = 0.6735479974 (+1.923e-07); code κ literals replaced: 3
+spec: candidate 8351261 12398910, record 66812491 99194876
+== engine 16:26:23
+skipped module CMinX: absent from /Users/samuellavery/work/riemann-submission/bench/arun/R8_PC8R_swap.lean and not referenced by PC8R
+/Users/samuellavery/work/riemann-submission/bench/arun/R8_PC8R.lean: 1724342 B; engine modules in PC8R's closure: 31, inserted 0, stops 0
+SIZE /Users/samuellavery/work/riemann-submission/bench/arun/R8_PC8R.lean 1724342 B (cap 2,000,000; watch 1,900,000); candidate 8351261/12398910
+Copyright occurrences: 21
+== private check 16:26:23
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      358.88 real       338.35 user        17.03 sys
+          4339668904  peak memory footprint
+BUILD EXIT 0
+module constants: 6064; imports: 26
+kernel replay of 6064 constants: 141870 ms
+      169.39 real       139.33 user        17.90 sys
+          3617060632  peak memory footprint
+REPLAY EXIT 0
+== stages 16:35:30
+== CandR8PC8R export
+export exit 0
+       40.32 real        26.69 user        11.65 sys
+          1595231744  peak memory footprint
+export bytes 663531611
+== CandR8PC8R nanoda
+nanoda exit 0
+      154.18 real       148.00 user         6.03 sys
+          5002973288  peak memory footprint
+== CandR8PC8R lean replay (full closure)
+parse_ms 15108 constants 76270
+replay_ms 196354 OK
+replayx exit 0
+      211.64 real       207.78 user         3.64 sys
+          1896712064  peak memory footprint
+build      358.9 s   2.926e12 instr  max RSS  6.70 GB
+replay     169.4 s   1.135e12 instr  max RSS  8.48 GB
+export      40.3 s   0.328e12 instr  max RSS  6.43 GB
+nanoda     154.2 s   1.297e12 instr  max RSS  5.16 GB
+closure    211.6 s   1.628e12 instr  max RSS  1.96 GB
+PREDICTED board ≈ 2220 s (instruction-ratio vs PC8C5BF actual 2,319 s)
+== retake8 done 16:42:16

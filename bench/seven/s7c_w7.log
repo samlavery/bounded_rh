@@ -1,0 +1,4 @@
+delta=0.003 CRAD=0.25 basins=16
+  bisection: 39286 leaves (Z 18269, S 18791, basin 36) (277s)
+  fix-up: 0 re-decided; tables: w 3968 cells, d 7680 cells, 3113 points (6470 point cells); failing 0 (282s)
+leaves 39286 Z 18269 S 18791 (centre 3496) B 36 w 3968 d 7680 pts 3113 ptc 6470 bad 0 (282s)

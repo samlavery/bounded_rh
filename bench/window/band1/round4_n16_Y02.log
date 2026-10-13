@@ -1,0 +1,15 @@
+window R8b, N=256: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%
+  P=16 N=256 Y=0.2 start a: exact LP 2.5855  (nit 129, success True, max|grad| 8.6e-05, 0s)
+  P=16 N=256 Y=0.2 start b: exact LP 1.9098  (nit 111, success True, max|grad| 1.6e-04, 0s)
+  P=16 N=256 Y=0.2 start c: exact LP 2.1210  (nit 169, success True, max|grad| 8.1e-05, 0s)
+P=16 N= 256 Y=0.2: exact LP 1.9098 (start b) | sum m_bulk(a_p) 1.3612 (t_L 0.008) -> LP - sum +0.5486 | with t_L 0.016: sum 1.4393, LP - sum +0.4705 | centre spacing 0.9902, end spacings 0.953 0.953 | env density within 40 of the ends 0.900 | env locking |mean e(x)| 0.980, phase vs block +0.00 rad, |sum_p e(s_p)|/P 0.919
+window R8b, N=512: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%
+  P=32 N=512 Y=0.2 start a: exact LP 3.7378  (nit 185, success True, max|grad| 2.8e-04, 1s)
+  P=32 N=512 Y=0.2 start b: exact LP 2.7104  (nit 163, success True, max|grad| 3.1e-04, 1s)
+  P=32 N=512 Y=0.2 start c: exact LP 2.9232  (nit 234, success True, max|grad| 2.1e-04, 1s)
+P=32 N= 512 Y=0.2: exact LP 2.7104 (start b) | sum m_bulk(a_p) 1.8213 (t_L 0.008) -> LP - sum +0.8891 | with t_L 0.016: sum 1.9704, LP - sum +0.7401 | centre spacing 0.9951, end spacings 0.954 0.954 | env density within 40 of the ends 0.900 | env locking |mean e(x)| 0.963, phase vs block -0.00 rad, |sum_p e(s_p)|/P 0.914
+window R8b, N=1024: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%
+  P=64 N=1024 Y=0.2 start a: exact LP 5.8121  (nit 220, success True, max|grad| 6.1e-04, 5s)
+  P=64 N=1024 Y=0.2 start b: exact LP 4.1352  (nit 230, success True, max|grad| 4.5e-04, 6s)
+  P=64 N=1024 Y=0.2 start c: exact LP 4.3483  (nit 336, success True, max|grad| 2.2e-03, 7s)
+P=64 N=1024 Y=0.2: exact LP 4.1352 (start b) | sum m_bulk(a_p) 2.7704 (t_L 0.012) -> LP - sum +1.3648 | with t_L 0.016: sum 2.8534, LP - sum +1.2819 | centre spacing 0.9976, end spacings 0.955 0.955 | env density within 40 of the ends 0.900 | env locking |mean e(x)| 0.931, phase vs block -0.00 rad, |sum_p e(s_p)|/P 0.910

@@ -1,0 +1,4 @@
+  0/120 (0s) {'leaves': [2.0, 2.0, 0], 'bytes': [2.0, 1.8259386429042372, 1]} counts 2
+  50/120 (458s) {'leaves': [434.0, 328.89655636125406, 34], 'bytes': [434.0, 273.53880012714234, 54]} counts 766
+  100/120 (552s) {'leaves': [634.0, 518.1232784249326, 42], 'bytes': [634.0, 441.18902064757725, 79]} counts 1066
+{'class': 'all', 'HF': 'node', 'hull_baseline': 9983, 'candidates': 1299, 'sampled': 120, 'hull_under_all_candidates': 6536, 'leaves': {'hull_under_sample': 732.0, 'dp_under_sample': 605.1423710738123, 'decoupled_nodes': 45, 'net_extrapolated': 8850.29308379568, 'cut': '-11.35%'}, 'bytes': {'hull_under_sample': 732.0, 'dp_under_sample': 517.5132943297665, 'decoupled_nodes': 85, 'net_extrapolated': 8067.856409479991, 'cut': '-19.18%'}} (605s)

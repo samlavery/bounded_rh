@@ -1,0 +1,1 @@
+RULE=passfirst_sum WFRAC=4 HALF=True XFAR=3 FARG=256

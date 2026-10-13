@@ -1,0 +1,59 @@
+simp took 995ms
+simp took 903ms
+tactic execution of Mathlib.Tactic.nlinarith took 231ms
+tactic execution of Mathlib.Tactic.nlinarith took 256ms
+tactic execution of Mathlib.Tactic.nlinarith took 348ms
+tactic execution of Mathlib.Tactic.nlinarith took 333ms
+tactic execution of Mathlib.Tactic.nlinarith took 651ms
+tactic execution of Mathlib.Tactic.nlinarith took 763ms
+tactic execution of Mathlib.Tactic.nlinarith took 273ms
+tactic execution of Mathlib.Tactic.nlinarith took 278ms
+tactic execution of Lean.Parser.Tactic.exact took 288ms
+tactic execution of Lean.Parser.Tactic.rewriteSeq took 226ms
+tactic execution of Mathlib.Tactic.nlinarith took 519ms
+tactic execution of Mathlib.Tactic.nlinarith took 800ms
+share common exprs took 345ms
+type checking took 223ms
+cumulative profiling times:
+	attribute application 3.58ms
+	compilation (IR) 0.2ms
+	compilation (LCNF base) 5.27ms
+	compilation (LCNF impure) 1.17ms
+	compilation (LCNF mono) 2.15ms
+	congr simp thm 73.9ms
+	elaboration 1.77s
+	fix level params 117ms
+	instantiate metavars 156ms
+	interpretation 0.00996ms
+	let-to-have transformation 2.41ms
+	linting 3.15s
+	module linting 0.000625ms
+	norm_num 48.5s
+	overlappingInstancesLinter 58.8ms
+	parsing 279ms
+	process pre-definitions 2.14s
+	ring 7.05s
+	share common exprs 2.81s
+	simp 3.18s
+	tactic execution 76.5s
+	tacticAnalysis 765ms
+	type checking 5.62s
+	typeclass inference 18.9s
+       58.82 real       144.53 user        16.39 sys
+          7929692160  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              569596  page reclaims
+                   1  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 122  voluntary context switches
+              619279  involuntary context switches
+        799490752589  instructions retired
+        485371851768  cycles elapsed
+          3043152920  peak memory footprint

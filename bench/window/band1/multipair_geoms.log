@@ -1,0 +1,9 @@
+block32 N=64 Y=0.4: LP_total 9.6831 (LP/sum y^2 1.891) split P_h 2.516 T_g 1.694 fields 3.418 BB 2.055; pair spacings [0.843 0.952 0.956 0.968 0.974 0.977 0.98  0.982 0.984 0.985 0.986 0.986]
+block16 N=64 Y=0.2: LP_total 2.3230 (LP/sum y^2 3.630) split P_h 0.864 T_g 0.348 fields 0.771 BB 0.340; pair spacings [0.953 0.979 0.984 0.987 0.989 0.989 0.99  0.99  0.989 0.989 0.987 0.985]
+block16 N=64 Y=0.4: LP_total 7.1961 (LP/sum y^2 2.811) split P_h 1.710 T_g 1.643 fields 1.406 BB 2.437; pair spacings [0.858 0.952 0.956 0.966 0.969 0.972 0.973 0.973 0.972 0.97  0.967 0.963]
+comp8 N=64 Y=0.4: LP_total 1.5713 (LP/sum y^2 3.056) split P_h 0.533 T_g 1.214 fields -1.539 BB 1.363; pair spacings [1.039 1.015 0.899 0.833 0.899 1.014 1.039]
+comp4 N=64 Y=0.4: LP_total 2.5184 (LP/sum y^2 7.240) split P_h 0.226 T_g 1.630 fields -1.479 BB 2.142; pair spacings [0.904 0.776 0.904]
+comp8 N=64 Y=0.2: LP_total 0.5259 (LP/sum y^2 4.091) split P_h 0.238 T_g 0.153 fields -0.034 BB 0.169; pair spacings [1.024 1.011 0.972 0.945 0.972 1.011 1.024]
+block64 N=128 Y=0.2: LP_total 5.1160 (LP/sum y^2 1.998) split P_h 2.667 T_g 0.677 fields 1.403 BB 0.368; pair spacings [0.943 0.977 0.984 0.987 0.99  0.991 0.992 0.993 0.994 0.995 0.995 0.996]
+block64 N=128 Y=0.4: LP_total 11.6694 (LP/sum y^2 1.140) split P_h 3.927 T_g 2.098 fields 3.466 BB 2.178; pair spacings [0.842 0.952 0.956 0.969 0.974 0.978 0.981 0.983 0.985 0.986 0.987 0.988]
+saved multipair_geoms.json

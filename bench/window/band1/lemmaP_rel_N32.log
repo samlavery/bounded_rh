@@ -1,0 +1,29 @@
+R8b certificate, N=32: g(0) 0.990431, sigma 1.367e-03
+pair self-excess R(y) (two-sided): y=0.05:6.122e-02 y=0.10:2.541e-01 y=0.20:1.180e+00 y=0.50:2.133e+01 y=1.00:2.772e+03 y=2.00:1.774e+08 y=3.00:2.081e+13
+(1) fixed-depth W-minimisers: theta1 = W / sum R_p, theta2 = W / R_coll
+  y=0.02: theta1/theta2 P1k0: 5.163/5.163 P2k0: 2.915/2.921 P3k0: 2.155/2.169 P2k3: 3.092/3.108 P3k3: 2.217/2.244
+  y=0.05: theta1/theta2 P1k0: 1.304/1.304 P2k0: 0.948/0.951 P3k0: 0.822/1.050 P2k3: 0.971/1.439 P3k3: 0.848/0.858
+  y=0.10: theta1/theta2 P1k0: 0.726/0.726 P2k0: 0.640/0.646 P3k0: 0.529/0.694 P2k3: 0.581/0.584 P3k3: 0.652/0.667
+  y=0.20: theta1/theta2 P1k0: 0.598/0.598 P2k0: 0.570/0.580 P3k0: 0.434/0.632 P2k3: 0.451/0.454 P3k3: 0.546/0.555
+  y=0.30: theta1/theta2 P1k0: 0.606/0.606 P2k0: 0.625/0.627 P3k0: 0.621/0.628 P2k3: 0.626/0.632 P3k3: 0.504/0.568
+  y=0.50: theta1/theta2 P1k0: 0.725/0.725 P2k0: 0.238/0.891 P3k0: 0.238/1.175 P2k3: 0.237/0.886 P3k3: 0.579/0.732
+  y=1.00: theta1/theta2 P1k0: 0.914/0.914 P2k0: 0.086/0.971 P3k0: 0.335/0.976 P2k3: 0.086/0.968 P3k3: 0.335/0.974
+  y=2.00: theta1/theta2 P1k0: 1.000/1.000 P2k0: 0.019/1.000 P3k0: 0.124/1.000 P2k3: 0.019/1.000 P3k3: 0.124/1.000
+  y=3.00: theta1/theta2 P1k0: 1.000/1.000 P2k0: 0.007/1.000 P3k0: 0.074/1.000 P2k3: 0.007/1.000 P3k3: 0.074/1.000
+(2) coherent class: two equal-depth pairs at separation 1/2 (and 3/2), lattice environment elsewhere
+  sep 0.5 y=0.3: W 8.295e+00 | sum R_p 6.823e+00 (theta1 1.2156) | R_coll 4.557e+00 (theta2 1.8203)
+  sep 0.5 y=0.5: W 2.335e+01 | sum R_p 4.265e+01 (theta1 0.5475) | R_coll 2.125e+01 (theta2 1.0991)
+  sep 0.5 y=1.0: W 1.066e+03 | sum R_p 5.543e+03 (theta1 0.1923) | R_coll 1.070e+03 (theta2 0.9965)
+  sep 0.5 y=2.0: W 1.832e+07 | sum R_p 3.549e+08 (theta1 0.0516) | R_coll 1.832e+07 (theta2 0.9998)
+  sep 0.5 y=3.0: W 9.974e+11 | sum R_p 4.162e+13 (theta1 0.0240) | R_coll 9.974e+11 (theta2 1.0000)
+  sep 1.5 y=0.3: W 8.336e+00 | sum R_p 6.823e+00 (theta1 1.2217) | R_coll 7.840e+00 (theta2 1.0633)
+  sep 1.5 y=0.5: W 4.721e+01 | sum R_p 4.265e+01 (theta1 1.1069) | R_coll 4.942e+01 (theta2 0.9554)
+  sep 1.5 y=1.0: W 4.867e+03 | sum R_p 5.543e+03 (theta1 0.8780) | R_coll 4.929e+03 (theta2 0.9874)
+  sep 1.5 y=2.0: W 1.341e+08 | sum R_p 3.549e+08 (theta1 0.3780) | R_coll 1.342e+08 (theta2 0.9999)
+  sep 1.5 y=3.0: W 8.172e+12 | sum R_p 4.162e+13 (theta1 0.1964) | R_coll 8.172e+12 (theta2 1.0000)
+MIN over (1): theta1 0.0074  theta2 0.4545
+deep constants y=0.5: L_y(0) 2.063e+00, sup_{u>=1} u^2 |L_y(u)| 3.477e+00, R(y) 2.133e+01, R/L_y(0)^2 5.012e+00
+deep constants y=1.0: L_y(0) 2.133e+01, sup_{u>=1} u^2 |L_y(u)| 8.627e+01, R(y) 2.772e+03, R/L_y(0)^2 6.094e+00
+deep constants y=2.0: L_y(0) 2.772e+03, sup_{u>=1} u^2 |L_y(u)| 4.399e+04, R(y) 1.774e+08, R/L_y(0)^2 2.310e+01
+deep constants y=3.0: L_y(0) 6.175e+05, sup_{u>=1} u^2 |L_y(u)| 2.180e+07, R(y) 2.081e+13, R/L_y(0)^2 5.457e+01
+g on (0, 1/2]: min 0.4389 (at 1/2), g(0) 0.9904

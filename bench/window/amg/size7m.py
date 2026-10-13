@@ -1,0 +1,653 @@
+"""(copy of bench/psd/size_am.py, mvt-engine: the per-term minorant test; paths for bench/window/amg; MCHORD=0 drops chords)"""
+"""Integer-faithful sizing of the seven-point (Q = 6) certificate with
+  Z : the zero-order pyramid test;
+  S : the slope test at a point q of the box: per pair term either the zero-order bound or the expansion
+        w(s) >= w(q_t) + w'(q_t)(s - q_t) - R_t,   R_t = max((hi_t - q_t)(w'(q_t) - min w' on [q_t, hi_t])^+,
+                                                           (q_t - lo_t)(max w' on [lo_t, q_t] - w'(q_t))^+),
+      the linear part summed per gap as in the mean-value test; q_r from a 2-bit mode per gap (lower end, upper
+      end, centre, each aligned to 2^JCQ), the expansion set T from 21 bits;
+  B : basin leaves (inside a basin box certified once by the slope test at an explicit q).
+Tables: the w pyramid (zero-order terms), the derivative pair pyramid (half-interval slope bounds), point values of w
+and of w' at the expansion points (degenerate integer cells).  After the bisection every leaf is re-decided on the
+built tables (fix-up)."""
+import os, sys, time, itertools, math
+from functools import lru_cache
+import numpy as np
+HERE = os.path.dirname(os.path.abspath(__file__))
+for p in (os.path.join(HERE, "..", "..", "seven"), os.path.join(HERE, "..", "..", "mvt"), os.path.join(HERE, "..", "..", "pyr"), HERE):
+    sys.path.insert(0, p)
+sys.setrecursionlimit(1000000)
+from size_pyr import SA, SC, QUARTER, WFRAC, X0
+from pyr_table import Pyr
+from amk import WZ, SW, fP, fM, U1, KU1
+from size_m import PyrF
+from amk import w as wf, w1 as w1f
+
+def phase1(cN, aAdjN, S):
+    """per-gap cover of [1/2, S] (units 2^-15), as size_pyr.phase1 with the AM cell bound and float w"""
+    roots = []; a = X0
+    while a < S:
+        b = min(a + QUARTER, S); roots.append((a, b)); a = b
+    clear, bad = [], []
+    stack = list(reversed(roots))
+    while stack:
+        l, u = stack.pop()
+        if cN * SW <= aAdjN * WZ(l, u): clear.append((l, u)); continue
+        wm = float(wf(np.linspace(l / SC, u / SC, 121)).min())
+        if wm * aAdjN < cN and (u - l) <= SC // 64: bad.append((l, u)); continue
+        if u - l <= SC // 4096: bad.append((l, u)); continue
+        m = (l + u) // 2; stack.append((m, u)); stack.append((l, m))
+    bad.sort(); merged = []
+    for iv in bad:
+        if merged and merged[-1][1] == iv[0]: merged[-1] = (merged[-1][0], iv[1])
+        else: merged.append(iv)
+    clear.sort()
+    return clear, merged
+
+Q = 6
+PAIRS = [(i, j) for i in range(Q + 1) for j in range(i + 1, Q + 1)]
+NP = len(PAIRS)
+TS = [[t for t, (i, j) in enumerate(PAIRS) if i <= r < j] for r in range(Q)]
+INC = np.zeros((NP, Q))
+for t, (i, j) in enumerate(PAIRS): INC[t, i:j] = 1.0
+U = 10**10; RU = U // U1
+M32 = (1 << 32) - 1
+
+# ---------------- float helpers (steering only) ----------------
+XM = 80 * SC
+_xs = np.arange(XM + 2) / SC
+_W = wf(_xs); _W1 = w1f(_xs)
+BLK = 256
+def _blk(arr, f):
+    nb = len(arr) // BLK + 1; p = np.pad(arr, (0, nb * BLK - len(arr)), mode='edge'); return f(p.reshape(nb, BLK), axis=1)
+_B = {'w': (_W, np.min, _blk(_W, np.min)), 'lo': (_W1, np.min, _blk(_W1, np.min)), 'hi': (_W1, np.max, _blk(_W1, np.max))}
+def frq(key, lo, hi):
+    arr, f, bb = _B[key]
+    lo = max(lo, 0); hi = min(hi, XM); lo = min(lo, hi)
+    if hi - lo < 4 * BLK: return float(f(arr[lo:hi + 1]))
+    A = -(-lo // BLK); Bq = (hi + 1) // BLK
+    parts = [arr[lo:A * BLK], bb[A:Bq], arr[Bq * BLK:hi + 1]]
+    return float(f(np.concatenate([p for p in parts if len(p)])))
+
+def make_q(JCQ):
+    """the expansion point of a gap from its mode, exactly as the Lean `dec` (multiples of 2^JCQ, else of 16)"""
+    A = 1 << JCQ
+    def dec(mode, l, u):
+        if mode == 0:
+            m = ((l + A - 1) >> JCQ) << JCQ
+            if m <= u: return m
+            m2 = ((l + 15) >> 4) << 4; return m2 if m2 <= u else l
+        if mode == 1:
+            m = (u >> JCQ) << JCQ
+            if m >= l: return m
+            m2 = (u >> 4) << 4; return m2 if m2 >= l else u
+        c = (l + u) >> 1; mm = (c >> JCQ) << JCQ
+        if mm >= l: return mm
+        c2 = (c >> 4) << 4; return c2 if c2 >= l else c
+    return dec
+
+def wcell(a, b): return WZ(a, b) * U // SW
+def lb3_of(lb, SH, MINW):
+    """the three-piece read min(lb[lo, lo + a], lb[lo + a, hi - a], lb[hi - a, hi]), a = (hi - lo) >> SH, for
+    hi - lo >= MINW (else lb[lo, hi]): the middle read's overhang stays inside [lo, hi]"""
+    cache = {}
+    def lb3(lo, hi):
+        k = (lo, hi); v = cache.get(k)
+        if v is not None: return v
+        w = hi - lo
+        if w < MINW: v = lb(lo, hi)
+        else:
+            a = w >> SH; v = min(lb(lo, lo + a), lb(lo + a, hi - a), lb(hi - a, hi))
+        cache[k] = v
+        return v
+    return lb3
+def pieces(lo, hi, SH, MINW):
+    w = hi - lo
+    if w < MINW: return [(lo, hi)]
+    a = w >> SH; return [(lo, lo + a), (lo + a, hi - a), (hi - a, hi)]
+
+def run(cN, aN, bN, JCQ=8, dmin=5, PED=4, basins=(), verbose=True, max_leaves=4 * 10**6, WF=WFRAC, WMIN=6, SH=4, MINW=1024, probe=False, DFUEL=14, DLO=None, DHI=None, XD=81920, regions=(), centers=(), CRAD=0.25, MTEST=0, NPT=5, MLOG=None):
+    t0 = time.time()
+    a = np.array(aN, float) / SA; b = np.array(bN, float) / SA
+    P = PyrF(wcell, dmin=WMIN, PE=5, PB=10, MAXA=4, U=U, FUEL=14)
+    PP = PyrF(fP, dmin=dmin, PE=PED, PB=10, MAXA=4, U=U1, FUEL=DFUEL)
+    PM = PyrF(fM, dmin=dmin, PE=PED, PB=10, MAXA=4, U=U1, FUEL=DFUEL)
+    DENSE = DLO is not None
+    def dres(i, l):
+        """the dense derivative table's finest level in the block of the level-l cell i"""
+        return DLO if ((i << l) < XD) else DHI
+    EMX = P.EM
+    adj = [aN[PAIRS.index((r, r + 1))] for r in range(Q)]
+    S = [-(-(4 * cN * SC) // (bN[r] * 4 * QUARTER)) * QUARTER for r in range(Q)]
+    covers = [phase1(cN, adj[r], S[r]) for r in range(Q)]
+    bads = [cv[1] for cv in covers]
+    dec = make_q(JCQ)
+    CSU = cN * SC * U
+    @lru_cache(maxsize=None)
+    def E(l, i):
+        if l < WMIN: return E(WMIN, i >> (WMIN - l))
+        if l <= WMIN: return min(WZ(i << l, (i + 1) << l) * U // SW, EMX)
+        return min(E(l - 1, 2 * i), E(l - 1, 2 * i + 1))
+    @lru_cache(maxsize=None)
+    def EP(l, i):
+        if DENSE and l <= 10:
+            R = dres(i, l)
+            if l < R: return EP(R, i >> (R - l))
+            if l == R: return min(fP(i << l, (i + 1) << l), EMX)
+            return min(EP(l - 1, 2 * i), EP(l - 1, 2 * i + 1))
+        if DENSE: return min(EP(l - 1, 2 * i), EP(l - 1, 2 * i + 1))
+        if l < dmin: return EP(dmin, i >> (dmin - l))
+        if l <= 13: return min(fP(i << l, (i + 1) << l), EMX)
+        return min(EP(l - 1, 2 * i), EP(l - 1, 2 * i + 1))
+    @lru_cache(maxsize=None)
+    def EMd(l, i):
+        if DENSE and l <= 10:
+            R = dres(i, l)
+            if l < R: return EMd(R, i >> (R - l))
+            if l == R: return min(fM(i << l, (i + 1) << l), EMX)
+            return min(EMd(l - 1, 2 * i), EMd(l - 1, 2 * i + 1))
+        if DENSE: return min(EMd(l - 1, 2 * i), EMd(l - 1, 2 * i + 1))
+        if l < dmin: return EMd(dmin, i >> (dmin - l))
+        if l <= 13: return min(fM(i << l, (i + 1) << l), EMX)
+        return min(EMd(l - 1, 2 * i), EMd(l - 1, 2 * i + 1))
+    def mk(Ef, X):
+        @lru_cache(maxsize=None)
+        def lbq(lo, hi):
+            cv = X.cover(lo, hi)
+            if not cv or cv[-1] is None: return 0
+            return min(Ef(l, i) for (l, i) in cv)
+        return lbq
+    lbE1 = mk(E, P); lbE, lbPE, lbME = lb3_of(lbE1, SH, MINW), mk(EP, PP), mk(EMd, PM)
+    @lru_cache(maxsize=None)
+    def ptw(x): return min(WZ(x, x) * U // SW, EMX)
+    @lru_cache(maxsize=None)
+    def ptd(x): return (min(fP(x, x), EMX), min(fM(x, x), EMX))
+    def inbas(box):
+        for bb in basins:
+            if all(bb[r][0] <= box[r][0] and box[r][1] <= bb[r][1] for r in range(Q)): return True
+        return False
+    def iv(box):
+        return [(sum(box[r][0] for r in range(i, j)), sum(box[r][1] for r in range(i, j))) for (i, j) in PAIRS]
+    def zlow(box, lb):
+        tot = U * sum(bN[r] * box[r][0] for r in range(Q)); s = 0
+        for t, (lo, hi) in enumerate(iv(box)): s += aN[t] * lb(lo, hi)
+        return tot + s * SC
+    NEG = -(1 << 200)
+    RGK = {}
+    for (a_, b_) in regions:
+        k_ = (a_ + 16384) >> 15
+        if k_ < 16: RGK[k_] = (a_, b_)
+    def inreg(lo, hi):
+        """exactly as the Lean `inRg`: the region of the integer nearest to lo"""
+        k_ = (lo + 16384) >> 15
+        if k_ >= 16 or k_ not in RGK: return False
+        a_, b_ = RGK[k_]
+        return a_ <= lo and hi <= b_
+    def sint(box, q, T, lbw, lbP, lbM, pw, pd):
+        """the integer slope test (value comparable to CSU), exactly as the Lean `ctest`"""
+        if any(not (box[r][0] <= q[r] <= box[r][1]) for r in range(Q)): return NEG
+        I = iv(box); lhs_t = 0; Rsum = 0
+        Pt = [0] * NP; Mt = [0] * NP
+        for t, (i, j) in enumerate(PAIRS):
+            lo, hi = I[t]
+            if T >> t & 1:
+                qt = sum(q[i:j]); p, m = pd(qt)
+                if p < 1 or m < 1: return NEG
+                Pt[t] = p; Mt[t] = m
+                if inreg(lo, hi):
+                    lhs_t += aN[t] * pw(qt); continue
+                up = dn = 0
+                if hi > qt:
+                    e = lbP(qt, hi)
+                    if e < 1: return NEG
+                    up = (hi - qt) * max(0, 4 * U1 - m - e)
+                if qt > lo:
+                    e = lbM(lo, qt)
+                    if e < 1: return NEG
+                    dn = (qt - lo) * max(0, 4 * U1 - e - p)
+                Rsum += aN[t] * max(up, dn)
+                lhs_t += aN[t] * pw(qt)
+            else:
+                lhs_t += aN[t] * lbw(lo, hi)
+        pen = 0
+        for r in range(Q):
+            AT = sum(aN[t] for t in TS[r] if T >> t & 1)
+            Pos = max(0, U1 * bN[r] + KU1 * AT - sum(aN[t] * Mt[t] for t in TS[r] if T >> t & 1))
+            Neg = max(0, KU1 * AT - U1 * bN[r] - sum(aN[t] * Pt[t] for t in TS[r] if T >> t & 1))
+            pen += (q[r] - box[r][0]) * Pos + (box[r][1] - q[r]) * Neg
+        return U * sum(bN[r] * q[r] for r in range(Q)) + SC * lhs_t - RU * (pen + Rsum)
+    def sfloat(box, q, passes=2):
+        """float steering: expansion set at q by passes of single-term switches; returns (value, T)"""
+        qq = np.array(q, float) / SC
+        lo = np.array([x[0] for x in box]) / SC - qq; hi = np.array([x[1] for x in box]) / SC - qq
+        I = iv(box); sq = INC @ qq; wq = wf(sq); w1q = w1f(sq)
+        w0 = np.array([frq('w', l, h) for l, h in I]); pen = np.zeros(NP)
+        for t, (i, j) in enumerate(PAIRS):
+            l_, h_ = I[t]; qt = sum(q[i:j]); up = dn = 0.0
+            if h_ > qt: up = max(0.0, w1q[t] - frq('lo', qt, h_)) * (h_ - qt) / SC
+            if qt > l_: dn = max(0.0, frq('hi', l_, qt) - w1q[t]) * (qt - l_) / SC
+            pen[t] = 0.0 if inreg(l_, h_) else max(up, dn)
+        tay = a * (wq - pen); zer = a * w0; slope = a * w1q
+        use = np.ones(NP, bool)
+        def total(use):
+            g = b + INC.T @ (slope * use)
+            return float(b @ qq + np.minimum(g * lo, g * hi).sum() + np.where(use, tay, zer).sum())
+        cur = total(use)
+        for _ in range(passes):
+            changed = False
+            for t in np.argsort(-pen):
+                use[t] = not use[t]; v = total(use)
+                if v > cur: cur = v; changed = True
+                else: use[t] = not use[t]
+            if not changed: break
+        return cur, sum(1 << t for t in range(NP) if use[t])
+    CEN = [list(c_) for c_ in centers]
+    def qof(modes, box):
+        """the expansion point of a slope leaf: per-gap modes, or ('C', k): the centre k clamped to the box"""
+        if modes[0] == 'C':
+            c_ = CEN[modes[1]]; out = []
+            for r in range(Q):
+                l_, u_ = box[r]; la = ((l_ + 15) >> 4) << 4; ua = (u_ >> 4) << 4
+                out.append(min(max(c_[r], la), ua) if la <= ua else min(max(c_[r], l_), u_))
+            return out
+        return [dec(modes[r], box[r][0], box[r][1]) for r in range(Q)]
+    def near_center(box):
+        if not CEN: return None
+        best = None
+        for k_, c_ in enumerate(CEN):
+            dd = max(max(box[r][0] - c_[r], c_[r] - box[r][1], 0) for r in range(Q))
+            if best is None or dd < best[0]: best = (dd, k_)
+        return best[1] if best[0] <= CRAD * SC else None
+    def scands(box):
+        cen = [(x[0] + x[1]) / 2 / SC for x in box]
+        g = b + INC.T @ (a * w1f(INC @ np.array(cen)))
+        m1 = tuple(0 if g[r] >= 0 else 1 for r in range(Q)); m2 = (2,) * Q
+        out = []
+        cands = [m1, m2]
+        k_ = near_center(box)
+        if k_ is not None: cands.append(('C', k_))
+        for modes in cands:
+            q = qof(modes, box)
+            v, T = sfloat(box, q); out.append((v, modes, q, T))
+        out.sort(key=lambda z: -z[0])
+        return out
+    cF = cN / SA
+    def flower(box):
+        if inbas(box): return cF
+        zf = sum(b[r] * box[r][0] / SC for r in range(Q)) + sum(a[t] * frq('w', l, h) for t, (l, h) in enumerate(iv(box)))
+        if zf >= cF: return zf
+        cen = [(x[0] + x[1]) / 2 / SC for x in box]
+        g = b + INC.T @ (a * w1f(INC @ np.array(cen)))
+        best = zf
+        cands = [tuple(0 if g[r] >= 0 else 1 for r in range(Q)), (2,) * Q]
+        k_ = near_center(box)
+        if k_ is not None: cands.append(('C', k_))
+        for modes in cands:
+            q = qof(modes, box)
+            best = max(best, sfloat(box, q, passes=1)[0])
+        return best
+    count = [0, 0, 0, 0, 0, 0, 0]
+    def choose(box):
+        wd = [x[1] - x[0] for x in box]; mw = max(wd); best = None
+        for k in range(Q):
+            if wd[k] == 0 or wd[k] * WF < mw: continue
+            mid = (box[k][0] + box[k][1]) // 2
+            A_ = list(box); A_[k] = (box[k][0], mid); B_ = list(box); B_[k] = (mid, box[k][1])
+            la, lb_ = flower(tuple(A_)), flower(tuple(B_))
+            sc = ((la >= cF) + (lb_ >= cF), la + lb_)
+            if best is None or sc > best[0]: best = (sc, k)
+        return best[1]
+    if MTEST:
+        from scipy.optimize import linprog as _linprog
+        _xsc = np.arange(0, 80 * SC + 2) / SC; _w2c = (w1f(_xsc + 1e-6) - w1f(_xsc - 1e-6)) / 2e-6
+        _cc = np.concatenate([[0], np.cumsum(_w2c > 0)])
+        def in_concave(p1, p2): return p2 + 1 < len(_cc) and _cc[p2 + 1] - _cc[p1] == 0
+    mstat = [0, 0, 0, 0]
+    REGL = sorted(regions)
+    def mcands(lo, hi, lbw, lbP, lbM, pw, pd):
+        """certifiable minorants of w on [lo, hi] / SC as (alpha*U, d*U1, p): w(s) >= (alpha + d (s - p/SC)) on the range;
+        the constant lb, and lines through (p, w(p)) (p on the 256-grid) with slope dR = min w' on [p, hi] or
+        dL = max w' on [lo, p] (table bounds) when dL <= dR"""
+        if os.environ.get("MREG") == "2":
+            # extended tangents: at a 256-grid point p inside a convex region [za, zb], valid on [lo, hi] when the
+            # derivative table bounds w' >= w'(p) on [zb, hi] and w' <= w'(p) on [lo, za] (strictly, slack allowed)
+            out = [(lbw(lo, hi), 0, lo, 0)]
+            if hi - lo < 64: return out
+            ga = ((lo + 255) >> 8) << 8; gb = (hi >> 8) << 8
+            if ga > gb: return out
+            pid = {}
+            for j in range(NPT):
+                pid.setdefault(min(gb, max(ga, ((lo + (hi - lo) * j // (NPT - 1)) >> 8) << 8)), j + 1)
+            for p in sorted(pid):
+                rg = next(((za, zb) for (za, zb) in REGL if za <= p <= zb), None)
+                if rg is None: continue
+                za, zb = rg
+                P_, M_ = pd(p)
+                if P_ < 1 or M_ < 1: continue
+                if hi > zb:
+                    e = lbP(zb, hi)
+                    if e < 1 or e - KU1 < KU1 - M_: continue
+                if lo < za:
+                    e = lbM(lo, za)
+                    if e < 1 or KU1 - e > P_ - KU1: continue
+                out.append((pw(p), (P_ - M_) // 2, p, pid[p]))
+            p1 = (lo >> 8) << 8; p2 = ((hi + 255) >> 8) << 8
+            if os.environ.get("MCHORD", "1") == "1" and p2 > p1 and in_concave(p1, p2):
+                w1_ = float(wf(p1 / SC)); w2_ = float(wf(p2 / SC)); dd = (w2_ - w1_) / ((p2 - p1) / SC)
+                out.append((w1_ * U - 1, dd * U1, p1, 15))
+            return out
+        if os.environ.get("MREG"):
+            # region-certified minorants: the constant (pyramid), tangents at 256-grid points when the range lies in a
+            # convex region, the secant between the 256-grid points around the range when that lies in a concave region
+            out = [(lbw(lo, hi), 0, lo)]
+            if hi - lo < 64: return out
+            if inreg(lo, hi):
+                ga = ((lo + 255) >> 8) << 8; gb = (hi >> 8) << 8
+                if ga <= gb:
+                    pts = sorted({min(gb, max(ga, ((lo + (hi - lo) * j // (NPT - 1)) >> 8) << 8)) for j in range(NPT)})
+                    for p in pts:
+                        P_, M_ = pd(p)
+                        if P_ < 1 or M_ < 1: continue
+                        out.append((pw(p), (P_ - M_) // 2, p))
+            else:
+                p1 = (lo >> 8) << 8; p2 = ((hi + 255) >> 8) << 8
+                if p2 > p1 and in_concave(p1, p2):
+                    w1_ = float(wf(p1 / SC)); w2_ = float(wf(p2 / SC)); dd = (w2_ - w1_) / ((p2 - p1) / SC)
+                    out.append((w1_ * U - 1, dd * U1, p1))
+            return out
+        if os.environ.get("MEXACT"):
+            ed = float(os.environ.get("MEPSD", "0")) * U1; ew = float(os.environ.get("MEPSW", "0")) * U
+            out = [(frq('w', lo, hi) * U - ew, 0, lo)]
+            if hi - lo < 64: return out
+            for p in sorted({lo + (hi - lo) * j // (NPT - 1) for j in range(NPT)}):
+                dR = (frq('lo', p, hi) * U1 - ed) if hi > p else 10 ** 18
+                dL = (frq('hi', lo, p) * U1 + ed) if p > lo else -10 ** 18
+                if dL > dR: continue
+                for dd in {max(dL, -10 ** 12), min(dR, 10 ** 12)}: out.append((float(wf(p / SC)) * U - ew, dd, p))
+            return out
+        out = [(lbw(lo, hi), 0, lo)]
+        if hi - lo < 64: return out
+        ga = ((lo + 255) >> 8) << 8; gb = (hi >> 8) << 8
+        if gb < ga: return out
+        pts = sorted({min(gb, max(ga, ((lo + (hi - lo) * j // (NPT - 1)) >> 8) << 8)) for j in range(NPT)})
+        for p in pts:
+            P_, M_ = pd(p)
+            if P_ < 1 or M_ < 1: continue
+            dR = (lbP(p, hi) - KU1) if hi > p else None
+            dL = (KU1 - lbM(lo, p)) if p > lo else None
+            if hi > p and lbP(p, hi) < 1: continue
+            if p > lo and lbM(lo, p) < 1: continue
+            if dR is None: dR = 10 ** 18
+            if dL is None: dL = -10 ** 18
+            if dL > dR: continue
+            for dd in {max(dL, -10 ** 12), min(dR, 10 ** 12)}:
+                out.append((pw(p), dd, p))
+        return out
+    def mtest(box, lbw, lbP, lbM, pw, pd):
+        """per-term independent certifiable minorants: LP over the box (convex-combination certificate) and the
+        single-minorant rounding; returns (LP value - c, rounded value - c) relative to c"""
+        I = iv(box); lo = np.array([x[0] for x in box]) / SC; hi = np.array([x[1] for x in box]) / SC
+        A_ub = []; b_ub = []; C = []
+        for t, (i, j) in enumerate(PAIRS):
+            cs = mcands(I[t][0], I[t][1], lbw, lbP, lbM, pw, pd); C.append(cs)
+            for (al, dd, p, *_) in cs:
+                row = np.zeros(Q + NP); row[i:j] = dd / U1; row[Q + t] = -1.0
+                A_ub.append(row); b_ub.append(-(al / U - dd / U1 * p / SC))
+        r_ = _linprog(np.concatenate([b, a]), A_ub=np.array(A_ub), b_ub=np.array(b_ub), bounds=list(zip(lo, hi)) + [(None, None)] * NP, method='highs')
+        if r_.status != 0: return -1.0, -1.0
+        g = r_.x[:Q]; s_ = INC @ g
+        coef = b.copy(); const = 0.0
+        for t, (i, j) in enumerate(PAIRS):
+            best = max(C[t], key=lambda m: m[0] / U + m[1] / U1 * (s_[t] - m[2] / SC))
+            coef[i:j] += a[t] * best[1] / U1; const += a[t] * (best[0] / U - best[1] / U1 * best[2] / SC)
+        v1 = const + float(np.minimum(coef * lo, coef * hi).sum())
+        if MTEST != 3: return (r_.fun - cF) / cF, (v1 - cF) / cF
+        # the leaf's certificate: per term the two minorants of largest LP dual weight, mixed with a weight of LBITS bits
+        mu = -np.asarray(r_.ineqlin.marginals); LQ = 1 << int(os.environ.get("LBITS", "10"))
+        coef = b.copy(); const = 0.0; row = 0; pay = []
+        for t, (i, j) in enumerate(PAIRS):
+            k_ = len(C[t]); wt = mu[row:row + k_]; row += k_
+            top = np.argsort(-wt)[:2]
+            m1 = C[t][top[0]]; m2 = C[t][top[1]] if k_ > 1 else m1
+            w1_, w2_ = (wt[top[0]], wt[top[1]] if k_ > 1 else 0.0)
+            lam = int(round(LQ * w1_ / (w1_ + w2_))) if w1_ + w2_ > 0 else LQ
+            if lam == LQ: m2 = m1
+            if lam == 0: m1, lam = m2, LQ
+            pay.append((m1[3], m2[3], lam))
+            for (m_, wl) in ((m1, lam / LQ), (m2, 1 - lam / LQ)):
+                coef[i:j] += a[t] * wl * m_[1] / U1; const += a[t] * wl * (m_[0] / U - m_[1] / U1 * m_[2] / SC)
+        v2 = const + float(np.minimum(coef * lo, coef * hi).sum())
+        mtest.pay = pay
+        return (v2 - cF) / cF, (v1 - cF) / cF
+    def gpt(L_, U_, j):
+        """the grid point j of [L, U] (Lean `gpt`)"""
+        ga = ((L_ + 255) >> 8) << 8; gb = (U_ >> 8) << 8; x = ((L_ + (((U_ - L_) * j) >> 3)) >> 8) << 8
+        return ga if x <= ga else (gb if gb <= x else x)
+    def mline(mid, L_, U_, lbw, lbP, lbM, pw, pd):
+        """the triple (v, P, M) at QS = L of minorant `mid` on [L, U] (0: the constant, j + 1: the extended tangent at
+        gpt j), exactly as the Lean mode reads; None when not certified"""
+        if mid == 0: return (lbw(L_, U_), 0, KU1, KU1)
+        p = gpt(L_, U_, mid - 1); k_ = (p + 16384) >> 15
+        if k_ >= 16 or k_ not in RGK or not (L_ <= p <= U_): return None
+        za, zb = RGK[k_]
+        if not (za <= p <= zb): return None
+        P_, M_ = pd(p)
+        if P_ < 1 or M_ < 1: return None
+        if U_ > zb:
+            e = lbP(zb, U_)
+            if e < 1 or e + M_ < 4 * U1: return None
+        if L_ < za:
+            e = lbM(L_, za)
+            if e < 1 or e + P_ < 4 * U1: return None
+        v = pw(p); D = KU1 - M_
+        # the value at L, signed: vp - vn (units 10^-10)
+        if D >= 0: return (v, (10 * (p - L_) * D + SC - 1) // SC, P_, M_)
+        return (v + (10 * (p - L_) * (-D)) // SC, 0, P_, M_)
+    def mint(box, pay, lbw, lbP, lbM, pw, pd):
+        """the integer M-leaf test (value comparable to CSU): every term at q = the lower corner, a constant term at zero
+        order, any other term by its (mixed) signed line (vp - vn, P, M) with no charge, then the slope inequality of
+        `cscheck` with the negative parts moved to the right"""
+        I = iv(box); lhs_t = 0; Pt = [0] * NP; Mt = [0] * NP; T = 0
+        for t in range(NP):
+            lo_, hi_ = I[t]; i1, i2, lam = pay[t]
+            if i1 == 0 and (i2 == 0 or lam == 1024):
+                lhs_t += aN[t] * lbw(lo_, hi_); continue
+            X1 = mline(i1, lo_, hi_, lbw, lbP, lbM, pw, pd)
+            if X1 is None: return NEG
+            if lam < 1024:
+                X2 = mline(i2, lo_, hi_, lbw, lbP, lbM, pw, pd)
+                if X2 is None: return NEG
+                X1 = ((lam * X1[0] + (1024 - lam) * X2[0]) >> 10, (lam * X1[1] + (1024 - lam) * X2[1] + 1023) >> 10,
+                      (lam * X1[2] + (1024 - lam) * X2[2]) >> 10, (lam * X1[3] + (1024 - lam) * X2[3]) >> 10)
+            if X1[2] < 1 or X1[3] < 1: return NEG
+            T |= 1 << t; Pt[t] = X1[2]; Mt[t] = X1[3]; lhs_t += aN[t] * (X1[0] - X1[1])
+        pen = 0
+        for r in range(Q):
+            AT = sum(aN[t] for t in TS[r] if T >> t & 1)
+            Neg = max(0, KU1 * AT - U1 * bN[r] - sum(aN[t] * Pt[t] for t in TS[r] if T >> t & 1))
+            pen += (box[r][1] - box[r][0]) * Neg
+        return U * sum(bN[r] * box[r][0] for r in range(Q)) + SC * lhs_t - RU * pen
+    def mkappa(pay_t):
+        """(id1, id2, lam) with lam the weight of id1 -> the MinCore term code (kappa, lambda, j1, j2): kappa 0 the
+        constant, 1 the tangent at gpt j1, 2 the constant (1024 - lambda) and that tangent (lambda), 3 the tangents at
+        gpt j1 (1024 - lambda) and gpt j2 (lambda)"""
+        i1, i2, lam = pay_t
+        if lam == 1024 or i1 == i2: i2 = i1; lam = 1024
+        if i1 == 0 and lam == 1024: return (0, 0, 0, 0)
+        if lam == 1024: return (1, 0, i1 - 1, 0)
+        if i1 == 0: return (2, 1024 - lam, i2 - 1, 0)
+        if i2 == 0: return (2, lam, i1 - 1, 0)
+        return (3, 1024 - lam, i1 - 1, i2 - 1)
+    def mwts(kap, lam):
+        return {1: (0, 1024, 0), 2: (1024 - lam, lam, 0), 3: (0, 1024 - lam, lam)}.get(kap, (1024, 0, 0))
+    def tchk(L_, U_, p, X, lbDP, lbDM):
+        """MinCore `tcheck` with the reads `treadU` / `treadD` (lbDP / lbDM: the P and M halves of `lbDr`)"""
+        k_ = (p + 16384) >> 15
+        if k_ >= 16 or k_ not in RGK: return False
+        za, zb = RGK[k_]
+        if not (za <= p <= zb and L_ <= p <= U_): return False
+        P_, M_ = X[1], X[2]
+        if P_ < 1 or M_ < 1: return False
+        if not (U_ <= zb or (lbDP(zb, U_) >= 1 and lbDP(zb, U_) + M_ >= 4 * U1)): return False
+        if not (za <= L_ or (lbDM(L_, za) >= 1 and lbDM(L_, za) + P_ >= 4 * U1)): return False
+        return True
+    def mint_exact(box, pay, lbw, lbP, lbM, pw, pd):
+        """the AM M-leaf check exactly as emitted (MinCore `mval`/`mcp`/`mcn`/`msl`/`mok` per term, `gap_lo` per gap),
+        scaled to compare with CSU: (LHS - RHS) / 1024 + CSU"""
+        I = iv(box); LHS = 1024 * U * sum(bN[r] * box[r][0] for r in range(Q)); RHS = 1024 * CSU
+        Wt = [0] * NP; SL = [0] * NP
+        for t in range(NP):
+            L_, U_ = I[t]; kap, lam, j1, j2 = mkappa(pay[t]); c_, l1, l2 = mwts(kap, lam)
+            p1 = gpt(L_, U_, j1); p2 = gpt(L_, U_, j2)
+            X1 = (pw(p1), *pd(p1)); X2 = (pw(p2), *pd(p2))
+            if l1 and not tchk(L_, U_, p1, X1, lbP, lbM): return NEG
+            if l2 and not tchk(L_, U_, p2, X2, lbP, lbM): return NEG
+            val = c_ * (lbw(L_, U_) if c_ else 0) + l1 * X1[0] + l2 * X2[0]
+            cp = l1 * max(0, X1[2] - KU1) * max(0, p1 - L_) + l2 * max(0, X2[2] - KU1) * max(0, p2 - L_)
+            cn = l1 * max(0, KU1 - X1[2]) * max(0, p1 - L_) + l2 * max(0, KU1 - X2[2]) * max(0, p2 - L_)
+            LHS += aN[t] * (SC * val + 10 * cp); RHS += 10 * aN[t] * cn
+            Wt[t] = l1 + l2; SL[t] = l1 * X1[1] + l2 * X2[1]
+        for r in range(Q):
+            N_ = max(0, sum(aN[t] * KU1 * Wt[t] for t in TS[r]) - sum(aN[t] * SL[t] for t in TS[r]) - 1024 * U1 * bN[r])
+            RHS += 10 * N_ * (box[r][1] - box[r][0])
+        return CSU + (LHS - RHS) // 1024
+    if os.environ.get("MEXACTI", "1") == "1": mint = mint_exact
+    def decide(box, lbw, lbP, lbM, pw, pd, lbw3):
+        """leaf kind and payload, or None"""
+        if box[0][0] > box[Q - 1][1]: return (0, None)
+        if sum(bN[r] * box[r][0] for r in range(Q)) >= cN * SC: return (1, None)
+        if inbas(box): return (3, None)
+        if zlow(box, lbw3) >= CSU: return (1, None)
+        for v, modes, q, T in (scands(box) if os.environ.get("NOS") != "1" else []):
+            if v < cF * 0.999: break
+            if sint(box, q, T, lbw, lbP, lbM, pw, pd) >= CSU: return (2, (modes, T))
+        if MTEST:
+            vlp, v1 = mtest(box, lbw, lbP, lbM, pw, pd)
+            mstat[0] += 1; mstat[1] += vlp >= 0; mstat[2] += v1 >= 0
+            if (vlp if MTEST in (2, 3) else v1) >= 1e-7:
+                if MTEST != 3: return (6, None)
+                if mint(box, mtest.pay, lbw, lbP, lbM, pw, pd) >= CSU: return (6, mtest.pay)
+                mstat[3] += 1
+        return None
+    def subdivide(box, depth, tabs):
+        d = decide(box, *tabs)
+        if d is not None:
+            count[0] += 1; count[d[0]] += 1 if d[0] in (1, 2, 3, 6) else 0
+            if verbose and count[0] % 20000 == 0: print(f'  ... {count[0]} leaves (Z {count[1]}, S {count[2]}, B {count[3]}, M {count[6]}) mtests {mstat} ({time.time()-t0:.0f}s)', flush=True)
+            return ('leaf', box, d[0], d[1])
+        if depth > 70 or count[0] > max_leaves or max(x[1] - x[0] for x in box) <= 1:
+            if verbose: print("  stuck", box, flush=True)
+            return None
+        k = choose(box); mid = (box[k][0] + box[k][1]) // 2
+        A_ = list(box); A_[k] = (box[k][0], mid); B_ = list(box); B_[k] = (mid, box[k][1])
+        X = subdivide(tuple(A_), depth + 1, tabs)
+        if X is None: return None
+        Y = subdivide(tuple(B_), depth + 1, tabs)
+        if Y is None: return None
+        return ('split', box, k, mid, X, Y)
+    est = (lbE1, lbPE, lbME, ptw, ptd, lbE)
+    if probe: return dict(est=est, sint=sint, sfloat=sfloat, scands=scands, dec=dec, zlow=zlow, flower=flower, decide=decide, iv=iv, inreg=inreg, mtest=mtest if MTEST else None, mint=mint, mline=mline, gpt=gpt, mcands=mcands, CSU=CSU, mkappa=mkappa)
+    nodes = {}
+    for tup in itertools.product(*[range(len(bd)) for bd in bads]):
+        box = tuple(bads[r][tup[r]] for r in range(Q))
+        nd = subdivide(box, 0, est)
+        if nd is None: return None
+        nodes[tup] = nd
+    if verbose: print(f"  bisection: {count[0]} leaves (Z {count[1]}, S {count[2]}, basin {count[3]}, M {count[6]}) mtests {mstat} ({time.time()-t0:.0f}s)", flush=True)
+    if (MTEST and MTEST != 3) or os.environ.get("BISECT_ONLY"):
+        if os.environ.get("LDUMP"):
+            import pickle
+            _lv = []
+            def _col(nd):
+                if nd[0] == 'leaf': _lv.append((nd[1], nd[2], nd[3]))
+                else: _col(nd[4]); _col(nd[5])
+            for nd in nodes.values(): _col(nd)
+            pickle.dump(_lv, open(os.environ["LDUMP"], "wb"))
+        return dict(early=True, nleaves=count[0], nZ=count[1], nS=count[2], nB=count[3], nM=count[6])
+    # ---- tables from the queries ----
+    leaves = []
+    def collect(nd):
+        if nd[0] == 'leaf': leaves.append(nd)
+        else: collect(nd[4]); collect(nd[5])
+    for nd in nodes.values(): collect(nd)
+    qz, qd, qz1 = set(), set(), set()
+    def mq_add(I, pay, qz1, qd, pts=None):
+        # the reads of an M-leaf: the constant's pyramid read, each tangent's point and its derivative reads
+        for t in range(NP):
+            lo_, hi_ = I[t]; i1, i2, lam = pay[t]
+            for mid in ((i1,) if lam == 1024 else (i1, i2)):
+                if mid == 0: qz1.add((lo_, hi_)); continue
+                p = gpt(lo_, hi_, mid - 1); k_ = (p + 16384) >> 15
+                if pts is not None: pts.add(p)
+                if k_ in RGK:
+                    za, zb = RGK[k_]
+                    if hi_ > zb: qd.add((zb, hi_))
+                    if lo_ < za: qd.add((lo_, za))
+    for _, box, kind, pay in leaves:
+        I = iv(box)
+        if kind == 1: qz.update(I)
+        elif kind == 2:
+            modes, T = pay; q = qof(modes, box)
+            for t, (i, j) in enumerate(PAIRS):
+                lo, hi = I[t]
+                if T >> t & 1:
+                    qt = sum(q[i:j])
+                    if inreg(lo, hi): continue
+                    if hi > qt: qd.add((qt, hi))
+                    if qt > lo: qd.add((lo, qt))
+                else: qz1.add((lo, hi))
+        elif kind == 6:
+            mq_add(I, pay, qz1, qd)
+    qz = {pc for (lo, hi) in qz for pc in pieces(lo, hi, SH, MINW)} | qz1
+    P.need(qz)
+    for j in range(P.X0 >> P.PB, ((P.xmax - 1) >> P.PB) + 1): P.res[j] = WMIN
+    P.build(); PP.need(qd); PM.need(qd)
+    if DENSE:
+        for X_ in (PP, PM):
+            for j in range(X_.X0 >> X_.PB, ((X_.xmax - 1) >> X_.PB) + 1): X_.res[j] = DLO if (j << 10) < XD else DHI
+    PP.build(); PM.build()
+    Plb3 = lb3_of(P.lb, SH, MINW)
+    built = (P.lb, PP.lb, PM.lb, ptw, ptd, Plb3)
+    fixed = [0, 0]
+    def fix(nd, depth=0):
+        if nd[0] == 'split':
+            return ('split', nd[1], nd[2], nd[3], fix(nd[4], depth + 1), fix(nd[5], depth + 1))
+        _, box, kind, pay = nd
+        if kind in (0, 3) or sum(bN[r] * box[r][0] for r in range(Q)) >= cN * SC: return nd
+        if kind == 1 and zlow(box, Plb3) >= CSU: return nd
+        if kind == 2:
+            modes, T = pay; q = qof(modes, box)
+            if sint(box, q, T, *built[:5]) >= CSU: return nd
+        if kind == 6 and mint(box, pay, *built[:5]) >= CSU: return nd
+        fixed[0] += 1
+        r = subdivide(box, depth, built)
+        assert r is not None, ("fix-up failed", box)
+        return r
+    nodes = {k: fix(v) for k, v in nodes.items()}
+    leaves = []
+    for nd in nodes.values(): collect(nd)
+    pts = set(); bad = 0
+    nZ = nS = nB = nM = 0
+    for _, box, kind, pay in leaves:
+        if kind == 1:
+            nZ += 1
+            if sum(bN[r] * box[r][0] for r in range(Q)) < cN * SC and zlow(box, Plb3) < CSU: bad += 1
+        elif kind == 2:
+            nS += 1; modes, T = pay; q = qof(modes, box)
+            for t, (i, j) in enumerate(PAIRS):
+                if T >> t & 1: pts.add(sum(q[i:j]))
+            if sint(box, q, T, *built[:5]) < CSU: bad += 1
+        elif kind == 3: nB += 1
+        elif kind == 6:
+            nM += 1; mq_add(iv(box), pay, set(), set(), pts)
+            if mint(box, pay, *built[:5]) < CSU: bad += 1
+    tzb = {}
+    for x in pts:
+        o = x & 1023; tz = min(10, (o & -o).bit_length() - 1) if o else 10
+        tzb[x >> 10] = min(tzb.get(x >> 10, 10), tz)
+    st = dict(w=P.stats(), d=PP.stats(), points=len(pts), ptcells=sum(1 << (10 - r) for r in tzb.values()))
+    if verbose:
+        print(f"  fix-up: {fixed[0]} re-decided; tables: w {st['w']['finest']} cells, d {st['d']['finest']} cells, "
+              f"{len(pts)} points ({st['ptcells']} point cells); failing {bad} ({time.time()-t0:.0f}s)", flush=True)
+    return dict(P=P, PP=PP, PM=PM, nodes=nodes, covers=covers, bads=bads, S=S, leaves=leaves, nleaves=len(leaves),
+                nZ=nZ, nS=nS, nB=nB, nM=nM, pts=pts, mint=mint, gpt=gpt, mq_add=mq_add, mkappa=mkappa, stats=st, bad=bad, dec=dec, sint=sint, built=built, cN=cN, sfloat=sfloat, iv=iv, inreg=inreg, qof=qof, Plb3=Plb3, pieces=lambda lo, hi: pieces(lo, hi, SH, MINW))

@@ -1,0 +1,30 @@
+== size9 delta=0.00005 tag=fast_t562 rootsel=2,5,9 Sat Oct 10 14:11:36 PDT 2026
+window json /Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t562.json
+delta=5e-05 cN=846865 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=2,5,9
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 1360 leaves (293s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 1541 leaves (601s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1119 leaves (836s)
+  bisection: 4020 leaves (Z 0, M 3858, empty 0), 4017 splits, 2010 at region boundaries (836s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2505 points (7051 point cells); failing 0 (841s)
+leaves 4020 kinds {6: 3858, 0: 162} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 4017 (pair 2950); walk bits 1233046 (306.7 per leaf; multipliers 3414 x 11 bits); M nonzero multipliers [(0, 1112), (1, 2135), (2, 556), (3, 53), (4, 2)]; constraints per M cell [(28, 3858)]; w 1984 d 2240 pts 2505 ptc 7051 bad 0 MSTAT lp 14115 (841s)
+nodes visited 8037 (leaves 4020 + splits 4017); explicit constraints per node: mean 28.00, dist [(28, 8037)]
+walk: 1233046 bits = 0.308 MB hex, 0.206 MB base64 (roots run); x8.73: 2.69 MB hex, 1.79 MB base64
+      852.04 real       839.03 user         8.38 sys
+          1870970880  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              523996  page reclaims
+                  65  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   4  voluntary context switches
+              285548  involuntary context switches
+      11915170054245  instructions retired
+       2792902641844  cycles elapsed
+          1848477496  peak memory footprint
+== done Sat Oct 10 14:25:48 PDT 2026

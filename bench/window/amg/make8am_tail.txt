@@ -1,0 +1,43 @@
+data = data.replace("Zeta23Ext.Bridge.ThreePoint", "AMW.Cert")
+data = f"import AMW.{NAME}Inst\n" + data
+_X = [f"x{r}" for r in range(Q)]
+data += (f"""
+noncomputable section
+
+namespace AMW.Cert
+
+theorem {NAME}_G_rev ({' '.join(_X)} : ℝ) : {NAME}.G {' '.join(reversed(_X))} = {NAME}.G {' '.join(_X)} := by
+  unfold {NAME}.G; ring_nf
+
+/-- **the AM {Q + 1}-point certificate**: the half-space certificate completed by reflection (symmetric weights) -/
+theorem {NAME}_cert_full : ∀ {' '.join(_X)} : ℝ, {' → '.join(f'0 ≤ {v}' for v in _X)} →
+    ({NAME}.cN : ℝ) / {NAME}.SA ≤ {NAME}.G {' '.join(_X)} := by
+  intro {' '.join(_X)} {' '.join(f'h{r}' for r in range(Q))}
+  rcases lt_or_ge {_X[Q-1]} {_X[0]} with hlt | hle
+  · rcases {NAME}Data.cert {' '.join(reversed(_X))} {' '.join(f'h{r}' for r in reversed(range(Q)))} with h | h
+    · rw [← {NAME}_G_rev]; exact h
+    · exact absurd h (not_lt.mpr hlt.le)
+  · rcases {NAME}Data.cert {' '.join(_X)} {' '.join(f'h{r}' for r in range(Q))} with h | h
+    · exact h
+    · exact absurd h (not_lt.mpr hle)
+
+end AMW.Cert
+
+end
+""")
+open(os.path.join(ROOT, f"{NAME}Data.lean"), "w", encoding="utf-8").write(data)
+# ---- the instance, on the AM engine cores (AMW/CEngine via AMW/CWindow) and the minorant core (AMW/CMin via AMW/CMinX) ----
+inst = (f"""import AMW.CWindow
+import AMW.CMinX
+
+/-! ###### the AM {Q + 1}-point weighted certificate `{NAME}`: zero-order and minorant leaf tests, walk, cover
+
+Weights: LP pair weights and pressures over SA = 10⁸ for the window of `AMW.Window`.  Pyramid lower-bound table adapted
+from five-point-pyramid-2 by typh (Apache-2.0); per-term minorant leaves after mvt-engine's MinCore. ###### -/
+
+set_option maxRecDepth 100000
+""" + checker(NAME, SA, aN, bN, cN, ORDER, JCQ)).replace("Zeta23Ext.Bridge.ThreePoint", "AMW.Cert")
+chk = inst
+open(os.path.join(ROOT, f"{NAME}Inst.lean"), "w", encoding="utf-8").write(chk)
+open(os.path.join(HERE, f"{NAME}_params.txt"), "w").write(f"{Q} {SA} {','.join(map(str, aN))} {','.join(map(str, bN))} {cN} {NAME} 15 0 0\n")
+open(os.path.join(HERE, f"{NAME}_order.txt"), "w").write(",".join(map(str, ORDER)) + "\n")

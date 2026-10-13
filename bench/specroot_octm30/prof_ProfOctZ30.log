@@ -1,0 +1,418 @@
+tactic execution of Mathlib.Tactic.nlinarith took 354ms
+tactic execution of Mathlib.Tactic.nlinarith took 279ms
+tactic execution of Mathlib.Tactic.nlinarith took 268ms
+tactic execution of Mathlib.Tactic.nlinarith took 1.04s
+tactic execution of Mathlib.Tactic.nlinarith took 225ms
+tactic execution of Mathlib.Tactic.nlinarith took 251ms
+tactic execution of Mathlib.Tactic.nlinarith took 351ms
+tactic execution of Mathlib.Tactic.nlinarith took 446ms
+tactic execution of Mathlib.Tactic.nlinarith took 497ms
+tactic execution of Mathlib.Tactic.nlinarith took 824ms
+tactic execution of Mathlib.Tactic.nlinarith took 223ms
+tactic execution of Mathlib.Tactic.nlinarith took 1.2s
+tactic execution of Mathlib.Tactic.nlinarith took 1.3s
+tactic execution of Mathlib.Tactic.nlinarith took 1.55s
+tactic execution of Mathlib.Tactic.nlinarith took 1.34s
+tactic execution of Mathlib.Tactic.nlinarith took 545ms
+simp took 496ms
+simp took 464ms
+tactic execution of Mathlib.Tactic.nlinarith took 414ms
+tactic execution of Mathlib.Tactic.nlinarith took 540ms
+tactic execution of Mathlib.Tactic.nlinarith took 313ms
+tactic execution of Mathlib.Tactic.nlinarith took 510ms
+specroot_octm30/ProfOctZ30.lean:5231:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:5541:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+specroot_octm30/ProfOctZ30.lean:5726:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:5739:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:5840:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+type checking took 1.37s
+type checking took 1.92s
+tactic execution of Lean.Parser.Tactic.congr took 222ms
+tactic execution of Lean.Parser.Tactic.congr took 230ms
+specroot_octm30/ProfOctZ30.lean:6647:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+tactic execution of Lean.Parser.Tactic.congr took 219ms
+tactic execution of Lean.Parser.Tactic.congr took 219ms
+type checking took 1.3s
+specroot_octm30/ProfOctZ30.lean:7291:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:7325:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+tactic execution of Mathlib.Tactic.nlinarith took 797ms
+tactic execution of Lean.Parser.Tactic.congr took 226ms
+tactic execution of Lean.Parser.Tactic.congr took 238ms
+specroot_octm30/ProfOctZ30.lean:7881:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+tactic execution of Lean.Parser.Tactic.congr took 226ms
+tactic execution of Lean.Parser.Tactic.congr took 219ms
+tactic execution of Lean.Parser.Tactic.congr took 227ms
+tactic execution of Mathlib.Tactic.nlinarith took 1.1s
+tactic execution of Mathlib.Tactic.nlinarith took 1.05s
+tactic execution of Mathlib.Tactic.nlinarith took 280ms
+tactic execution of Mathlib.Tactic.linarith took 318ms
+tactic execution of Mathlib.Tactic.nlinarith took 286ms
+tactic execution of Mathlib.Tactic.nlinarith took 300ms
+tactic execution of Mathlib.Tactic.nlinarith took 294ms
+type checking took 3.78s
+tactic execution of Mathlib.Tactic.nlinarith took 205ms
+tactic execution of Mathlib.Tactic.nlinarith took 441ms
+tactic execution of Mathlib.Tactic.nlinarith took 485ms
+tactic execution of Mathlib.Tactic.nlinarith took 553ms
+tactic execution of Mathlib.Tactic.nlinarith took 1.79s
+tactic execution of Mathlib.Tactic.nlinarith took 2.18s
+type checking took 264ms
+type checking took 275ms
+type checking took 288ms
+type checking took 293ms
+type checking took 291ms
+type checking took 291ms
+type checking took 287ms
+type checking took 282ms
+type checking took 253ms
+type checking took 248ms
+type checking took 236ms
+type checking took 239ms
+type checking took 242ms
+type checking took 231ms
+type checking took 248ms
+type checking took 224ms
+type checking took 223ms
+type checking took 226ms
+type checking took 218ms
+type checking took 215ms
+type checking took 216ms
+type checking took 208ms
+type checking took 205ms
+type checking took 206ms
+type checking took 203ms
+type checking took 205ms
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 474ms
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 1.07s
+tactic execution of Mathlib.Tactic.linarith took 2.49s
+tactic execution of Lean.Parser.Tactic.obtain took 604ms
+tactic execution of Lean.Parser.Tactic.rewriteSeq took 1.16s
+tactic execution of Mathlib.Tactic.linarith took 1.25s
+tactic execution of Mathlib.Tactic.linarith took 1.19s
+tactic execution of Mathlib.Tactic.linarith took 1.14s
+tactic execution of Mathlib.Tactic.linarith took 1.38s
+tactic execution of Mathlib.Tactic.linarith took 1.18s
+tactic execution of Mathlib.Tactic.linarith took 1.18s
+tactic execution of Mathlib.Tactic.linarith took 1.49s
+tactic execution of Mathlib.Tactic.linarith took 1.43s
+tactic execution of Mathlib.Tactic.linarith took 1.24s
+tactic execution of Mathlib.Tactic.linarith took 1.64s
+tactic execution of Mathlib.Tactic.linarith took 1.32s
+tactic execution of Mathlib.Tactic.linarith took 1.33s
+tactic execution of Mathlib.Tactic.linarith took 1.62s
+tactic execution of Mathlib.Tactic.linarith took 1.39s
+tactic execution of Mathlib.Tactic.linarith took 1.39s
+tactic execution of Mathlib.Tactic.linarith took 1.61s
+tactic execution of Mathlib.Tactic.linarith took 1.45s
+tactic execution of Mathlib.Tactic.linarith took 1.45s
+tactic execution of Mathlib.Tactic.linarith took 1.58s
+tactic execution of Mathlib.Tactic.linarith took 1.51s
+tactic execution of Mathlib.Tactic.linarith took 1.51s
+tactic execution of Mathlib.Tactic.FieldSimp.fieldSimp took 1.13s
+ring took 698ms
+tactic execution of Mathlib.Tactic.linarith took 5.55s
+instantiate metavars took 300ms
+share common exprs took 220ms
+type checking took 495ms
+simp took 811ms
+type checking took 286ms
+specroot_octm30/ProfOctZ30.lean:10333:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:10363:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:10393:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:10423:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:10453:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:10483:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+specroot_octm30/ProfOctZ30.lean:10513:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+tactic execution of Mathlib.Tactic.linarith took 319ms
+tactic execution of Mathlib.Tactic.linarith took 423ms
+tactic execution of Mathlib.Tactic.linarith took 363ms
+tactic execution of Mathlib.Tactic.linarith took 364ms
+tactic execution of Mathlib.Tactic.linarith took 371ms
+tactic execution of Mathlib.Tactic.linarith took 377ms
+tactic execution of Mathlib.Tactic.linarith took 376ms
+tactic execution of Mathlib.Tactic.linarith took 385ms
+tactic execution of Mathlib.Tactic.linarith took 396ms
+tactic execution of Mathlib.Tactic.linarith took 493ms
+tactic execution of Mathlib.Tactic.linarith took 524ms
+tactic execution of Mathlib.Tactic.linarith took 559ms
+tactic execution of Mathlib.Tactic.linarith took 587ms
+tactic execution of Mathlib.Tactic.linarith took 623ms
+tactic execution of Mathlib.Tactic.linarith took 656ms
+tactic execution of Mathlib.Tactic.linarith took 681ms
+tactic execution of Mathlib.Tactic.linarith took 593ms
+tactic execution of Lean.calcTactic took 776ms
+tactic execution of Mathlib.Tactic.linarith took 680ms
+tactic execution of Mathlib.Tactic.linarith took 610ms
+tactic execution of Mathlib.Tactic.linarith took 690ms
+tactic execution of Mathlib.Tactic.linarith took 696ms
+tactic execution of Mathlib.Tactic.linarith took 603ms
+tactic execution of Lean.calcTactic took 731ms
+tactic execution of Mathlib.Tactic.linarith took 711ms
+tactic execution of Mathlib.Tactic.linarith took 623ms
+tactic execution of Mathlib.Tactic.linarith took 710ms
+tactic execution of Mathlib.Tactic.linarith took 720ms
+tactic execution of Mathlib.Tactic.linarith took 623ms
+tactic execution of Lean.calcTactic took 737ms
+tactic execution of Mathlib.Tactic.linarith took 749ms
+tactic execution of Mathlib.Tactic.linarith took 679ms
+tactic execution of Mathlib.Tactic.linarith took 735ms
+tactic execution of Mathlib.Tactic.linarith took 747ms
+tactic execution of Mathlib.Tactic.linarith took 643ms
+tactic execution of Lean.calcTactic took 725ms
+tactic execution of Mathlib.Tactic.linarith took 763ms
+tactic execution of Mathlib.Tactic.linarith took 660ms
+tactic execution of Mathlib.Tactic.linarith took 764ms
+tactic execution of Mathlib.Tactic.linarith took 763ms
+tactic execution of Mathlib.Tactic.linarith took 659ms
+tactic execution of Lean.calcTactic took 738ms
+tactic execution of Mathlib.Tactic.linarith took 795ms
+tactic execution of Mathlib.Tactic.linarith took 697ms
+tactic execution of Mathlib.Tactic.linarith took 792ms
+tactic execution of Mathlib.Tactic.linarith took 794ms
+tactic execution of Mathlib.Tactic.linarith took 682ms
+tactic execution of Lean.calcTactic took 737ms
+tactic execution of Mathlib.Tactic.linarith took 821ms
+tactic execution of Mathlib.Tactic.linarith took 704ms
+tactic execution of Mathlib.Tactic.linarith took 821ms
+tactic execution of Mathlib.Tactic.linarith took 822ms
+tactic execution of Mathlib.Tactic.linarith took 702ms
+tactic execution of Lean.calcTactic took 735ms
+tactic execution of Mathlib.Tactic.linarith took 849ms
+tactic execution of Mathlib.Tactic.linarith took 717ms
+tactic execution of Mathlib.Tactic.linarith took 861ms
+tactic execution of Mathlib.Tactic.linarith took 898ms
+share common exprs took 626ms
+type checking took 315ms
+type checking took 1.53s
+type checking took 1.59s
+type checking took 1.55s
+type checking took 1.59s
+type checking took 1.54s
+type checking took 1.55s
+type checking took 1.53s
+type checking took 648ms
+type checking took 1.32s
+type checking took 1.48s
+type checking took 1.41s
+type checking took 1.4s
+type checking took 1.39s
+type checking took 1.36s
+type checking took 1.3s
+type checking took 1.3s
+type checking took 1.34s
+type checking took 1.33s
+type checking took 1.32s
+type checking took 1.32s
+type checking took 1.29s
+type checking took 1.34s
+type checking took 1.33s
+type checking took 1.29s
+type checking took 1.38s
+type checking took 1.29s
+type checking took 1.16s
+type checking took 1.24s
+type checking took 1.28s
+type checking took 595ms
+type checking took 2.42s
+type checking took 4.07s
+type checking took 5.67s
+elaboration took 235ms
+type checking took 6.72s
+elaboration took 306ms
+type checking took 4.16s
+type checking took 8.53s
+elaboration took 507ms
+type checking took 6.53s
+elaboration took 244ms
+type checking took 4.26s
+type checking took 1.26s
+type checking took 6.67s
+elaboration took 304ms
+type checking took 8.34s
+elaboration took 425ms
+type checking took 10s
+elaboration took 612ms
+type checking took 3.04s
+type checking took 4.06s
+type checking took 2.32s
+type checking took 1.34s
+type checking took 211ms
+type checking took 5.82s
+elaboration took 247ms
+type checking took 6.5s
+elaboration took 253ms
+type checking took 9.17s
+elaboration took 555ms
+type checking took 3.02s
+type checking took 7.82s
+elaboration took 380ms
+type checking took 3.49s
+type checking took 2.33s
+type checking took 403ms
+type checking took 4.41s
+type checking took 3.05s
+type checking took 2.88s
+type checking took 652ms
+type checking took 1.24s
+type checking took 398ms
+type checking took 210ms
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+tactic execution of Mathlib.Tactic.normNum took 500ms
+tactic execution of Mathlib.Tactic.RingNF.ringNF took 227ms
+tactic execution of Mathlib.Tactic.RingNF.ringNF took 236ms
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+elaboration took 439ms
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+elaboration took 446ms
+cumulative profiling times:
+	attribute application 72.1ms
+	compilation (IR) 34.3ms
+	compilation (LCNF base) 361ms
+	compilation (LCNF impure) 202ms
+	compilation (LCNF mono) 215ms
+	congr simp thm 375ms
+	dsimp 63ms
+	elaboration 9.43s
+	fix level params 85.2ms
+	instantiate metavars 679ms
+	interpretation 1.28ms
+	let-to-have transformation 8.23ms
+	linting 981ms
+	module linting 0.000541ms
+	norm_num 36.3s
+	parsing 685ms
+	process pre-definitions 1.02s
+	ring 5.85s
+	share common exprs 1.87s
+	simp 8.7s
+	tactic execution 139s
+	tacticAnalysis 81.9ms
+	type checking 193s
+	typeclass inference 28.6s
+      439.92 real       424.49 user        15.55 sys
+         11181424640  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1124655  page reclaims
+                  56  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   4  voluntary context switches
+               43626  involuntary context switches
+       3964783138517  instructions retired
+       1490460062538  cycles elapsed
+          6169926720  peak memory footprint
+BUILD EXIT 0

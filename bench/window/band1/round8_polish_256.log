@@ -1,0 +1,6 @@
+window R8b, N=256: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%
+stacks N=256 rb64 Y=0.2 stack m=3 y=0.3 centre        R +0.6263 -> +0.6401 (dB -45.4791 s 71.0537 LP +25.5745; P_h 30.235 T_g 40.819; R_loc +1.116) y 0.001-1.766 [nit 100000, STOP: TOTAL NO. OF ITERATIONS REACHED LI]
+stacks N=256 rb64 Y=0.4 stack m=3 y=0.3 centre        R +0.6247 -> +0.6401 (dB -45.4716 s 71.0434 LP +25.5718; P_h 30.197 T_g 40.847; R_loc +1.115) y 0.001-1.768 [nit 100000, STOP: TOTAL NO. OF ITERATIONS REACHED LI]
+stacks N=256 rb64 Y=0.4 stack m=3 y=0.6 centre        R +0.6244 -> +0.6401 (dB -45.4773 s 71.0508 LP +25.5735; P_h 30.245 T_g 40.805; R_loc +1.116) y 0.001-1.762 [nit 100000, STOP: TOTAL NO. OF ITERATIONS REACHED LI]
+stacks N=256 rb64 Y=0.4 stack m=3 y=0.9 centre        R +0.6243 -> +0.6401 (dB -45.4897 s 71.0657 LP +25.5761; P_h 30.188 T_g 40.878; R_loc +1.114) y 0.001-1.780 [nit 100000, STOP: TOTAL NO. OF ITERATIONS REACHED LI]
+mixed  N=256 r7 b rb64 Y=0.2 flank gap 1 yd=0.        R +0.5974 -> +0.5974 (dB -7.8269 s 13.1005 LP +5.2737; P_h 5.168 T_g 7.932; R_loc +0.989) y 0.001-0.653 [nit 1, CONVERGENCE: RELATIVE REDUCTION OF F <= ]

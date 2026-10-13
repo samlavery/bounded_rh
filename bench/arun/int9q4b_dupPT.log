@@ -1,0 +1,38 @@
+== 1 private check INT9Q4 Sun Oct 11 15:48:29 PDT 2026
+[private_check] waiting 15:48:29
+[private_check] waiting 15:48:59
+[private_check] waiting 15:49:29
+[private_check] waiting 15:49:59
+[private_check] waiting 15:50:29
+[private_check] waiting 15:50:59
+[private_check] waiting 15:51:29
+[private_check] waiting 15:51:59
+[private_check] waiting 15:52:29
+[private_check] waiting 15:52:59
+[private_check] waiting 15:53:29
+[private_check] waiting 15:53:59
+[private_check] waiting 15:54:29
+[private_check] waiting 15:54:59
+[private_check] waiting 15:55:29
+[private_check] waiting 15:55:59
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      479.42 real       462.02 user        18.73 sys
+          5508831936  peak memory footprint
+BUILD EXIT 1
+        3.84 real         0.48 user         1.57 sys
+           227485440  peak memory footprint
+REPLAY EXIT 1
+INT9Q4 build failed
+specroot_int9q4/CandINT9Q4.lean:12954:10: error: `AMW.Cert.PCell.PTr` has already been declared
+specroot_int9q4/CandINT9Q4.lean:12957:4: error: `AMW.Cert.PCell.ptGet` has already been declared
+specroot_int9q4/CandINT9Q4.lean:12960:4: error: `AMW.Cert.PCell.ptOkT` has already been declared
+specroot_int9q4/CandINT9Q4.lean:12962:8: error: `AMW.Cert.PCell.ptT_sound` has already been declared
+specroot_int9q4/CandINT9Q4.lean:12976:8: error: `AMW.Cert.PCell.ptOkT_nd` has already been declared
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.

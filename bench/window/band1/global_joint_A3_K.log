@@ -1,0 +1,2 @@
+JOINT A=3.00 Dk=1/32 with K >= 0: min e_inf (g(0) = 1) 0.162221 -> kappa_cert 0.675557  (refinements 39; residual T_g -9.9e-08, T_q -1.8e-15)
+  window q at a = 0, .1, .25, .5, .75, .9: 1.1362 0.9597 0.8064 0.5047 0.2167 0.0685

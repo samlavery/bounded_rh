@@ -1,0 +1,14 @@
+it 0: LP obj 628.36358620 (slack 0.00e+00), columns 130, new 76, most negative reduced cost -7.09e+03 (k=11) (1s)
+it 5: LP obj 0.75640842 (slack 0.00e+00), columns 502, new 76, most negative reduced cost -2.37e+00 (k=10) (6s)
+it 10: LP obj 0.69882350 (slack 0.00e+00), columns 854, new 70, most negative reduced cost -3.15e-01 (k=12) (14s)
+it 15: LP obj 0.68405164 (slack 0.00e+00), columns 1041, new 17, most negative reduced cost -1.16e-02 (k=11) (20s)
+it 20: LP obj 0.68341321 (slack 0.00e+00), columns 1084, new 5, most negative reduced cost -5.01e-03 (k=9) (27s)
+it 25: LP obj 0.68318959 (slack 0.00e+00), columns 1108, new 2, most negative reduced cost -5.85e-04 (k=6) (33s)
+it 30: LP obj 0.68315902 (slack 0.00e+00), columns 1124, new 1, most negative reduced cost -2.16e-04 (k=10) (40s)
+it 35: LP obj 0.68307061 (slack 0.00e+00), columns 1138, new 6, most negative reduced cost -1.02e-03 (k=8) (47s)
+it 40: LP obj 0.68303428 (slack 0.00e+00), columns 1147, new 3, most negative reduced cost -1.50e-03 (k=8) (54s)
+it 45: LP obj 0.68300010 (slack 0.00e+00), columns 1161, new 3, most negative reduced cost -1.82e-04 (k=9) (61s)
+it 46: LP obj 0.68299886 (slack 0.00e+00), columns 1161, new 0, most negative reduced cost 0.00e+00 (k=None) (62s)
+FINAL N=24: min simple fraction p = 0.68299886 (residual slack 0.00e+00); dual weights pi_j (alpha = j/N):
+  0.042:-0.0036 0.083:-0.0035 0.125:-0.0035 0.167:-0.0033 0.208:-0.0031 0.250:-0.0029 0.292:-0.0028 0.333:-0.0026 0.375:-0.0024 0.417:-0.0021 0.458:-0.0020 0.500:-0.0017 0.542:-0.0015 0.583:-0.0013 0.625:-0.0011 0.667:-0.0010 0.708:-0.0008 0.750:-0.0007 0.792:-0.0005 0.833:-0.0004 0.875:-0.0002 0.917:-0.0002 0.958:-0.0001
+  support: 24 configurations; simple fractions [0.1667, 0.25, 0.3333, 0.5, 0.5833, 0.6667, 0.75, 0.8333]

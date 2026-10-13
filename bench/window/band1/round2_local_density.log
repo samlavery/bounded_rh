@@ -1,0 +1,6 @@
+rb16 Y=0.2 P= 16: LB +0.3149 [XL=512 XR=20 tl=0.008] | sum_p m_bulk(a_p) 1.4697 (edge region 7 pairs: 0.9527; bulk 0.5169) | LB - sum -1.1548 | gradient G 0.0013 | exact periodic LP 2.323, LP - sum +0.853
+rb32 Y=0.2 P= 32: LB +0.5305 [XL=512 XR=20 tl=0.008] | sum_p m_bulk(a_p) 1.9568 (edge region 10 pairs: 1.0936; bulk 0.8632) | LB - sum -1.4263 | gradient G 0.0013 | exact periodic LP 3.213, LP - sum +1.257
+rb64 Y=0.2 P= 64: LB +0.8824 [XL=512 XR=20 tl=0.012] | sum_p m_bulk(a_p) 2.9331 (edge region 13 pairs: 1.2579; bulk 1.6751) | LB - sum -2.0507 | gradient G 0.0013 | exact periodic LP 4.763, LP - sum +1.830
+rb16 Y=0.4 P= 16: LB +1.3184 [XL=1024 XR=20 tl=0.012] | sum_p m_bulk(a_p) 4.0041 (edge region 10 pairs: 3.2991; bulk 0.7050) | LB - sum -2.6857 | gradient G 0.0136 | exact periodic LP 7.196, LP - sum +3.192
+rb32 Y=0.4 P= 32: LB +1.4437 [XL=1024 XR=20 tl=0.016] | sum_p m_bulk(a_p) 4.9416 (edge region 15 pairs: 3.6673; bulk 1.2742) | LB - sum -3.4979 | gradient G 0.0139 | exact periodic LP 8.417, LP - sum +3.475
+rb64 Y=0.4 P= 64: LB +1.6275 [XL=1024 XR=20 tl=0.016] | sum_p m_bulk(a_p) 6.2128 (edge region 23 pairs: 4.1393; bulk 2.0735) | LB - sum -4.5853 | gradient G 0.0140 | exact periodic LP 10.311, LP - sum +4.098

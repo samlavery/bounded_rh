@@ -1,0 +1,15 @@
+== CandSev03D export
+export exit 0
+       40.88 real        27.08 user        11.52 sys
+          1595362792  peak memory footprint
+export bytes 665195426
+== CandSev03D nanoda
+nanoda exit 0
+      232.12 real       223.32 user         8.54 sys
+          4762357552  peak memory footprint
+== CandSev03D lean replay (full closure)
+parse_ms 15516 constants 74434
+replay_ms 292820 OK
+replayx exit 0
+      308.52 real       303.48 user         4.82 sys
+          1879836520  peak memory footprint

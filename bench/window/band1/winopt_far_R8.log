@@ -1,0 +1,17 @@
+FAR R8 N=64: optimal dipole: double at 0, vacancy at -2; Delta_1/N 0.990774, unrelaxed dipole/N 0.999558
+  double + K= 0 nearest simples each side relaxed: E/Delta_1 - 1 = 8.81e-03   relaxation captured 0.00625
+  double + K= 1 nearest simples each side relaxed: E/Delta_1 - 1 = 1.46e-03   relaxation captured 0.83574
+  double + K= 2 nearest simples each side relaxed: E/Delta_1 - 1 = 5.24e-04   relaxation captured 0.94089
+  double + K= 3 nearest simples each side relaxed: E/Delta_1 - 1 = 1.20e-04   relaxation captured 0.98649
+  double + K= 4 nearest simples each side relaxed: E/Delta_1 - 1 = 1.14e-04   relaxation captured 0.98709
+  double + K= 5 nearest simples each side relaxed: E/Delta_1 - 1 = 6.98e-05   relaxation captured 0.99213
+  double + K= 6 nearest simples each side relaxed: E/Delta_1 - 1 = 4.38e-05   relaxation captured 0.99505
+  double + K= 7 nearest simples each side relaxed: E/Delta_1 - 1 = 3.02e-05   relaxation captured 0.99660
+  double + K= 8 nearest simples each side relaxed: E/Delta_1 - 1 = 2.21e-05   relaxation captured 0.99750
+  double + K=10 nearest simples each side relaxed: E/Delta_1 - 1 = 1.26e-05   relaxation captured 0.99857
+  double + K=12 nearest simples each side relaxed: E/Delta_1 - 1 = 8.73e-06   relaxation captured 0.99902
+  double + K=15 nearest simples each side relaxed: E/Delta_1 - 1 = 4.64e-06   relaxation captured 0.99948
+  double + K=20 nearest simples each side relaxed: E/Delta_1 - 1 = 1.71e-06   relaxation captured 0.99981
+  double + K=25 nearest simples each side relaxed: E/Delta_1 - 1 = 4.12e-07   relaxation captured 0.99995
+  double + K=30 nearest simples each side relaxed: E/Delta_1 - 1 = 2.82e-08   relaxation captured 1.00000
+  displacements relative to the double, by distance from the dipole centre (site: shift): -1:-0.0322 1:+0.0226 -3:+0.0550 2:+0.0206 -4:+0.0401 -5:+0.0331 3:+0.0194 4:+0.0190 -6:+0.0293 5:+0.0191 -7:+0.0273 6:+0.0190 -8:+0.0258 7:+0.0190 -9:+0.0248 8:+0.0191 -10:+0.0241 -11:+0.0235 9:+0.0191 -12:+0.0232 10:+0.0193 11:+0.0194 -13:+0.0230 12:+0.0196

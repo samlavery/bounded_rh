@@ -1,0 +1,1281 @@
+comparator/Solution/Candidate.lean:19241:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : x ≤ 133 / 128
+hy3 : y ≤ 133 / 128
+hx4 : x ≤ 263 / 256
+hw0 : 7358852099 / 10000000000000 ≤ wfun x
+a✝ : y < 65 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19242:41: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : x ≤ 133 / 128
+hy3 : y ≤ 133 / 128
+hx4 : x ≤ 263 / 256
+hw0 : 7358852099 / 10000000000000 ≤ wfun x
+hw1 : 2658307323 / 10000000000000 ≤ wfun y
+a✝ : x + y < 65 / 32
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19243:12: error: linarith failed to find a contradiction
+case inl.inl.inl.inl.inl
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : x ≤ 133 / 128
+hy3 : y ≤ 133 / 128
+hx4 : x ≤ 263 / 256
+hw0 : 7358852099 / 10000000000000 ≤ wfun x
+hw1 : 2658307323 / 10000000000000 ≤ wfun y
+hw2 : 1152597 / 5000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19246:37: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : x ≤ 133 / 128
+hy3 : y ≤ 133 / 128
+hx4 : 263 / 256 ≤ x
+hy5 : y ≤ 263 / 256
+hw0 : 2658307323 / 10000000000000 ≤ wfun x
+a✝ : y < 65 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19247:43: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : x ≤ 133 / 128
+hy3 : y ≤ 133 / 128
+hx4 : 263 / 256 ≤ x
+hy5 : y ≤ 263 / 256
+hw0 : 2658307323 / 10000000000000 ≤ wfun x
+hw1 : 7358852099 / 10000000000000 ≤ wfun y
+a✝ : x + y < 523 / 256
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19248:14: error: linarith failed to find a contradiction
+case inl.inl.inl.inl.inr.inl
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : x ≤ 133 / 128
+hy3 : y ≤ 133 / 128
+hx4 : 263 / 256 ≤ x
+hy5 : y ≤ 263 / 256
+hw0 : 2658307323 / 10000000000000 ≤ wfun x
+hw1 : 7358852099 / 10000000000000 ≤ wfun y
+hw2 : 6933743 / 250000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19266:37: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : 133 / 128 ≤ x
+hy3 : y ≤ 133 / 128
+hx4 : x ≤ 269 / 256
+hy5 : y ≤ 263 / 256
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+a✝ : y < 65 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19267:43: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : 133 / 128 ≤ x
+hy3 : y ≤ 133 / 128
+hx4 : x ≤ 269 / 256
+hy5 : y ≤ 263 / 256
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 7358852099 / 10000000000000 ≤ wfun y
+a✝ : x + y < 263 / 128
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19268:14: error: linarith failed to find a contradiction
+case inl.inl.inr.inl.inl.inl
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : 133 / 128 ≤ x
+hy3 : y ≤ 133 / 128
+hx4 : x ≤ 269 / 256
+hy5 : y ≤ 263 / 256
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 7358852099 / 10000000000000 ≤ wfun y
+hw2 : 996798203 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19274:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : 133 / 128 ≤ x
+hy3 : y ≤ 133 / 128
+hx4 : 269 / 256 ≤ x
+hw0 : 0 ≤ wfun x
+a✝ : y < 65 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19275:41: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : 133 / 128 ≤ x
+hy3 : y ≤ 133 / 128
+hx4 : 269 / 256 ≤ x
+hw0 : 0 ≤ wfun x
+hw1 : 2658307323 / 10000000000000 ≤ wfun y
+a✝ : x + y < 529 / 256
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19276:12: error: linarith failed to find a contradiction
+case inl.inl.inr.inl.inr
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2✝ : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : x ≤ 17 / 16
+hy1 : y ≤ 17 / 16
+hx2 : 133 / 128 ≤ x
+hy3 : y ≤ 133 / 128
+hx4 : 269 / 256 ≤ x
+hw0 : 0 ≤ wfun x
+hw1 : 2658307323 / 10000000000000 ≤ wfun y
+hw2 : 523331013 / 2500000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19287:29: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2 : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : 17 / 16 ≤ x
+hy1 : y ≤ 17 / 16
+hw0 : 173234703 / 10000000000000 ≤ wfun x
+a✝ : y < 65 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19288:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2 : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : 17 / 16 ≤ x
+hy1 : y ≤ 17 / 16
+hw0 : 173234703 / 10000000000000 ≤ wfun x
+hw1 : 0 ≤ wfun y
+a✝ : x + y < 133 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19289:6: error: linarith failed to find a contradiction
+case inr.inl
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2 : x ≤ 71 / 64
+hy1✝ : 65 / 64 ≤ y
+hy2 : y ≤ 71 / 64
+hx0 : 17 / 16 ≤ x
+hy1 : y ≤ 17 / 16
+hw0 : 173234703 / 10000000000000 ≤ wfun x
+hw1 : 0 ≤ wfun y
+hw2 : 3229627133 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19309:75: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2 : x ≤ 133 / 128
+hy1 : 127 / 64 ≤ y
+hy2 : y ≤ 65 / 32
+hy0 : y ≤ 257 / 128
+hw0 : 2658307323 / 10000000000000 ≤ wfun x
+hq0 : y ≤ 2
+a✝ : 2 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19310:49: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 65 / 64 ≤ x
+hx2 : x ≤ 133 / 128
+hy1 : 127 / 64 ≤ y
+hy2 : y ≤ 65 / 32
+hy0 : y ≤ 257 / 128
+hw0 : 2658307323 / 10000000000000 ≤ wfun x
+hq0 : 2 ≤ y
+a✝ : y < 2
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19311:58: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19311:93: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19314:29: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 65 / 64 ≤ x
+hx2 : x ≤ 133 / 128
+hy1 : 127 / 64 ≤ y
+hy2 : y ≤ 65 / 32
+hy0 : 257 / 128 ≤ y
+hx1 : x ≤ 263 / 256
+a✝ : x < 65 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19316:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 65 / 64 ≤ x
+hx2 : x ≤ 133 / 128
+hy1 : 127 / 64 ≤ y
+hy2 : y ≤ 65 / 32
+hy0 : 257 / 128 ≤ y
+hx1 : x ≤ 263 / 256
+hw0 : 7358852099 / 10000000000000 ≤ wfun x
+hw1 : 0 ≤ wfun y
+a✝ : x + y < 387 / 128
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19317:6: error: linarith failed to find a contradiction
+case inr.inl
+x y : ℝ
+hx1✝ : 65 / 64 ≤ x
+hx2 : x ≤ 133 / 128
+hy1 : 127 / 64 ≤ y
+hy2 : y ≤ 65 / 32
+hy0 : 257 / 128 ≤ y
+hx1 : x ≤ 263 / 256
+hw0 : 7358852099 / 10000000000000 ≤ wfun x
+hw1 : 0 ≤ wfun y
+hw2 : 1876869 / 2500000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19329:58: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 65 / 64 ≤ x
+hx2 : x ≤ 133 / 128
+hy1 : 127 / 64 ≤ y
+hy2✝ : y ≤ 65 / 32
+hy0 : 257 / 128 ≤ y
+hx1 : 263 / 256 ≤ x
+hy2 : 517 / 256 ≤ y
+hw0 : 2658307323 / 10000000000000 ≤ wfun x
+a✝ : 65 / 32 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19330:67: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 65 / 64 ≤ x
+hx2 : x ≤ 133 / 128
+hy1 : 127 / 64 ≤ y
+hy2✝ : y ≤ 65 / 32
+hy0 : 257 / 128 ≤ y
+hx1 : 263 / 256 ≤ x
+hy2 : 517 / 256 ≤ y
+hw0 : 2658307323 / 10000000000000 ≤ wfun x
+hw1 : 0 ≤ wfun y
+a✝ : 393 / 128 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19340:30: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2 : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : x ≤ 535 / 512
+hy1 : y ≤ 1019 / 512
+hw0 : 120785339 / 1000000000000 ≤ wfun x
+a✝ : y < 127 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19341:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2 : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : x ≤ 535 / 512
+hy1 : y ≤ 1019 / 512
+hw0 : 120785339 / 1000000000000 ≤ wfun x
+hw1 : 725907 / 2500000000 ≤ wfun y
+a✝ : x + y < 387 / 128
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19342:6: error: linarith failed to find a contradiction
+case inl.inl
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2 : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : x ≤ 535 / 512
+hy1 : y ≤ 1019 / 512
+hw0 : 120785339 / 1000000000000 ≤ wfun x
+hw1 : 725907 / 2500000000 ≤ wfun y
+hw2 : 3871687 / 5000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19349:30: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2 : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : y ≤ 1019 / 512
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+a✝ : y < 127 / 64
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19350:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2 : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : y ≤ 1019 / 512
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 725907 / 2500000000 ≤ wfun y
+a✝ : x + y < 1551 / 512
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19351:6: error: linarith failed to find a contradiction
+case inr.inl
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2 : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : y ≤ 1019 / 512
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 725907 / 2500000000 ≤ wfun y
+hw2 : 61941721 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19373:61: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : 1019 / 512 ≤ y
+hx2 : 1073 / 1024 ≤ x
+hy3 : y ≤ 2041 / 1024
+hx4 : 2149 / 2048 ≤ x
+a✝ : 269 / 256 < x
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19375:71: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : 1019 / 512 ≤ y
+hx2 : 1073 / 1024 ≤ x
+hy3 : y ≤ 2041 / 1024
+hx4 : 2149 / 2048 ≤ x
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 2490428543 / 10000000000000 ≤ wfun y
+a✝ : 3117 / 1024 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19388:63: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : 1019 / 512 ≤ y
+hx2 : 1073 / 1024 ≤ x
+hy3 : 2041 / 1024 ≤ y
+hx4 : 2149 / 2048 ≤ x
+hy5 : y ≤ 4085 / 2048
+a✝ : 269 / 256 < x
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19390:73: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : 1019 / 512 ≤ y
+hx2 : 1073 / 1024 ≤ x
+hy3 : 2041 / 1024 ≤ y
+hx4 : 2149 / 2048 ≤ x
+hy5 : y ≤ 4085 / 2048
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 2295210877 / 10000000000000 ≤ wfun y
+a✝ : 6237 / 2048 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19397:65: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : 1019 / 512 ≤ y
+hx2 : 1073 / 1024 ≤ x
+hy3 : 2041 / 1024 ≤ y
+hx4 : 2149 / 2048 ≤ x
+hy5 : 4085 / 2048 ≤ y
+hx6 : 4301 / 4096 ≤ x
+a✝ : 269 / 256 < x
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19399:75: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 133 / 128 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 127 / 64 ≤ y
+hy2 : y ≤ 511 / 256
+hx0 : 535 / 512 ≤ x
+hy1 : 1019 / 512 ≤ y
+hx2 : 1073 / 1024 ≤ x
+hy3 : 2041 / 1024 ≤ y
+hx4 : 2149 / 2048 ≤ x
+hy5 : 4085 / 2048 ≤ y
+hx6 : 4301 / 4096 ≤ x
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 131690291 / 625000000000 ≤ wfun y
+a✝ : 195 / 64 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19408:30: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : x ≤ 1067 / 1024
+a✝ : x < 133 / 128
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19411:77: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : x ≤ 1067 / 1024
+hw0 : 930124941 / 5000000000000 ≤ wfun x
+hq0 : y ≤ 2
+a✝ : 2 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19412:51: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : x ≤ 1067 / 1024
+hw0 : 930124941 / 5000000000000 ≤ wfun x
+hq0 : 2 ≤ y
+a✝ : y < 2
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19413:60: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19413:95: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19414:6: error: linarith failed to find a contradiction
+case inl.inl
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : x ≤ 1067 / 1024
+hw0 : 930124941 / 5000000000000 ≤ wfun x
+hw1 : 1436255057 / 10000000000000 ≤ wfun y
+hw2 : 167970859 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19424:81: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2047 / 1024 ≤ y
+hx3 : x ≤ 2137 / 2048
+hw0 : 1516005697 / 10000000000000 ≤ wfun x
+hq0 : y ≤ 2
+a✝ : 2 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19425:55: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2047 / 1024 ≤ y
+hx3 : x ≤ 2137 / 2048
+hw0 : 1516005697 / 10000000000000 ≤ wfun x
+hq0 : 2 ≤ y
+a✝ : y < 2
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19426:64: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19426:99: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19431:81: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2047 / 1024 ≤ y
+hx3 : 2137 / 2048 ≤ x
+hw0 : 120785339 / 1000000000000 ≤ wfun x
+hq0 : y ≤ 2
+a✝ : 2 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19432:55: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : y ≤ 1025 / 512
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2047 / 1024 ≤ y
+hx3 : 2137 / 2048 ≤ x
+hw0 : 120785339 / 1000000000000 ≤ wfun x
+hq0 : 2 ≤ y
+a✝ : y < 2
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19433:64: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19433:99: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19436:30: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 257 / 128
+hy0 : 1025 / 512 ≤ y
+hx1 : x ≤ 1067 / 1024
+a✝ : x < 133 / 128
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19438:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 257 / 128
+hy0 : 1025 / 512 ≤ y
+hx1 : x ≤ 1067 / 1024
+hw0 : 930124941 / 5000000000000 ≤ wfun x
+hw1 : 179073511 / 2000000000000 ≤ wfun y
+a✝ : x + y < 1557 / 512
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19439:6: error: linarith failed to find a contradiction
+case inr.inl
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 257 / 128
+hy0 : 1025 / 512 ≤ y
+hx1 : x ≤ 1067 / 1024
+hw0 : 930124941 / 5000000000000 ≤ wfun x
+hw1 : 179073511 / 2000000000000 ≤ wfun y
+hw2 : 162195069 / 5000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19452:60: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : 1025 / 512 ≤ y
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2053 / 1024 ≤ y
+hx3 : x ≤ 2137 / 2048
+hw0 : 1516005697 / 10000000000000 ≤ wfun x
+a✝ : 257 / 128 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19453:69: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : 1025 / 512 ≤ y
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2053 / 1024 ≤ y
+hx3 : x ≤ 2137 / 2048
+hw0 : 1516005697 / 10000000000000 ≤ wfun x
+hw1 : 179073511 / 2000000000000 ≤ wfun y
+a✝ : 6249 / 2048 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19456:60: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : 1025 / 512 ≤ y
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2053 / 1024 ≤ y
+hx3 : 2137 / 2048 ≤ x
+hw0 : 120785339 / 1000000000000 ≤ wfun x
+a✝ : 257 / 128 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19457:69: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 133 / 128 ≤ x
+hx2 : x ≤ 535 / 512
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 257 / 128
+hy0 : 1025 / 512 ≤ y
+hx1 : 1067 / 1024 ≤ x
+hy2 : 2053 / 1024 ≤ y
+hx3 : 2137 / 2048 ≤ x
+hw0 : 120785339 / 1000000000000 ≤ wfun x
+hw1 : 179073511 / 2000000000000 ≤ wfun y
+a✝ : 1563 / 512 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19466:30: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 1025 / 512
+hy0 : y ≤ 2047 / 1024
+hx1 : x ≤ 2143 / 2048
+a✝ : x < 535 / 512
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19468:35: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 1025 / 512
+hy0 : y ≤ 2047 / 1024
+hx1 : x ≤ 2143 / 2048
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hw1 : 877571531 / 5000000000000 ≤ wfun y
+a✝ : x + y < 1557 / 512
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19469:6: error: linarith failed to find a contradiction
+case inl.inl
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2 : y ≤ 1025 / 512
+hy0 : y ≤ 2047 / 1024
+hx1 : x ≤ 2143 / 2048
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hw1 : 877571531 / 5000000000000 ≤ wfun y
+hw2 : 163138449 / 5000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19486:32: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : y ≤ 4097 / 2048
+a✝ : x < 535 / 512
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19489:79: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : y ≤ 4097 / 2048
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hq0 : y ≤ 2
+a✝ : 2 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19490:53: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : y ≤ 4097 / 2048
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hq0 : 2 ≤ y
+a✝ : y < 2
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19491:62: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19491:97: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19492:8: error: linarith failed to find a contradiction
+case inr.inl.inl
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : y ≤ 4097 / 2048
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hw1 : 1591808227 / 10000000000000 ≤ wfun y
+hw2 : 424603791 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19493:32: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : 4097 / 2048 ≤ y
+a✝ : x < 535 / 512
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19494:58: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : 4097 / 2048 ≤ y
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+a✝ : 1025 / 512 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19495:37: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : 4097 / 2048 ≤ y
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hw1 : 1436255057 / 10000000000000 ≤ wfun y
+a✝ : x + y < 6237 / 2048
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19495:67: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : 4097 / 2048 ≤ y
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hw1 : 1436255057 / 10000000000000 ≤ wfun y
+a✝ : 6243 / 2048 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19496:8: error: linarith failed to find a contradiction
+case inr.inl.inr
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : x ≤ 2143 / 2048
+hy2 : 4097 / 2048 ≤ y
+hw0 : 467734771 / 5000000000000 ≤ wfun x
+hw1 : 1436255057 / 10000000000000 ≤ wfun y
+hw2 : 478124453 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19502:81: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : y ≤ 4097 / 2048
+hx3 : x ≤ 4289 / 4096
+hw0 : 812589723 / 10000000000000 ≤ wfun x
+hq0 : y ≤ 2
+a✝ : 2 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19503:55: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : y ≤ 4097 / 2048
+hx3 : x ≤ 4289 / 4096
+hw0 : 812589723 / 10000000000000 ≤ wfun x
+hq0 : 2 ≤ y
+a✝ : y < 2
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19504:64: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19504:99: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19509:81: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : y ≤ 4097 / 2048
+hx3 : 4289 / 4096 ≤ x
+hw0 : 349265369 / 5000000000000 ≤ wfun x
+hq0 : y ≤ 2
+a✝ : 2 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19510:55: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : y ≤ 4097 / 2048
+hx3 : 4289 / 4096 ≤ x
+hw0 : 349265369 / 5000000000000 ≤ wfun x
+hq0 : 2 ≤ y
+a✝ : y < 2
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19511:64: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19511:99: error(lean.unknownIdentifier): Unknown identifier `hq0`
+comparator/Solution/Candidate.lean:19515:60: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : 4097 / 2048 ≤ y
+hx3 : x ≤ 4289 / 4096
+hw0 : 812589723 / 10000000000000 ≤ wfun x
+a✝ : 1025 / 512 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19516:69: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : 4097 / 2048 ≤ y
+hx3 : x ≤ 4289 / 4096
+hw0 : 812589723 / 10000000000000 ≤ wfun x
+hw1 : 1436255057 / 10000000000000 ≤ wfun y
+a✝ : 12489 / 4096 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19524:62: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : 4097 / 2048 ≤ y
+hx3 : 4289 / 4096 ≤ x
+hy4 : 8197 / 4096 ≤ y
+hw0 : 349265369 / 5000000000000 ≤ wfun x
+a✝ : 1025 / 512 < y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19525:71: error: linarith failed to find a contradiction
+x y : ℝ
+hx1✝ : 535 / 512 ≤ x
+hx2 : x ≤ 1073 / 1024
+hy1 : 511 / 256 ≤ y
+hy2✝ : y ≤ 1025 / 512
+hy0 : 2047 / 1024 ≤ y
+hx1 : 2143 / 2048 ≤ x
+hy2 : 4097 / 2048 ≤ y
+hx3 : 4289 / 4096 ≤ x
+hy4 : 8197 / 4096 ≤ y
+hw0 : 349265369 / 5000000000000 ≤ wfun x
+hw1 : 1436255057 / 10000000000000 ≤ wfun y
+a✝ : 3123 / 1024 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19536:32: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : x ≤ 2149 / 2048
+hy1 : y ≤ 4091 / 2048
+hx2 : x ≤ 4295 / 4096
+hw0 : 296626083 / 5000000000000 ≤ wfun x
+a✝ : y < 511 / 256
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19537:37: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : x ≤ 2149 / 2048
+hy1 : y ≤ 4091 / 2048
+hx2 : x ≤ 4295 / 4096
+hw0 : 296626083 / 5000000000000 ≤ wfun x
+hw1 : 15416863 / 80000000000 ≤ wfun y
+a✝ : x + y < 3117 / 1024
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19538:8: error: linarith failed to find a contradiction
+case inl.inl.inl
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : x ≤ 2149 / 2048
+hy1 : y ≤ 4091 / 2048
+hx2 : x ≤ 4295 / 4096
+hw0 : 296626083 / 5000000000000 ≤ wfun x
+hw1 : 15416863 / 80000000000 ≤ wfun y
+hw2 : 425014553 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19540:32: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : x ≤ 2149 / 2048
+hy1 : y ≤ 4091 / 2048
+hx2 : 4295 / 4096 ≤ x
+hw0 : 496713571 / 10000000000000 ≤ wfun x
+a✝ : y < 511 / 256
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19541:37: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : x ≤ 2149 / 2048
+hy1 : y ≤ 4091 / 2048
+hx2 : 4295 / 4096 ≤ x
+hw0 : 496713571 / 10000000000000 ≤ wfun x
+hw1 : 15416863 / 80000000000 ≤ wfun y
+a✝ : x + y < 12471 / 4096
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19542:8: error: linarith failed to find a contradiction
+case inl.inl.inr
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : x ≤ 2149 / 2048
+hy1 : y ≤ 4091 / 2048
+hx2 : 4295 / 4096 ≤ x
+hw0 : 496713571 / 10000000000000 ≤ wfun x
+hw1 : 15416863 / 80000000000 ≤ wfun y
+hw2 : 451412283 / 10000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19561:34: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : x ≤ 4301 / 4096
+hy3 : y ≤ 8179 / 4096
+hw0 : 81774907 / 2000000000000 ≤ wfun x
+a✝ : y < 511 / 256
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19562:39: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : x ≤ 4301 / 4096
+hy3 : y ≤ 8179 / 4096
+hw0 : 81774907 / 2000000000000 ≤ wfun x
+hw1 : 1008150283 / 5000000000000 ≤ wfun y
+a✝ : x + y < 6237 / 2048
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19563:10: error: linarith failed to find a contradiction
+case inr.inl.inl.inl
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : x ≤ 4301 / 4096
+hy3 : y ≤ 8179 / 4096
+hw0 : 81774907 / 2000000000000 ≤ wfun x
+hw1 : 1008150283 / 5000000000000 ≤ wfun y
+hw2 : 239524819 / 5000000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19569:59: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : 4301 / 4096 ≤ x
+hy3 : y ≤ 8179 / 4096
+a✝ : 269 / 256 < x
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19570:34: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : 4301 / 4096 ≤ x
+hy3 : y ≤ 8179 / 4096
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+a✝ : y < 511 / 256
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19571:39: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : 4301 / 4096 ≤ x
+hy3 : y ≤ 8179 / 4096
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 1008150283 / 5000000000000 ≤ wfun y
+a✝ : x + y < 12477 / 4096
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19571:69: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : 4301 / 4096 ≤ x
+hy3 : y ≤ 8179 / 4096
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 1008150283 / 5000000000000 ≤ wfun y
+a✝ : 12483 / 4096 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19572:10: error: linarith failed to find a contradiction
+case inr.inl.inr.inl
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : 4301 / 4096 ≤ x
+hy3 : y ≤ 8179 / 4096
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 1008150283 / 5000000000000 ≤ wfun y
+hw2 : 126756511 / 2500000000000 ≤ wfun (x + y)
+a✝ : 1 / 3000 * (x + y) + wfun x + wfun y + 2 * wfun (x + y) < 1345 / 1000000
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19573:59: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : 4301 / 4096 ≤ x
+hy3 : 8179 / 4096 ≤ y
+a✝ : 269 / 256 < x
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19575:69: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : y ≤ 4091 / 2048
+hx2 : 4301 / 4096 ≤ x
+hy3 : 8179 / 4096 ≤ y
+hw0 : 329694637 / 10000000000000 ≤ wfun x
+hw1 : 1927303521 / 10000000000000 ≤ wfun y
+a✝ : 6243 / 2048 < x + y
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19588:59: error: linarith failed to find a contradiction
+x y : ℝ
+hx1 : 1073 / 1024 ≤ x
+hx2✝ : x ≤ 269 / 256
+hy1✝ : 511 / 256 ≤ y
+hy2 : y ≤ 2047 / 1024
+hx0 : 2149 / 2048 ≤ x
+hy1 : 4091 / 2048 ≤ y
+hx2 : 4301 / 4096 ≤ x
+hy3 : y ≤ 8185 / 4096
+a✝ : 269 / 256 < x
+⊢ False
+failed
+comparator/Solution/Candidate.lean:19590:69: error: maximum number of errors (100; from option `maxErrors`) reached, exiting
+      220.19 real       681.34 user        23.86 sys
+         20110360576  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1240894  page reclaims
+               79516  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               14450  voluntary context switches
+              915404  involuntary context switches
+       4761821024374  instructions retired
+       2312760725756  cycles elapsed
+         15232611992  peak memory footprint

@@ -1,0 +1,5 @@
+window R8b, N=256: certificate g(0) = 2 delta' = 0.990431, g^(0) = 0.991798, g_N(0) = 0.990431, kappa_cert 0.675964; budget for Lemma P' (per defect, units of 2 delta'): 1.177%
+M= 5 start: R 0.8161 LP +7.3507 (s 39.9688 dB -32.6181)
+M= 5 min LP: LP -3.19785 (R 1.3793, s 8.4319, dB -11.6297) pair y 0.001-0.781 | mp50 LP -3.19784975 [nit 11342]
+M= 3 start: R 0.4014 LP +18.8088 (s 31.4223 dB -12.6135)
+M= 3 min LP: LP +1.55526 (R 0.3946, s 2.5690, dB -1.0137) pair y 0.001-0.287 [nit 3977]

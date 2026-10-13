@@ -1,0 +1,4 @@
+window winopt_smoothfit_single_N24.json: K(0) = F(0)^2 = 1.00000000, qf(0) = 1.023971; lattice check sum_n K(n) = 1.02397147 (= qf(0))
+band-limited global certificate (A = 1, closed form): delta' = inf qf/(1-a) / 2 = 0.270524 at a = 0.9596  -> 27.05% of delta_true 1.000000
+N=256 R=16: delta_R from dilated start 0.406552 (83.9% of delta_true) | from localized dipole 0.482965 | prediction < 0.45: HELD
+N=256 R=24: delta_R from dilated start 0.427356 (88.2% of delta_true) | from localized dipole 0.483539 | prediction < 0.45: HELD

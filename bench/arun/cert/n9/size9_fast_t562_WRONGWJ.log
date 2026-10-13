@@ -1,0 +1,4 @@
+== size9 delta=0.00005 tag=fast_t562 rootsel=2,5,9 Sat Oct 10 14:10:50 PDT 2026
+delta=5e-05 cN=859305 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=2,5,9
+./size9.sh: line 26:  7863 Terminated: 15          /usr/bin/time -l nice -n 5 python3 $SZ $R/rwin9_lp9.json $D 2>&1
+== done Sat Oct 10 14:11:24 PDT 2026

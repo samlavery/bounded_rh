@@ -1,0 +1,8 @@
+errors: 0
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      335.58 real       325.14 user        12.49 sys
+          9601351680  maximum resident set size
+          4855617736  peak memory footprint
+BUILD EXIT 0

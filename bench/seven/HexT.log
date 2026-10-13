@@ -1,0 +1,20 @@
+def A : Nat :=
+17498005798264095394980017816940970922825355447145699491406164851279623993595007385788105416184430591
+        0.26 real         0.09 user         0.16 sys
+           410681344  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               26374  page reclaims
+                  25  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                 115  involuntary context switches
+          2449505824  instructions retired
+           856987496  cycles elapsed
+            82072592  peak memory footprint

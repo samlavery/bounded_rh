@@ -1,0 +1,45 @@
+== size9 delta=0.00005 tag=full_t570 rootsel=all Sat Oct 10 14:27:34 PDT 2026
+window json /Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0, 0): 340 leaves (71s)
+  root 1 (0, 0, 0, 0, 0, 1, 0, 0): 760 leaves (224s)
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 1230 leaves (474s)
+  root 3 (0, 0, 0, 0, 1, 1, 0, 0): 884 leaves (648s)
+  root 4 (0, 0, 0, 1, 0, 0, 0, 0): 1130 leaves (872s)
+  ... 5000 leaves (Z 0, M 4829, empty 0, refl 171) nodes 5018 LP 18070 (1014s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 1364 leaves (1145s)
+  root 6 (0, 0, 0, 1, 1, 0, 0, 0): 1055 leaves (1364s)
+  root 7 (0, 0, 0, 1, 1, 1, 0, 0): 520 leaves (1465s)
+  root 8 (0, 0, 1, 0, 0, 0, 0, 0): 736 leaves (1611s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1372 leaves (1882s)
+  ... 10000 leaves (Z 0, M 9661, empty 0, refl 339) nodes 10010 LP 35817 (2016s)
+  root 10 (0, 0, 1, 0, 1, 0, 0, 0): 1319 leaves (2143s)
+  root 11 (0, 0, 1, 0, 1, 1, 0, 0): 732 leaves (2279s)
+  root 12 (0, 0, 1, 1, 0, 0, 0, 0): 816 leaves (2432s)
+  root 13 (0, 0, 1, 1, 0, 1, 0, 0): 833 leaves (2594s)
+  root 14 (0, 0, 1, 1, 1, 0, 0, 0): 559 leaves (2696s)
+  root 15 (0, 0, 1, 1, 1, 1, 0, 0): 1256 leaves (2893s)
+  bisection: 14906 leaves (Z 0, M 14476, empty 0), 14890 splits, 7495 at region boundaries (2893s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 3345 points (27010 point cells); failing 0 (2907s)
+leaves 14906 kinds {6: 14476, 0: 430} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 14890 (pair 11050); walk bits 4444066 (298.1 per leaf; multipliers 13372 x 11 bits); M nonzero multipliers [(0, 4036), (1, 7788), (2, 2384), (3, 256), (4, 12)]; constraints per M cell [(28, 14476)]; w 1984 d 2240 pts 3345 ptc 27010 bad 0 MSTAT lp 55290 (2908s)
+nodes visited 29796 (leaves 14906 + splits 14890); explicit constraints per node: mean 28.00, dist [(28, 29796)]
+walk: 4444066 bits = 1.111 MB hex, 0.741 MB base64 (roots run); x8.73: 9.70 MB hex, 6.47 MB base64
+     2920.64 real      2875.20 user        40.25 sys
+          2260697088  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1819180  page reclaims
+                 866  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 991  voluntary context switches
+              430458  involuntary context switches
+      42005957906008  instructions retired
+       9708675808054  cycles elapsed
+          2761738736  peak memory footprint
+== done Sat Oct 10 15:16:14 PDT 2026

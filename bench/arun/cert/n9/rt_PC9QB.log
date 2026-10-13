@@ -1,0 +1,39 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:25:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:26:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:26:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:27:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:27:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:28:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:28:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:29:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:29:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:30:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:30:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:31:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:31:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:32:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:32:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:33:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:33:40)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:34:10)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:34:40)
+module constants: 3738; imports: 3
+per-declaration replay of 3738 constants: 196719 ms
+      228.46 real       195.88 user        16.78 sys
+         10747592704  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              428930  page reclaims
+              236449  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               17370  voluntary context switches
+              168153  involuntary context switches
+       1492024761172  instructions retired
+        708529562714  cycles elapsed
+          5966460216  peak memory footprint

@@ -1,0 +1,7 @@
+delta=2e-05 cN=805148 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=None
+  root 0 (0, 0, 0, 0, 0, 0, 0): 31 leaves (5s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 69 leaves (12s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 160 leaves (30s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 126 leaves (44s)
+  ... 5000 leaves (Z 0, M 4870, empty 0, refl 130) nodes 5056 LP 20279 (208s)
+  ... 10000 leaves (Z 0, M 9856, empty 0, refl 144) nodes 10056 LP 40371 (343s)

@@ -1,0 +1,18 @@
+window AM13  H = 0.6721883029  Q = 5 (n = 6)  B = 0.0033000
+LP  eps* achieved 0.006629170  LP upper 0.006629312  (21s)  gmin [1.985 1.047 1.977 1.046 1.985]
+  strong seed 1: floor 0.006629170 (3s)
+  strong seed 2: floor 0.006629170 (3s)
+  strong seed 3: floor 0.006629170 (3s)
+RESULT AM13 n=6 B=0.0033000: H=0.6721883029 eps_strong=0.006629170 (LP upper 0.006629312) -> Phi_w' = 0.6733143 at m=155 [from LP upper 0.6733144]  | h_m law 0.6733158 at m=167
+window AM13  H = 0.6721883029  Q = 5 (n = 6)  B = 0.0036000
+LP  eps* achieved 0.007081946  LP upper 0.007082063  (21s)  gmin [1.035 1.041 1.971 1.046 1.978]
+  strong seed 1: floor 0.007081946 (3s)
+  strong seed 2: floor 0.007081946 (2s)
+  strong seed 3: floor 0.007081946 (2s)
+RESULT AM13 n=6 B=0.0036000: H=0.6721883029 eps_strong=0.007081946 (LP upper 0.007082063) -> Phi_w' = 0.6733167 at m=146 [from LP upper 0.6733168]  | h_m law 0.6733183 at m=157
+window AM13  H = 0.6721883029  Q = 5 (n = 6)  B = 0.0039000
+LP  eps* achieved 0.007502990  LP upper 0.007503080  (21s)  gmin [1.042 1.971 1.04  1.035 1.971]
+  strong seed 1: floor 0.007502990 (3s)
+  strong seed 2: floor 0.007502990 (2s)
+  strong seed 3: floor 0.007502990 (2s)
+RESULT AM13 n=6 B=0.0039000: H=0.6721883029 eps_strong=0.007502990 (LP upper 0.007503080) -> Phi_w' = 0.6732983 at m=138 [from LP upper 0.6732984]  | h_m law 0.6733001 at m=149

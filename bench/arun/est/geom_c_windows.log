@@ -1,0 +1,5 @@
+beta 0      H 0.67216841 | sup|w''| on [0.8,1.2) 3.511 [1.2,2.5) 0.6777 [2.5,5) 0.1994 [5,10) 0.04946 [10,40) 0.01509 | /Users/samuellavery/work/riemann-submission/bench/arun/est/win_smooth_b0.json
+beta 0.003  H 0.67219863 | sup|w''| on [0.8,1.2) 3.511 [1.2,2.5) 0.6779 [2.5,5) 0.1999 [5,10) 0.04989 [10,40) 0.01472 | /Users/samuellavery/work/riemann-submission/bench/arun/est/win_smooth_b0.003.json
+beta 0.01   H 0.67224282 | sup|w''| on [0.8,1.2) 3.512 [1.2,2.5) 0.6783 [2.5,5) 0.2009 [5,10) 0.05063 [10,40) 0.01407 | /Users/samuellavery/work/riemann-submission/bench/arun/est/win_smooth_b0.01.json
+beta 0.03   H 0.67229762 | sup|w''| on [0.8,1.2) 3.513 [1.2,2.5) 0.6788 [2.5,5) 0.2029 [5,10) 0.05170 [10,40) 0.01327 | /Users/samuellavery/work/riemann-submission/bench/arun/est/win_smooth_b0.03.json
+beta 0.1    H 0.67236897 | sup|w''| on [0.8,1.2) 3.515 [1.2,2.5) 0.6788 [2.5,5) 0.2070 [5,10) 0.05247 [10,40) 0.01299 | /Users/samuellavery/work/riemann-submission/bench/arun/est/win_smooth_b0.1.json

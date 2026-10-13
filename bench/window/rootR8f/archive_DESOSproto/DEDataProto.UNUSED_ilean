@@ -1,0 +1,1 @@
+{"decls":{"AMW.DE.cR8proto":[8,0,9,1415,9,4,9,12]},"directImports":[["AMW.DEDefs",false,false,false]],"module":"AMW.DEDataProto","references":{"{\"c\":{\"m\":\"AMW.DEDataProto\",\"n\":\"AMW.DE.cR8proto\"}}":{"definition":[9,4,9,12],"usages":[]},"{\"c\":{\"m\":\"AMW.DEDefs\",\"n\":\"AMW.DE.PLCert\"}}":{"definition":null,"usages":[[9,15,9,21,"AMW.DE.cR8proto"]]}},"version":5}

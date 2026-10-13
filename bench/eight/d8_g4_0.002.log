@@ -1,0 +1,4 @@
+delta=0.002 CRAD=0.0 basins=0
+  bisection: 19124 leaves (Z 4505, S 0, basin 0); face nodes 0 (collapses 0) (207s)
+  fix-up: 1 re-decided; tables: w 1984 cells, d 1844 cells, 2931 points (5854 point cells); failing 0 (211s)
+leaves 19127 Z 4508 S 0 (centre 0) B 0 w 1984 d 1844 pts 2931 ptc 5854 bad 0 (211s)

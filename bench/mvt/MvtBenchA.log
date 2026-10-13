@@ -1,0 +1,138 @@
+MvtBenchA.lean:86:35: warning: Variable name `pb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:87:31: warning: Variable name `e0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:88:57: warning: Variable name `e1` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e1
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:89:83: warning: Variable name `e2` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e2
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:90:109: warning: Variable name `e3` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e3
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:91:135: warning: Variable name `e4` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e4
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:92:31: warning: Variable name `e5` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e5
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:93:57: warning: Variable name `e6` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e6
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:94:83: warning: Variable name `e7` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e7
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:95:109: warning: Variable name `e8` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e8
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:96:31: warning: Variable name `e9` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e9
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:97:57: warning: Variable name `e10` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e10
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:98:83: warning: Variable name `e11` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e11
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:99:31: warning: Variable name `e12` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e12
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:100:57: warning: Variable name `e13` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e13
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchA.lean:101:31: warning: Variable name `e14` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e14
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+type checking took 2.66s
+type checking took 4.82s
+type checking took 7.29s
+type checking took 9.88s
+cumulative profiling times:
+	attribute application 3.51ms
+	compilation (IR) 24.1ms
+	compilation (LCNF base) 255ms
+	compilation (LCNF impure) 125ms
+	compilation (LCNF mono) 191ms
+	elaboration 1.81s
+	fix level params 3.11ms
+	instantiate metavars 3.18ms
+	let-to-have transformation 2.77ms
+	linting 8.09s
+	module linting 0.0005ms
+	overlappingInstancesLinter 478ms
+	parsing 166ms
+	process pre-definitions 130ms
+	share common exprs 16.6ms
+	tactic execution 0.815ms
+	tacticAnalysis 1.18s
+	type checking 24.7s
+	typeclass inference 113ms
+       22.90 real        18.80 user        13.71 sys
+          6586990592  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              479149  page reclaims
+                   8  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  92  voluntary context switches
+              201587  involuntary context switches
+        191608796338  instructions retired
+        108243051780  cycles elapsed
+          1713688928  peak memory footprint

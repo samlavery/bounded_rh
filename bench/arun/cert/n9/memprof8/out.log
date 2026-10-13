@@ -1,0 +1,81 @@
+1791671432 import took 38.7s
+1791671553 .olean serialization took 1.48s
+1791671553 type checking took 915ms
+1791671553 type checking took 847ms
+1791671553 type checking took 812ms
+1791671553 type checking took 756ms
+1791671553 type checking took 754ms
+1791671553 type checking took 662ms
+1791671553 type checking took 661ms
+1791671553 type checking took 660ms
+1791671553 type checking took 738ms
+1791671553 type checking took 768ms
+1791671553 type checking took 731ms
+1791671553 type checking took 743ms
+1791671553 type checking took 772ms
+1791671553 type checking took 731ms
+1791671553 type checking took 698ms
+1791671553 type checking took 593ms
+1791671553 type checking took 200ms
+1791671553 type checking took 1.5s
+1791671553 type checking took 1.88s
+1791671553 type checking took 854ms
+1791671553 type checking took 2.57s
+1791671553 type checking took 1.69s
+1791671553 type checking took 5.37s
+1791671553 type checking took 3.81s
+1791671553 type checking took 2.72s
+1791671553 type checking took 1.94s
+1791671553 type checking took 2.54s
+1791671553 type checking took 3.81s
+1791671553 elaboration took 222ms
+1791671553 type checking took 7.42s
+1791671553 type checking took 3.33s
+1791671553 type checking took 2.42s
+1791671553 type checking took 3s
+1791671553 type checking took 2.44s
+1791671553 type checking took 514ms
+1791671553 type checking took 849ms
+1791671553 type checking took 3.23s
+1791671553 type checking took 4.1s
+1791671553 type checking took 1.97s
+1791671553 type checking took 5.76s
+1791671553 type checking took 4.43s
+1791671553 type checking took 3.89s
+1791671553 type checking took 1.78s
+1791671553 type checking took 1.91s
+1791671553 type checking took 1.93s
+1791671553 type checking took 2.92s
+1791671553 type checking took 1.53s
+1791671553 type checking took 1.8s
+1791671553 type checking took 1.74s
+1791671553 type checking took 543ms
+1791671553 interpretation of Mathlib.Tactic.RingNF._aux_Mathlib_Tactic_Ring_RingNF___elabRules_Mathlib_Tactic_RingNF_ringNF_1._boxed took 253ms
+1791671553 cumulative profiling times:
+1791671553 	.olean serialization 1.48s
+1791671553 	attribute application 7.28ms
+1791671553 	compilation (IR) 46.8ms
+1791671553 	compilation (LCNF base) 359ms
+1791671553 	compilation (LCNF impure) 226ms
+1791671553 	compilation (LCNF mono) 310ms
+1791671553 	congr simp thm 1.51ms
+1791671553 	elaboration 3.55s
+1791671553 	fix level params 8.9ms
+1791671553 	import 38.7s
+1791671553 	initialization 23.9ms
+1791671553 	instantiate metavars 9.29ms
+1791671553 	interpretation 6.49s
+1791671553 	let-to-have transformation 9.69ms
+1791671553 	linting 259ms
+1791671553 	module linting 0.000459ms
+1791671553 	norm_num 7.99ms
+1791671553 	overlappingInstancesLinter 170ms
+1791671553 	parsing 299ms
+1791671553 	process pre-definitions 588ms
+1791671553 	ring 3.24ms
+1791671553 	share common exprs 53.8ms
+1791671553 	simp 44.8ms
+1791671553 	tactic execution 619ms
+1791671553 	tacticAnalysis 669ms
+1791671553 	type checking 106s
+1791671553 	typeclass inference 401ms

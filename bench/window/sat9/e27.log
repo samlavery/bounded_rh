@@ -1,0 +1,46 @@
+(2) angle bound, phi = q T_{1/2}
+  Y=  1.5 G=1.0: |cos th| = 0.068478  (low-alpha pencil bound 0.258190) | angle LB 264 vs target 104.7 -> ratio 2.52 ; pencil-angle LB ratio 2.01
+  Y=  1.5 G=2.0: |cos th| = 0.088367  (low-alpha pencil bound 0.317004) | angle LB 246 vs target 104.6 -> ratio 2.35 ; pencil-angle LB ratio 1.76
+  Y=  1.5 G=3.0: |cos th| = 0.068652  (low-alpha pencil bound 0.333203) | angle LB 254 vs target 104.5 -> ratio 2.43 ; pencil-angle LB ratio 1.74
+  Y=  1.5 G=4.0: |cos th| = 0.283510  (low-alpha pencil bound 0.435105) | angle LB 198 vs target 104.4 -> ratio 1.9 ; pencil-angle LB ratio 1.5
+  Y=  3.0 G=1.0: |cos th| = 0.071591  (low-alpha pencil bound 0.223507) | angle LB 2.87e+05 vs target 104.7 -> ratio 2.74e+03 ; pencil-angle LB ratio 2.29e+03
+  Y=  3.0 G=2.0: |cos th| = 0.030985  (low-alpha pencil bound 0.229041) | angle LB 5.75e+05 vs target 104.6 -> ratio 5.5e+03 ; pencil-angle LB ratio 4.38e+03
+  Y=  3.0 G=3.0: |cos th| = 0.116645  (low-alpha pencil bound 0.266561) | angle LB 3.63e+05 vs target 104.5 -> ratio 3.48e+03 ; pencil-angle LB ratio 2.89e+03
+  Y=  3.0 G=4.0: |cos th| = 0.257149  (low-alpha pencil bound 0.386322) | angle LB 3.88e+05 vs target 104.4 -> ratio 3.71e+03 ; pencil-angle LB ratio 3.07e+03
+  Y=  5.0 G=1.0: |cos th| = 0.076156  (low-alpha pencil bound 0.203196) | angle LB 1.21e+10 vs target 104.7 -> ratio 1.15e+08 ; pencil-angle LB ratio 9.94e+07
+  Y=  5.0 G=2.0: |cos th| = 0.015913  (low-alpha pencil bound 0.214713) | angle LB 7.59e+10 vs target 104.6 -> ratio 7.25e+08 ; pencil-angle LB ratio 5.79e+08
+  Y=  5.0 G=3.0: |cos th| = 0.108276  (low-alpha pencil bound 0.254394) | angle LB 2.08e+10 vs target 104.5 -> ratio 1.99e+08 ; pencil-angle LB ratio 1.67e+08
+  Y=  5.0 G=4.0: |cos th| = 0.187240  (low-alpha pencil bound 0.378923) | angle LB 5.48e+10 vs target 104.4 -> ratio 5.24e+08 ; pencil-angle LB ratio 4.01e+08
+  Y= 10.0 G=1.0: |cos th| = 0.044137  (low-alpha pencil bound 0.202047) | angle LB 3.45e+22 vs target 104.7 -> ratio 3.29e+20 ; pencil-angle LB ratio 2.75e+20
+  Y= 10.0 G=2.0: |cos th| = 0.024086  (low-alpha pencil bound 0.214288) | angle LB 9.44e+23 vs target 104.6 -> ratio 9.02e+21 ; pencil-angle LB ratio 7.26e+21
+  Y= 10.0 G=3.0: |cos th| = 0.057774  (low-alpha pencil bound 0.253916) | angle LB 5.77e+22 vs target 104.5 -> ratio 5.52e+20 ; pencil-angle LB ratio 4.37e+20
+  Y= 10.0 G=4.0: |cos th| = 0.138895  (low-alpha pencil bound 0.378746) | angle LB 8.03e+23 vs target 104.4 -> ratio 7.69e+21 ; pencil-angle LB ratio 5.55e+21
+  Y= 20.0 G=1.0: |cos th| = 0.014308  (low-alpha pencil bound 0.202047) | angle LB 1.96e+49 vs target 104.7 -> ratio 1.87e+47 ; pencil-angle LB ratio 1.51e+47
+  Y= 20.0 G=2.0: |cos th| = 0.022786  (low-alpha pencil bound 0.214288) | angle LB 4.54e+50 vs target 104.6 -> ratio 4.34e+48 ; pencil-angle LB ratio 3.49e+48
+  Y= 20.0 G=3.0: |cos th| = 0.008352  (low-alpha pencil bound 0.253916) | angle LB 1.59e+49 vs target 104.5 -> ratio 1.53e+47 ; pencil-angle LB ratio 1.15e+47
+  Y= 20.0 G=4.0: |cos th| = 0.097877  (low-alpha pencil bound 0.378746) | angle LB 4.21e+50 vs target 104.4 -> ratio 4.03e+48 ; pencil-angle LB ratio 2.78e+48
+(3) high band, w_h = q (1 - T_{1/2})
+  psi(0) = int w_h = 0.5688
+  gamma=0.80: Ingham-type ratio r = 2 sum_k |psi(k gamma)|/psi(0) = 0.997  -> int w_h |V|^2 >= 0.002 P
+  gamma=1.00: Ingham-type ratio r = 2 sum_k |psi(k gamma)|/psi(0) = 0.998  -> int w_h |V|^2 >= 0.001 P
+  gamma=1.25: Ingham-type ratio r = 2 sum_k |psi(k gamma)|/psi(0) = 0.543  -> int w_h |V|^2 >= 0.260 P
+  gamma=1.50: Ingham-type ratio r = 2 sum_k |psi(k gamma)|/psi(0) = 0.285  -> int w_h |V|^2 >= 0.407 P
+  gamma=2.00: Ingham-type ratio r = 2 sum_k |psi(k gamma)|/psi(0) = 0.126  -> int w_h |V|^2 >= 0.497 P
+  gamma=3.00: Ingham-type ratio r = 2 sum_k |psi(k gamma)|/psi(0) = 0.102  -> int w_h |V|^2 >= 0.511 P
+  lattice a=1.25 y=0.8: peak alpha=0.800 q=0.1619 c^2=3112.3 -> high-band peak ~ 2 q c^2 P/a = 806.2 P (target ~4 P)
+  lattice a=1.25 y=1.0: peak alpha=0.800 q=0.1619 c^2=23229.6 -> high-band peak ~ 2 q c^2 P/a = 6017.2 P (target ~4 P)
+  lattice a=1.50 y=0.8: peak alpha=0.667 q=0.3046 c^2=816.1 -> high-band peak ~ 2 q c^2 P/a = 331.4 P (target ~4 P)
+  lattice a=1.50 y=1.0: peak alpha=0.667 q=0.3046 c^2=4350.5 -> high-band peak ~ 2 q c^2 P/a = 1766.8 P (target ~4 P)
+  lattice a=1.70 y=0.8: peak alpha=0.588 q=0.3931 c^2=372.0 -> high-band peak ~ 2 q c^2 P/a = 172.1 P (target ~4 P)
+  lattice a=1.70 y=1.0: peak alpha=0.588 q=0.3931 c^2=1624.9 -> high-band peak ~ 2 q c^2 P/a = 751.5 P (target ~4 P)
+  lattice a=2.00 y=0.8: peak alpha=0.500 q=0.4968 c^2=154.4 -> high-band peak ~ 2 q c^2 P/a = 76.7 P (target ~4 P)
+  lattice a=2.00 y=1.0: peak alpha=0.500 q=0.4968 c^2=537.5 -> high-band peak ~ 2 q c^2 P/a = 267.0 P (target ~4 P)
+  lattice a=3.00 y=0.8: peak alpha=0.333 q=0.6915 c^2=30.6 -> high-band peak ~ 2 q c^2 P/a = 14.1 P (target ~4 P)
+  lattice a=3.00 y=1.0: peak alpha=0.333 q=0.6915 c^2=68.0 -> high-band peak ~ 2 q c^2 P/a = 31.3 P (target ~4 P)
+  e25 sparse minimiser P=5: min gap 1.65 | high band int w_h |S_A|^2 = 1321.3 vs target 20.1 (ratio 65.8)
+  e25 sparse minimiser P=6: min gap 1.66 | high band int w_h |S_A|^2 = 1365.6 vs target 24.2 (ratio 56.5)
+  e25 sparse minimiser P=8: min gap 1.68 | high band int w_h |S_A|^2 = 1700.2 vs target 32.3 (ratio 52.6)
+  e25 sparse minimiser P=12: min gap 1.69 | high band int w_h |S_A|^2 = 2580.2 vs target 48.6 (ratio 53.1)
+  e25 sparse minimiser P=16: min gap 1.70 | high band int w_h |S_A|^2 = 3144.7 vs target 64.7 (ratio 48.6)
+  e25 sparse minimiser P=24: min gap 1.71 | high band int w_h |S_A|^2 = 5652.3 vs target 97.1 (ratio 58.2)
+  e25 sparse minimiser P=32: min gap 0.00 | high band int w_h |S_A|^2 = 555999.7 vs target 129.9 (ratio 4278.6)

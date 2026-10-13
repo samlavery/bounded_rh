@@ -1,0 +1,15 @@
+window R8: qf(0) 1.008264, Psi(0)^2 sum check (bulk Sum_k Psi(x-k)^2 = F(0) = 1): 0.99981664
+(a) bulk Gabor sum vs F(x - x'): max |G - F| = 1.11e-03 (truncation of k to [0, W) included)
+(b) all-simple lattice, margin 0: W=50: N E_T -0.7316 | W=100: N E_T -0.7958 | W=200: N E_T -0.8601 | W=400: N E_T -0.9244
+(b) all-simple lattice, margin 100: W=50: N E_T -0.0596 | W=100: N E_T -0.0954 | W=200: N E_T -0.1425 | W=400: N E_T -0.1975
+(c) W=100: one dipole: N E_T(defect) - N E_T(lattice) = 0.982737 relaxed (unrelaxed 0.009927); N unchanged True; per-defect 2 delta from the periodic model: R8 0.990774 / best 0.968893
+(c) W=200: one dipole: N E_T(defect) - N E_T(lattice) = 0.986790 relaxed (unrelaxed 0.004981); N unchanged True; per-defect 2 delta from the periodic model: R8 0.990774 / best 0.968893
+(d) W=400: 2 far-apart dipoles: (N E_T(defect) - N E_T(lattice)) / k = 0.988080
+(d) W=400: 4 far-apart dipoles: (N E_T(defect) - N E_T(lattice)) / k = 0.987317
+(e) all-simple lower side, no margin, W=50: min N E_T = -1.7221 (lattice -0.7316)  (1s)
+(e) all-simple lower side, no margin, W=100: min N E_T = -2.1644 (lattice -0.7958)  (2s)
+(e) all-simple lower side, no margin, W=200: min N E_T = -2.2096 (lattice -0.8601)  (13s)
+(e) all-simple lower side, no margin, W=400: min N E_T = -5.8591 (lattice -0.9244)  (75s)
+(e') all-simple lower side, lattice margins 100, W=50: min N E_T = -0.4592 (lattice -0.0596)  (76s)
+(e') all-simple lower side, lattice margins 100, W=100: min N E_T = -2.0322 (lattice -0.0954)  (78s)
+(e') all-simple lower side, lattice margins 100, W=200: min N E_T = -0.5403 (lattice -0.1425)  (90s)

@@ -1,0 +1,78 @@
+MvtBenchB.lean:86:35: warning: Variable name `pb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchB.lean:112:32: warning: Variable name `m0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _m0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchB.lean:113:32: warning: Variable name `m1` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _m1
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchB.lean:114:32: warning: Variable name `m2` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _m2
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchB.lean:115:32: warning: Variable name `m3` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _m3
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchB.lean:116:32: warning: Variable name `m4` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _m4
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+type checking took 3.36s
+type checking took 6.39s
+type checking took 9.51s
+type checking took 12.5s
+cumulative profiling times:
+	attribute application 3.47ms
+	compilation (IR) 24.8ms
+	compilation (LCNF base) 257ms
+	compilation (LCNF impure) 130ms
+	compilation (LCNF mono) 198ms
+	elaboration 1.87s
+	fix level params 3.15ms
+	instantiate metavars 3.23ms
+	let-to-have transformation 2.82ms
+	linting 9.18s
+	module linting 0.000625ms
+	overlappingInstancesLinter 564ms
+	parsing 171ms
+	process pre-definitions 134ms
+	share common exprs 17.1ms
+	tactic execution 0.728ms
+	tacticAnalysis 1.32s
+	type checking 31.8s
+	typeclass inference 116ms
+       26.37 real        21.71 user        15.39 sys
+          6739902464  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              488474  page reclaims
+                   7  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  93  voluntary context switches
+              228046  involuntary context switches
+        212617344697  instructions retired
+        122157487650  cycles elapsed
+          1866961440  peak memory footprint

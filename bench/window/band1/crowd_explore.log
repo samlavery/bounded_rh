@@ -1,0 +1,10 @@
+y=0.05  UNPINNED min F = +17.0468  (S0 24.505) near points -7.916(m1) -6.896(m1) -1.019(m2) +1.019(m2) +6.896(m1) +7.916(m1)
+        PINNED (crowding, delta >= 0.15, cells 1-2) min F = +27.5953 at n=2 delta=+0.15 m=1; near points -8.904(m1) -7.889(m1) -6.869(m1) -1.014(m2) +2.150(m1) +6.939(m1) +7.958(m1)  [14s]
+y=0.10  UNPINNED min F = +7.3960  (S0 25.429) near points -3.997(m2) -2.020(m2) -0.998(m2) +0.998(m2) +2.020(m2) +3.997(m2)
+        PINNED (crowding, delta >= 0.15, cells 1-2) min F = +12.3418 at n=2 delta=+0.15 m=1; near points -6.891(m1) -3.990(m2) -2.013(m2) -0.994(m2) +1.021(m2) +2.150(m1) +6.932(m1)  [30s]
+y=0.20  UNPINNED min F = +5.3438  (S0 29.519) near points -2.983(m2) -1.968(m2) -0.952(m2) +0.952(m2) +1.967(m2) +2.982(m2)
+        PINNED (crowding, delta >= 0.15, cells 1-2) min F = +8.3392 at n=2 delta=-0.15 m=1; near points -2.986(m2) -1.973(m2) -0.958(m2) +0.924(m2) +1.850(m1) +2.892(m2) +3.913(m2)  [44s]
+y=0.30  UNPINNED min F = +8.2518  (S0 37.960) near points -2.950(m2) -1.936(m2) -0.910(m2) +0.910(m2) +1.936(m2) +2.950(m2)
+        PINNED (crowding, delta >= 0.15, cells 1-2) min F = +9.5512 at n=1 delta=-0.15 m=2; near points -2.960(m2) -1.945(m2) -0.918(m2) +0.850(m2) +1.910(m2) +2.930(m2) +3.940(m2)  [55s]
+y=0.40  UNPINNED min F = +17.5180  (S0 54.156) near points -2.939(m2) -1.920(m2) -0.865(m2) +0.865(m2) +1.920(m2) +2.939(m2)
+        PINNED (crowding, delta >= 0.15, cells 1-2) min F = +17.5791 at n=1 delta=-0.15 m=2; near points -2.940(m2) -1.922(m2) -0.866(m2) +0.850(m2) +1.916(m2) +2.936(m2) +3.944(m2)  [64s]

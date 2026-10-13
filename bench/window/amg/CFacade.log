@@ -1,0 +1,24 @@
+AMW/CFacade.lean:52:10: warning: Variable name `c` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _c
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+       13.09 real         2.86 user        10.60 sys
+          5899370496  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              441524  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+               14354  involuntary context switches
+         62080683090  instructions retired
+         43401506894  cycles elapsed
+           903300328  peak memory footprint

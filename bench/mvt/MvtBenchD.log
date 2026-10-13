@@ -1,0 +1,143 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:43:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:44:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:44:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:45:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:45:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:46:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:46:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:47:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:47:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:48:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:48:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:49:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:49:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:50:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:50:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:51:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:51:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:52:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:52:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:53:11)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:53:41)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:54:12)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (00:54:42)
+MvtBenchD.lean:86:13: warning: Variable name `tD` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _tD
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:22: warning: Variable name `bD` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _bD
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:35: warning: Variable name `pb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _pb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:48: warning: Variable name `l0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _l0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:51: warning: Variable name `u0` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u0
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:54: warning: Variable name `l1` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _l1
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:57: warning: Variable name `u1` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u1
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:60: warning: Variable name `l2` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _l2
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:63: warning: Variable name `u2` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u2
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:66: warning: Variable name `l3` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _l3
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:69: warning: Variable name `u3` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u3
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:72: warning: Variable name `l4` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _l4
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+MvtBenchD.lean:86:75: warning: Variable name `u4` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u4
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+type checking took 122ms
+type checking took 214ms
+type checking took 316ms
+type checking took 392ms
+cumulative profiling times:
+	attribute application 3.99ms
+	compilation (IR) 23.8ms
+	compilation (LCNF base) 260ms
+	compilation (LCNF impure) 126ms
+	compilation (LCNF mono) 192ms
+	elaboration 1.79s
+	fix level params 3.25ms
+	instantiate metavars 3.19ms
+	let-to-have transformation 3.9ms
+	linting 7.53s
+	module linting 0.000334ms
+	overlappingInstancesLinter 438ms
+	parsing 163ms
+	process pre-definitions 133ms
+	share common exprs 17.1ms
+	tactic execution 2.68ms
+	tacticAnalysis 1.09s
+	type checking 1.11s
+	typeclass inference 119ms
+       22.92 real         9.47 user        13.41 sys
+          6038208512  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              354673  page reclaims
+               91089  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               31375  voluntary context switches
+              244573  involuntary context switches
+        128471437568  instructions retired
+         75760304912  cycles elapsed
+          1167331368  peak memory footprint

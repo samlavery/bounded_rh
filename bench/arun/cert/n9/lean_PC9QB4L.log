@@ -1,0 +1,35 @@
+== PC9QB4LInst Sun Oct 11 17:18:27 PDT 2026
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       45.76 real        33.83 user        11.86 sys
+          6700335104  maximum resident set size
+        407136943584  instructions retired
+          1684866856  peak memory footprint
+== PC9QB4LData Sun Oct 11 17:19:13 PDT 2026
+      213.23 real       197.23 user        15.36 sys
+          8651145216  maximum resident set size
+       1452568855610  instructions retired
+          3682651336  peak memory footprint
+== PC9QB4LAx Sun Oct 11 17:22:46 PDT 2026
+'AMW.Cert.PC9QB4L_cert_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+       14.78 real         1.89 user        12.85 sys
+          5714771968  maximum resident set size
+         53712052828  instructions retired
+           871171424  peak memory footprint
+== L iso done Sun Oct 11 17:23:37 PDT 2026

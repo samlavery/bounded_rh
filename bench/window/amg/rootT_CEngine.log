@@ -1,0 +1,56 @@
+AMW/CEngine.lean:360:94: warning: This simp argument is unused:
+  Nat.add_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/CEngine.lean:509:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+AMW/CEngine.lean:1013:94: warning: This simp argument is unused:
+  Nat.add_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.shiftLeft_eq', Nat.shiftLeft_eq, one_mul, Nat.sub_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AMW/CEngine.lean:1142:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+AMW/CEngine.lean:1454:90: warning: '(try rfl)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+AMW/CEngine.lean:1842:28: warning: This simp argument is unused:
+  Nat.cast_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [tval, selXf, mul_zero, zero_mul, add_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+       40.27 real        24.30 user        15.68 sys
+          6754795520  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              508984  page reclaims
+                  23  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+               15099  involuntary context switches
+        209204608410  instructions retired
+        128063682654  cycles elapsed
+          1902478952  peak memory footprint

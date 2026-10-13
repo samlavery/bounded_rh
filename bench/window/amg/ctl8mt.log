@@ -1,0 +1,3 @@
+MT kernel, R8 weights: cN 703475, B 404350, regions 16
+  bisection: 13945 leaves (Z 2857, S 0, basin 0); face nodes 0 (collapses 0) (171s)
+RESULT {'nleaves': 13945, 'nZ': 2857, 'nS': 0, 'nB': 0, 'n2': 0, 'nM': 10274, 'nface': 0} (171s)

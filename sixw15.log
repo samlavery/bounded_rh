@@ -1,0 +1,197 @@
+comparator/Solution/CandidateW.lean:5211:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/CandidateW.lean:5521:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/CandidateW.lean:6070:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/CandidateW.lean:6100:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/CandidateW.lean:6130:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/CandidateW.lean:6160:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/CandidateW.lean:6190:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/CandidateW.lean:8280:50: error: unsolved goals
+⊢ 1577 / 6250000 +
+      (1681 / 4000000 +
+        (![1577 / 6250000, 1681 / 4000000, 46137 / 100000000, 10511 / 25000000, 24559 / 100000000] 2 +
+          (![1681 / 4000000, 46137 / 100000000, 10511 / 25000000, 24559 / 100000000] 2 +
+            ![46137 / 100000000, 10511 / 25000000, 24559 / 100000000] 2))) =
+    179997 / 100000000
+comparator/Solution/CandidateW.lean:8299:2: error: unsolved goals
+case inl.«1»
+s : ℕ
+hs : 1 < 6
+⊢ 257151 / 1000000 +
+      (![0, 0, 483181 / 1000000, 100181 / 250000, 299367 / 250000, 950703 / 1000000] 2 +
+        (Matrix.vecCons (![257151 / 1000000, 153107 / 250000, 409051 / 1000000, 65581 / 62500, 2] 2)
+            (fun i =>
+              Matrix.vecCons (![0, 483181 / 1000000, 100181 / 250000, 299367 / 250000, 950703 / 1000000] 2)
+                (fun i =>
+                  Matrix.vecCons (![0, 0, 528573 / 1000000, 35189 / 100000, 9837 / 25000] 2)
+                    (fun i =>
+                      Matrix.vecCons (![0, 0, 0, 481707 / 1000000, 158739 / 250000] 2)
+                        (fun i => Matrix.vecCons (![0, 0, 0, 0, 124693 / 500000] 2) (fun i => ![0, 0, 0, 0, 0] 2) i) i)
+                    i)
+                i)
+            2 +
+          (Matrix.vecCons (![483181 / 1000000, 100181 / 250000, 299367 / 250000, 950703 / 1000000] 2)
+              (fun i =>
+                Matrix.vecCons (![0, 528573 / 1000000, 35189 / 100000, 9837 / 25000] 2)
+                  (fun i =>
+                    Matrix.vecCons (![0, 0, 481707 / 1000000, 158739 / 250000] 2)
+                      (fun i => Matrix.vecCons (![0, 0, 0, 124693 / 500000] 2) (fun i => ![0, 0, 0, 0] 2) i) i)
+                  i)
+              2 +
+            Matrix.vecCons (![528573 / 1000000, 35189 / 100000, 9837 / 25000] 2)
+              (fun i =>
+                Matrix.vecCons (![0, 481707 / 1000000, 158739 / 250000] 2)
+                  (fun i => Matrix.vecCons (![0, 0, 124693 / 500000] 2) (fun i => ![0, 0, 0] 2) i) i)
+              2))) ≤
+    2
+
+case inl.«2»
+s : ℕ
+hs : 2 < 6
+⊢ ![0, 257151 / 1000000, 153107 / 250000, 409051 / 1000000, 65581 / 62500, 2] 2 +
+      (![0, 483181 / 1000000, 100181 / 250000, 299367 / 250000, 950703 / 1000000] 2 +
+        (Matrix.vecCons (![153107 / 250000, 409051 / 1000000, 65581 / 62500, 2] 2)
+            (fun i =>
+              Matrix.vecCons (![483181 / 1000000, 100181 / 250000, 299367 / 250000, 950703 / 1000000] 2)
+                (fun i =>
+                  Matrix.vecCons (![0, 528573 / 1000000, 35189 / 100000, 9837 / 25000] 2)
+                    (fun i =>
+                      Matrix.vecCons (![0, 0, 481707 / 1000000, 158739 / 250000] 2)
+                        (fun i => Matrix.vecCons (![0, 0, 0, 124693 / 500000] 2) (fun i => ![0, 0, 0, 0] 2) i) i)
+                    i)
+                i)
+            2 +
+          Matrix.vecCons (![100181 / 250000, 299367 / 250000, 950703 / 1000000] 2)
+            (fun i =>
+              Matrix.vecCons (![528573 / 1000000, 35189 / 100000, 9837 / 25000] 2)
+                (fun i =>
+                  Matrix.vecCons (![0, 481707 / 1000000, 158739 / 250000] 2)
+                    (fun i => Matrix.vecCons (![0, 0, 124693 / 500000] 2) (fun i => ![0, 0, 0] 2) i) i)
+                i)
+            2)) ≤
+    2
+
+case inl.«3»
+s : ℕ
+hs : 3 < 6
+⊢ ![257151 / 1000000, 153107 / 250000, 409051 / 1000000, 65581 / 62500, 2] 2 +
+      (![483181 / 1000000, 100181 / 250000, 299367 / 250000, 950703 / 1000000] 2 +
+        Matrix.vecCons (![409051 / 1000000, 65581 / 62500, 2] 2)
+          (fun i =>
+            Matrix.vecCons (![100181 / 250000, 299367 / 250000, 950703 / 1000000] 2)
+              (fun i =>
+                Matrix.vecCons (![528573 / 1000000, 35189 / 100000, 9837 / 25000] 2)
+                  (fun i =>
+                    Matrix.vecCons (![0, 481707 / 1000000, 158739 / 250000] 2)
+                      (fun i => Matrix.vecCons (![0, 0, 124693 / 500000] 2) (fun i => ![0, 0, 0] 2) i) i)
+                  i)
+              i)
+          2) ≤
+    2
+
+case inl.«4»
+s : ℕ
+hs : 4 < 6
+⊢ ![153107 / 250000, 409051 / 1000000, 65581 / 62500, 2] 2 + ![100181 / 250000, 299367 / 250000, 950703 / 1000000] 2 ≤ 2
+
+case inl.«5»
+s : ℕ
+hs : 5 < 6
+⊢ ![409051 / 1000000, 65581 / 62500, 2] 2 ≤ 2
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/CandidateW.lean:8309:85: error: unsolved goals
+f : Fin (6 - 1) → ℝ
+⊢ f 0 + f 1 + f 2 + f (Fin.succ 2) + f (Fin.succ 2).succ = f 0 + f 1 + f 2 + f 3 + f 4
+comparator/Solution/CandidateW.lean:8315:57: error: Application type mismatch: The argument
+  g
+has type
+  Fin (6 - 1) → ℝ
+but is expected to have type
+  ℝ
+in the application
+  SixW15.G g
+comparator/Solution/CandidateW.lean:8326:28: error: Application type mismatch: The argument
+  g
+has type
+  Fin (6 - 1) → ℝ
+but is expected to have type
+  ℝ
+in the application
+  SixW15Data.cert g
+comparator/Solution/CandidateW.lean:8323:96: error: unsolved goals
+g : Fin (6 - 1) → ℝ
+hg : ∀ (i : Fin (6 - 1)), 0 ≤ g i
+⊢ 304544 / 100000000 ≤ sorry
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+      728.92 real       711.58 user        16.34 sys
+          9047572480  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              640743  page reclaims
+                 543  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   7  voluntary context switches
+               50321  involuntary context switches
+       5935366110086  instructions retired
+       2570971256896  cycles elapsed
+          4135147168  peak memory footprint

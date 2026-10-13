@@ -1,0 +1,15 @@
+specroot_pyr/StrictRecordCheck25P.lean:8:17: warning: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+specroot_pyr/StrictRecordCheck25P.lean:11:17: warning: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+RiemannFail.bound_WW : ∀ ε > 0,
+  ∃ T₀,
+    ∀ T ≥ T₀,
+      ((14550000000 * Zeta23.ThmD.HD 1 - 25739571) / 14500045810 - ε) * ↑(Zeta23.Ncount T (2 * T)) ≤
+        ↑(Zeta23.N0simple T (2 * T))
+'RiemannFail.bound_WW' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]

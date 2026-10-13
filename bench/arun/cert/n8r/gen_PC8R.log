@@ -1,0 +1,98 @@
+== E emit Sat Oct 10 16:20:09 PDT 2026
+  root 0 (0, 0, 0, 0, 0, 0, 0): 109 leaves (1s)
+  root 1 (0, 0, 0, 0, 0, 1, 0): 47 leaves (1s)
+  root 2 (0, 0, 0, 0, 1, 0, 0): 119 leaves (1s)
+  root 3 (0, 0, 0, 0, 1, 1, 0): 98 leaves (1s)
+  root 4 (0, 0, 0, 1, 0, 0, 0): 307 leaves (1s)
+  root 5 (0, 0, 0, 1, 0, 1, 0): 200 leaves (1s)
+  root 6 (0, 0, 0, 1, 1, 0, 0): 150 leaves (1s)
+  root 7 (0, 0, 0, 1, 1, 1, 0): 90 leaves (1s)
+  root 8 (0, 0, 1, 0, 0, 0, 0): 122 leaves (1s)
+  root 9 (0, 0, 1, 0, 0, 1, 0): 180 leaves (1s)
+  root 10 (0, 0, 1, 0, 1, 0, 0): 346 leaves (1s)
+  root 11 (0, 0, 1, 0, 1, 1, 0): 145 leaves (1s)
+  root 12 (0, 0, 1, 1, 0, 0, 0): 147 leaves (1s)
+  root 13 (0, 0, 1, 1, 0, 1, 0): 168 leaves (1s)
+  root 14 (0, 0, 1, 1, 1, 0, 0): 114 leaves (1s)
+  root 15 (0, 0, 1, 1, 1, 1, 0): 34 leaves (1s)
+  root 16 (0, 1, 0, 0, 0, 0, 0): 45 leaves (1s)
+  root 17 (0, 1, 0, 0, 0, 1, 0): 169 leaves (1s)
+  root 18 (0, 1, 0, 0, 1, 0, 0): 225 leaves (1s)
+  root 19 (0, 1, 0, 0, 1, 1, 0): 127 leaves (1s)
+  root 20 (0, 1, 0, 1, 0, 0, 0): 282 leaves (1s)
+  root 21 (0, 1, 0, 1, 0, 1, 0): 248 leaves (1s)
+  root 22 (0, 1, 0, 1, 1, 0, 0): 207 leaves (1s)
+  root 23 (0, 1, 0, 1, 1, 1, 0): 123 leaves (1s)
+  root 24 (0, 1, 1, 0, 0, 0, 0): 98 leaves (1s)
+  root 25 (0, 1, 1, 0, 0, 1, 0): 106 leaves (1s)
+  root 26 (0, 1, 1, 0, 1, 0, 0): 176 leaves (1s)
+  root 27 (0, 1, 1, 0, 1, 1, 0): 130 leaves (1s)
+  root 28 (0, 1, 1, 1, 0, 0, 0): 100 leaves (1s)
+  root 29 (0, 1, 1, 1, 0, 1, 0): 121 leaves (1s)
+  root 30 (0, 1, 1, 1, 1, 0, 0): 32 leaves (1s)
+  root 31 (0, 1, 1, 1, 1, 1, 0): 10 leaves (1s)
+  bisection: 4575 leaves (Z 0, M 4403, empty 0), 0 splits, 0 at region boundaries (1s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2260 points (53222 point cells); failing 0 (5s)
+replay: {'split': 4543, 6: 4403, 0: 172}; leaves 4575 kinds {6: 4403, 0: 172}; verification failures 0 (5s)
+walks: 32 roots, 1126269 bits = 281.6 KB hex; encode/decode round trip OK
+wrote /Users/samuellavery/work/riemann-submission/bench/arun/cert/n8r/DATA_PC8R.json: 0.50 MB json; points 2260, w 1984 cells, d 2240 cells
+       17.29 real        16.38 user         0.68 sys
+          1992359936  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              129786  page reclaims
+                1430  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 944  voluntary context switches
+                2511  involuntary context switches
+        270676277307  instructions retired
+         57473213669  cycles elapsed
+          1982826368  peak memory footprint
+== D data module Sat Oct 10 16:20:26 PDT 2026
+chunks 32 boundaries 0
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n8r/root8/AMW/PC8RData.lean bytes 715318 walks 32 bads [1, 2, 2, 2, 2, 2, 1] point blocks 207
+        0.53 real         0.50 user         0.01 sys
+            28016640  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2453  page reclaims
+                 107  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  29  voluntary context switches
+                  97  involuntary context switches
+          8397873610  instructions retired
+          1752397326  cycles elapsed
+            19923352  peak memory footprint
+== I instance module Sat Oct 10 16:20:27 PDT 2026
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n8r/root8/AMW/PC8RInst.lean bytes 201834 pairs 28 constraints 21 active terms 26 SIG 6250000000000000 table entries 0 0 0 FIXED closure candidates per child: min 43 max 43 mean 43.0
+        0.05 real         0.04 user         0.00 sys
+            23920640  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2267  page reclaims
+                  43  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+                  33  involuntary context switches
+           557456177  instructions retired
+           180588365  cycles elapsed
+            15794560  peak memory footprint
+== done Sat Oct 10 16:20:27 PDT 2026

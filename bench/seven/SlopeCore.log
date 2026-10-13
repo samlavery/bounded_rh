@@ -1,0 +1,21 @@
+SlopeCore.lean:235:90: warning: '(try rfl)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+       15.38 real         8.79 user         8.82 sys
+          6012518400  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              450311  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+               12396  involuntary context switches
+        128706844938  instructions retired
+         58993474137  cycles elapsed
+           984338160  peak memory footprint

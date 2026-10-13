@@ -1,0 +1,3 @@
+(1) a=0.99 L= 400: min E_end +340.278505 | ||g|| 3.37e+02 | min eig -2.901e+01 | not converged | y_inf 2.4275 | layer length 236 | its 299 | 596s
+(1) a=0.99 L= 800: min E_end +306.918637 | ||g|| 8.11e+05 | min eig -4.972e+05 | not converged | y_inf 2.4313 | layer length 592 | its 299 | 2114s
+(1) a=0.99 L=1600: min E_end +286.401781 | ||g|| 1.21e+06 | min eig -7.485e+05 | not converged | y_inf 2.4306 | layer length 485 | its 299 | 5912s

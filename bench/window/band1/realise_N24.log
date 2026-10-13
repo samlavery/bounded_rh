@@ -1,0 +1,15 @@
+N=24 target 91.8938 | marks {1,2} on-line: min p 0.67801235  support [(0.5681, (3, 0)), (0.4319, (5, 0))] | certificate c0 0.99994851 lam -3.503349e-03  (17s)
+  d_min(k), y=0: 1:23.779 2:47.565 3:71.346 4:95.187 5:118.919 6:142.717 7:166.612 8:190.528
+  y-Hessian at the y=0 optima: min over all double sites of all types +300.1847 at (6, 3); min over t=0 types +322.4876
+  + triples: min p 0.67801235  support [(0.5681, (3, 0)), (0.4319, (5, 0))] | certificate worst slack on triple types +0.125522 at k=0 t=1
+  common depth y=0.005: worst slack +0.0000390 at k=1 (d_min 23.7832 vs y=0 23.7790)
+  common depth y=0.010: worst slack +0.0000831 at k=1 (d_min 23.7958 vs y=0 23.7790)
+  common depth y=0.020: worst slack +0.0002598 at k=1 (d_min 23.8462 vs y=0 23.7790)
+  common depth y=0.050: worst slack +0.0014845 at k=1 (d_min 24.1958 vs y=0 23.7790)
+  common depth y=0.100: worst slack +0.0059137 at k=1 (d_min 25.4601 vs y=0 23.7790)
+  common depth y=0.200: worst slack +0.0277393 at k=1 (d_min 31.6900 vs y=0 23.7790)
+  common depth y=0.300: worst slack +0.0850442 at k=1 (d_min 48.0472 vs y=0 23.7790)
+  common depth y=0.400: worst slack +0.1823733 at k=2 (d_min 99.6157 vs y=0 47.5654)
+  common depth y=0.500: worst slack +0.3818239 at k=2 (d_min 156.5471 vs y=0 47.5654)
+  largest drop type (2, 6): depths [0.22284 0.     ]
+re-solved, pairs y in [0,0.50] + triples: min p 0.67801235  support [(0.5681, (3, 0)), (0.4319, (5, 0))], depths in support [[np.float64(0.0), np.float64(0.0), np.float64(0.0)], [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0)]] | largest d_min drop vs y=0 3.14e-01 at (2, 6) | (A) certificate worst slack -0.0000000 at k=3 t=0  (32s)

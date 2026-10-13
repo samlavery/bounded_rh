@@ -1,0 +1,85 @@
+== build PFBenchNP 17:17:52
+build exit 0
+      120.16 real        82.13 user        14.67 sys
+          9034121216  maximum resident set size
+        678029645334  instructions retired
+          4111618448  peak memory footprint
+== build PFBenchNO 17:19:52
+build exit 0
+       61.48 real        46.57 user        12.29 sys
+          8090337280  maximum resident set size
+        397019473549  instructions retired
+          3501953040  peak memory footprint
+== build PFBenchNPH 17:20:54
+build exit 0
+       74.66 real        51.37 user        14.84 sys
+          8342716416  maximum resident set size
+        375785921488  instructions retired
+          3311849008  peak memory footprint
+== build PFBenchNP1 17:22:08
+build exit 0
+       21.95 real         9.53 user        12.14 sys
+          7347257344  maximum resident set size
+        102369408408  instructions retired
+          2432535080  peak memory footprint
+== AMW.PFBenchNP export
+export exit 0
+       15.54 real         2.88 user        11.71 sys
+          1151468560  peak memory footprint
+export bytes 5170166
+== AMW.PFBenchNP nanoda
+nanoda exit 0
+       75.65 real        71.20 user         3.19 sys
+          3384593168  peak memory footprint
+== AMW.PFBenchNP lean replay (full closure)
+parse_ms 393 constants 3330
+replay_ms 85175 OK
+replayx exit 0
+       85.77 real        82.42 user         1.75 sys
+          1573357224  peak memory footprint
+== AMW.PFBenchNO export
+export exit 0
+       39.11 real         3.39 user        15.58 sys
+          1160299464  peak memory footprint
+export bytes 5121391
+== AMW.PFBenchNO nanoda
+nanoda exit 0
+       52.60 real        46.53 user         2.87 sys
+          1592821224  peak memory footprint
+== AMW.PFBenchNO lean replay (full closure)
+parse_ms 523 constants 3306
+replay_ms 50948 OK
+replayx exit 0
+       51.67 real        47.46 user         1.15 sys
+          1027179792  peak memory footprint
+== AMW.PFBenchNPH export
+export exit 0
+       16.54 real         2.73 user        11.42 sys
+          1152189384  peak memory footprint
+export bytes 4947751
+== AMW.PFBenchNPH nanoda
+nanoda exit 0
+       49.68 real        44.28 user         2.17 sys
+          2936457712  peak memory footprint
+== AMW.PFBenchNPH lean replay (full closure)
+parse_ms 384 constants 3282
+replay_ms 54635 OK
+replayx exit 0
+       55.22 real        50.21 user         1.31 sys
+          1582007952  peak memory footprint
+== AMW.PFBenchNP1 export
+export exit 0
+       33.33 real         2.42 user        14.75 sys
+          1156563936  peak memory footprint
+export bytes 4744944
+== AMW.PFBenchNP1 nanoda
+nanoda exit 0
+        8.80 real         7.80 user         0.47 sys
+          2810530120  peak memory footprint
+== AMW.PFBenchNP1 lean replay (full closure)
+parse_ms 199 constants 3237
+replay_ms 7266 OK
+replayx exit 0
+        7.68 real         6.97 user         0.31 sys
+          1595967120  peak memory footprint
+== phase1_mem done 17:30:42

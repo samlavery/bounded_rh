@@ -1,0 +1,20 @@
+lattice a=0.90 P=12    K=2 truth  +184.529 | L0: QP   +183.514 hard   +183.443 | local-search min: QP   +183.514 hard   +183.443 | loss(min)     1.015 | PASS(labellings tested) | 1s
+lattice a=0.90 P=12    K=4 truth  +184.529 | L0: QP   +183.514 hard   +183.443 | local-search min: QP   +183.514 hard   +183.443 | loss(min)     1.015 | PASS(labellings tested) | 1s
+lattice a=0.90 P=12    K=8 truth  +184.529 | L0: QP   +183.540 hard   +183.384 | local-search min: QP   +183.540 hard   +183.384 | loss(min)     0.990 | PASS(labellings tested) | 2s
+/Users/samuellavery/work/riemann-submission/bench/window/sat9/e33_classK.py:71: RuntimeWarning: invalid value encountered in power
+  y0 = np.full(P, 0.8) if t == 0 else (0.8 + 0.8 * np.sin(np.pi * np.arange(P) / (P - 1)) ** 0.8 if t == 1 else rng.uniform(0.8, 2.0, P))
+lattice a=0.90 P=48    K=2 truth   +82.298 | L0: QP    +48.895 hard    +48.850 | local-search min: QP    +48.547 hard    +48.513 | loss(min)    33.752 | PASS(labellings tested) | 155s
+lattice a=0.90 P=48    K=4 truth   +82.298 | L0: QP    +75.396 hard    +74.683 | local-search min: QP    +59.115 hard    +56.995 | loss(min)    23.183 | PASS(labellings tested) | 248s
+lattice a=0.90 P=48    K=8 truth   +82.298 | L0: QP    +80.687 hard    +78.596 | local-search min: QP    +80.422 hard    +78.737 | loss(min)     1.876 | PASS(labellings tested) | 208s
+e23 minimiser P=12     K=2 truth   +29.061 | L0: QP    +26.357 hard    +26.350 | local-search min: QP    +26.357 hard    +26.350 | loss(min)     2.704 | PASS(labellings tested) | 1s
+e23 minimiser P=12     K=4 truth   +29.061 | L0: QP    +29.061 hard    +29.059 | local-search min: QP    +29.061 hard    +29.059 | loss(min)    -0.000 | PASS(labellings tested) | 1s
+e23 minimiser P=12     K=8 truth   +29.061 | L0: QP    +29.062 hard    +29.060 | local-search min: QP    +29.062 hard    +29.060 | loss(min)    -0.001 | PASS(labellings tested) | 2s
+e23 minimiser P=16     K=2 truth   +43.014 | L0: QP    +39.169 hard    +39.162 | local-search min: QP    +39.169 hard    +39.162 | loss(min)     3.846 | PASS(labellings tested) | 2s
+e23 minimiser P=16     K=4 truth   +43.014 | L0: QP    +43.015 hard    +43.003 | local-search min: QP    +43.015 hard    +43.003 | loss(min)    -0.001 | PASS(labellings tested) | 2s
+e23 minimiser P=16     K=8 truth   +43.014 | L0: QP    +43.223 hard    +42.762 | local-search min: QP    +43.169 hard    +42.966 | loss(min)    -0.155 | PASS(labellings tested) | 3s
+e23 minimiser P=24     K=2 truth   +61.777 | L0: QP    +58.163 hard    +58.157 | local-search min: QP    +58.163 hard    +58.157 | loss(min)     3.614 | PASS(labellings tested) | 5s
+e23 minimiser P=24     K=4 truth   +61.777 | L0: QP    +61.746 hard    +61.723 | local-search min: QP    +61.746 hard    +61.723 | loss(min)     0.031 | PASS(labellings tested) | 7s
+e23 minimiser P=24     K=8 truth   +61.777 | L0: QP    +61.758 hard    +61.695 | local-search min: QP    +61.758 hard    +61.695 | loss(min)     0.019 | PASS(labellings tested) | 9s
+e23 minimiser P=32     K=2 truth   +90.273 | L0: QP    +86.675 hard    +86.666 | local-search min: QP    +86.675 hard    +86.666 | loss(min)     3.598 | PASS(labellings tested) | 10s
+e23 minimiser P=32     K=4 truth   +90.273 | L0: QP    +90.270 hard    +90.267 | local-search min: QP    +90.270 hard    +90.267 | loss(min)     0.002 | PASS(labellings tested) | 15s
+e23 minimiser P=32     K=8 truth   +90.273 | L0: QP    +90.271 hard    +90.264 | local-search min: QP    +90.271 hard    +90.264 | loss(min)     0.002 | PASS(labellings tested) | 19s

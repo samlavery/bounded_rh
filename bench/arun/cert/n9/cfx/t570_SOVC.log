@@ -1,0 +1,29 @@
+== cfx9 tag=t570_SOVC wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9so.py PFK=8 LPACCEPT=1 EXACTV=1 EXACTC=1 SO=1 Sat Oct 10 17:20:38 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=14 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=256 ROOTSEL=2,5,9
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 820 leaves (406s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 988 leaves (865s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1000 leaves (1324s)
+  bisection: 2808 leaves (Z 0, M 2710, empty 0), 2805 splits, 1425 at region boundaries (1324s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 0 cells, 0 points (0 point cells); failing 0 (1324s)
+leaves 2808 kinds {6: 2710, 0: 98} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 2805 (pair 2080); walk bits 214948 (76.5 per leaf; multipliers 0 x 0 bits); M nonzero multipliers [(0, 2710)]; constraints per M cell [(28, 2710)]; w 1984 d 0 pts 0 ptc 0 bad 0 MSTAT lp 8722 (1324s)
+nodes visited 5613 (leaves 2808 + splits 2805); explicit constraints per node: mean 28.00, dist [(28, 5613)]
+walk: 214948 bits = 0.054 MB hex, 0.036 MB base64 (roots run); x8.73: 0.47 MB hex, 0.31 MB base64
+     1340.72 real      1270.31 user        31.56 sys
+          4326883328  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1131741  page reclaims
+                 101  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  64  voluntary context switches
+             1172443  involuntary context switches
+      13610998670483  instructions retired
+       4151040282227  cycles elapsed
+          5431415104  peak memory footprint
+== done Sat Oct 10 17:42:59 PDT 2026

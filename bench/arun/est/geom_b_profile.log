@@ -1,0 +1,9 @@
+s in [  0.0,   0.8): max w 1.000e+00 | max|w''| 6.051e+00 | max|w'''| 2.016e+01 | ratio max|w''|/max|w'''| 0.300
+s in [  0.8,   1.2): max w 8.176e-02 | max|w''| 3.511e+00 | max|w'''| 1.006e+01 | ratio max|w''|/max|w'''| 0.349
+s in [  1.2,   2.5): max w 3.207e-02 | max|w''| 6.777e-01 | max|w'''| 7.784e+00 | ratio max|w''|/max|w'''| 0.087
+s in [  2.5,   5.0): max w 9.710e-03 | max|w''| 1.994e-01 | max|w'''| 1.076e+00 | ratio max|w''|/max|w'''| 0.185
+s in [  5.0,  10.0): max w 1.934e-03 | max|w''| 4.946e-02 | max|w'''| 2.836e-01 | ratio max|w''|/max|w'''| 0.174
+s in [ 10.0,  20.0): max w 7.347e-04 | max|w''| 1.509e-02 | max|w'''| 9.126e-02 | ratio max|w''|/max|w'''| 0.165
+s in [ 20.0,  36.0): max w 1.679e-04 | max|w''| 3.488e-03 | max|w'''| 2.137e-02 | ratio max|w''|/max|w'''| 0.163
+s in [ 36.0, 100.0): max w 5.250e-05 | max|w''| 1.066e-03 | max|w'''| 6.603e-03 | ratio max|w''|/max|w'''| 0.161
+s in [100.0, 260.0): max w 6.903e-06 | max|w''| 1.376e-04 | max|w'''| 8.605e-04 | ratio max|w''|/max|w'''| 0.160

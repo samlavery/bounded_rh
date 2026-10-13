@@ -1,0 +1,20 @@
+no such file or directory (error code: 4294967294)
+  file: S45303.lean
+        0.02 real         0.02 user         0.00 sys
+            49381376  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                3658  page reclaims
+                   7  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                  15  involuntary context switches
+           272979915  instructions retired
+            90731688  cycles elapsed
+            10207856  peak memory footprint

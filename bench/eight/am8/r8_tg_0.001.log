@@ -1,0 +1,15 @@
+delta=0.001 cN=803824 regions=16 env AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin8_try1.json GSH=5 TWOGRID=1 WMIN=9 DLO=8 DHI=9
+  ... 20000 leaves (Z 4607, S 0, B 0, 2nd 0, M 14744) mtests [34757, 14790, 14744] (246s)
+  ... 40000 leaves (Z 8888, S 0, B 0, 2nd 0, M 29605) mtests [69619, 29846, 29605] (501s)
+  ... 60000 leaves (Z 12797, S 0, B 0, 2nd 0, M 44857) mtests [104866, 45318, 44857] (770s)
+  ... 80000 leaves (Z 17002, S 0, B 0, 2nd 0, M 59820) mtests [139828, 60540, 59820] (1032s)
+  ... 100000 leaves (Z 21162, S 0, B 0, 2nd 0, M 74728) mtests [174742, 75871, 74728] (1312s)
+  ... 120000 leaves (Z 25616, S 0, B 0, 2nd 0, M 89474) mtests [209472, 91072, 89474] (1572s)
+  ... 140000 leaves (Z 29897, S 0, B 0, 2nd 0, M 104349) mtests [244355, 106111, 104349] (1820s)
+  ... 160000 leaves (Z 34529, S 0, B 0, 2nd 0, M 118822) mtests [278820, 120988, 118822] (2072s)
+  ... 180000 leaves (Z 39097, S 0, B 0, 2nd 0, M 133407) mtests [313400, 136098, 133407] (2320s)
+  ... 200000 leaves (Z 44685, S 0, B 0, 2nd 0, M 146848) mtests [346840, 150293, 146848] (2577s)
+  bisection: 203262 leaves (Z 45795, S 0, basin 0); face nodes 0 (collapses 0) (2614s)
+  fix-up: 3 re-decided; tables: w 992 cells, d 1030 cells, 2356 points (3881 point cells); failing 0 (2653s)
+leaves 203262 Z 45795 M 148860 reflected 8607 w 992 d 1030 pts 2356 ptc 3881 bad 0 (2653s)
+saved lv_tg_0.001.pkl

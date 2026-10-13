@@ -1,0 +1,43 @@
+== PC9QInst Sun Oct 11 11:00:21 PDT 2026
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:00:21)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:00:51)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:01:21)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:01:51)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:02:21)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:02:51)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:03:21)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:03:51)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (11:04:21)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       57.87 real        34.34 user        11.96 sys
+          6693617664  maximum resident set size
+          1679837040  peak memory footprint
+exit 
+== PC9QData Sun Oct 11 11:05:49 PDT 2026
+      261.80 real       249.63 user        11.89 sys
+          7416643584  maximum resident set size
+          2649934184  peak memory footprint
+exit 
+== PC9QAx Sun Oct 11 11:10:11 PDT 2026
+'AMW.Cert.PC9Q_cert_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+       14.41 real         1.93 user        11.01 sys
+          5718589440  maximum resident set size
+           872154416  peak memory footprint
+exit 

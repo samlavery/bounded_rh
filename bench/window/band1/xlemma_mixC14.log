@@ -1,0 +1,15 @@
+  y_q in [0.6250, 0.6375]: margin 71.5192 | X charge 24.6327 | m - R +46.8865
+  y_q in [0.6375, 0.6500]: margin 76.5481 | X charge 27.9745 | m - R +48.5736
+  y_q in [0.6500, 0.6625]: margin 79.4197 | X charge 31.7794 | m - R +47.6403
+  y_q in [0.6625, 0.6750]: margin 82.3993 | X charge 36.1132 | m - R +46.2861
+  y_q in [0.6750, 0.6875]: margin 85.6779 | X charge 41.0509 | m - R +44.6270
+  y_q in [0.6875, 0.7000]: margin 89.9402 | X charge 46.6786 | m - R +43.2616
+  y_q in [0.7000, 0.7125]: margin 95.2905 | X charge 53.0946 | m - R +42.1959
+  y_q in [0.7125, 0.7250]: margin 99.8848 | X charge 60.4115 | m - R +39.4733
+  y_q in [0.7250, 0.7375]: margin 105.8003 | X charge 68.7584 | m - R +37.0419
+  y_q in [0.7375, 0.7500]: margin 111.8347 | X charge 78.2832 | m - R +33.5515
+  y_q in [0.7500, 0.7625]: margin 118.9914 | X charge 89.1553 | m - R +29.8361
+  y_q in [0.7625, 0.7750]: margin 126.0557 | X charge 101.5690 | m - R +24.4867
+  y_q in [0.7750, 0.7875]: margin 134.1221 | X charge 115.7469 | m - R +18.3752
+  y_q in [0.7875, 0.8000]: margin 141.5617 | X charge 131.9443 | m - R +9.6174
+D0 = 28 (annuli start 16 width 4): min (m - R) = +9.6174 -> CLOSED

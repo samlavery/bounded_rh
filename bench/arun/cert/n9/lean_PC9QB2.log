@@ -1,0 +1,50 @@
+== PC9QB2Inst Sun Oct 11 12:44:12 PDT 2026
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:44:12)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:44:42)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:45:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:45:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:46:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:46:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:47:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:47:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:48:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:48:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:49:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:49:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:50:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:50:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:51:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (12:51:43)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       58.95 real        34.94 user        12.54 sys
+          6689554432  maximum resident set size
+        416165766837  instructions retired
+          1675822888  peak memory footprint
+== PC9QB2Data Sun Oct 11 12:53:12 PDT 2026
+      294.80 real       278.26 user        14.42 sys
+          8514093056  maximum resident set size
+       2140098109042  instructions retired
+          3492039760  peak memory footprint
+== PC9QB2Ax Sun Oct 11 12:58:06 PDT 2026
+'AMW.Cert.PC9QB2_cert_full' depends on axioms: [propext, Classical.choice, Quot.sound]
+       13.13 real         1.94 user        11.08 sys
+          5717721088  maximum resident set size
+         53672609142  instructions retired
+           869942600  peak memory footprint

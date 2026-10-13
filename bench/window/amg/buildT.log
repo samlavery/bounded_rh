@@ -1,0 +1,17 @@
+== rootT/AMW/GCell exit=0 wall=39.26s peak=843MB
+== rootT/AMW/GBase exit=0 wall=16.90s peak=930MB
+== rootT/AMW/GConst exit=0 wall=15.95s peak=876MB
+== rootT/AMW/GFar exit=0 wall=19.66s peak=915MB
+== rootT/AMW/GNear exit=0 wall=13.97s peak=851MB
+== rootT/AMW/GAsm1 exit=0 wall=13.28s peak=860MB
+== rootT/AMW/GAsm2 exit=0 wall=13.94s peak=860MB
+== rootT/AMW/GCellSound exit=0 wall=14.65s peak=872MB
+== rootT/AMW/CFacade exit=0 wall=13.03s peak=848MB
+== rootT/AMW/CEngine exit=0 wall=28.85s peak=1807MB
+== rootT/AMW/CWindow exit=0 wall=15.18s peak=852MB
+== rootT/AMW/CMin exit=0 wall=41.60s peak=1651MB
+== rootT/AMW/CMLeaf exit=0 wall=22.65s peak=845MB
+== rootT/AMW/AMR7Inst exit=0 wall=337.22s peak=2351MB
+== rootT/AMW/AMR7Data exit=0 wall=306.98s peak=2787MB
+baseline exit=0
+EXIT 0

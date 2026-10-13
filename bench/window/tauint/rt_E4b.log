@@ -1,0 +1,20 @@
+module constants: 6531; imports: 18
+per-declaration replay of 6531 constants: 177735 ms
+      210.13 real       163.69 user        18.11 sys
+          7423033344  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              463283  page reclaims
+              263770  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               45087  voluntary context switches
+              271922  involuntary context switches
+       1377648537636  instructions retired
+        622789537375  cycles elapsed
+          3855235080  peak memory footprint

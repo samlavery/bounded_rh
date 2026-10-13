@@ -1,0 +1,11 @@
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      492.56 real       481.08 user        11.72 sys
+          3661206840  peak memory footprint
+BUILD EXIT 0
+module constants: 4017; imports: 10
+kernel replay of 4017 constants: 313606 ms
+      327.28 real       313.96 user        11.85 sys
+          3114546584  peak memory footprint
+REPLAY EXIT 0

@@ -1,0 +1,2 @@
+== OctT.lean exit=1 wall=184.02s peak=3718MB
+OctT.lean:967:2: error: linarith failed to find a contradiction

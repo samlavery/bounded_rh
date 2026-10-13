@@ -1,0 +1,109 @@
+== E emit Sun Oct 11 10:58:18 PDT 2026
+  root 0 (0, 0, 0, 0, 0, 0, 0, 0): 270 leaves (1s)
+  root 1 (0, 0, 0, 0, 0, 1, 0, 0): 669 leaves (1s)
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 898 leaves (1s)
+  root 3 (0, 0, 0, 0, 1, 1, 0, 0): 686 leaves (1s)
+  root 4 (0, 0, 0, 1, 0, 0, 0, 0): 977 leaves (2s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 1120 leaves (2s)
+  root 6 (0, 0, 0, 1, 1, 0, 0, 0): 888 leaves (2s)
+  root 7 (0, 0, 0, 1, 1, 1, 0, 0): 430 leaves (2s)
+  root 8 (0, 0, 1, 0, 0, 0, 0, 0): 523 leaves (2s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1170 leaves (2s)
+  root 10 (0, 0, 1, 0, 1, 0, 0, 0): 1079 leaves (2s)
+  root 11 (0, 0, 1, 0, 1, 1, 0, 0): 588 leaves (3s)
+  root 12 (0, 0, 1, 1, 0, 0, 0, 0): 564 leaves (3s)
+  root 13 (0, 0, 1, 1, 0, 1, 0, 0): 632 leaves (3s)
+  root 14 (0, 0, 1, 1, 1, 0, 0, 0): 418 leaves (3s)
+  root 15 (0, 0, 1, 1, 1, 1, 0, 0): 166 leaves (3s)
+  bisection: 11078 leaves (Z 0, M 10735, empty 0), 0 splits, 0 at region boundaries (3s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 3190 points (14450 point cells); failing 0 (31s)
+replay: {'split': 11062, 6: 10735, 0: 343}; leaves 11078 kinds {6: 10735, 0: 343}; verification failures 0 (31s)
+walks: 16 roots, 3435015 bits = 858.8 KB hex; encode/decode round trip OK
+wrote /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/DATA_PC9Q.json: 1.11 MB json; points 3190, w 1984 cells, d 2240 cells
+       55.01 real        54.08 user         0.67 sys
+          2658271232  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              170839  page reclaims
+                 497  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 946  voluntary context switches
+               10908  involuntary context switches
+        774851548246  instructions retired
+        179325036126  cycles elapsed
+          2636958024  peak memory footprint
+== V lever-1 intervals Sun Oct 11 10:59:13 PDT 2026
+replayed 16 walks: {'split': 11062, 'empty': 0, 'refl': 343, 'M': 10735, 'fail': 0, 'anchor': 0, 'inc': 22124, 'bsplit': 5538}; every walk ends at its bit count
+VERIFIED: 0 failures
+3190 points with an interval (point table 3190); 239363 recorded checks; -> /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/IV_PC9Q.json
+       12.55 real        12.40 user         0.12 sys
+           306757632  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               19536  page reclaims
+                  42  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+                2376  involuntary context switches
+        179526795727  instructions retired
+         41060674939  cycles elapsed
+           298762864  peak memory footprint
+== D data module Sun Oct 11 10:59:25 PDT 2026
+points 3190, with an interval 3190
+chunks 412 boundaries 198
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root_PC9Q/AMW/PC9QData.lean bytes 1676263 walks 16 bads [1, 1, 2, 2, 2, 2, 1, 1] point blocks 235
+        2.58 real         2.54 user         0.03 sys
+            48119808  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                3748  page reclaims
+                  42  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   4  voluntary context switches
+                 519  involuntary context switches
+         37451794935  instructions retired
+          8452561799  cycles elapsed
+            40026520  peak memory footprint
+== I instance module Sun Oct 11 10:59:28 PDT 2026
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/bench/window/amg/genpcellQI.py", line 96, in <module>
+    assert PRM["SIGSH"] == SIGSH and PRM["QB"] == QB and PRM["ZEXT"] == ZN and PRM["JSH"] == 5 and PRM["PLO"] == 33
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+        0.05 real         0.03 user         0.00 sys
+            26951680  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2453  page reclaims
+                  44  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+                  29  involuntary context switches
+           406314065  instructions retired
+           153080089  cycles elapsed
+            18727296  peak memory footprint
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root_PC9Q/AMW/PC9QInst.lean bytes 145581 pairs 36 constraints 28 active terms 34 SIG 1562500000000000 table entries 0 0 0 FIXED 

@@ -1,0 +1,15 @@
+per-window minimum check: F at the k=1 minimiser 0.008051842 (eps_strong 0.008051650, cN/SA 0.008051240)
+q = 1: min cyclic average 0.008917222 (ratio to eps +10.7502%) word [2.0053] (0s)
+q = 2: min cyclic average 0.008064883 (ratio to eps +0.1643%) word [1.9745 1.0427] (0s)
+q = 3: min cyclic average 0.008110677 (ratio to eps +0.7331%) word [1.9606 1.0352 1.0352] (1s)
+q = 4: min cyclic average 0.008064883 (ratio to eps +0.1643%) word [1.0427 1.9745 1.0427 1.9745] (1s)
+q = 5: min cyclic average 0.008071758 (ratio to eps +0.2497%) word [1.0452 1.977  1.0452 1.9868 1.9868] (2s)
+q = 6: min cyclic average 0.008064883 (ratio to eps +0.1643%) word [1.9745 1.0427 1.9745 1.0427 1.9745 1.0427] (3s)
+q = 7: min cyclic average 0.008059448 (ratio to eps +0.0968%) word [1.0451 1.9866 1.9866 1.0451 1.9758 1.0436 1.9759] (5s)
+q = 8: min cyclic average 0.008064883 (ratio to eps +0.1643%) word [1.0427 1.9745 1.0427 1.9745 1.0427 1.9745 1.0427 1.9745] (10s)
+P3: cyclic average 0.008356261 (+3.7832%), refined 0.008064883 (+0.1643%) [1.9745 1.0427]
+Q7: cyclic average 0.008421542 (+4.5940%), refined 0.008063330 (+0.1451%) [1.0356 1.967  1.0429 1.9724 1.0429 1.967  1.0356]
+P4: cyclic average 0.008633177 (+7.2225%), refined 0.008110677 (+0.7331%) [1.0352 1.0352 1.9606]
+k2pat: cyclic average 0.008116170 (+0.8013%), refined 0.008098866 (+0.5864%) [1.0352 1.9667 1.0425 1.9667 1.0352 1.0353 1.9611 1.0353]
+
+c_erg (best over all words) = 0.008059448 at q = 7: [1.0451 1.9866 1.9866 1.0451 1.9758 1.0436 1.9759]; c_erg/eps - 1 = +0.0968%

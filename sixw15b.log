@@ -1,0 +1,418 @@
+comparator/Solution/Cand15B.lean:5211:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:5521:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Cand15B.lean:5831:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:5844:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:5945:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:6602:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:6632:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:6662:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:6692:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Cand15B.lean:6722:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+75190415
+75190616
+75190817
+75191023
+75191225
+75191428
+75191634
+75191841
+75192049
+75192262
+75192484
+75192693
+75192898
+75193101
+75193302
+75193503
+75193704
+75193908
+75194110
+75194311
+75194512
+75194714
+75194914
+75195115
+75195319
+75195521
+75195722
+75195924
+75196126
+75196327
+75196528
+75196728
+75196929
+75196950
+75197828
+75198728
+75199611
+75200411
+75201218
+75202025
+75202866
+75203708
+75204553
+75205408
+75206259
+75207073
+75207883
+75208694
+75209504
+75210315
+75211135
+75211972
+75212831
+75213691
+75214557
+75215419
+75216275
+75217114
+75217952
+75218785
+75219586
+75220388
+75221190
+75221994
+75222804
+75223640
+75223713
+75223728
+75223740
+75223760
+75223774
+75223796
+75223811
+75223831
+75223845
+75223860
+75223870
+75224002
+75226904
+75237225
+75241902
+75249229
+75251171
+75252336
+75256285
+75263337
+75265639
+75266620
+75266852
+75266871
+75268271
+75269047
+75269182
+75269199
+75269215
+75269231
+75274057
+75283670
+75287447
+75289421
+75289781
+75289893
+75292332
+75293486
+75293776
+75293793
+75293809
+75293826
+75293968
+75293986
+75294002
+75294018
+75294034
+75294051
+75296101
+75297528
+75297877
+75297993
+75298010
+75298027
+75298239
+75298256
+75298272
+75298288
+75298305
+75298322
+75298337
+75298353
+75298368
+75298385
+75298400
+75298416
+75308510
+75315680
+75319646
+75319659
+75322417
+75322431
+75324792
+75324805
+75325175
+75325189
+75325597
+75325611
+75325625
+75325638
+75325653
+75325666
+75334953
+75340972
+75342398
+75342708
+75349962
+75354399
+75355443
+75355634
+75355651
+75355668
+75356393
+75356571
+75356589
+75356605
+75356621
+75356637
+75363581
+75369637
+75371445
+75371700
+75371796
+75371814
+75372898
+75373085
+75373101
+75373117
+75373133
+75373149
+75373166
+75373181
+75373197
+75373213
+75373229
+75373247
+75374551
+75374865
+75374960
+75374978
+75374995
+75375012
+75375028
+75375045
+75375061
+75375077
+75375094
+75375110
+75375127
+75375143
+75375160
+75375178
+75375194
+75375209
+75375216
+75375224
+75375231
+75375238
+75375245
+75375255
+75375265
+75375275
+75375285
+75375296
+75375306
+75375316
+75375327
+75375337
+75375347
+75375358
+75375369
+75375380
+75375390
+75375401
+75375412
+75375423
+75375434
+75375444
+75375455
+75375465
+75375475
+75375486
+75375497
+75375507
+75375518
+75375528
+75375539
+75375550
+75375561
+75375572
+75375583
+75375594
+75375605
+75375616
+75375628
+75375638
+75375649
+75375659
+75375670
+75375681
+75375692
+75375703
+75375714
+75375725
+75375736
+75375747
+75375758
+75375770
+75375781
+75375792
+75375804
+75375815
+75375827
+75375837
+75375847
+75375858
+75375868
+75375879
+75375890
+75375900
+75375911
+75375922
+75375933
+75375944
+75375955
+75375966
+75375977
+75375988
+75375999
+75376010
+75376022
+75376032
+75376043
+75376053
+75376064
+75376075
+75376086
+75376097
+75376108
+75376119
+75376129
+75376141
+75376152
+75376163
+75376175
+75376186
+75376197
+75376209
+75376221
+75376232
+75376242
+75376254
+75376265
+75376276
+75376287
+75376298
+75376310
+75376321
+75376332
+75376344
+75376356
+75376368
+75376380
+75376391
+75376403
+75376415
+75376427
+75376721
+75376733
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      304.01 real       293.15 user        10.98 sys
+          9576595456  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              673714  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   2  voluntary context switches
+               21216  involuntary context switches
+       2556646559202  instructions retired
+       1038429884879  cycles elapsed
+          4632483872  peak memory footprint

@@ -1,0 +1,10 @@
+* the pair-cell (polytope-cell) layer: pair-distance splits with persisted pair bounds, multiplier and Farkas leaves,
+  the minorant leaf proved once for every term list, the per-gap root cover (AMW.PCellCore, PCellGen, PCellLeaf,
+  PCellRoot, PCellT1): bridge-port, on the lead's polytope-cell design;
+* the T1 triple pass (pair intervals, 56 triples, re-clip) and the Z8 zero-order tangent extension, with their generic
+  soundness (AMW.PCellTZ, PCellZ, PCellLeafZ: `tri_gen`, `mat_gen`, `tangent_valZ`, `mcheckGZ_sound`): bridge-port,
+  to mvt-engine's specification TZ.md / tz.py;
+* the sizing of the eight-point walk, the T1 and Z8 levers, the certificate data and its independent replay
+  (size8pz, emit8pz, verify8pz): mvt-engine;
+* the instance and data modules (AMW.PC8Inst, PC8Data; amg/genpcell4.py, amg/make8pc.py): bridge-port;
+* the pyramid lower-bound table: adapted from five-point-pyramid-2 by typh (Apache-2.0);

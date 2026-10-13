@@ -1,0 +1,9 @@
+n3 <= 1: tightened ceiling 0.6738083602 (d = 1.48410 between 1.48387 and 1.48485) (9s)
+    word d=1.48387 q=31 Ef=0.002435106
+    word d=1.48485 q=33 Ef=0.002429788
+n3 <= 2: tightened ceiling 0.6738083602 (d = 1.48410 between 1.48387 and 1.48438) (19s)
+    word d=1.48387 q=31 Ef=0.002435106
+    word d=1.48438 q=64 Ef=0.002432364
+n3 <= 3: tightened ceiling 0.6738083602 (d = 1.48410 between 1.48387 and 1.48438) (30s)
+    word d=1.48387 q=31 Ef=0.002435106
+    word d=1.48438 q=64 Ef=0.002432364

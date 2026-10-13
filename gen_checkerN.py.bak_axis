@@ -1,0 +1,528 @@
+#!/usr/bin/env python3
+"""Generate the natural-number leaf/walk checker for n points (Q = n-1 gaps) with the certificate's
+weights baked in as numerals.  Scales: coordinates SC = 2^56, cell bounds SW = 10^13, weights SA.
+Usage: gen_checkerN.py Q SA aN_list(comma, pairs i<j in order) bN_list(comma) cN NAME
+Emits checker_<NAME>.lean with namespace Zeta23Ext.Bridge.ThreePoint.<NAME>."""
+import sys
+Q = int(sys.argv[1]); SA = int(sys.argv[2])
+aN = [int(x) for x in sys.argv[3].split(",")]; bN = [int(x) for x in sys.argv[4].split(",")]
+cN = int(sys.argv[5]); NAME = sys.argv[6]
+SCE = int(sys.argv[7]) if len(sys.argv) > 7 else 96   # coordinate scale SC = 2^SCE; pieces split at multiples of 2^(SCE-2)
+n = Q + 1
+pairs = [(i, j) for i in range(n) for j in range(i+1, n)]
+assert len(aN) == len(pairs) and len(bN) == Q
+V = [f"g{r}" for r in range(Q)]                     # real variables
+LO = [f"b.l{r}" for r in range(Q)]; HI = [f"b.u{r}" for r in range(Q)]
+def rsum(xs): return " + ".join(xs)
+def term_lo(i, j): return rsum(LO[i:j]); 
+def term_hi(i, j): return rsum(HI[i:j])
+def term_g(i, j): return rsum(V[i:j])
+
+out = []; A = out.append
+A(f"""
+/-! ###### natural-number checker for the {n}-point weighted certificate `{NAME}` ###### -/
+
+section {NAME}Defs
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+structure CellN where
+  (LN UN : ℕ) (WN : ℕ)
+
+instance : Inhabited CellN := ⟨⟨0, 0, 0⟩⟩
+
+def SC : ℕ := {2**SCE}
+def SW : ℕ := 10000000000000
+def SC4 : ℕ := {2**(SCE-2)}
+
+/-- the anchor index `k` (anchor at `k/2`) nearest the cell's midpoint, and the side of that anchor the cell lies on -/
+def CellN.k (c : CellN) : ℕ := (2 * (c.LN + c.UN) + SC) / (2 * SC)
+def CellN.side (c : CellN) : Bool := Nat.ble (c.k * SC) (2 * c.LN)
+
+/-- the rational cell a natural-number cell denotes -/
+def CellN.toQ (c : CellN) : Cell := ⟨(c.LN : ℚ) / SC, (c.UN : ℚ) / SC, c.k, c.side, (c.WN : ℚ) / SW⟩
+
+inductive CTN
+  | nil
+  | node (l : CTN) (c : CellN) (r : CTN)
+
+namespace CTN
+def toList : CTN → List CellN
+  | nil => []
+  | node l c r => l.toList ++ c :: r.toList
+def allOk : CTN → Bool
+  | nil => true
+  | node l c r => l.allOk && c.toQ.ok && r.allOk
+def find : CTN → ℕ → ℕ → Option CellN
+  | nil, _, _ => none
+  | node l c r, a, b =>
+      bif Nat.blt a c.LN then l.find a b
+      else bif Nat.blt c.LN a then r.find a b
+      else bif Nat.blt b c.UN then l.find a b
+      else bif Nat.blt c.UN b then r.find a b
+      else some c
+end CTN
+
+def piecesN : ℕ → ℕ → ℕ → List (ℕ × ℕ)
+  | 0, a, hi => [(a, hi)]
+  | fuel + 1, a, hi =>
+      let q := ((a >>> {SCE-2}) + 1) <<< {SCE-2}
+      bif Nat.blt q hi then (a, q) :: piecesN fuel q hi else [(a, hi)]
+
+def lookupAllN (t : CTN) : List (ℕ × ℕ) → Option (List CellN)
+  | [] => some []
+  | (a, b) :: rest =>
+      match t.find a b, lookupAllN t rest with
+      | some c, some cs => some (c :: cs)
+      | _, _ => none
+
+def chainOKN : ℕ → ℕ → List CellN → Bool
+  | lo, hi, [] => Nat.ble hi lo
+  | lo, hi, c :: rest => Nat.ble c.LN lo && chainOKN c.UN hi rest
+
+def chainWN : List CellN → ℕ
+  | [] => 0
+  | c :: rest => bif rest.isEmpty then c.WN else bif Nat.ble c.WN (chainWN rest) then c.WN else chainWN rest
+
+def piecesN' (lo hi : ℕ) : List (ℕ × ℕ) := piecesN 64 lo hi
+
+def termWNcore (t : CTN) (lo hi : ℕ) (ps : List (ℕ × ℕ)) : ℕ :=
+  match lookupAllN t ps with
+  | some cs => if chainOKN lo hi cs then chainWN cs else 0
+  | none => 0
+
+def termWN (t : CTN) (lo hi : ℕ) : ℕ := termWNcore t lo hi (piecesN' lo hi)
+
+end Zeta23Ext.Bridge.ThreePoint
+
+namespace Zeta23Ext.Bridge.ThreePoint.{NAME}
+
+def SA : ℕ := {SA}
+def cN : ℕ := {cN}
+
+structure Box where
+  ({' '.join(f'l{r} u{r}' for r in range(Q))} : ℕ)
+  deriving DecidableEq
+
+def Box.widthArg (b : Box) : ℕ :=
+""")
+# widthArg: first index attaining max width
+ws = [f"(b.u{r} - b.l{r})" for r in range(Q)]
+lines = []
+for r in range(Q - 1):
+    conds = " && ".join(f"Nat.ble {ws[s]} {ws[r]}" for s in range(r + 1, Q))
+    lines.append(f"  {'bif' if r == 0 else 'else bif'} {conds} then {r}")
+lines.append(f"  else {Q - 1}")
+A("\n".join(lines) + "\n")
+A("def Box.mid (b : Box) : ℕ → ℕ\n" + "\n".join(f"  | {r} => (b.l{r} + b.u{r}) / 2" for r in range(Q - 1)) + f"\n  | _ => (b.l{Q-1} + b.u{Q-1}) / 2\n")
+A("def Box.setHi (b : Box) (ax : ℕ) (q : ℕ) : Box :=\n  match ax with\n" + "\n".join(f"  | {r} => {{ b with u{r} := q }}" for r in range(Q - 1)) + f"\n  | _ => {{ b with u{Q-1} := q }}\n")
+A("def Box.setLo (b : Box) (ax : ℕ) (q : ℕ) : Box :=\n  match ax with\n" + "\n".join(f"  | {r} => {{ b with l{r} := q }}" for r in range(Q - 1)) + f"\n  | _ => {{ b with l{Q-1} := q }}\n")
+lin = " + ".join(f"{bN[r]} * b.l{r}" for r in range(Q))
+wsum = " + ".join(f"{aN[t]} * termWN tb ({term_lo(i, j)}) ({term_hi(i, j)})" for t, (i, j) in enumerate(pairs))
+A(f"""
+def leafCheck (tb : CTN) (b : Box) : Bool :=
+  Nat.ble (cN * SC * SW) (({lin}) * SW + ({wsum}) * SC)
+
+/-- the bisection axis stored in the three bits after a split marker -/
+def axOf (bits pos : ℕ) : ℕ := (bits >>> (pos + 1)) &&& 7
+
+def walk (tb : CTN) (bits : ℕ) : ℕ → ℕ → Box → Option ℕ
+  | 0, _, _ => none
+  | fuel + 1, pos, b =>
+      bif bits.testBit pos then
+        let ax := axOf bits pos
+        let q := b.mid ax
+        match walk tb bits fuel (pos + 4) (b.setHi ax q) with
+        | none => none
+        | some pos' => walk tb bits fuel pos' (b.setLo ax q)
+      else bif leafCheck tb b then some (pos + 1) else none
+
+/-- per-gap one-dimensional cover: segments `(a, b, clear)` in scaled coordinates; a clear
+segment's cell must satisfy `aAdj · W ≥ c`, i.e. `aAdjN * WN ≥ cN * SW`. -/
+def coverCheck (tb : CTN) (aAdjN : ℕ) : ℕ → ℕ → List (ℕ × ℕ × Bool) → Bool
+  | pos, S, [] => decide (S ≤ pos)
+  | pos, S, (a, b, cl) :: rest =>
+      decide (a = pos) && decide (a ≤ b)
+        && (!cl || (match tb.find a b with | some c => decide (cN * SW ≤ aAdjN * c.WN) | none => false))
+        && coverCheck tb aAdjN b S rest
+
+def badOf (cover : List (ℕ × ℕ × Bool)) : List (ℕ × ℕ) :=
+  cover.filterMap fun s => if s.2.2 then none else some (s.1, s.2.1)
+
+def boxOf ({' '.join(f'bd{r}' for r in range(Q))} : List (ℕ × ℕ)) ({' '.join(f'i{r}' for r in range(Q))} : ℕ) : Box :=
+  ⟨{', '.join(f'(bd{r}.getD i{r} (0, 0)).1, (bd{r}.getD i{r} (0, 0)).2' for r in range(Q))}⟩
+
+end Zeta23Ext.Bridge.ThreePoint.{NAME}
+
+end {NAME}Defs
+
+noncomputable section
+
+open Real
+
+namespace Zeta23Ext.Bridge.ThreePoint
+
+/-! ### Soundness of the natural-number cell table (through the rational cell) -/
+
+theorem SC_pos : (0:ℚ) < SC := by norm_num [SC]
+theorem SW_pos : (0:ℚ) < SW := by norm_num [SW]
+
+theorem CTN.find_sound : ∀ (t : CTN) (a b : ℕ) (c : CellN), t.find a b = some c →
+    c ∈ t.toList ∧ c.LN = a ∧ c.UN = b := by
+  intro t
+  induction t with
+  | nil => intro a b c h; simp [CTN.find] at h
+  | node l c0 r ihl ihr =>
+    intro a b c h
+    simp only [CTN.find, Bool.cond_eq_ite, Nat.blt_eq] at h
+    split_ifs at h with h1 h2 h3 h4
+    · obtain ⟨hm, hL, hU⟩ := ihl a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · obtain ⟨hm, hL, hU⟩ := ihr a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · obtain ⟨hm, hL, hU⟩ := ihl a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · obtain ⟨hm, hL, hU⟩ := ihr a b c h; exact ⟨by simp [CTN.toList, hm], hL, hU⟩
+    · simp only [Option.some.injEq] at h
+      subst h
+      exact ⟨by simp [CTN.toList], le_antisymm (not_lt.mp h1) (not_lt.mp h2),
+        le_antisymm (not_lt.mp h3) (not_lt.mp h4)⟩
+
+theorem CTN.allOk_sound : ∀ (t : CTN), t.allOk = true → ∀ c ∈ t.toList, c.toQ.ok = true := by
+  intro t
+  induction t with
+  | nil => intro _ c hc; simp [CTN.toList] at hc
+  | node l c0 r ihl ihr =>
+    intro h c hc
+    simp only [CTN.allOk, Bool.and_eq_true] at h
+    simp only [CTN.toList, List.mem_append, List.mem_cons] at hc
+    rcases hc with hc | hc | hc
+    · exact ihl h.1.1 c hc
+    · subst hc; exact h.1.2
+    · exact ihr h.2 c hc
+
+theorem lookupAllN_sound (t : CTN) : ∀ (ps : List (ℕ × ℕ)) (cs : List CellN),
+    lookupAllN t ps = some cs → ∀ c ∈ cs, c ∈ t.toList := by
+  intro ps
+  induction ps with
+  | nil => intro cs h; simp [lookupAllN] at h; subst h; simp
+  | cons ab rest ih =>
+    intro cs h
+    obtain ⟨a, b⟩ := ab
+    cases hf : t.find a b with
+    | none => simp [lookupAllN, hf] at h
+    | some c =>
+      cases hr : lookupAllN t rest with
+      | none => simp [lookupAllN, hf, hr] at h
+      | some cs' =>
+        simp only [lookupAllN, hf, hr, Option.some.injEq] at h
+        subst h
+        intro d hd
+        simp only [List.mem_cons] at hd
+        rcases hd with hd | hd
+        · subst hd; exact (CTN.find_sound t a b d hf).1
+        · exact ih cs' hr d hd
+
+/-- a natural-number cell's bound holds on its interval, read in real coordinates -/
+theorem cellN_sound (c : CellN) (hok : c.toQ.ok = true) (x : ℝ)
+    (h1 : (c.LN : ℝ) / SC ≤ x) (h2 : x ≤ (c.UN : ℝ) / SC) : (c.WN : ℝ) / SW ≤ wfun x := by
+  have := cell_sound c.toQ hok x (by simp only [CellN.toQ]; push_cast; exact h1)
+    (by simp only [CellN.toQ]; push_cast; exact h2)
+  simp only [CellN.toQ] at this; push_cast at this; exact this
+
+theorem chainOKN_sound (t : CTN) (hok : t.allOk = true) :
+    ∀ (cs : List CellN), (∀ c ∈ cs, c ∈ t.toList) → ∀ (lo hi : ℕ), chainOKN lo hi cs = true →
+      ∀ e : ℝ, (lo : ℝ) / SC ≤ e → e ≤ (hi : ℝ) / SC → (chainWN cs : ℝ) / SW ≤ wfun e := by
+  intro cs
+  induction cs with
+  | nil =>
+    intro _ lo hi _ e _ _
+    simp only [chainWN, Nat.cast_zero, zero_div]; exact wfun_nonneg e
+  | cons c rest ih =>
+    intro hmem lo hi h e he1 he2
+    simp only [chainOKN, Bool.and_eq_true, Nat.ble_eq] at h
+    obtain ⟨hL, hrest⟩ := h
+    have hcok := CTN.allOk_sound t hok c (hmem c (List.mem_cons_self ..))
+    have hL' : (c.LN : ℝ) / SC ≤ e :=
+      le_trans (div_le_div_of_nonneg_right (by exact_mod_cast hL) (by norm_num [SC])) he1
+    simp only [chainWN, Bool.cond_eq_ite, Nat.ble_eq]
+    split_ifs with hempty hle
+    · have hU : hi ≤ c.UN := by
+        rw [List.isEmpty_iff.mp hempty] at hrest
+        simpa [chainOKN, Nat.ble_eq] using hrest
+      exact cellN_sound c hcok e hL' (he2.trans (div_le_div_of_nonneg_right (by exact_mod_cast hU) (by norm_num [SC])))
+    · rcases le_total e ((c.UN : ℝ) / SC) with hU | hU
+      · exact cellN_sound c hcok e hL' hU
+      · exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast hle) (by norm_num [SW]))
+          (ih (fun d hd => hmem d (List.mem_cons_of_mem _ hd)) _ _ hrest e hU he2)
+    · rcases le_total e ((c.UN : ℝ) / SC) with hU | hU
+      · exact le_trans (div_le_div_of_nonneg_right (by exact_mod_cast (not_le.mp hle).le) (by norm_num [SW]))
+          (cellN_sound c hcok e hL' hU)
+      · exact ih (fun d hd => hmem d (List.mem_cons_of_mem _ hd)) _ _ hrest e hU he2
+
+theorem termWN_sound_gen (t : CTN) (hok : t.allOk = true) (lo hi : ℕ) (ps : List (ℕ × ℕ)) (e : ℝ)
+    (he1 : (lo : ℝ) / SC ≤ e) (he2 : e ≤ (hi : ℝ) / SC) :
+    (termWNcore t lo hi ps : ℝ) / SW ≤ wfun e := by
+  unfold termWNcore
+  split
+  · rename_i cs hcs
+    split_ifs with hch
+    · exact chainOKN_sound t hok cs (lookupAllN_sound t _ cs hcs) lo hi hch e he1 he2
+    · simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg e
+  · simp only [Nat.cast_zero, zero_div]; exact wfun_nonneg e
+
+theorem termWN_sound (t : CTN) (hok : t.allOk = true) (lo hi : ℕ) (e : ℝ)
+    (he1 : (lo : ℝ) / SC ≤ e) (he2 : e ≤ (hi : ℝ) / SC) : (termWN t lo hi : ℝ) / SW ≤ wfun e :=
+  termWN_sound_gen t hok lo hi (piecesN' lo hi) e he1 he2
+
+end Zeta23Ext.Bridge.ThreePoint
+
+namespace Zeta23Ext.Bridge.ThreePoint.{NAME}
+
+open Zeta23Ext.Bridge.ThreePoint
+
+/-- the weighted functional on the gaps, in real form -/
+def G ({' '.join(V)} : ℝ) : ℝ :=
+  {' + '.join(f'({bN[r]} / (SA:ℝ)) * {V[r]}' for r in range(Q))}
+    + {' + '.join(f'({aN[t]} / (SA:ℝ)) * wfun ({term_g(i, j)})' for t, (i, j) in enumerate(pairs))}
+
+def Box.mem (b : Box) ({' '.join(V)} : ℝ) : Prop :=
+  {' ∧ '.join(f'(b.l{r} : ℝ) / SC ≤ {V[r]} ∧ {V[r]} ≤ (b.u{r} : ℝ) / SC' for r in range(Q))}
+
+set_option maxHeartbeats 4000000 in
+theorem leaf_sound (tb : CTN) (hok : tb.allOk = true) (b : Box) (h : leafCheck tb b = true)
+    ({' '.join(V)} : ℝ) (hm : b.mem {' '.join(V)}) : (cN : ℝ) / SA ≤ G {' '.join(V)} := by
+  obtain ⟨{', '.join(f'h{r}1, h{r}2' for r in range(Q))}⟩ := hm
+""")
+# term soundness facts
+for t, (i, j) in enumerate(pairs):
+    hl = ", ".join(f"h{r}1" for r in range(i, j)); hu = ", ".join(f"h{r}2" for r in range(i, j))
+    A(f"  have w{t} := termWN_sound tb hok ({term_lo(i, j)}) ({term_hi(i, j)}) ({term_g(i, j)}) "
+      f"(by push_cast; (try simp only [add_div]); linarith [{hl}]) (by push_cast; (try simp only [add_div]); linarith [{hu}])\n")
+A(f"""  simp only [leafCheck, Nat.ble_eq] at h
+  have hq := (Nat.cast_le (α := ℝ)).mpr h
+  push_cast at hq
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hSW : (0:ℝ) < SW := by norm_num [SW]
+  have hSA : (0:ℝ) < SA := by norm_num [SA]
+  have hpos : (0:ℝ) < SC * SW := by positivity
+  set L : ℝ := {' + '.join(f'{bN[r]} * ((b.l{r} : ℝ) / SC)' for r in range(Q))} with hL
+  set Wt : ℝ := {' + '.join(f'{aN[t]} * ((termWN tb ({term_lo(i, j)}) ({term_hi(i, j)}) : ℝ) / SW)' for t, (i, j) in enumerate(pairs))} with hWt
+  have e : (L + Wt) * (SC * SW) = ({' + '.join(f'{bN[r]} * (b.l{r} : ℝ)' for r in range(Q))}) * SW + ({' + '.join(f'{aN[t]} * (termWN tb ({term_lo(i, j)}) ({term_hi(i, j)}) : ℝ)' for t, (i, j) in enumerate(pairs))}) * SC := by
+    rw [hL, hWt]; field_simp; try ring
+  have hq' : (cN : ℝ) ≤ L + Wt := by
+    refine le_of_mul_le_mul_right ?_ hpos
+    calc (cN : ℝ) * (SC * SW) = (cN : ℝ) * SC * SW := by ring
+      _ ≤ _ := hq
+      _ = (L + Wt) * (SC * SW) := e.symm
+  unfold G
+  rw [div_le_iff₀ hSA]
+  have eG : ({' + '.join(f'({bN[r]} / (SA:ℝ)) * {V[r]}' for r in range(Q))}
+      + {' + '.join(f'({aN[t]} / (SA:ℝ)) * wfun ({term_g(i, j)})' for t, (i, j) in enumerate(pairs))}) * SA
+      = {' + '.join(f'{bN[r]} * {V[r]}' for r in range(Q))} + {' + '.join(f'{aN[t]} * wfun ({term_g(i, j)})' for t, (i, j) in enumerate(pairs))} := by
+    field_simp; try ring
+  rw [eG]
+  rw [hL, hWt] at hq'
+  linarith [hq', {', '.join(f'mul_le_mul_of_nonneg_left h{r}1 (by positivity : (0:ℝ) ≤ {bN[r]})' for r in range(Q))}, {', '.join(f'mul_le_mul_of_nonneg_left w{t} (by positivity : (0:ℝ) ≤ {aN[t]})' for t in range(len(pairs)))}]
+""")
+
+# ---- walk composition, walk soundness, cover, top-level ----
+A(f"""
+theorem Box.setHi_mem (b : Box) (ax : ℕ) (q : ℕ) ({' '.join(V)} : ℝ) (hm : b.mem {' '.join(V)})
+    (hle : match ax with {' '.join(f'| {r} => {V[r]} ≤ (q : ℝ) / SC' for r in range(Q - 1))} | _ => {V[Q-1]} ≤ (q : ℝ) / SC) :
+    (b.setHi ax q).mem {' '.join(V)} := by
+  obtain ⟨{', '.join(f'h{r}1, h{r}2' for r in range(Q))}⟩ := hm
+  match ax with
+""")
+for r in range(Q):
+    pat = f"| {r}" if r < Q - 1 else f"| n + {Q - 1}"
+    fields = []
+    for k in range(Q):
+        fields.append(f"h{k}1"); fields.append("hle" if k == r else f"h{k}2")
+    A(f"  {pat} => exact ⟨{', '.join(fields)}⟩\n")
+A(f"""
+theorem Box.setLo_mem (b : Box) (ax : ℕ) (q : ℕ) ({' '.join(V)} : ℝ) (hm : b.mem {' '.join(V)})
+    (hge : match ax with {' '.join(f'| {r} => (q : ℝ) / SC ≤ {V[r]}' for r in range(Q - 1))} | _ => (q : ℝ) / SC ≤ {V[Q-1]}) :
+    (b.setLo ax q).mem {' '.join(V)} := by
+  obtain ⟨{', '.join(f'h{r}1, h{r}2' for r in range(Q))}⟩ := hm
+  match ax with
+""")
+for r in range(Q):
+    pat = f"| {r}" if r < Q - 1 else f"| n + {Q - 1}"
+    fields = []
+    for k in range(Q):
+        fields.append("hge" if k == r else f"h{k}1"); fields.append(f"h{k}2")
+    A(f"  {pat} => exact ⟨{', '.join(fields)}⟩\n")
+A(f"""
+theorem walk_split (tb : CTN) (bits fuel pos : ℕ) (b : Box) (pos1 pos' : ℕ)
+    (hbit : bits.testBit pos = true)
+    (h1 : walk tb bits fuel (pos + 4) (b.setHi (axOf bits pos) (b.mid (axOf bits pos))) = some pos1)
+    (h2 : walk tb bits fuel pos1 (b.setLo (axOf bits pos) (b.mid (axOf bits pos))) = some pos') :
+    walk tb bits (fuel + 1) pos b = some pos' := by
+  simp only [walk, hbit, cond_true, h1]
+  exact h2
+
+theorem walk_sound (tb : CTN) (hok : tb.allOk = true) (bits : ℕ) :
+    ∀ (fuel pos : ℕ) (b : Box) (pos' : ℕ), walk tb bits fuel pos b = some pos' →
+      ∀ {' '.join(V)} : ℝ, b.mem {' '.join(V)} → (cN : ℝ) / SA ≤ G {' '.join(V)} := by
+  intro fuel
+  induction fuel with
+  | zero => intro pos b pos' h; simp [walk] at h
+  | succ fuel ih =>
+    intro pos b pos' h {' '.join(V)} hm
+    simp only [walk, Bool.cond_eq_ite] at h
+    split_ifs at h with hbit hleaf
+    · split at h
+      · exact absurd h (by simp)
+      · rename_i pos1 h1
+        have hlo := ih (pos + 4) (b.setHi (axOf bits pos) (b.mid (axOf bits pos))) pos1 h1 {' '.join(V)}
+        have hhi := ih pos1 (b.setLo (axOf bits pos) (b.mid (axOf bits pos))) pos' h {' '.join(V)}
+        set ax := axOf bits pos with hax
+        set q := b.mid ax with hq
+        match ax, hlo, hhi with
+""")
+for r in range(Q):
+    pat = f"| {r}, hlo, hhi" if r < Q - 1 else f"| n + {Q - 1}, hlo, hhi"
+    axv = f"{r}" if r < Q - 1 else f"(n + {Q - 1})"
+    A(f"""        {pat} =>
+          rcases le_total {V[r]} ((q : ℝ) / SC) with hs | hs
+          · exact hlo (Box.setHi_mem b {axv} q {' '.join(V)} hm hs)
+          · exact hhi (Box.setLo_mem b {axv} q {' '.join(V)} hm hs)
+""")
+A(f"""    · exact leaf_sound tb hok b hleaf {' '.join(V)} hm
+
+theorem cover_sound (tb : CTN) (hok : tb.allOk = true) (aAdjN : ℕ) :
+    ∀ (cover : List (ℕ × ℕ × Bool)) (pos S : ℕ), coverCheck tb aAdjN pos S cover = true →
+      ∀ v : ℝ, (pos : ℝ) / SC ≤ v → v < (S : ℝ) / SC →
+        (cN : ℝ) / SA ≤ ((aAdjN : ℝ) / SA) * wfun v ∨
+          ∃ s ∈ cover, s.2.2 = false ∧ (s.1 : ℝ) / SC ≤ v ∧ v ≤ (s.2.1 : ℝ) / SC := by
+  intro cover
+  induction cover with
+  | nil =>
+    intro pos S h v hv1 hv2
+    simp only [coverCheck, decide_eq_true_eq] at h
+    have : (S : ℝ) / SC ≤ (pos : ℝ) / SC := div_le_div_of_nonneg_right (by exact_mod_cast h) (by norm_num [SC])
+    exact absurd (lt_of_le_of_lt (this.trans hv1) hv2) (lt_irrefl _)
+  | cons s rest ih =>
+    intro pos S h v hv1 hv2
+    obtain ⟨a, b, cl⟩ := s
+    simp only [coverCheck, Bool.and_eq_true, decide_eq_true_eq, Bool.or_eq_true, Bool.not_eq_eq_eq_not,
+      Bool.not_true] at h
+    obtain ⟨⟨⟨hpos, hab⟩, hcl⟩, hrest⟩ := h
+    rcases le_total v ((b : ℝ) / SC) with hvb | hvb
+    · rcases hcl with hcl | hcl
+      · right
+        exact ⟨(a, b, cl), List.mem_cons_self .., hcl, by rw [hpos]; exact hv1, hvb⟩
+      · left
+        split at hcl
+        · rename_i c hfind
+          obtain ⟨hmem, hL, hU⟩ := CTN.find_sound tb a b c hfind
+          have hcok := CTN.allOk_sound tb hok c hmem
+          have hW := cellN_sound c hcok v (by rw [hL, hpos]; exact hv1) (by rw [hU]; exact hvb)
+          have hq := (Nat.cast_le (α := ℝ)).mpr (decide_eq_true_eq.mp hcl)
+          push_cast at hq
+          have hSA : (0:ℝ) < SA := by norm_num [SA]
+          have hSW : (0:ℝ) < SW := by norm_num [SW]
+          rw [div_le_iff₀ hSA]
+          have hm2 : (aAdjN : ℝ) * ((c.WN : ℝ) / SW) ≤ (aAdjN : ℝ) * wfun v :=
+            mul_le_mul_of_nonneg_left hW (by positivity)
+          have e : (aAdjN : ℝ) / SA * wfun v * SA = (aAdjN : ℝ) * wfun v := by field_simp
+          rw [e]
+          calc (cN : ℝ) = (cN : ℝ) * SW / SW := by field_simp
+            _ ≤ (aAdjN : ℝ) * c.WN / SW := by apply div_le_div_of_nonneg_right _ hSW.le; linarith
+            _ = (aAdjN : ℝ) * ((c.WN : ℝ) / SW) := by ring
+            _ ≤ _ := hm2
+        · exact absurd hcl (by simp)
+    · rcases ih b S hrest v hvb hv2 with h | ⟨s', hs', he, h1, h2⟩
+      · left; exact h
+      · right; exact ⟨s', List.mem_cons_of_mem _ hs', he, h1, h2⟩
+
+theorem badOf_mem {{cover : List (ℕ × ℕ × Bool)}} {{s : ℕ × ℕ × Bool}} (hs : s ∈ cover)
+    (he : s.2.2 = false) : (s.1, s.2.1) ∈ badOf cover := by
+  simp only [badOf, List.mem_filterMap]
+  exact ⟨s, hs, by simp [he]⟩
+
+set_option maxHeartbeats 4000000 in
+theorem of_check (tb : CTN) (hok : tb.allOk = true) (bits fuel : ℕ)
+    ({' '.join(f'cover{r}' for r in range(Q))} : List (ℕ × ℕ × Bool)) ({' '.join(f'S{r}' for r in range(Q))} : ℕ)
+    {' '.join(f'(hS{r} : cN * SC ≤ {bN[r]} * S{r})' for r in range(Q))}
+    {' '.join(f'(hcov{r} : coverCheck tb {aN[pairs.index((r, r+1))]} (SC / 2) S{r} cover{r} = true)' for r in range(Q))}
+    (hwin : cN * 100 ≤ 19 * {min(aN[pairs.index((r, r+1))] for r in range(Q))})
+    (hrun : ∀ {' '.join(f'i{r}' for r in range(Q))}, {' → '.join(f'i{r} < (badOf cover{r}).length' for r in range(Q))} →
+      ∃ pos pos', walk tb bits fuel pos (boxOf {' '.join(f'(badOf cover{r})' for r in range(Q))} {' '.join(f'i{r}' for r in range(Q))}) = some pos') :
+    ∀ {' '.join(V)} : ℝ, {' → '.join(f'0 ≤ {V[r]}' for r in range(Q))} → (cN : ℝ) / SA ≤ G {' '.join(V)} := by
+  intro {' '.join(V)} {' '.join(f'hg{r}' for r in range(Q))}
+  have hw := fun v : ℝ => wfun_nonneg v
+  have hSA : (0:ℝ) < SA := by norm_num [SA]
+  have hSC : (0:ℝ) < SC := by norm_num [SC]
+  have hhalf : ((SC / 2 : ℕ) : ℝ) / SC = 1/2 := by norm_num [SC]
+  set Lin : ℝ := {' + '.join(f'({bN[r]} / (SA:ℝ)) * {V[r]}' for r in range(Q))} with hLin
+  set Wt : ℝ := {' + '.join(f'({aN[t]} / (SA:ℝ)) * wfun ({term_g(i, j)})' for t, (i, j) in enumerate(pairs))} with hWt
+  have hG : G {' '.join(V)} = Lin + Wt := by unfold G; rw [hLin, hWt]; ring
+""")
+A("".join(f"  have hb{r}0 : (0:ℝ) ≤ ({bN[r]} / (SA:ℝ)) * {V[r]} := mul_nonneg (by positivity) hg{r}\n" for r in range(Q)))
+A("".join(f"  have ha{t}0 : (0:ℝ) ≤ ({aN[t]} / (SA:ℝ)) * wfun ({term_g(i, j)}) := mul_nonneg (by positivity) (hw _)\n" for t, (i, j) in enumerate(pairs)))
+A(f"  have hLin0 : 0 ≤ Lin := by rw [hLin]; linarith [{', '.join(f'hb{r}0' for r in range(Q))}]\n")
+A(f"  have hWt0 : 0 ≤ Wt := by rw [hWt]; linarith [{', '.join(f'ha{t}0' for t in range(len(pairs)))}]\n")
+A("".join(f"  have hbL{r} : ({bN[r]} / (SA:ℝ)) * {V[r]} ≤ Lin := by rw [hLin]; linarith [{', '.join(f'hb{k}0' for k in range(Q) if k != r)}]\n" for r in range(Q)))
+A("".join(f"  have haW{t} : ({aN[t]} / (SA:ℝ)) * wfun ({term_g(i, j)}) ≤ Wt := by rw [hWt]; linarith [{', '.join(f'ha{k}0' for k in range(len(pairs)) if k != t)}]\n" for t, (i, j) in enumerate(pairs)))
+amin = min(aN[pairs.index((r, r+1))] for r in range(Q))
+for r in range(Q):
+    adj = aN[pairs.index((r, r+1))]; tadj = pairs.index((r, r+1))
+    A(f"""  -- gap {r}: beyond the cutoff the pressure alone pays
+  by_cases hcut{r} : (S{r} : ℝ) / SC ≤ {V[r]}
+  · have h1 : (cN : ℝ) / SA ≤ ({bN[r]} / (SA:ℝ)) * {V[r]} := by
+      have hq := (Nat.cast_le (α := ℝ)).mpr hS{r}; push_cast at hq
+      rw [div_le_iff₀ hSA]
+      have e : ({bN[r]} / (SA:ℝ)) * {V[r]} * SA = {bN[r]} * {V[r]} := by field_simp
+      rw [e]
+      calc (cN : ℝ) = (cN : ℝ) * SC / SC := by field_simp
+        _ ≤ {bN[r]} * S{r} / SC := by apply div_le_div_of_nonneg_right _ hSC.le; linarith
+        _ = {bN[r]} * ((S{r} : ℝ) / SC) := by ring
+        _ ≤ {bN[r]} * {V[r]} := mul_le_mul_of_nonneg_left hcut{r} (by norm_num)
+    rw [hG]; linarith [h1, hbL{r}, hWt0]
+  push_neg at hcut{r}
+  rcases le_total {V[r]} ((SC / 2 : ℕ) / (SC : ℝ)) with hwin{r} | hwin{r}
+  · have hw19 := wfun_window {V[r]} hg{r} (by rw [hhalf] at hwin{r}; exact hwin{r})
+    have hq := (Nat.cast_le (α := ℝ)).mpr hwin; push_cast at hq
+    have h1 : (cN : ℝ) / SA ≤ ({adj} / (SA:ℝ)) * wfun {V[r]} := by
+      rw [div_le_iff₀ hSA]
+      have e : ({adj} / (SA:ℝ)) * wfun {V[r]} * SA = {adj} * wfun {V[r]} := by field_simp
+      rw [e]
+      have hm := mul_le_mul_of_nonneg_left hw19 (by norm_num : (0:ℝ) ≤ {adj})
+      linarith [hq, hm]
+    rw [hG]; linarith [h1, haW{tadj}, hLin0]
+  rcases cover_sound tb hok _ cover{r} (SC / 2) S{r} hcov{r} {V[r]} hwin{r} hcut{r} with hclear{r} | ⟨s{r}, hs{r}, he{r}, hb{r}1, hb{r}2⟩
+  · rw [hG]; linarith [hclear{r}, haW{tadj}, hLin0]
+  obtain ⟨i{r}, hi{r}, hsi{r}⟩ := List.mem_iff_getElem.mp (badOf_mem hs{r} he{r})
+  have hb{r}1' : (((badOf cover{r}).getD i{r} (0, 0)).1 : ℝ) / SC ≤ {V[r]} := by
+    rw [List.getD_eq_getElem _ _ hi{r}, hsi{r}]; exact hb{r}1
+  have hb{r}2' : {V[r]} ≤ (((badOf cover{r}).getD i{r} (0, 0)).2 : ℝ) / SC := by
+    rw [List.getD_eq_getElem _ _ hi{r}, hsi{r}]; exact hb{r}2
+""")
+A(f"""  obtain ⟨pos, pos', hwalk⟩ := hrun {' '.join(f'i{r}' for r in range(Q))} {' '.join(f'hi{r}' for r in range(Q))}
+  exact walk_sound tb hok bits fuel pos _ pos' hwalk {' '.join(V)} ⟨{', '.join(f"hb{r}1', hb{r}2'" for r in range(Q))}⟩
+
+end Zeta23Ext.Bridge.ThreePoint.{NAME}
+
+end
+""")
+text = "".join(out)
+# ---- integer cell check (checkerZ.lean): splice the defs after CellN.toQ, the lemmas before CTN.find_sound,
+#      and make the table check and the cell soundness theorem use it ----
+import os as _os
+_z = open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "checkerZ.lean"), encoding="utf-8").read()
+_zd = _z[_z.index("-- ZDEFS-BEGIN"):_z.index("-- ZDEFS-END") + len("-- ZDEFS-END")]
+_zl = _z[_z.index("-- ZLEMMAS-BEGIN"):_z.index("-- ZLEMMAS-END") + len("-- ZLEMMAS-END")]
+assert text.count("\ninductive CTN\n") == 1 and text.count("theorem CTN.find_sound") == 1
+text = text.replace("\ninductive CTN\n", "\n" + _zd + "\n\ninductive CTN\n", 1)
+text = text.replace("theorem CTN.find_sound", _zl + "\n\ntheorem CTN.find_sound", 1)
+assert text.count("c.toQ.ok") == 3, text.count("c.toQ.ok")
+text = text.replace("c.toQ.ok", "c.okZ")
+_old = """  have := cell_sound c.toQ hok x (by simp only [CellN.toQ]; push_cast; exact h1)
+    (by simp only [CellN.toQ]; push_cast; exact h2)
+  simp only [CellN.toQ] at this; push_cast at this; exact this
+"""
+assert text.count(_old) == 1
+text = text.replace(_old, "  cellN_soundZ c hok x h1 h2\n")
+text = text.replace("(c.WN : ℝ) / SW ≤ wfun x := by\n  cellN_soundZ", "(c.WN : ℝ) / SW ≤ wfun x :=\n  cellN_soundZ")
+open(f"checker_{NAME}.lean", "w", encoding="utf-8").write(text)
+out = [text]
+print(f"wrote checker_{NAME}.lean ({len(''.join(out))} bytes)")

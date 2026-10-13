@@ -1,0 +1,6 @@
+N=24 type (k=2,t=6): d_min y=0 multistart 477.8800 | free-depth best 477.8800 (depths [0. 0.]) | free positions re-optimised at y=0: 477.8800
+R8 window: qf(0) 1.008264  int_0^1 qf 0.500000  int_0^1 qf a 0.159784 | termwise (Montgomery-class) simple fraction at this window: 0.672168
+  Delta_1/N 0.990793, TGT/N^2 0.159538, dilute-defect value 1 - 2 (TGT/N^2)/(Delta_1/N) = 0.677959; continuum TGT/N^2 -> 0.159784
+N=32 type (k=9,t=4): d_min y=0 multistart 668.4901 | free-depth best 668.4780 (depths [0. 0. 0. 0. 0. 0. 0. 0. 0.]) | free positions re-optimised at y=0: 668.4780
+R8 window: qf(0) 1.008264  int_0^1 qf 0.500000  int_0^1 qf a 0.159784 | termwise (Montgomery-class) simple fraction at this window: 0.672168
+  Delta_1/N 0.990783, TGT/N^2 0.159646, dilute-defect value 1 - 2 (TGT/N^2)/(Delta_1/N) = 0.677738; continuum TGT/N^2 -> 0.159784

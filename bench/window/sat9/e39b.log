@@ -1,0 +1,2 @@
+a=0.99 N=4P fixed P=256 N=1024: LP   +938.6941 (per pair +3.6668) | slope vs P=128: -2.8105
+a=0.99 N=4P fixed P=512 N=2048: LP  +1109.2433 (per pair +2.1665) | slope vs P=256: +0.6662

@@ -1,0 +1,5 @@
+(i) points in no core or ramp: tail sum <= 0.4886
+central class a: max 0.9946 at u = 2.500 (enumerated 0.9577 + remainder 0.0369) + slope allowance 0.0004 -> 0.9949
+central class b: max 0.9922 at u = 4.500 (enumerated 0.9569 + remainder 0.0353) + slope allowance 0.0007 -> 0.9928
+central class c: max 0.9476 at u = 13.500 (enumerated 0.9177 + remainder 0.0299) + slope allowance 0.0022 -> 0.9497
+EXHAUSTIVE: sup_x sum_p c_p(x) <= 0.9949 (at ('a', 2.5)); points in no ramp <= 0.4886 -> OK (<= 1)

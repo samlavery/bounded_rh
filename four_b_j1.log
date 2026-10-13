@@ -1,0 +1,279 @@
+comparator/Solution/Candidate4b.lean:5203:31: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Candidate4b.lean:5513:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Candidate4b.lean:6002:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+comparator/Solution/Candidate4b.lean:6209:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+comparator/Solution/Candidate4b.lean:6394:398: error: failed to synthesize
+  Decidable
+    ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 17 / 16 }.setHi
+        { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 17 / 16 }.widthArg
+        ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 17 / 16 }.mid
+          { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6395:396: error: failed to synthesize
+  Decidable
+    ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 17 / 16 }.setLo
+        { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 17 / 16 }.widthArg
+        ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 17 / 16 }.mid
+          { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6401:396: error: failed to synthesize
+  Decidable
+    ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128, zu := 17 / 16 }.setHi
+        { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128, zu := 17 / 16 }.widthArg
+        ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128, zu := 17 / 16 }.mid
+          { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6402:398: error: failed to synthesize
+  Decidable
+    ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128, zu := 17 / 16 }.setLo
+        { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128, zu := 17 / 16 }.widthArg
+        ({ xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128, zu := 17 / 16 }.mid
+          { xl := 131 / 128, xu := 267 / 256, yl := 63 / 32, yu := 257 / 128, zl := 131 / 128,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 131 / 128, xu := 267 / 256, yl := 509 / 256, yu := 257 / 128, zl := 131 / 128, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6410:398: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 }.setHi
+        { xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 }.widthArg
+        ({ xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 }.mid
+          { xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128,
+              zu := 267 / 256 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6411:396: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 }.setLo
+        { xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 }.widthArg
+        ({ xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 }.mid
+          { xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128,
+              zu := 267 / 256 }.widthArg) =
+      { xl := 539 / 512, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 131 / 128, zu := 267 / 256 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6419:413: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 }.setHi
+        { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 267 / 256, xu := 1073 / 1024, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6420:413: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 }.setLo
+        { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 1073 / 1024, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6426:403: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 17 / 16 }.setHi
+        { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 17 / 16 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 17 / 16 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6427:401: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 17 / 16 }.setLo
+        { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 17 / 16 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 17 / 16 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 539 / 512, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6435:443: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256, zu := 539 / 512 }.setHi
+        { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256,
+              zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256, zu := 1073 / 1024 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6436:443: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256, zu := 539 / 512 }.setLo
+        { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256,
+              zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 1073 / 1024, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6442:433: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.setHi
+        { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6443:432: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.setLo
+        { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 267 / 256, xu := 1073 / 1024, yl := 2031 / 1024, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6451:433: error: failed to synthesize
+  Decidable
+    ({ xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.setHi
+        { xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 2031 / 1024, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6452:432: error: failed to synthesize
+  Decidable
+    ({ xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.setLo
+        { xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 1073 / 1024, xu := 539 / 512, yl := 2031 / 1024, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6456:423: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.setHi
+        { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 267 / 256, xu := 1073 / 1024, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6457:423: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.setLo
+        { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+            zu := 539 / 512 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 539 / 512 }.widthArg) =
+      { xl := 1073 / 1024, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6463:413: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.setHi
+        { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 539 / 512 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6464:411: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.setLo
+        { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 539 / 512, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6468:397: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.setHi
+        { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 1013 / 512, zl := 267 / 256, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6469:399: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.setLo
+        { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.widthArg
+        ({ xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.mid
+          { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256,
+              zu := 17 / 16 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 1013 / 512, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+comparator/Solution/Candidate4b.lean:6475:388: error: failed to synthesize
+  Decidable
+    ({ xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.setHi
+        { xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.widthArg
+        ({ xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.mid
+          { xl := 267 / 256, xu := 17 / 16, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 }.widthArg) =
+      { xl := 267 / 256, xu := 539 / 512, yl := 63 / 32, yu := 509 / 256, zl := 267 / 256, zu := 17 / 16 })
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics

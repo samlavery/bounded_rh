@@ -1,0 +1,11 @@
+{"control": {"r": "337017/500000", "max_value": "-9.234900887510426958262745e-7",
+             "paper_txt425": "-9.234900887510426958262744573708873e-7", "P11_posdef": true,
+             "H_identity_check": "C(f)-form vs eq (5): diff 2.7e-51"},
+ "ceilings_paper_configs": {"K24_w0sqrt2": 0.674033065206, "K48_w0sqrt2": 0.674036461783, "K96_w0sqrt2": 0.674038142776,
+   "K192_w0sqrt2": 0.67403898045, "K192_constant_base (general even window)": 0.674038979615,
+   "K24_w0_scan": {"0": 0.67403291512, "0.5": 0.674032941118, "1.0": 0.674033006705, "1.2": 0.674033036522,
+     "1.3": 0.67403305061, "1.35": 0.674033057238, "1.4": 0.674033063501, "sqrt2": 0.674033065206, "1.45": 0.674033069333,
+     "1.5": 0.674033074661, "1.6": 0.674033083513, "1.8": 0.67403309179, "2.0": 0.67403308293, "2.5": 0.674032944605,
+     "3.0": 0.674032547887, "4.0": 0.674030407366}},
+ "own_window_roots_paper_mixture": {"R8_PC8SF": 0.6738159558, "R7": 0.6737760199, "typh7": 0.6737835078},
+ "notes": "mpmath 30-50 digits, not interval-certified; unconstrained in c (f >= 0 not imposed), so each ceiling is an upper bound for its family; paper configurations A, B (txt:362-364) not re-optimised per family (re-optimising can only lower a ceiling)"}

@@ -1,0 +1,4 @@
+delta=0.001 cN=965172 regions=16 env AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin8_B520000.json GSH=5 TWOGRID=1 WMIN=9 DLO=8 DHI=9
+  ... 20000 leaves (Z 4099, S 0, B 0, 2nd 0, M 14557) mtests [34577, 14565, 14557] (258s)
+  ... 40000 leaves (Z 7852, S 0, B 0, 2nd 0, M 29977) mtests [70001, 30119, 29977] (515s)
+  stuck ((97640, 107712), (31712, 34752), (32896, 36608), (33408, 37632), (66496, 70912), (34752, 37792), (87568, 107712))

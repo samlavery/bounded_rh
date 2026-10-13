@@ -1,0 +1,3 @@
+Q=4 c=0.00556281: OK leaves=861775 tuples=36 bad-sizes=[2, 3, 3, 2] (216s)
+Q=4 c=0.00553486: OK leaves=221275 tuples=36 bad-sizes=[2, 3, 3, 2] (60s)
+Q=4 c=0.00547895: OK leaves=60433 tuples=36 bad-sizes=[2, 3, 3, 2] (22s)

@@ -1,0 +1,30 @@
+AMW/GAsm2.lean:47:0: warning: automatically included section variable(s) unused in theorem `AMW.G.per_j_sep`:
+  hx
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit hx in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+AMW/GAsm2.lean:50:0: warning: automatically included section variable(s) unused in theorem `AMW.G.per_j_pos`:
+  hsep
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit hsep in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+       13.43 real         4.05 user        10.66 sys
+          5929172992  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              442828  page reclaims
+                   3  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+               11089  involuntary context switches
+         68538678420  instructions retired
+         47264893346  cycles elapsed
+           939066600  peak memory footprint

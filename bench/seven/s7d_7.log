@@ -1,0 +1,4 @@
+delta=0.003 cN=695359 PED=7 DLO=5 DHI=6 DFUEL=16 basins=16
+  bisection: 51174 leaves (Z 19668, S 27672, basin 1382) (341s)
+  fix-up: 0 re-decided; tables: w 7936 cells, d 7680 cells, 1306 points (46958 point cells); failing 0 (349s)
+leaves 51174 Z 19668 S 27672 B 1382 w 7936 d 7680 pts 1306 ptc 46958 bad 0 (349s)

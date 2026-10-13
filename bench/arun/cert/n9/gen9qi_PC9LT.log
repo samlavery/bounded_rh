@@ -1,0 +1,105 @@
+== E emit Sun Oct 11 10:02:15 PDT 2026
+  root 0 (0, 0, 0, 0, 0, 0, 0, 0): 318 leaves (1s)
+  root 1 (0, 0, 0, 0, 0, 1, 0, 0): 665 leaves (2s)
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 1610 leaves (2s)
+  root 3 (0, 0, 0, 0, 1, 1, 0, 0): 1428 leaves (2s)
+  root 4 (0, 0, 0, 1, 0, 0, 0, 0): 1656 leaves (2s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 2028 leaves (3s)
+  root 6 (0, 0, 0, 1, 1, 0, 0, 0): 1198 leaves (3s)
+  root 7 (0, 0, 0, 1, 1, 1, 0, 0): 466 leaves (3s)
+  root 8 (0, 0, 1, 0, 0, 0, 0, 0): 675 leaves (3s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1413 leaves (3s)
+  root 10 (0, 0, 1, 0, 1, 0, 0, 0): 2116 leaves (4s)
+  root 11 (0, 0, 1, 0, 1, 1, 0, 0): 823 leaves (4s)
+  root 12 (0, 0, 1, 1, 0, 0, 0, 0): 1086 leaves (4s)
+  root 13 (0, 0, 1, 1, 0, 1, 0, 0): 843 leaves (4s)
+  root 14 (0, 0, 1, 1, 1, 0, 0, 0): 478 leaves (4s)
+  root 15 (0, 0, 1, 1, 1, 1, 0, 0): 748 leaves (4s)
+  bisection: 17551 leaves (Z 0, M 17071, empty 0), 0 splits, 0 at region boundaries (4s)
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 3674 points (38101 point cells); failing 0 (22s)
+replay: {'split': 17535, 6: 17071, 0: 480}; leaves 17551 kinds {6: 17071, 0: 480}; verification failures 0 (22s)
+walks: 16 roots, 5023670 bits = 1255.9 KB hex; encode/decode round trip OK
+wrote /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/DATA_PC9LT.json: 1.53 MB json; points 3674, w 1984 cells, d 2240 cells
+       63.15 real        61.49 user         1.00 sys
+          2094972928  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              182344  page reclaims
+                 475  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 894  voluntary context switches
+               30736  involuntary context switches
+        807517492327  instructions retired
+        202790245680  cycles elapsed
+          2096482248  peak memory footprint
+== V lever-1 intervals Sun Oct 11 10:03:18 PDT 2026
+replayed 16 walks: {'split': 17535, 'empty': 0, 'refl': 480, 'M': 17071, 'fail': 0, 'anchor': 0, 'inc': 35070, 'bsplit': 8657}; every walk ends at its bit count
+VERIFIED: 0 failures
+3674 points with an interval (point table 3674); 352928 recorded checks; -> /Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/IV_PC9LT.json
+       14.15 real        13.89 user         0.16 sys
+           205815808  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               13314  page reclaims
+                 100  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 114  voluntary context switches
+                8125  involuntary context switches
+        185835552142  instructions retired
+         45586612362  cycles elapsed
+           197755408  peak memory footprint
+== D data module Sun Oct 11 10:03:32 PDT 2026
+points 3674, with an interval 3674
+chunks 508 boundaries 246
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root_PC9LT/AMW/PC9LTData.lean bytes 2177865 walks 16 bads [1, 1, 2, 2, 2, 2, 1, 1] point blocks 246
+        5.29 real         5.15 user         0.08 sys
+            60981248  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                4530  page reclaims
+                  42  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   6  voluntary context switches
+                4900  involuntary context switches
+         71309980360  instructions retired
+         16994816280  cycles elapsed
+            52920776  peak memory footprint
+== I instance module Sun Oct 11 10:03:38 PDT 2026
+/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/root_PC9LT/AMW/PC9LTInst.lean bytes 145549 pairs 36 constraints 28 active terms 34 SIG 6250000000000000 table entries 0 0 0 FIXED 
+        0.05 real         0.03 user         0.01 sys
+            25968640  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                2396  page reclaims
+                  42  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  15  voluntary context switches
+                  65  involuntary context switches
+           444496461  instructions retired
+           156415737  cycles elapsed
+            17858968  peak memory footprint
+== done Sun Oct 11 10:03:38 PDT 2026

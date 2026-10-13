@@ -1,0 +1,73 @@
+provenance: typh-derived engine modules ['CEngine', 'GFar', 'GCell']
+final6 PC8C5B: SA 100000000 cN 805124 B 404350 m 152 Phi 0.6734832051 kappa 6734832/10000000 = 0.6734832
+window/tauint/PC8C5BT.lean: 1797016 bytes (layer 1775027, mt block 0); modules ['Window', 'Kernel', 'Moments', 'Swap', 'Constant', 'Floor', 'Params', 'Trig', 'Adm', 'Profile', 'PV', 'ZeroSide', 'Concrete', 'BHalf', 'BrA', 'BrB', 'BrC', 'AMTail', 'BrTau', 'BrProf', 'BrSqrtWS', 'GIv', 'GCell', 'GSinc', 'GMT', 'GTaylor', 'GBase', 'GConst', 'GFar', 'GNear', 'GAsm1', 'GAsm2', 'GCellSound', 'CFacade', 'CEngine', 'CMin', 'CMinX', 'CWindow', 'PCellCore', 'PCellGen', 'PCellLeaf', 'PCellRoot', 'PCellTZ', 'PCellZ', 'PCellLeafZ', 'PCellT1', 'PCellClose', 'PCellCloseB', 'PC8C5BInst', 'PC8C5BData']; dropped ['AMS02Data', 'AMS02Inst', 'AMS02Line', 'AMS02Min', 'AMT8BP', 'AMT8Data', 'AMT8Inst', 'AMT8MC', 'AMT8MO', 'AMT8MP', 'AMT8MS', 'AMT8MZ', 'AMT8S', 'AMT8S3', 'AMT8S4', 'AMT8V1', 'AMT8V2', 'AMT8V3', 'AMT8VB', 'AMT8VC', 'AMT8VK', 'AMT8VL', 'AMT8VP', 'AMT8VQ', 'AMT8VS', 'AMT8VS2', 'AMT8VW', 'AMT8VW2', 'AMT8VZ', 'AMX002Data', 'AMX002Inst', 'AMX003Data', 'AMX003Inst', 'AMX005Data', 'AMX005Inst', 'AMX01Data', 'AMX01Inst', 'AMX05Data', 'AMX05Inst', 'BrSqrtWSK', 'CMLeaf', 'GBench', 'GChk', 'GChk2', 'GChk3', 'GChk4', 'GXchk', 'LeverAM', 'LeverOracle', 'LeverTable', 'LineMode', 'MemT_D', 'MemT_N', 'MemT_P', 'MemT_W', 'MinMode', 'Minorant', 'PC8C5Ax', 'PC8C5BAx', 'PC8C5Data', 'PC8C5Inst', 'PC8C5UAx', 'PC8C5UData', 'PC8C5UInst', 'PC8CFAx', 'PC8CFData', 'PC8CFInst', 'PC8FAx', 'PC8FB', 'PC8FData', 'PC8FInst', 'PCBias', 'PCell3', 'PCell3Ax', 'PCell3H', 'PCell3HAx', 'PCell3HI', 'PCell3HR', 'PCell3HRI', 'PCell3I', 'PCell3R', 'PCell3RI', 'PCell3T', 'PCell3TAx', 'PCell3TI', 'PCell3TR', 'PCell3TRI', 'PCellH7', 'PCellH7Ax', 'PCellH8B', 'PCellHB7', 'PCellHG7', 'PCellHGN', 'PCellHGT', 'PCellHL7', 'PCellHW8B', 'PCellHuff', 'PCellM8B', 'PCellT7', 'PCellT7Ax', 'PCellT7B', 'PCellT7BE', 'PCellT7BL', 'PCellT7BP', 'PCellT7Z', 'PCellTZG', 'PCellV8B', 'PCellV8K0', 'PCellV8N0', 'PCellV8N1', 'PCellV8N2', 'PCellZAx', 'PQ7Data', 'PQ7HAx', 'PQ7HData', 'PQ7HInst', 'PQ7Inst', 'PS8Data', 'PS8HAx', 'PS8HData', 'PS8HInst', 'PS8HWB', 'PS8Inst', 'PS8WB', 'PS9Ax', 'PS9BData', 'PS9BInst', 'PS9Data', 'PS9HAx', 'PS9HData', 'PS9HInst', 'PS9HWB', 'PS9Inst', 'PS9WB', 'PSDBasin', 'TanChord']; imports 16
+[private_check] waiting 22:08:09
+[private_check] waiting 22:08:39
+[private_check] waiting 22:09:09
+[private_check] waiting 22:09:39
+[private_check] waiting 22:10:09
+[private_check] waiting 22:10:39
+[private_check] waiting 22:11:09
+[private_check] waiting 22:11:39
+[private_check] waiting 22:12:09
+[private_check] waiting 22:12:39
+[private_check] waiting 22:13:09
+[private_check] waiting 22:13:39
+[private_check] waiting 22:14:09
+[private_check] waiting 22:14:39
+[private_check] waiting 22:15:09
+[private_check] waiting 22:15:39
+[private_check] waiting 22:16:09
+[private_check] waiting 22:16:39
+[private_check] waiting 22:17:09
+[private_check] waiting 22:17:39
+[private_check] waiting 22:18:09
+[private_check] waiting 22:18:39
+[private_check] waiting 22:19:09
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      420.45 real       386.56 user        18.08 sys
+          5286271560  peak memory footprint
+BUILD EXIT 0
+module constants: 6000; imports: 18
+kernel replay of 6000 constants: 168372 ms
+      204.69 real       167.24 user        16.80 sys
+          4214978760  peak memory footprint
+REPLAY EXIT 0
+constants in module: 6000, live: 5217
+window/tauint/PC8C5BT.lean: 1797016 B -> window/tauint/PC8C5BTS.lean: 1635530 B  (dead declarations -63583, comments/blank -84057, indentation -13846; total -161486)
+SIZE PC8C5BTS.lean 1635530 B (watch 1900000, cap 2000000)
+[private_check] waiting 22:31:22
+[private_check] waiting 22:31:52
+[private_check] waiting 22:32:22
+[private_check] waiting 22:32:52
+[private_check] waiting 22:33:22
+[private_check] waiting 22:33:52
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      386.00 real       371.62 user        16.57 sys
+          5193210416  peak memory footprint
+BUILD EXIT 0
+module constants: 5829; imports: 18
+kernel replay of 5829 constants: 170235 ms
+      189.36 real       168.36 user        16.25 sys
+          4192876744  peak memory footprint
+REPLAY EXIT 0
+== stage
+== CandPC8C5BTS export
+export exit 0
+       42.27 real        27.46 user        11.20 sys
+          1593413144  peak memory footprint
+export bytes 661102983
+== CandPC8C5BTS nanoda
+nanoda exit 0
+      182.46 real       173.77 user         7.72 sys
+          4499787424  peak memory footprint
+== CandPC8C5BTS lean replay (full closure)
+parse_ms 14931 constants 76502
+replay_ms 228346 OK
+replayx exit 0
+      243.50 real       240.77 user         2.56 sys
+          2363099416  peak memory footprint

@@ -1,0 +1,17 @@
+[private_check] waiting 20:31:07
+[private_check] waiting 20:31:37
+[private_check] waiting 20:32:07
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      628.93 real       587.51 user        22.54 sys
+          4436187048  peak memory footprint
+BUILD EXIT 0
+module constants: 6842; imports: 18
+kernel replay of 6842 constants: 277317 ms
+      323.77 real       252.96 user        25.02 sys
+          3154081272  peak memory footprint
+REPLAY EXIT 0
+constants in module: 6842, live: 6072
+window/tauint/PC8CFwsT.lean: 2044460 B -> window/tauint/PC8CFwsTS.lean: 1887824 B  (dead declarations -59256, comments/blank -83058, indentation -14322; total -156636)
+SIZE PC8CFwsTS.lean 1887824 B

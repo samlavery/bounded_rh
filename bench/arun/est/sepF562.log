@@ -1,0 +1,22 @@
+target 0.6735620 (LP kT = target + 3e-7), keep pal: word [1.04  1.975 1.046 1.983 1.983 1.046 1.975 1.04 ] pattern(s) {(0, 1, 0, 1, 1, 0, 1, 0)}
+round  0: c 0.0091424181 t 2.994e-05 (rel 3.274e-03) B 0.004764098 kappa 0.67356230 | violations 536 (worst 4.74e-04) | |G| 428 | 8s
+round  1: c 0.0089261337 t 2.965e-05 (rel 3.322e-03) B 0.004618417 kappa 0.67356230 | violations 256 (worst 1.86e-04) | |G| 488 | 17s
+round  2: c 0.0089234724 t 2.928e-05 (rel 3.282e-03) B 0.004616625 kappa 0.67356230 | violations 77 (worst 7.90e-05) | |G| 548 | 26s
+round  3: c 0.0087314655 t 2.903e-05 (rel 3.324e-03) B 0.004487296 kappa 0.67356230 | violations 42 (worst 3.00e-05) | |G| 608 | 34s
+round  4: c 0.0087429434 t 2.892e-05 (rel 3.308e-03) B 0.004495027 kappa 0.67356230 | violations 24 (worst 1.71e-05) | |G| 650 | 42s
+round  5: c 0.0086248496 t 2.876e-05 (rel 3.334e-03) B 0.004415484 kappa 0.67356230 | violations 20 (worst 9.23e-06) | |G| 674 | 50s
+round  6: c 0.0085999317 t 2.872e-05 (rel 3.339e-03) B 0.004398700 kappa 0.67356230 | violations 25 (worst 9.18e-06) | |G| 694 | 59s
+round  7: c 0.0085796180 t 2.856e-05 (rel 3.329e-03) B 0.004385017 kappa 0.67356230 | violations 19 (worst 3.93e-06) | |G| 719 | 67s
+round  8: c 0.0085837878 t 2.850e-05 (rel 3.320e-03) B 0.004387826 kappa 0.67356230 | violations 19 (worst 4.32e-06) | |G| 738 | 75s
+round  9: c 0.0085758533 t 2.843e-05 (rel 3.315e-03) B 0.004382481 kappa 0.67356230 | violations 19 (worst 1.45e-06) | |G| 757 | 83s
+round 10: c 0.0085998653 t 2.832e-05 (rel 3.294e-03) B 0.004398655 kappa 0.67356230 | violations 17 (worst 1.67e-06) | |G| 776 | 91s
+round 11: c 0.0085788829 t 2.831e-05 (rel 3.300e-03) B 0.004384522 kappa 0.67356230 | violations 19 (worst 1.08e-06) | |G| 793 | 98s
+round 12: c 0.0085731109 t 2.830e-05 (rel 3.301e-03) B 0.004380634 kappa 0.67356230 | violations 17 (worst 4.19e-07) | |G| 812 | 106s
+round 13: c 0.0085689640 t 2.828e-05 (rel 3.300e-03) B 0.004377841 kappa 0.67356230 | violations 17 (worst 2.33e-07) | |G| 829 | 115s
+round 14: c 0.0085643852 t 2.826e-05 (rel 3.299e-03) B 0.004374757 kappa 0.67356230 | violations 13 (worst 1.87e-07) | |G| 846 | 123s
+round 15: c 0.0085823893 t 2.825e-05 (rel 3.291e-03) B 0.004386884 kappa 0.67356230 | violations 15 (worst 1.96e-07) | |G| 859 | 132s
+round 16: c 0.0085724012 t 2.825e-05 (rel 3.295e-03) B 0.004380156 kappa 0.67356230 | violations 7 (worst 6.80e-08) | |G| 874 | 140s
+round 17: c 0.0085699807 t 2.824e-05 (rel 3.296e-03) B 0.004378526 kappa 0.67356230 | violations 2 (worst 5.40e-08) | |G| 881 | 148s
+round 18: c 0.0085725408 t 2.824e-05 (rel 3.294e-03) B 0.004380250 kappa 0.67356230 | violations 2 (worst 5.39e-08) | |G| 883 | 157s
+round 19: c 0.0085712232 t 2.824e-05 (rel 3.295e-03) B 0.004379363 kappa 0.67356230 | violations 2 (worst 5.37e-08) | |G| 885 | 165s
+round 20: c 0.0085708594 t 2.824e-05 (rel 3.295e-03) B 0.004379118 kappa 0.67356230 | violations 0 (worst 0.00e+00) | |G| 887 | 174s

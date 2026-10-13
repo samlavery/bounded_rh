@@ -1,0 +1,27 @@
+edge value w(1/2) = 0.829380, 2e = 1.658759, w(0) = 1.095175
+(a) symbol ess sup (open overlap, grid excludes theta = 1/2 exactly):
+  a=1.002: ess sup 1.657370   2e/a 1.655448
+  a=1.005: ess sup 1.655019   2e/a 1.650507
+  a=1.01: ess sup 1.650421   2e/a 1.642336
+  a=1.02: ess sup 1.638895   2e/a 1.626234
+  a=1.05: ess sup 1.591342   2e/a 1.579771
+  a=1.1: ess sup 1.556549   2e/a 1.507963
+(b) finite sections:
+  a=1.002: N=64: 1.092963 | N=256: 1.226227 | N=1024: 1.643624 | N=4096: 1.657368
+  a=1.005: N=64: 1.092434 | N=256: 1.558232 | N=1024: 1.654991 | N=4096: 1.655018
+  a=1.01: N=64: 1.303228 | N=256: 1.646975 | N=1024: 1.650402 | N=4096: 1.650420
+  a=1.02: N=64: 1.542556 | N=256: 1.638591 | N=1024: 1.638881 | N=4096: 1.638895
+  a=1.05: N=64: 1.589631 | N=256: 1.591259 | N=1024: 1.591337 | N=4096: 1.591342
+(c) best majorant vs K at d = 0.85 and d = 1.00:
+<string>:188: UserWarning: Solution may be inaccurate. Try another solver, adjusting the solver settings, or solve with verbose=True for more information.
+  d=0.85 K=8: maj 1.667970 (grid 1.667970, repair x1.000000)
+  d=0.85 K=12: maj 1.667933 (grid 1.667933, repair x1.000000)
+  d=0.85 K=16: maj 1.667924 (grid 1.667924, repair x1.000000)
+  d=0.85 K=20: maj 1.667920 (grid 1.667920, repair x1.000000)
+  d=1.0 K=8: maj 1.658850 (grid 1.658850, repair x1.000000)
+  d=1.0 K=12: maj 1.658788 (grid 1.658788, repair x1.000000)
+  d=1.0 K=16: maj 1.658772 (grid 1.658772, repair x1.000000)
+  d=1.0 K=20: maj 1.658766 (grid 1.658766, repair x1.000000)
+(d) loss decomposition of G = (14/13) gMaj (= w_G here):
+  int G = 1.927078; int w = 1; int_(|s|<=1/2)(G - w) = 0.296384; int_(|s|>1/2) G = 0.630693
+  min_(|s|<=1/2)(G - w) = 1.288691e-01 at s = -0.5000; G - w at s = 0: 0.389883, at 1/2: 0.128869

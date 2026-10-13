@@ -1,0 +1,107 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:04:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:04:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:05:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:05:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:06:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:06:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:07:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:07:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:08:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:08:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:09:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:09:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:10:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:10:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:11:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:11:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:12:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:12:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:13:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:13:44)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:14:14)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (20:14:44)
+== KP wall=62.68s peak=712MB
+KP	wk43	0.278
+KP	wk44	0.070
+KP	wk45	0.075
+KP	wk46	0.055
+KP	wk47	0.047
+KP	wk48	0.749
+KP	wk49	1.040
+KP	wk50	2.230
+KP	wk51	2.890
+KP	wk52	2.950
+KP	wk53	0.525
+KP	wk54	0.270
+KP	wk55	2.480
+KP	wk56	3.310
+KP	wk57	0.154
+KP	wk58	0.249
+KP	wk59	1.300
+KP	wk60	0.074
+KP	wk61	1.430
+KP	wk62	1.260
+KP	wk63	1.540
+KP	wk64	1.660
+KP	wk65	1.670
+KP	wk66	1.300
+KP	wk67	0.359
+KP	wk68	1.460
+KP	wk69	0.096
+KP	wk70	1.760
+KP	wk71	1.520
+KP	wk72	2.240
+KP	wk73	0.942
+KP	wk74	0.121
+KP	wk75	0.780
+KP	wk76	0.202
+KP	wk77	0.246
+KP	wk78	0.232
+KP	wk79	0.580
+KP	wk80	2.900
+KP	wk81	0.072
+KP	wk82	0.436
+KP	wk83	2.330
+KP	wk84	0.818
+KP	wk85	0.352
+KP	wk86	1.960
+KP	wk87	1.610
+KP	wk88	0.451
+KP	wk89	1.850
+KP	wk90	0.141
+KP	wk91	0.757
+KP	wk92	2.170
+KP	wk93	0.860
+KP	wk94	0.530
+KP	wk95	0.159
+KP	wk96	3.210
+KP	wk97	0.370
+KP	wk98	2.580
+KP	wk99	0.208
+KP	wk100	0.022
+KP	wk101	0.091
+KP	wk102	0.030
+KP	wk103	0.079
+KP	TOTAL	62.131
+== KQ wall=68.85s peak=2174MB
+KQ	wk20	0.276
+KQ	wk21	0.068
+KQ	wk22	0.072
+KQ	wk23	0.056
+KQ	wk24	0.047
+KQ	wk25	11.900
+KQ	wk26	6.610
+KQ	wk27	12.400
+KQ	wk28	9.890
+KQ	wk29	7.030
+KQ	wk30	0.781
+KQ	wk31	4.140
+KQ	wk32	11.400
+KQ	wk33	0.370
+KQ	wk34	2.580
+KQ	wk35	0.249
+KQ	wk36	0.023
+KQ	wk37	0.109
+KQ	wk38	0.034
+KQ	wk39	0.093
+KQ	TOTAL	68.127

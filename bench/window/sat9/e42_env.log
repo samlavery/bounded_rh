@@ -1,0 +1,7 @@
+  rho 0.6645 m=1: best so far s_env* 0.050922 (m*=1, cell [0.])
+  rho 0.6645 m=2: best so far s_env* 0.001381 (m*=2, cell [0.     1.0405])
+  rho 0.6645 m=3: best so far s_env* 0.001381 (m*=2, cell [0.     1.0405])
+  rho 0.6645 m=4: best so far s_env* 0.001381 (m*=2, cell [0.     1.0405])
+  rho 0.6645 m=5: best so far s_env* 0.001381 (m*=2, cell [0.     1.0405])
+  rho 0.6645 m=6: best so far s_env* 0.001381 (m*=2, cell [0.     1.0405])
+ENV BASELINE rho=0.6645: s_env*(rho) = 0.001381 per unit length (uniform lattice: 0.050922), structure m=2, positions [0.     1.0405]

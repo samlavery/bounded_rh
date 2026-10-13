@@ -1,0 +1,38 @@
+[private_check] waiting 14:32:14
+[private_check] waiting 14:32:44
+[private_check] waiting 14:33:14
+[private_check] waiting 14:33:44
+[private_check] waiting 14:34:14
+[private_check] waiting 14:34:44
+[private_check] waiting 14:35:14
+[private_check] waiting 14:35:44
+[private_check] waiting 14:36:14
+[private_check] waiting 14:36:44
+[private_check] waiting 14:37:14
+'candidate_strict_improvement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'candidate_critical_line_bound_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
+      860.49 real       737.90 user       112.96 sys
+         18293490112  peak memory footprint
+BUILD EXIT 0
+module constants: 6440; imports: 26
+kernel replay of 6440 constants: 485505 ms
+      520.56 real       440.62 user        39.58 sys
+         17445593416  peak memory footprint
+REPLAY EXIT 0
+== CandINT9 export
+export exit 0
+       83.91 real        66.30 user        13.59 sys
+          1608191560  peak memory footprint
+export bytes 674331576
+== CandINT9 nanoda
+nanoda exit 0
+      904.30 real       869.84 user        32.27 sys
+         15978148272  peak memory footprint
+== CandINT9 lean replay (full closure)
+parse_ms 22959 constants 76393
+replay_ms 492049 OK
+replayx exit 0
+      515.59 real       489.94 user        23.26 sys
+         15923934168  peak memory footprint
+== int9b done Sat Oct 10 15:26:19 PDT 2026

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/samuellavery/work/riemann-submission/gen_tail_w.py", line 219, in <module>
+    _cells, _leaves, _half = int(_m.group(1)), int(_m.group(2)), bool(_m.group(3))
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group'

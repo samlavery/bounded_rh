@@ -1,0 +1,4 @@
+delta=0.0003 cN=697242 basins=16 hw=1475 JCQ=8
+  bisection: 258172 leaves (Z 124234, S 123494, basin 3228) (1335s)
+  fix-up: 0 re-decided; tables: w 6878 cells, d 5012 cells, 4323 points; failing 0 (1363s)
+leaves 258172 Z 124234 S 123494 B 3228 w 6878 d 5012 pts 4323 bad 0 (1363s)

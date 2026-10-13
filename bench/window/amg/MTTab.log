@@ -1,0 +1,2353 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:38:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:38:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:39:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:39:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:40:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:40:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:41:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:41:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:42:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:42:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:43:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:43:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:44:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:44:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:45:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:45:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:46:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:46:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:47:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:47:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:48:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:48:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:49:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:49:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:50:08)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:50:38)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (14:51:08)
+elaboration took 10.5ms
+linting took 1ms
+linting took 1ms
+linting took 1.01ms
+linting took 1.14ms
+linting took 1.17ms
+linting took 1.17ms
+linting took 1.07ms
+linting took 1.08ms
+linting took 1.05ms
+linting took 1.1ms
+linting took 1.03ms
+linting took 1.04ms
+linting took 1.02ms
+linting took 1.01ms
+linting took 1.12ms
+linting took 1.05ms
+linting took 1.01ms
+linting took 1.24ms
+linting took 1.01ms
+linting took 1.12ms
+linting took 1.09ms
+linting took 1ms
+linting took 1.01ms
+linting took 1.28ms
+linting took 1.01ms
+linting took 1.15ms
+linting took 1.13ms
+linting took 1.35ms
+linting took 1.27ms
+linting took 1.1ms
+linting took 1.09ms
+linting took 1.13ms
+linting took 1.24ms
+linting took 1.1ms
+linting took 1.14ms
+linting took 1.13ms
+linting took 1.34ms
+linting took 1.17ms
+linting took 1.1ms
+linting took 1.15ms
+linting took 1.44ms
+linting took 1.17ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.17ms
+linting took 1.17ms
+linting took 1.22ms
+linting took 1.24ms
+linting took 1.15ms
+linting took 1.22ms
+linting took 1.21ms
+linting took 1.18ms
+linting took 1.2ms
+linting took 1.19ms
+linting took 1.18ms
+linting took 1.26ms
+linting took 1.19ms
+linting took 1.22ms
+linting took 1.21ms
+linting took 1.16ms
+linting took 1.16ms
+linting took 1.23ms
+linting took 1.2ms
+linting took 1.16ms
+linting took 1.21ms
+linting took 1.22ms
+linting took 1.18ms
+linting took 1.16ms
+linting took 1.17ms
+linting took 1.24ms
+linting took 1.2ms
+linting took 1.16ms
+linting took 1.21ms
+linting took 1.23ms
+linting took 1.17ms
+linting took 1.16ms
+linting took 1.26ms
+linting took 1.23ms
+linting took 1.17ms
+linting took 1.25ms
+linting took 1.22ms
+linting took 1.18ms
+linting took 1.16ms
+linting took 1.17ms
+linting took 1.17ms
+linting took 1.18ms
+linting took 1.22ms
+linting took 1.22ms
+linting took 1.48ms
+linting took 1.19ms
+linting took 1.13ms
+linting took 1.13ms
+linting took 1.47ms
+linting took 1.38ms
+linting took 1.25ms
+linting took 1.18ms
+linting took 1.18ms
+linting took 1.12ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.15ms
+linting took 1.43ms
+linting took 1.14ms
+linting took 1.15ms
+linting took 1.17ms
+linting took 1.12ms
+linting took 1.13ms
+linting took 1.16ms
+linting took 1.17ms
+linting took 1.12ms
+linting took 1.26ms
+linting took 1.17ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.65ms
+linting took 1.21ms
+linting took 1.16ms
+linting took 1.14ms
+linting took 1.72ms
+linting took 1.36ms
+linting took 1.13ms
+linting took 1.12ms
+linting took 1.23ms
+linting took 1.18ms
+linting took 1.12ms
+linting took 1.16ms
+linting took 1.34ms
+linting took 1.14ms
+linting took 1.12ms
+linting took 1.13ms
+linting took 1.52ms
+linting took 1.33ms
+linting took 1.13ms
+linting took 1.17ms
+linting took 1.6ms
+linting took 1.28ms
+linting took 1.16ms
+linting took 1.2ms
+linting took 1.58ms
+linting took 1.25ms
+linting took 1.27ms
+linting took 1.26ms
+linting took 1.21ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.18ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.31ms
+linting took 1.24ms
+linting took 1.28ms
+linting took 1.25ms
+linting took 1.19ms
+linting took 1.19ms
+linting took 1.28ms
+linting took 1.27ms
+linting took 1.2ms
+linting took 1.26ms
+linting took 1.31ms
+linting took 1.19ms
+linting took 1.27ms
+linting took 1.24ms
+linting took 1.29ms
+linting took 1.25ms
+linting took 1.21ms
+linting took 1.25ms
+linting took 1.25ms
+linting took 1.19ms
+linting took 1.21ms
+linting took 1.24ms
+linting took 1.25ms
+linting took 1.21ms
+linting took 1.27ms
+linting took 1.27ms
+linting took 1.23ms
+linting took 1.22ms
+linting took 1.23ms
+linting took 1.21ms
+linting took 1.22ms
+linting took 1.2ms
+linting took 1.23ms
+linting took 1.26ms
+linting took 1.23ms
+linting took 1.2ms
+linting took 1.25ms
+linting took 1.25ms
+linting took 1.22ms
+linting took 1.26ms
+linting took 1.27ms
+linting took 1.24ms
+linting took 1.24ms
+linting took 1.23ms
+linting took 1.29ms
+linting took 1.25ms
+linting took 1.2ms
+linting took 1.25ms
+linting took 1.25ms
+linting took 1.21ms
+linting took 1.22ms
+linting took 1.27ms
+linting took 1.27ms
+linting took 1.22ms
+linting took 1.28ms
+linting took 1.26ms
+linting took 1.23ms
+linting took 1.22ms
+linting took 1.24ms
+linting took 1.22ms
+linting took 1.21ms
+linting took 1.33ms
+linting took 1.28ms
+linting took 1.36ms
+linting took 1.26ms
+linting took 1.22ms
+linting took 1.22ms
+linting took 1.26ms
+linting took 1.26ms
+linting took 1.21ms
+linting took 1.28ms
+linting took 1.27ms
+linting took 1.21ms
+linting took 1.21ms
+linting took 1.22ms
+linting took 1.3ms
+linting took 1.29ms
+linting took 1.24ms
+linting took 1.3ms
+linting took 1.27ms
+linting took 1.23ms
+linting took 1.23ms
+linting took 1.28ms
+linting took 1.27ms
+linting took 1.22ms
+linting took 1.26ms
+linting took 1.27ms
+linting took 1.22ms
+linting took 1.24ms
+linting took 1.23ms
+linting took 1.23ms
+linting took 1.3ms
+linting took 1.27ms
+linting took 1.31ms
+linting took 1.3ms
+linting took 1.26ms
+linting took 1.22ms
+linting took 1.31ms
+linting took 1.27ms
+linting took 1.23ms
+linting took 1.28ms
+linting took 1.26ms
+linting took 1.24ms
+linting took 1.25ms
+linting took 1.24ms
+linting took 1.29ms
+linting took 1.26ms
+linting took 1.24ms
+linting took 1.3ms
+linting took 1.33ms
+linting took 1.26ms
+linting took 1.24ms
+linting took 1.29ms
+linting took 1.29ms
+linting took 1.23ms
+linting took 1.28ms
+linting took 1.27ms
+linting took 1.26ms
+linting took 1.24ms
+linting took 1.23ms
+linting took 1.24ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.24ms
+linting took 1.29ms
+linting took 1.28ms
+linting took 1.29ms
+linting took 1.29ms
+linting took 1.26ms
+linting took 1.27ms
+linting took 1.31ms
+linting took 1.28ms
+linting took 1.24ms
+linting took 1.31ms
+linting took 1.31ms
+linting took 1.27ms
+linting took 1.25ms
+linting took 1.27ms
+linting took 1.3ms
+linting took 1.29ms
+linting took 1.26ms
+linting took 1.3ms
+linting took 1.31ms
+linting took 1.28ms
+linting took 1.27ms
+linting took 1.31ms
+linting took 1.34ms
+linting took 1.25ms
+linting took 1.3ms
+linting took 1.31ms
+linting took 1.24ms
+linting took 1.24ms
+linting took 1.24ms
+linting took 1.26ms
+linting took 1.31ms
+linting took 1.28ms
+linting took 1.31ms
+linting took 1.32ms
+linting took 1.27ms
+linting took 1.29ms
+linting took 1.31ms
+linting took 1.32ms
+linting took 1.31ms
+linting took 1.39ms
+linting took 1.31ms
+linting took 1.26ms
+linting took 1.25ms
+linting took 1.24ms
+linting took 1.29ms
+linting took 1.32ms
+linting took 1.27ms
+linting took 1.31ms
+linting took 1.31ms
+linting took 1.28ms
+linting took 1.26ms
+linting took 1.29ms
+linting took 1.34ms
+linting took 1.3ms
+linting took 1.33ms
+linting took 1.33ms
+linting took 1.25ms
+linting took 1.26ms
+linting took 1.26ms
+linting took 1.26ms
+linting took 1.27ms
+linting took 1.33ms
+linting took 1.3ms
+linting took 1.31ms
+linting took 1.38ms
+linting took 1.29ms
+linting took 1.31ms
+linting took 1.32ms
+linting took 1.29ms
+linting took 1.24ms
+linting took 1.33ms
+linting took 1.3ms
+linting took 1.26ms
+linting took 1.28ms
+linting took 1.27ms
+linting took 1.31ms
+linting took 1.31ms
+linting took 1.27ms
+linting took 1.34ms
+linting took 1.3ms
+linting took 1.24ms
+linting took 1.24ms
+linting took 1.29ms
+linting took 1.31ms
+linting took 1.27ms
+linting took 1.34ms
+linting took 1.33ms
+linting took 1.27ms
+linting took 1.34ms
+linting took 1.29ms
+linting took 1.27ms
+linting took 1.33ms
+linting took 1.3ms
+linting took 1.33ms
+linting took 1.33ms
+linting took 1.28ms
+linting took 1.28ms
+linting took 1.32ms
+linting took 1.32ms
+linting took 1.28ms
+linting took 1.32ms
+linting took 1.32ms
+linting took 1.3ms
+linting took 1.29ms
+linting took 1.29ms
+linting took 1.38ms
+linting took 1.35ms
+linting took 1.28ms
+linting took 1.39ms
+linting took 1.33ms
+linting took 1.28ms
+linting took 1.3ms
+linting took 1.34ms
+linting took 1.32ms
+linting took 1.29ms
+linting took 1.34ms
+linting took 1.34ms
+linting took 1.28ms
+linting took 1.3ms
+linting took 1.3ms
+linting took 1.29ms
+linting took 1.3ms
+linting took 1.28ms
+linting took 1.32ms
+linting took 1.31ms
+linting took 1.38ms
+linting took 1.33ms
+linting took 1.29ms
+linting took 1.29ms
+linting took 1.34ms
+linting took 1.34ms
+linting took 1.3ms
+linting took 1.32ms
+linting took 1.3ms
+linting took 1.25ms
+linting took 1.29ms
+linting took 1.29ms
+linting took 1.32ms
+linting took 1.4ms
+linting took 1.32ms
+linting took 1.34ms
+linting took 1.33ms
+linting took 1.28ms
+linting took 1.28ms
+linting took 1.34ms
+linting took 1.35ms
+linting took 1.32ms
+linting took 1.33ms
+linting took 1.33ms
+linting took 1.3ms
+linting took 1.29ms
+linting took 1.35ms
+linting took 1.3ms
+linting took 1.41ms
+linting took 1.46ms
+linting took 1.54ms
+linting took 1.6ms
+linting took 1.59ms
+linting took 1.55ms
+linting took 1.8ms
+linting took 1.59ms
+linting took 1.48ms
+linting took 1.54ms
+linting took 1.66ms
+linting took 1.39ms
+linting took 1.37ms
+linting took 1.3ms
+linting took 1.35ms
+linting took 1.34ms
+linting took 1.29ms
+linting took 1.36ms
+linting took 1.38ms
+linting took 1.32ms
+linting took 1.29ms
+linting took 1.36ms
+linting took 1.34ms
+linting took 1.32ms
+linting took 1.37ms
+linting took 1.41ms
+linting took 1.36ms
+linting took 1.35ms
+linting took 1.34ms
+linting took 1.34ms
+linting took 1.31ms
+linting took 1.37ms
+linting took 1.43ms
+linting took 1.35ms
+linting took 1.35ms
+linting took 1.3ms
+linting took 1.32ms
+linting took 1.36ms
+linting took 1.37ms
+linting took 1.38ms
+linting took 1.39ms
+linting took 1.39ms
+linting took 1.34ms
+linting took 1.34ms
+linting took 1.34ms
+linting took 1.39ms
+linting took 1.36ms
+linting took 1.32ms
+linting took 1.38ms
+linting took 1.41ms
+linting took 1.33ms
+linting took 1.33ms
+linting took 1.39ms
+linting took 1.38ms
+linting took 1.36ms
+linting took 1.41ms
+linting took 1.38ms
+linting took 1.38ms
+linting took 1.33ms
+linting took 1.31ms
+linting took 1.31ms
+linting took 1.36ms
+linting took 1.42ms
+linting took 1.37ms
+linting took 1.44ms
+linting took 1.34ms
+linting took 1.35ms
+linting took 1.4ms
+linting took 1.38ms
+linting took 1.33ms
+linting took 1.38ms
+linting took 1.44ms
+linting took 1.31ms
+linting took 1.32ms
+linting took 1.37ms
+linting took 1.41ms
+linting took 1.39ms
+linting took 1.34ms
+linting took 1.4ms
+linting took 1.4ms
+linting took 1.38ms
+linting took 1.34ms
+linting took 1.4ms
+linting took 1.37ms
+linting took 1.33ms
+linting took 1.41ms
+linting took 1.41ms
+linting took 1.35ms
+linting took 1.37ms
+linting took 1.36ms
+linting took 1.34ms
+linting took 1.34ms
+linting took 1.36ms
+linting took 1.34ms
+linting took 1.36ms
+linting took 1.23ms
+type checking took 1.49s
+linting took 2.7ms
+linting took 1.25ms
+elaboration took 26.8ms
+linting took 1.14ms
+linting took 1.1ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.09ms
+linting took 1.45ms
+linting took 1.45ms
+linting took 1.09ms
+linting took 1.03ms
+linting took 1.06ms
+linting took 1.7ms
+linting took 1.15ms
+linting took 1.1ms
+linting took 1.09ms
+linting took 1.11ms
+linting took 1.12ms
+linting took 1.11ms
+linting took 1.08ms
+linting took 1.12ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.12ms
+linting took 1.1ms
+linting took 1.09ms
+linting took 1.1ms
+linting took 1.11ms
+linting took 1.08ms
+linting took 1.13ms
+linting took 1.08ms
+linting took 1.12ms
+linting took 1.11ms
+linting took 1.1ms
+linting took 1.12ms
+linting took 1.12ms
+linting took 1.11ms
+linting took 1.09ms
+linting took 1.11ms
+linting took 1.21ms
+linting took 1.1ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.1ms
+linting took 1.09ms
+linting took 1.12ms
+linting took 1.11ms
+linting took 1.12ms
+linting took 1.04ms
+linting took 1.06ms
+linting took 1.07ms
+linting took 1.15ms
+linting took 1.26ms
+linting took 1.1ms
+linting took 1.12ms
+linting took 1.14ms
+linting took 1.11ms
+linting took 1.17ms
+linting took 1.09ms
+linting took 1.1ms
+linting took 1.16ms
+linting took 1.13ms
+linting took 1.13ms
+linting took 1.12ms
+linting took 1.1ms
+linting took 1.15ms
+linting took 1.12ms
+linting took 1.09ms
+linting took 1.1ms
+linting took 1.09ms
+linting took 1.14ms
+linting took 1.11ms
+linting took 1.17ms
+linting took 1.15ms
+linting took 1.1ms
+linting took 1.13ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.12ms
+linting took 1.13ms
+linting took 1.13ms
+linting took 1.14ms
+linting took 1.14ms
+linting took 1.12ms
+linting took 1.1ms
+linting took 1.09ms
+linting took 1.17ms
+linting took 1.1ms
+linting took 1.16ms
+linting took 1.17ms
+linting took 1.09ms
+linting took 1.09ms
+linting took 1.09ms
+linting took 1.14ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.11ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.14ms
+linting took 1.11ms
+linting took 1.15ms
+linting took 1.11ms
+linting took 1.12ms
+linting took 1.13ms
+linting took 1.18ms
+linting took 1.12ms
+linting took 1.25ms
+linting took 1.15ms
+linting took 1.1ms
+linting took 1.14ms
+linting took 1.13ms
+linting took 1.1ms
+linting took 1.11ms
+linting took 1.13ms
+linting took 1.16ms
+linting took 1.12ms
+linting took 1.11ms
+linting took 1.13ms
+linting took 1.13ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.12ms
+linting took 1.13ms
+linting took 1.11ms
+linting took 1.14ms
+linting took 1.15ms
+linting took 1.15ms
+linting took 1.59ms
+linting took 1.1ms
+linting took 1.78ms
+linting took 1.27ms
+linting took 1.19ms
+linting took 1.14ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.13ms
+linting took 1.12ms
+linting took 1.12ms
+linting took 1.16ms
+linting took 1.13ms
+linting took 1.12ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.15ms
+linting took 1.09ms
+linting took 1.08ms
+linting took 1.1ms
+linting took 1.15ms
+linting took 1.14ms
+linting took 1.12ms
+linting took 1.12ms
+linting took 1.13ms
+linting took 1.14ms
+linting took 1.16ms
+linting took 1.15ms
+linting took 1.2ms
+linting took 1.19ms
+linting took 1.29ms
+linting took 1.15ms
+linting took 1.16ms
+linting took 1.13ms
+linting took 1.13ms
+linting took 1.14ms
+linting took 1.2ms
+linting took 1.13ms
+linting took 1.14ms
+linting took 1.14ms
+linting took 1.13ms
+linting took 1.12ms
+linting took 1.13ms
+linting took 1.13ms
+linting took 1.18ms
+linting took 1.15ms
+linting took 1.16ms
+linting took 1.14ms
+linting took 1.14ms
+linting took 1.59ms
+linting took 1.1ms
+linting took 1.92ms
+linting took 1.18ms
+linting took 1.18ms
+linting took 1.16ms
+linting took 1.11ms
+linting took 1.11ms
+linting took 1.12ms
+linting took 1.1ms
+linting took 1.11ms
+linting took 1.22ms
+linting took 1.21ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.1ms
+linting took 1.15ms
+linting took 1.2ms
+linting took 1.61ms
+linting took 1.13ms
+linting took 1.13ms
+linting took 1.81ms
+linting took 1.5ms
+linting took 1.23ms
+linting took 1.16ms
+linting took 1.19ms
+linting took 1.18ms
+linting took 1.15ms
+linting took 1.18ms
+linting took 1.18ms
+linting took 1.17ms
+linting took 1.2ms
+linting took 1.15ms
+linting took 1.19ms
+linting took 1.14ms
+linting took 1.15ms
+linting took 1.17ms
+linting took 1.16ms
+linting took 1.18ms
+linting took 1.16ms
+linting took 1.14ms
+linting took 1.16ms
+linting took 1.15ms
+linting took 1.15ms
+linting took 1.15ms
+linting took 1.55ms
+linting took 1.78ms
+linting took 1.19ms
+linting took 1.21ms
+linting took 1.24ms
+linting took 1.21ms
+linting took 1.17ms
+linting took 1.17ms
+linting took 1.14ms
+linting took 1.15ms
+linting took 1.16ms
+linting took 1.18ms
+linting took 1.2ms
+linting took 1.16ms
+linting took 1.16ms
+linting took 1.23ms
+linting took 1.18ms
+linting took 1.18ms
+linting took 1.14ms
+linting took 1.17ms
+linting took 1.17ms
+linting took 1.21ms
+linting took 1.16ms
+linting took 1.18ms
+linting took 1.15ms
+linting took 1.16ms
+linting took 1.16ms
+linting took 1.15ms
+linting took 1.14ms
+linting took 1.23ms
+linting took 1.12ms
+linting took 1.12ms
+linting took 1.22ms
+linting took 1.24ms
+linting took 1.18ms
+linting took 1.16ms
+linting took 1.17ms
+linting took 1.2ms
+linting took 1.16ms
+linting took 1.15ms
+linting took 1.19ms
+linting took 1.16ms
+linting took 1.14ms
+linting took 1.16ms
+linting took 1.21ms
+linting took 1.21ms
+linting took 1.19ms
+linting took 1.16ms
+linting took 1.23ms
+linting took 1.19ms
+linting took 1.15ms
+linting took 1.18ms
+linting took 1.25ms
+linting took 1.23ms
+linting took 1.18ms
+linting took 1.2ms
+linting took 1.18ms
+linting took 1.17ms
+linting took 1.16ms
+linting took 1.15ms
+linting took 1.19ms
+linting took 1.2ms
+linting took 1.19ms
+linting took 1.18ms
+linting took 1.19ms
+linting took 1.19ms
+linting took 1.23ms
+linting took 1.21ms
+linting took 1.2ms
+linting took 1.19ms
+linting took 1.17ms
+linting took 1.21ms
+linting took 1.18ms
+linting took 1.2ms
+linting took 1.17ms
+linting took 1.17ms
+linting took 1.2ms
+linting took 1.19ms
+linting took 1.16ms
+linting took 1.17ms
+linting took 1.19ms
+linting took 1.18ms
+linting took 1.26ms
+linting took 1.19ms
+linting took 1.23ms
+linting took 1.56ms
+linting took 1.13ms
+linting took 1.15ms
+linting took 1.91ms
+linting took 1.38ms
+linting took 1.21ms
+linting took 1.2ms
+linting took 1.17ms
+linting took 1.18ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.22ms
+linting took 1.21ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.25ms
+linting took 1.21ms
+linting took 1.18ms
+linting took 1.21ms
+linting took 1.21ms
+linting took 1.2ms
+linting took 1.18ms
+linting took 1.19ms
+linting took 1.23ms
+linting took 1.22ms
+linting took 1.21ms
+linting took 1.22ms
+linting took 1.16ms
+linting took 1.22ms
+linting took 1.19ms
+linting took 1.17ms
+linting took 1.22ms
+linting took 1.25ms
+linting took 1.19ms
+linting took 1.19ms
+linting took 1.21ms
+linting took 1.19ms
+linting took 1.2ms
+linting took 1.2ms
+linting took 1.21ms
+linting took 1.7ms
+linting took 1.94ms
+linting took 1.23ms
+linting took 1.22ms
+linting took 1.2ms
+linting took 1.19ms
+linting took 1.26ms
+linting took 1.21ms
+linting took 1.19ms
+linting took 1.22ms
+linting took 1.18ms
+linting took 1.19ms
+linting took 1.16ms
+linting took 1.16ms
+linting took 1.21ms
+linting took 1.2ms
+linting took 1.18ms
+linting took 1.27ms
+linting took 1.21ms
+linting took 1.18ms
+linting took 1.19ms
+linting took 1.22ms
+linting took 1.23ms
+linting took 1.69ms
+linting took 1.19ms
+linting took 1.16ms
+linting took 1.15ms
+linting took 1.87ms
+linting took 1.34ms
+linting took 1.22ms
+linting took 1.22ms
+linting took 1.22ms
+linting took 1.21ms
+linting took 1.21ms
+linting took 1.24ms
+linting took 1.22ms
+linting took 1.2ms
+linting took 1.21ms
+linting took 1.3ms
+linting took 1.24ms
+linting took 1.23ms
+linting took 1.21ms
+linting took 1.21ms
+linting took 1.24ms
+linting took 1.21ms
+linting took 1.23ms
+linting took 1.22ms
+linting took 1.23ms
+linting took 1.21ms
+linting took 1.27ms
+linting took 1.22ms
+linting took 1.26ms
+linting took 1.23ms
+linting took 1.22ms
+linting took 1.68ms
+linting took 1.08ms
+linting took 1.16ms
+linting took 1.16ms
+linting took 1.15ms
+linting took 2.1ms
+linting took 1.3ms
+linting took 1.24ms
+linting took 1.26ms
+linting took 1.27ms
+linting took 1.29ms
+linting took 1.26ms
+linting took 1.3ms
+linting took 1.23ms
+linting took 1.58ms
+linting took 1.52ms
+linting took 1.57ms
+linting took 1.59ms
+linting took 1.51ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 1.62ms
+linting took 1.67ms
+linting took 2.11ms
+linting took 2.18ms
+linting took 1.73ms
+linting took 1.62ms
+linting took 1.57ms
+linting took 1.56ms
+linting took 1.53ms
+linting took 1.48ms
+linting took 1.53ms
+linting took 1.54ms
+linting took 1.58ms
+linting took 1.57ms
+linting took 1.55ms
+linting took 1.55ms
+linting took 1.53ms
+linting took 1.49ms
+linting took 1.52ms
+linting took 1.49ms
+linting took 1.61ms
+linting took 1.51ms
+linting took 1.51ms
+linting took 1.56ms
+linting took 1.55ms
+linting took 1.57ms
+linting took 1.55ms
+linting took 1.54ms
+linting took 1.53ms
+linting took 1.52ms
+linting took 1.59ms
+linting took 1.53ms
+linting took 1.56ms
+linting took 1.52ms
+linting took 1.51ms
+linting took 1.62ms
+linting took 1.58ms
+linting took 1.62ms
+linting took 1.57ms
+linting took 1.53ms
+linting took 1.52ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 1.56ms
+linting took 1.53ms
+linting took 1.59ms
+linting took 1.55ms
+linting took 1.53ms
+linting took 1.58ms
+linting took 1.64ms
+linting took 1.64ms
+linting took 1.56ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 1.52ms
+linting took 1.55ms
+linting took 1.55ms
+linting took 1.56ms
+linting took 1.57ms
+linting took 1.53ms
+linting took 1.59ms
+linting took 1.56ms
+linting took 1.59ms
+linting took 1.59ms
+linting took 1.61ms
+linting took 1.55ms
+linting took 1.51ms
+linting took 1.51ms
+linting took 1.55ms
+linting took 1.55ms
+linting took 1.58ms
+linting took 1.56ms
+linting took 1.53ms
+linting took 1.56ms
+linting took 1.55ms
+linting took 1.59ms
+linting took 1.59ms
+linting took 1.53ms
+linting took 1.52ms
+linting took 1.53ms
+linting took 1.58ms
+linting took 1.54ms
+linting took 1.57ms
+linting took 1.56ms
+linting took 1.53ms
+linting took 1.58ms
+linting took 1.59ms
+linting took 1.63ms
+linting took 1.6ms
+linting took 1.54ms
+linting took 1.54ms
+linting took 1.57ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 1.59ms
+linting took 1.59ms
+linting took 1.56ms
+linting took 1.58ms
+linting took 1.56ms
+linting took 1.52ms
+linting took 1.57ms
+linting took 1.58ms
+linting took 1.6ms
+linting took 1.58ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 1.56ms
+linting took 1.61ms
+linting took 1.58ms
+linting took 1.67ms
+linting took 1.57ms
+linting took 1.54ms
+linting took 1.61ms
+linting took 1.57ms
+linting took 1.59ms
+linting took 1.57ms
+linting took 1.53ms
+linting took 1.52ms
+linting took 1.54ms
+linting took 1.55ms
+linting took 1.58ms
+linting took 1.6ms
+linting took 1.62ms
+linting took 1.6ms
+linting took 1.56ms
+linting took 1.7ms
+linting took 1.68ms
+linting took 1.59ms
+linting took 1.58ms
+linting took 1.54ms
+linting took 1.55ms
+linting took 1.58ms
+linting took 1.58ms
+linting took 1.6ms
+linting took 1.59ms
+linting took 1.56ms
+linting took 1.58ms
+linting took 1.65ms
+linting took 1.66ms
+linting took 2.14ms
+linting took 1.56ms
+linting took 1.48ms
+linting took 1.46ms
+linting took 2.41ms
+linting took 1.61ms
+linting took 1.57ms
+linting took 1.61ms
+linting took 1.62ms
+linting took 1.62ms
+linting took 1.68ms
+linting took 1.58ms
+linting took 1.59ms
+linting took 1.58ms
+linting took 1.65ms
+linting took 1.63ms
+linting took 1.57ms
+linting took 1.56ms
+linting took 1.57ms
+linting took 1.61ms
+linting took 1.58ms
+linting took 1.61ms
+linting took 1.54ms
+linting took 1.49ms
+linting took 1.55ms
+linting took 1.6ms
+linting took 1.65ms
+linting took 1.63ms
+linting took 1.62ms
+linting took 1.58ms
+linting took 1.69ms
+linting took 1.76ms
+linting took 1.68ms
+linting took 1.67ms
+linting took 1.77ms
+linting took 1.66ms
+linting took 1.65ms
+linting took 1.72ms
+linting took 1.63ms
+linting took 1.68ms
+linting took 1.74ms
+linting took 1.65ms
+linting took 1.67ms
+linting took 1.66ms
+linting took 2.22ms
+linting took 1.68ms
+linting took 2.59ms
+linting took 1.83ms
+linting took 1.7ms
+linting took 1.77ms
+linting took 1.7ms
+linting took 1.73ms
+linting took 1.72ms
+linting took 1.67ms
+linting took 1.73ms
+linting took 2.3ms
+linting took 1.57ms
+linting took 2.64ms
+linting took 1.79ms
+linting took 1.7ms
+linting took 1.73ms
+linting took 1.71ms
+linting took 1.76ms
+linting took 1.72ms
+linting took 1.69ms
+linting took 1.77ms
+linting took 2.26ms
+linting took 1.64ms
+linting took 1.68ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 1.53ms
+linting took 2.6ms
+linting took 1.77ms
+linting took 1.91ms
+linting took 1.83ms
+linting took 1.59ms
+linting took 1.62ms
+linting took 2.43ms
+linting took 1.8ms
+linting took 1.96ms
+linting took 2.22ms
+linting took 1.75ms
+linting took 1.83ms
+linting took 2.05ms
+linting took 1.61ms
+linting took 1.56ms
+linting took 1.57ms
+linting took 1.57ms
+linting took 1.53ms
+linting took 2.54ms
+linting took 1.93ms
+linting took 1.89ms
+linting took 2.12ms
+linting took 1.71ms
+linting took 2.41ms
+linting took 1.76ms
+linting took 1.83ms
+linting took 1.75ms
+linting took 2.15ms
+linting took 1.63ms
+linting took 1.55ms
+linting took 1.57ms
+linting took 1.55ms
+linting took 2.65ms
+linting took 1.99ms
+linting took 1.62ms
+linting took 2.41ms
+linting took 1.76ms
+linting took 1.75ms
+linting took 1.79ms
+linting took 1.81ms
+linting took 1.77ms
+linting took 1.75ms
+linting took 1.8ms
+linting took 1.73ms
+linting took 1.78ms
+linting took 1.94ms
+linting took 2.14ms
+linting took 1.61ms
+linting took 1.54ms
+linting took 1.85ms
+linting took 1.55ms
+linting took 1.58ms
+linting took 2.57ms
+linting took 1.79ms
+linting took 1.77ms
+linting took 1.71ms
+linting took 2.16ms
+linting took 1.71ms
+linting took 1.62ms
+linting took 2.33ms
+linting took 1.86ms
+linting took 1.73ms
+linting took 1.75ms
+linting took 1.85ms
+linting took 2.24ms
+linting took 2.33ms
+linting took 1.86ms
+linting took 2.05ms
+linting took 1.79ms
+linting took 1.68ms
+linting took 1.59ms
+linting took 1.58ms
+linting took 1.59ms
+linting took 2.51ms
+linting took 1.88ms
+linting took 1.9ms
+linting took 1.76ms
+linting took 1.77ms
+linting took 1.8ms
+linting took 1.8ms
+linting took 1.77ms
+linting took 1.81ms
+linting took 1.79ms
+linting took 1.84ms
+linting took 1.85ms
+linting took 1.6ms
+linting took 1.7ms
+linting took 1.66ms
+linting took 1.63ms
+linting took 1.69ms
+linting took 1.71ms
+linting took 1.77ms
+linting took 1.78ms
+linting took 1.84ms
+linting took 1.94ms
+linting took 1.84ms
+linting took 1.77ms
+linting took 1.64ms
+linting took 1.65ms
+linting took 1.82ms
+linting took 1.79ms
+linting took 1.76ms
+linting took 1.73ms
+linting took 1.77ms
+linting took 1.67ms
+linting took 1.93ms
+linting took 2.34ms
+linting took 1.68ms
+linting took 2.6ms
+linting took 1.77ms
+linting took 1.86ms
+linting took 2.14ms
+linting took 1.85ms
+linting took 2.41ms
+linting took 2.8ms
+linting took 1.75ms
+linting took 1.73ms
+linting took 1.74ms
+linting took 1.82ms
+linting took 1.85ms
+linting took 1.7ms
+linting took 1.72ms
+linting took 2.46ms
+linting took 1.67ms
+linting took 1.64ms
+linting took 1.69ms
+linting took 1.56ms
+linting took 1.52ms
+linting took 2.9ms
+linting took 1.99ms
+linting took 1.83ms
+linting took 1.72ms
+linting took 1.64ms
+linting took 1.71ms
+linting took 1.68ms
+linting took 1.68ms
+linting took 1.67ms
+linting took 1.63ms
+linting took 1.63ms
+linting took 1.61ms
+linting took 1.63ms
+linting took 1.66ms
+linting took 1.7ms
+linting took 1.65ms
+linting took 1.67ms
+linting took 1.66ms
+linting took 1.63ms
+linting took 1.69ms
+linting took 1.66ms
+linting took 1.67ms
+linting took 1.68ms
+linting took 1.66ms
+linting took 1.65ms
+linting took 1.71ms
+linting took 1.69ms
+linting took 1.73ms
+linting took 1.7ms
+linting took 1.65ms
+linting took 1.65ms
+linting took 1.68ms
+linting took 1.65ms
+linting took 1.68ms
+linting took 1.69ms
+linting took 1.74ms
+linting took 1.63ms
+linting took 1.66ms
+linting took 1.64ms
+linting took 1.7ms
+linting took 1.67ms
+linting took 1.67ms
+linting took 1.66ms
+linting took 1.63ms
+linting took 1.68ms
+linting took 1.67ms
+linting took 1.7ms
+linting took 1.7ms
+linting took 1.63ms
+linting took 1.64ms
+linting took 1.66ms
+linting took 1.69ms
+linting took 1.66ms
+linting took 1.68ms
+linting took 1.68ms
+linting took 1.65ms
+linting took 1.69ms
+linting took 1.68ms
+linting took 1.7ms
+linting took 1.7ms
+linting took 1.64ms
+linting took 1.73ms
+linting took 1.66ms
+linting took 1.63ms
+linting took 1.63ms
+linting took 1.66ms
+linting took 1.65ms
+linting took 1.63ms
+linting took 1.5ms
+type checking took 1.23s
+linting took 2.89ms
+linting took 1.5ms
+linting took 1.44ms
+linting took 1.43ms
+elaboration took 2.6ms
+linting took 1.39ms
+elaboration took 2.74ms
+linting took 1.44ms
+elaboration took 2.35ms
+linting took 1.49ms
+linting took 1.44ms
+linting took 2.25ms
+linting took 1.38ms
+linting took 1.32ms
+linting took 1.49ms
+elaboration took 1.58ms
+linting took 1.35ms
+elaboration took 2.09ms
+linting took 1.34ms
+elaboration took 2.52ms
+linting took 2.37ms
+elaboration took 2.46ms
+linting took 1.52ms
+elaboration took 2.73ms
+linting took 1.5ms
+elaboration took 2.61ms
+linting took 2.19ms
+elaboration took 2.7ms
+linting took 1.41ms
+elaboration took 2.54ms
+linting took 2.41ms
+elaboration took 2.75ms
+linting took 1.6ms
+elaboration took 2.24ms
+linting took 1.47ms
+elaboration took 2.4ms
+linting took 2.02ms
+linting took 1.35ms
+linting took 1.31ms
+linting took 1.3ms
+linting took 2.46ms
+linting took 1.55ms
+linting took 1.51ms
+linting took 1.44ms
+elaboration took 2.6ms
+linting took 1.45ms
+elaboration took 2.61ms
+linting took 1.44ms
+elaboration took 2.68ms
+linting took 1.57ms
+elaboration took 2.65ms
+linting took 1.45ms
+elaboration took 2.68ms
+linting took 1.44ms
+elaboration took 2.63ms
+linting took 1.47ms
+elaboration took 2.65ms
+linting took 1.44ms
+elaboration took 2.64ms
+linting took 1.43ms
+elaboration took 2.36ms
+linting took 1.51ms
+elaboration took 2.23ms
+linting took 1.46ms
+elaboration took 2.61ms
+linting took 1.45ms
+elaboration took 1.94ms
+linting took 1.44ms
+elaboration took 1.22ms
+linting took 1.4ms
+linting took 1.4ms
+linting took 1.4ms
+linting took 1.41ms
+linting took 1.41ms
+linting took 1.4ms
+linting took 1.39ms
+linting took 1.41ms
+linting took 1.39ms
+elaboration took 1.88ms
+linting took 1.35ms
+linting took 1.36ms
+elaboration took 2.51ms
+linting took 1.58ms
+elaboration took 2.64ms
+linting took 1.44ms
+elaboration took 2.6ms
+linting took 1.44ms
+elaboration took 2.65ms
+linting took 1.45ms
+elaboration took 2.67ms
+linting took 1.42ms
+elaboration took 2.68ms
+linting took 1.46ms
+elaboration took 2.66ms
+linting took 1.42ms
+elaboration took 2.61ms
+linting took 1.59ms
+elaboration took 2.63ms
+linting took 1.43ms
+elaboration took 2.61ms
+linting took 1.44ms
+elaboration took 2.37ms
+linting took 1.42ms
+linting took 1.4ms
+linting took 1.41ms
+linting took 1.49ms
+linting took 1.41ms
+linting took 1.38ms
+linting took 1.41ms
+linting took 1.45ms
+linting took 1.43ms
+linting took 1.41ms
+linting took 1.39ms
+linting took 1.39ms
+linting took 1.4ms
+linting took 1.41ms
+linting took 1.45ms
+elaboration took 1.89ms
+linting took 1.47ms
+elaboration took 2.58ms
+linting took 1.47ms
+elaboration took 2.38ms
+linting took 1.51ms
+elaboration took 2.63ms
+linting took 1.47ms
+elaboration took 2.61ms
+linting took 1.49ms
+elaboration took 2.65ms
+linting took 1.45ms
+elaboration took 2.66ms
+linting took 1.42ms
+elaboration took 2.66ms
+linting took 1.46ms
+elaboration took 2.66ms
+linting took 1.49ms
+elaboration took 2.6ms
+linting took 1.45ms
+elaboration took 1.9ms
+linting took 1.45ms
+elaboration took 2.63ms
+linting took 1.44ms
+linting took 1.4ms
+linting took 1.4ms
+linting took 1.41ms
+linting took 1.43ms
+linting took 1.51ms
+linting took 1.51ms
+linting took 1.42ms
+linting took 1.42ms
+linting took 1.4ms
+linting took 1.38ms
+linting took 1.4ms
+linting took 1.38ms
+linting took 1.42ms
+linting took 1.43ms
+linting took 1.49ms
+linting took 1.42ms
+linting took 1.46ms
+elaboration took 2.36ms
+linting took 1.45ms
+elaboration took 2.67ms
+linting took 1.46ms
+elaboration took 2.58ms
+linting took 1.47ms
+elaboration took 2.66ms
+linting took 1.46ms
+elaboration took 2.65ms
+linting took 1.48ms
+elaboration took 2.64ms
+linting took 1.47ms
+elaboration took 2.64ms
+linting took 1.46ms
+elaboration took 2.65ms
+linting took 1.51ms
+elaboration took 2.39ms
+linting took 1.46ms
+elaboration took 1.91ms
+linting took 1.47ms
+elaboration took 1.92ms
+linting took 1.44ms
+elaboration took 1.94ms
+linting took 1.45ms
+linting took 1.44ms
+linting took 1.46ms
+linting took 1.42ms
+linting took 1.42ms
+linting took 1.47ms
+linting took 1.45ms
+linting took 1.44ms
+linting took 2.08ms
+linting took 1.39ms
+linting took 1.36ms
+linting took 1.34ms
+linting took 2.39ms
+linting took 1.5ms
+linting took 1.39ms
+linting took 1.37ms
+linting took 1.39ms
+elaboration took 2.52ms
+linting took 1.53ms
+elaboration took 2.61ms
+linting took 1.45ms
+elaboration took 2.64ms
+linting took 1.45ms
+elaboration took 2.66ms
+linting took 1.54ms
+elaboration took 2.63ms
+linting took 1.48ms
+elaboration took 2.64ms
+linting took 1.47ms
+elaboration took 2.64ms
+linting took 1.46ms
+elaboration took 2.64ms
+linting took 1.58ms
+elaboration took 2.38ms
+linting took 1.48ms
+elaboration took 1.93ms
+linting took 1.43ms
+linting took 1.45ms
+linting took 1.46ms
+linting took 1.44ms
+linting took 1.43ms
+linting took 1.41ms
+linting took 1.42ms
+linting took 1.45ms
+linting took 1.47ms
+linting took 1.45ms
+linting took 1.43ms
+linting took 1.45ms
+linting took 1.45ms
+linting took 1.43ms
+linting took 1.45ms
+linting took 1.41ms
+linting took 1.41ms
+linting took 1.43ms
+linting took 1.52ms
+elaboration took 2.63ms
+linting took 1.46ms
+elaboration took 1.97ms
+linting took 1.48ms
+elaboration took 2.59ms
+linting took 1.52ms
+elaboration took 2.65ms
+linting took 1.51ms
+elaboration took 2.67ms
+linting took 1.57ms
+elaboration took 2.74ms
+linting took 1.51ms
+elaboration took 2.58ms
+linting took 1.49ms
+elaboration took 1.98ms
+linting took 1.47ms
+linting took 1.43ms
+linting took 1.46ms
+linting took 1.47ms
+linting took 1.44ms
+linting took 1.45ms
+linting took 1.44ms
+linting took 1.43ms
+linting took 1.57ms
+linting took 1.44ms
+linting took 1.48ms
+linting took 1.46ms
+linting took 1.43ms
+linting took 1.49ms
+linting took 1.48ms
+linting took 1.44ms
+linting took 1.43ms
+linting took 1.43ms
+linting took 1.45ms
+linting took 1.51ms
+elaboration took 2.59ms
+linting took 2.23ms
+elaboration took 2.45ms
+linting took 1.41ms
+elaboration took 2.52ms
+linting took 2.41ms
+elaboration took 2.74ms
+linting took 1.68ms
+elaboration took 2.67ms
+linting took 1.52ms
+elaboration took 1.95ms
+linting took 1.47ms
+linting took 1.47ms
+linting took 1.59ms
+linting took 1.46ms
+linting took 1.48ms
+linting took 1.46ms
+linting took 1.45ms
+linting took 1.46ms
+linting took 1.45ms
+linting took 1.46ms
+linting took 1.46ms
+linting took 1.46ms
+linting took 1.48ms
+elaboration took 1.96ms
+linting took 2.21ms
+elaboration took 2.5ms
+linting took 1.43ms
+elaboration took 2.36ms
+linting took 2.62ms
+elaboration took 2.03ms
+linting took 1.66ms
+linting took 1.48ms
+linting took 1.48ms
+linting took 1.44ms
+linting took 1.46ms
+linting took 1.47ms
+linting took 1.47ms
+linting took 1.47ms
+linting took 1.43ms
+linting took 1.45ms
+linting took 1.48ms
+linting took 1.54ms
+linting took 1.47ms
+linting took 2.15ms
+linting took 1.4ms
+linting took 1.39ms
+linting took 1.37ms
+linting took 2.48ms
+linting took 1.63ms
+linting took 1.51ms
+linting took 2.21ms
+linting took 2.55ms
+linting took 1.89ms
+linting took 1.81ms
+linting took 1.82ms
+linting took 1.81ms
+linting took 1.87ms
+linting took 1.74ms
+linting took 1.81ms
+linting took 1.78ms
+linting took 1.81ms
+linting took 1.79ms
+linting took 1.73ms
+linting took 1.69ms
+linting took 1.68ms
+linting took 1.74ms
+linting took 1.77ms
+linting took 1.8ms
+linting took 1.87ms
+linting took 1.76ms
+linting took 1.76ms
+linting took 1.79ms
+linting took 1.8ms
+linting took 1.79ms
+linting took 1.79ms
+linting took 1.81ms
+linting took 1.74ms
+linting took 1.77ms
+linting took 1.82ms
+linting took 1.73ms
+linting took 1.9ms
+linting took 1.78ms
+linting took 1.79ms
+linting took 1.82ms
+linting took 1.76ms
+linting took 1.75ms
+linting took 1.83ms
+linting took 1.79ms
+linting took 1.81ms
+linting took 1.83ms
+linting took 1.77ms
+linting took 1.79ms
+linting took 1.75ms
+linting took 1.82ms
+linting took 1.79ms
+linting took 1.8ms
+linting took 1.81ms
+linting took 1.76ms
+linting took 1.78ms
+linting took 1.8ms
+linting took 1.82ms
+linting took 1.76ms
+linting took 1.81ms
+linting took 1.86ms
+linting took 1.76ms
+linting took 1.77ms
+linting took 1.79ms
+linting took 1.8ms
+linting took 1.71ms
+linting took 1.74ms
+linting took 1.93ms
+linting took 2.45ms
+linting took 1.79ms
+linting took 2.17ms
+linting took 2.8ms
+linting took 1.92ms
+linting took 1.83ms
+linting took 1.82ms
+linting took 1.84ms
+linting took 1.79ms
+linting took 1.77ms
+linting took 1.76ms
+linting took 1.84ms
+linting took 1.81ms
+linting took 1.82ms
+linting took 1.85ms
+linting took 1.77ms
+linting took 1.76ms
+linting took 1.82ms
+linting took 1.82ms
+linting took 1.77ms
+linting took 1.83ms
+linting took 1.86ms
+linting took 1.79ms
+linting took 1.77ms
+linting took 1.81ms
+linting took 1.76ms
+linting took 1.93ms
+linting took 1.83ms
+linting took 1.82ms
+linting took 1.81ms
+linting took 1.79ms
+linting took 1.79ms
+linting took 1.84ms
+linting took 2.53ms
+linting took 1.74ms
+linting took 1.71ms
+linting took 2.91ms
+linting took 1.87ms
+linting took 1.91ms
+linting took 1.84ms
+linting took 1.81ms
+linting took 1.85ms
+linting took 1.8ms
+linting took 1.73ms
+linting took 1.79ms
+linting took 1.83ms
+linting took 1.95ms
+linting took 2.04ms
+linting took 2.02ms
+linting took 1.8ms
+linting took 1.79ms
+linting took 1.8ms
+linting took 1.81ms
+linting took 1.76ms
+linting took 1.78ms
+linting took 1.77ms
+linting took 1.82ms
+linting took 1.8ms
+linting took 1.83ms
+linting took 1.85ms
+linting took 1.85ms
+linting took 1.79ms
+linting took 1.92ms
+linting took 1.8ms
+linting took 1.83ms
+linting took 1.83ms
+linting took 1.77ms
+linting took 1.77ms
+linting took 1.78ms
+linting took 1.84ms
+linting took 1.8ms
+linting took 1.84ms
+linting took 1.84ms
+linting took 1.93ms
+linting took 1.79ms
+linting took 1.86ms
+linting took 1.83ms
+linting took 1.78ms
+linting took 1.84ms
+linting took 1.84ms
+linting took 1.78ms
+linting took 1.78ms
+linting took 1.79ms
+linting took 1.79ms
+linting took 1.84ms
+linting took 1.81ms
+linting took 1.86ms
+linting took 1.83ms
+linting took 1.78ms
+linting took 1.83ms
+linting took 1.84ms
+linting took 1.83ms
+linting took 1.89ms
+linting took 1.84ms
+linting took 1.78ms
+linting took 1.96ms
+linting took 1.85ms
+linting took 1.87ms
+linting took 1.83ms
+linting took 1.84ms
+linting took 1.85ms
+linting took 1.8ms
+linting took 1.81ms
+linting took 1.84ms
+linting took 1.85ms
+linting took 1.89ms
+linting took 1.85ms
+linting took 1.89ms
+linting took 1.87ms
+linting took 1.83ms
+linting took 1.81ms
+linting took 1.81ms
+linting took 1.79ms
+linting took 1.84ms
+linting took 1.85ms
+linting took 1.85ms
+linting took 1.86ms
+linting took 1.81ms
+linting took 1.81ms
+linting took 1.84ms
+linting took 1.85ms
+linting took 1.86ms
+linting took 1.85ms
+linting took 1.81ms
+linting took 1.81ms
+linting took 1.82ms
+linting took 1.84ms
+linting took 1.84ms
+linting took 1.86ms
+linting took 1.85ms
+linting took 1.8ms
+linting took 1.82ms
+linting took 1.89ms
+linting took 1.86ms
+linting took 1.82ms
+linting took 1.88ms
+linting took 1.86ms
+linting took 1.81ms
+linting took 1.81ms
+linting took 1.8ms
+linting took 2.06ms
+linting took 2.47ms
+linting took 1.8ms
+linting took 2.95ms
+linting took 1.99ms
+linting took 1.89ms
+linting took 1.88ms
+linting took 1.98ms
+linting took 1.86ms
+linting took 1.87ms
+linting took 1.88ms
+linting took 1.83ms
+linting took 1.84ms
+linting took 1.82ms
+linting took 1.98ms
+linting took 1.84ms
+linting took 1.92ms
+linting took 1.89ms
+linting took 1.84ms
+linting took 1.84ms
+linting took 1.88ms
+linting took 1.91ms
+linting took 1.83ms
+linting took 1.91ms
+linting took 1.9ms
+linting took 1.81ms
+linting took 1.87ms
+linting took 1.81ms
+linting took 1.85ms
+linting took 1.98ms
+linting took 1.83ms
+linting took 1.85ms
+linting took 1.72ms
+type checking took 195ms
+linting took 3.04ms
+type checking took 473ms
+linting took 3.01ms
+compilation (LCNF base) took 6.53ms
+compilation (LCNF mono) took 1.52ms
+compilation (LCNF mono) took 4.98ms
+compilation (LCNF impure) took 3.83ms
+process pre-definitions took 7.54ms
+tacticAnalysis took 3.1ms
+linting took 8.45ms
+elaboration took 31.9ms
+linting took 2.41ms
+MTTab.lean:2322:26: error: Function expected at
+  [(33761, 37728715222297973997725981996), (33889, 37599217842998830965020801514),
+    (34127, 37366121796565169032388305125), (64699, 37281555114902410976772462007),
+    (64895, 37237977522837005711161259690), (64930, 37230227658271819186581959746),
+    (67650, 36681923499741333904477310353), (98588, 36926835921683308533434652495),
+    (98656, 36920807913103049304985113092), (98826, 36905830337510305100755646535),
+    (99057, 36885711543664950643978671758), (132349, 36856499335096857916493506785),
+    (132545, 36847483857867812926698927778), (132715, 36839782840280922211939244657),
+    (163756, 36908610427862262507638942716), (166476, 36828975981288552302447345643),
+    (197244, 36887022369298523244340461383), (197645, 36878575402274953542619976868),
+    (231371, 36867593077852995361601596839), (231406, 36867094609934751640704116937),
+    (296301, 36882591037097936264651447813)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.6ms
+linting took 2.13ms
+elaboration took 8.2ms
+MTTab.lean:2324:26: error: Function expected at
+  [(33761, 37728715222297973997725981996), (33889, 37599217842998830965020801514),
+    (34127, 37366121796565169032388305125), (64699, 37281555114902410976772462007),
+    (64895, 37237977522837005711161259690), (64930, 37230227658271819186581959746),
+    (67650, 36681923499741333904477310353), (98588, 36926835921683308533434652495),
+    (98656, 36920807913103049304985113092), (98826, 36905830337510305100755646535),
+    (99057, 36885711543664950643978671758), (132349, 36856499335096857916493506785),
+    (132545, 36847483857867812926698927778), (132715, 36839782840280922211939244657),
+    (163756, 36908610427862262507638942716), (166476, 36828975981288552302447345643),
+    (197244, 36887022369298523244340461383), (197645, 36878575402274953542619976868),
+    (231371, 36867593077852995361601596839), (231406, 36867094609934751640704116937),
+    (296301, 36882591037097936264651447813)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.42ms
+linting took 1.79ms
+elaboration took 8ms
+MTTab.lean:2326:26: error: Function expected at
+  [(34051, 37439468412168402304712058337), (34117, 37375714361735681588038964589),
+    (34179, 37316525400844795176205975581), (64782, 37263066090895589294224680404),
+    (64866, 37244406545186589943259464266), (64963, 37222930163211446915853954539),
+    (98899, 36899442064018370209769327906), (98917, 36897871065506442581815330591),
+    (98961, 36894038053449747064168644636), (99045, 36886749560400480667757973741),
+    (99080, 36883724275926352606514914199), (133078, 36823743101164661115945059208),
+    (133096, 36822963006804709646883738909), (163827, 36906380437865199117369650103),
+    (163862, 36905282376977723144823410636), (197878, 36873752150549867776377510294),
+    (197944, 36872398952745167735010537638), (198041, 36870421332653718005669378829),
+    (231995, 36858971180355415401378247081), (262907, 36887346921313680524536997371),
+    (296958, 36876770314580785047886096720)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.37ms
+linting took 1.75ms
+elaboration took 7.67ms
+MTTab.lean:2328:26: error: Function expected at
+  [(33700, 37791445054159728608434189591), (33928, 37560336146337456223067764814),
+    (33991, 37498094489110754599919213650), (34142, 37351766097608492936920341941),
+    (64623, 37298526248573480880249450834), (64762, 37267516736837216950983689823),
+    (67628, 36685769608986318706478785412), (98551, 36930124201387634234111421177),
+    (98753, 36912245137420211818504159648), (98765, 36911188876854797139405992829),
+    (98904, 36899005503373223444216810312), (132251, 36861058484787101869837307147),
+    (132693, 36840772950822103966043049674), (132895, 36831757584273523397031000566),
+    (163527, 36915821518373413640453882138), (166393, 36831134158110953461739776939),
+    (197455, 36882556781494199361768306159), (197518, 36881232194589550978126636323),
+    (231155, 36870704803769832699586697687), (231446, 36866526948279503545700855231),
+    (265146, 36862780617473190207186209147)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.37ms
+linting took 1.77ms
+elaboration took 7.39ms
+MTTab.lean:2330:26: error: Function expected at
+  [(33700, 37791445054159728608434189591), (33928, 37560336146337456223067764814),
+    (33991, 37498094489110754599919213650), (34142, 37351766097608492936920341941),
+    (64623, 37298526248573480880249450834), (64762, 37267516736837216950983689823),
+    (67628, 36685769608986318706478785412), (98551, 36930124201387634234111421177),
+    (98753, 36912245137420211818504159648), (98765, 36911188876854797139405992829),
+    (98904, 36899005503373223444216810312), (132251, 36861058484787101869837307147),
+    (132693, 36840772950822103966043049674), (132895, 36831757584273523397031000566),
+    (163527, 36915821518373413640453882138), (166393, 36831134158110953461739776939),
+    (197455, 36882556781494199361768306159), (197518, 36881232194589550978126636323),
+    (231155, 36870704803769832699586697687), (231446, 36866526948279503545700855231),
+    (265146, 36862780617473190207186209147)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.37ms
+linting took 1.77ms
+elaboration took 7.78ms
+MTTab.lean:2332:26: error: Function expected at
+  [(33858, 37630315290364073793609490136), (33944, 37544462354130843584968544003),
+    (64561, 37312398126326704370000176115), (67716, 36670456929840809521205898346),
+    (98419, 36941900621248292574155986348), (98505, 36934220264014759608025505272),
+    (132277, 36859845703598258207991202957), (132363, 36855850747575377299708824227),
+    (166221, 36835678273704780842197241793), (196838, 36895720212041436984407754617),
+    (230782, 36876210068516652857545619121), (264726, 36866990238256806892986171554)]
+but this term has type
+  List (?m.81 × ?m.83)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.32ms
+linting took 1.35ms
+elaboration took 4.76ms
+MTTab.lean:2334:26: error: Function expected at
+  [(33665, 37827733470646336904999472411), (33726, 37764627583459983212870248161),
+    (33851, 37637360747560225648576867776), (33930, 37558349450447924341751063103),
+    (64535, 37318222132364299942561867955), (64744, 37271524826941875282450267080),
+    (67577, 36694731203275936936272528811), (67595, 36691561038073887692884274870),
+    (98386, 36944855217799146643006930960), (98465, 36937788952675684484093496286),
+    (98470, 36937342523022460581738364320), (132112, 36867580072898426424319395580),
+    (132130, 36866732039180067297049044381), (132316, 36858030857576476992942070689),
+    (132321, 36857798557728410855081731872), (165981, 36842173390738365786750681417),
+    (166042, 36840506063328907680132386525), (196856, 36895332184779936848626582810),
+    (199707, 36839149231515625959797798068), (230786, 36876150227278891676634086187),
+    (264451, 36869864812831887837075227427)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.36ms
+linting took 1.45ms
+elaboration took 6.95ms
+MTTab.lean:2336:26: error: Function expected at
+  [(33570, 37927317333061356206552491399), (33615, 37879948141879691263331806222),
+    (33836, 37652487299058074444989433383), (34093, 37398808596952688552147325757),
+    (64556, 37313517825244973765853850493), (64775, 37264623475710393689920523613),
+    (67185, 36765676753777607071765288372), (67406, 36725236805304456667337005360),
+    (98392, 36944317716570452036554042432), (98649, 36921427502342852797748289156),
+    (98868, 36902151577127518032158006214), (101021, 36730190641530809815128592411),
+    (131962, 36874685684926988644541066810), (132485, 36850228641151621469772777874),
+    (163424, 36919071557977283448992342163), (165577, 36853480746790827052744759348),
+    (166055, 36840152162543935961332218757), (197260, 36886682266678115447649355299),
+    (199670, 36839777214023981040491770759), (230830, 36875492988234442504409361767),
+    (264445, 36869928509439159525634882046)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.35ms
+linting took 1.73ms
+elaboration took 7.57ms
+MTTab.lean:2338:26: error: Function expected at
+  [(33880, 37608228653201626388630820607), (33889, 37599217842998830965020801514),
+    (33995, 37494166310301404972431982731), (64648, 37292939467664617979242129269),
+    (64923, 37231776797392024553958608112), (65334, 37141604057972851046204351774),
+    (67769, 36661327507073647757524039670), (98537, 36931369910014641800990559407),
+    (98643, 36921958750125307868362123636), (98803, 36907848632672427893550238751),
+    (130257, 36958639879346409940603027779), (132417, 36853355604079060144204567126),
+    (132532, 36848077400304990410363998267), (132692, 36840818016217865550167509859),
+    (164137, 36896689311741123679595006630), (166412, 36830638088269438764738263177),
+    (197340, 36884985295350937791794015670), (198026, 36870726257333185428748182743),
+    (231335, 36868107520651603195529097730), (262674, 36890126033988202248152292967),
+    (296669, 36879293663148784338289739917)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.35ms
+linting took 1.66ms
+elaboration took 7.81ms
+MTTab.lean:2340:26: error: Function expected at
+  [(33524, 37976107108003806775501647666), (33532, 37967595208441112730149175730),
+    (33581, 37915705310583844489283291840), (33795, 37694035675488867828666439718),
+    (33883, 37605223457231789919870045368), (64376, 37353916102523271358443039787),
+    (67056, 36789791462876534046382821497), (67319, 36741022495861393781381108616),
+    (67464, 36714811664787115153837892451), (98171, 36964197090124529570031276019),
+    (98259, 36956262001802142053610919018), (100851, 36742290672622677895225348176),
+    (131695, 36887491285532767763073865729), (131840, 36880513214292701475288150255),
+    (132054, 36870319488179710763454262017), (165227, 36863614133603966705178231132),
+    (165578, 36853452228124495737797401290), (165635, 36851830427279400946373194048),
+    (199110, 36849688022423179136550587614), (199159, 36848791768915822559556851964),
+    (232691, 36850109678099117815119301811)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.39ms
+linting took 1.66ms
+elaboration took 7.47ms
+MTTab.lean:2342:27: error: Function expected at
+  [(33524, 37976107108003806775501647666), (33532, 37967595208441112730149175730),
+    (33581, 37915705310583844489283291840), (33795, 37694035675488867828666439718),
+    (33883, 37605223457231789919870045368), (64376, 37353916102523271358443039787),
+    (67056, 36789791462876534046382821497), (67319, 36741022495861393781381108616),
+    (67464, 36714811664787115153837892451), (98171, 36964197090124529570031276019),
+    (98259, 36956262001802142053610919018), (100851, 36742290672622677895225348176),
+    (131695, 36887491285532767763073865729), (131840, 36880513214292701475288150255),
+    (132054, 36870319488179710763454262017), (165227, 36863614133603966705178231132),
+    (165578, 36853452228124495737797401290), (165635, 36851830427279400946373194048),
+    (199110, 36849688022423179136550587614), (199159, 36848791768915822559556851964),
+    (232691, 36850109678099117815119301811)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.31ms
+linting took 1.57ms
+elaboration took 7.68ms
+MTTab.lean:2344:27: error: Function expected at
+  [(33756, 37733832349102829603416419296), (33959, 37529621708719326645198380847),
+    (34160, 37334591754604754362382848671), (64711, 37278878990400028794781329872),
+    (65111, 37190322905184354711782030116), (65376, 37132489115899783772970815503),
+    (67715, 36670629849619716209224343042), (98670, 36919569380259484736084310492),
+    (98871, 36901889153746386540281469471), (99271, 36867341372030168199598244208),
+    (130487, 36947132449907771799731916394), (132426, 36852940773698427149032384972),
+    (132830, 36834639777353905009343429813), (163982, 36901524609190086769266148074),
+    (164647, 36880976006207914948379583749), (166586, 36826151600304084235442230418),
+    (197941, 36872460325062686677332569233), (229358, 36898303678548358496941780806),
+    (231697, 36863016293075421047915282346), (263317, 36882525717177186467608348873),
+    (297073, 36875784280770042630110472505)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.34ms
+linting took 1.7ms
+elaboration took 7.44ms
+MTTab.lean:2346:27: error: Function expected at
+  [(33556, 37942127024836324664355279759), (33592, 37904114575648988880739366968),
+    (33766, 37723602504264950982121197599), (33906, 37582236397597826258791480303),
+    (64580, 37308144602292202477489202228), (64637, 37295397164270474223140324425),
+    (67148, 36772555692215044321279847504), (67322, 36740475236305086458908094757),
+    (98229, 36958964412914823151384662203), (98346, 36948441855142051059465472379),
+    (98486, 36935914597457535337595310341), (100914, 36737771570813808640944210200),
+    (131785, 36883153662792053405178152833), (131902, 36877546479784249735935732445),
+    (132252, 36861011796077862181524393764), (165494, 36855857240829289733642651642),
+    (165551, 36854223338920085406251128219), (165808, 36846960560632051773771177543),
+    (199400, 36844462889931797108469248763), (230131, 36886145835360576871537340296),
+    (264037, 36874349677483764257887880887)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.33ms
+linting took 1.65ms
+elaboration took 7.54ms
+MTTab.lean:2348:27: error: Function expected at
+  [(34141, 37352721915652449653606890330), (34197, 37299468766514963536131038708),
+    (64861, 37245515674120507564556317659), (65069, 37199555500591096711234399572),
+    (65191, 37172785216662680878176938471), (65499, 37105915216008730931873123853),
+    (99002, 36890475747362270209841824608), (99058, 36885625083775497297821964047),
+    (99210, 36872549754877935199237219488), (99388, 36857417208188263847379987637),
+    (130690, 36936990042636782207861313850), (133199, 36818528280403213890616277333),
+    (164071, 36898745441175332837407071408), (164249, 36893210550957537199625601044),
+    (164887, 36873715330848705229162127235), (198268, 36865848809074023726751985425),
+    (198390, 36863425663219809496370352780), (229748, 36892135271798986954091004865),
+    (263459, 36880880802561772699709977841), (263889, 36875994426078481401054975876),
+    (328958, 36885309515324701822528069304)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.34ms
+linting took 1.6ms
+elaboration took 7.78ms
+MTTab.lean:2350:27: error: Function expected at
+  [(34141, 37352721915652449653606890330), (34197, 37299468766514963536131038708),
+    (64861, 37245515674120507564556317659), (65069, 37199555500591096711234399572),
+    (65191, 37172785216662680878176938471), (65499, 37105915216008730931873123853),
+    (99002, 36890475747362270209841824608), (99058, 36885625083775497297821964047),
+    (99210, 36872549754877935199237219488), (99388, 36857417208188263847379987637),
+    (130690, 36936990042636782207861313850), (133199, 36818528280403213890616277333),
+    (164071, 36898745441175332837407071408), (164249, 36893210550957537199625601044),
+    (164887, 36873715330848705229162127235), (198268, 36865848809074023726751985425),
+    (198390, 36863425663219809496370352780), (229748, 36892135271798986954091004865),
+    (263459, 36880880802561772699709977841), (263889, 36875994426078481401054975876),
+    (328958, 36885309515324701822528069304)]
+but this term has type
+  List (?m.144 × ?m.146)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.36ms
+linting took 1.68ms
+elaboration took 7.63ms
+MTTab.lean:2352:27: error: Function expected at
+  [(33754, 37735880417309880422760192158), (33995, 37494166310301404972431982731),
+    (65015, 37211450551462865456470912550), (67749, 36664764301514476319314038303),
+    (99010, 36889781725510146624935953693), (130030, 36969993167791604048912633933),
+    (132764, 36837584726257610770071717884), (164025, 36900180966798814680358858355),
+    (197779, 36875793024526731532623274455), (198020, 36870848319438692745052625930),
+    (231774, 36861957855794206177896208878), (265528, 36859160536183287937791569061)]
+but this term has type
+  List (?m.81 × ?m.83)
+
+Note: Expected a function because this term is being applied to the argument
+  SevW30D.covered_of_ctest
+typeclass inference of CoeFun took 1.38ms
+linting took 1.61ms
+elaboration took 5.05ms
+MTTab.lean:2354:33: error: Function expected at
+  [?m.2, ?m.4, ?m.6, ?m.8, ?m.10, ?m.12, ?m.14, ?m.16, ?m.18, ?m.20, ?m.22, ?m.24, ?m.26, ?m.28, ?m.30, ?m.32]
+but this term has type
+  List ?m.33
+
+Note: Expected a function because this term is being applied to the argument
+  intro
+MTTab.lean:2354:34: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:120: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:206: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:292: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:378: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:464: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:550: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:636: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:722: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:808: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:894: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:980: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:1066: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:1152: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:1238: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+MTTab.lean:2354:1324: error: Invalid `⟨...⟩` notation: The expected type of this term could not be determined
+typeclass inference of CoeFun took 1.17ms
+linting took 1.4ms
+elaboration took 3.15ms
+MTTab.lean:2358:23: error: unexpected token 'def'; expected ']'
+linting took 2.2ms
+elaboration took 1.12ms
+MTTab.lean:2360:23: error: unexpected token 'def'; expected ']'
+linting took 1.86ms
+MTTab.lean:2362:23: error: unexpected token 'def'; expected ']'
+linting took 1.84ms
+MTTab.lean:2364:23: error: unexpected token 'def'; expected ']'
+linting took 1.83ms
+MTTab.lean:2366:23: error: unexpected token 'def'; expected ']'
+linting took 1.87ms
+MTTab.lean:2370:67: error: unexpected token 'theorem'; expected term
+linting took 2ms
+elaboration took 2.5ms
+type checking took 1.13s
+linting took 3.21ms
+elaboration took 1.06ms
+type checking took 1.08s
+linting took 3.52ms
+elaboration took 1.46ms
+linting took 1.44ms
+linting took 1.59ms
+linting took 1.39ms
+cumulative profiling times:
+	attribute application 4.4ms
+	compilation (IR) 23.2ms
+	compilation (LCNF base) 184ms
+	compilation (LCNF impure) 109ms
+	compilation (LCNF mono) 129ms
+	elaboration 1.16s
+	fix level params 3.44ms
+	instantiate metavars 3.08ms
+	interpretation 0.0381ms
+	let-to-have transformation 2.52ms
+	linting 3.09s
+	module linting 0.000541ms
+	overlappingInstancesLinter 102ms
+	parsing 139ms
+	process pre-definitions 324ms
+	share common exprs 14.9ms
+	tactic execution 1.1ms
+	tacticAnalysis 370ms
+	type checking 5.64s
+	typeclass inference 231ms
+       24.33 real        13.50 user        10.80 sys
+          6203883520  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              453861  page reclaims
+                1833  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 285  voluntary context switches
+               24984  involuntary context switches
+        159395750743  instructions retired
+         79657216219  cycles elapsed
+          1325977328  peak memory footprint

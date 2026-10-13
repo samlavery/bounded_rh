@@ -1,0 +1,32 @@
+== cfx9 tag=t570_DIAGA wj=/Users/samuellavery/work/riemann-submission/bench/arun/cert/rwin9_t570.json delta=0.00005 sizer=/Users/samuellavery/work/riemann-submission/bench/arun/cert/n9/run9so.py PFK=8 LPACCEPT= EXACTV=1 EXACTC= SO= Sun Oct 11 09:21:10 PDT 2026
+delta=5e-05 cN=856382 env GSH=5 TWOGRID=1 JSH=5 WMIN=8 MINR=0 PLO=1 YFRAC=16 SPLIT=pf PFK=8 NR=0 LPEMPTY=None NOZ=1 LSC=1024 ROOTSEL=2,5,9
+  root 2 (0, 0, 0, 0, 1, 0, 0, 0): 889 leaves (478s)
+  root 5 (0, 0, 0, 1, 0, 1, 0, 0): 1085 leaves (1041s)
+  root 9 (0, 0, 1, 0, 0, 1, 0, 0): 1204 leaves (1640s)
+  bisection: 3178 leaves (Z 0, M 3086, empty 0), 3175 splits, 1632 at region boundaries (1640s)
+  DIAGT used ranges (30319): ZN 8: ok 28479 (93.9%), left 524, right 1316; ZN 16: ok 28996 (95.6%), left 409, right 914; ZN 32: ok 29146 (96.1%), left 375, right 798; ZN 64: ok 29203 (96.3%), left 362, right 754; ZN 128: ok 29229 (96.4%), left 358, right 732
+  DIAGT point hulls (2288): ZN 8: ok 1753 (76.6%), left 235, right 300; ZN 16: ok 1816 (79.4%), left 211, right 261; ZN 32: ok 1838 (80.3%), left 202, right 248; ZN 64: ok 1849 (80.8%), left 196, right 243; ZN 128: ok 1854 (81.0%), left 195, right 239
+  DIAGT points 2288; hull-ok points by ZN: 8: 1753, 16: 1816, 32: 1838, 64: 1849, 128: 1854
+  fix-up: 0 re-decided; tables: w 1984 cells, d 2240 cells, 2288 points (6424 point cells); failing 0 (1661s)
+leaves 3178 kinds {6: 3086, 0: 92} (0 refl, 1 Z, 6 M, 7 empty by tightening, 8 LP-infeasible); splits 3175 (pair 2347); walk bits 1000034 (314.7 per leaf; multipliers 2711 x 13 bits); M nonzero multipliers [(0, 896), (1, 1714), (2, 433), (3, 41), (4, 2)]; constraints per M cell [(28, 3086)]; w 1984 d 2240 pts 2288 ptc 6424 bad 0 MSTAT lp 10223 (1661s)
+nodes visited 6353 (leaves 3178 + splits 3175); explicit constraints per node: mean 28.00, dist [(28, 6353)]
+walk: 1000034 bits = 0.250 MB hex, 0.167 MB base64 (roots run); x8.73: 2.18 MB hex, 1.46 MB base64
+     1675.23 real      1454.40 user        55.47 sys
+          4939087872  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             2305964  page reclaims
+                 110  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                1611  voluntary context switches
+             3353150  involuntary context switches
+      13975055381862  instructions retired
+       4626733857890  cycles elapsed
+          6046716608  peak memory footprint
+== done Sun Oct 11 09:49:05 PDT 2026

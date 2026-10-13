@@ -1,0 +1,3 @@
+delta=0.01 cN=796582 regions=16 env AMWIN=/Users/samuellavery/work/riemann-submission/bench/window/rwin8_try1.json GSH=5 TWOGRID=1 WMIN=9 DLO=8 DHI=9
+  ... 20000 leaves (Z 4663, S 0, B 0, 2nd 0, M 14629) mtests [34642, 14697, 14629] (258s)
+  ... 40000 leaves (Z 9171, S 0, B 0, 2nd 0, M 29316) mtests [69344, 29580, 29316] (528s)

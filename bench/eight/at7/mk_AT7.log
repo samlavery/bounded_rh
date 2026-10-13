@@ -1,0 +1,8 @@
+[AT7] 16 convex regions, 267 chain cells
+  ... 20000 leaves (Z 4073, S 0, B 0, 2nd 0, M 14462) mtests [34476, 14510, 14462] (187s)
+  bisection: 25452 leaves (Z 5445, S 0, basin 0); face nodes 0 (collapses 0) (233s)
+  fix-up: 0 re-decided; tables: w 992 cells, d 878 cells, 2132 points (4997 point cells); failing 0 (237s)
+[AT7] sizing: 25452 leaves (Z 5445, S 0, basin 0); points 2132 (4997 point cells) (237s)
+[AT7] re-verified on the final tables: Z 5445, M 18170, reflected 1837; failures 0
+[AT7] point table: 2132 points, 110 blocks, 4997 stored triples
+[AT7] delta=3.927e-05 cN=787380 leaves=25452 (Z 5445, M 18170, reflected 1837) w=992 d=878 points=2132 chunks=112 bits=2967631 order=[0, 6, 18, 20, 11, 15, 12, 7, 16, 8, 13, 2, 17, 3, 14, 9, 4, 10, 1, 5, 19] data=1047533 checker=123482 (243s)

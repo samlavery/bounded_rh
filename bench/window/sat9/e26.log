@@ -1,0 +1,11 @@
+seed Y=5 G=1.0: at seed [bound-target] +1.31e+10 (delta*=0.500) | after local adversary -38.458 (delta*=0.500, (i) 67.0 (ii) -2.2 (iii) 2.3; max depth now 1.30) FAIL
+seed Y=5 G=1.5: at seed [bound-target] +3.27e+10 (delta*=0.500) | after local adversary -49.463 (delta*=0.500, (i) 53.7 (ii) +1.2 (iii) 0.8; max depth now 1.01) FAIL
+seed Y=5 G=2.0: at seed [bound-target] +7.71e+10 (delta*=0.500) | after local adversary -49.463 (delta*=0.500, (i) 53.7 (ii) +1.2 (iii) 0.8; max depth now 1.01) FAIL
+seed Y=5 G=3.0: at seed [bound-target] +2.34e+10 (delta*=0.500) | after local adversary -49.463 (delta*=0.500, (i) 53.7 (ii) +1.2 (iii) 0.8; max depth now 1.01) FAIL
+seed Y=5 G=4.0: at seed [bound-target] +6.74e+10 (delta*=0.500) | after local adversary -49.463 (delta*=0.500, (i) 53.7 (ii) +1.2 (iii) 0.8; max depth now 1.01) FAIL
+seed Y=10 G=1.0: at seed [bound-target] +3.6e+22 (delta*=0.500) | after local adversary -46.653 (delta*=0.500, (i) 58.3 (ii) -1.1 (iii) 1.7; max depth now 1.57) FAIL
+seed Y=10 G=1.5: at seed [bound-target] +5.36e+23 (delta*=0.500) | after local adversary -30.298 (delta*=0.500, (i) 77.2 (ii) -6.0 (iii) 4.2; max depth now 1.38) FAIL
+seed Y=10 G=2.0: at seed [bound-target] +9.67e+23 (delta*=0.500) | after local adversary -41.334 (delta*=0.500, (i) 65.0 (ii) -3.7 (iii) 2.9; max depth now 1.37) FAIL
+seed Y=10 G=3.0: at seed [bound-target] +6.12e+22 (delta*=0.500) | after local adversary -34.197 (delta*=0.500, (i) 71.9 (ii) -3.0 (iii) 2.7; max depth now 1.48) FAIL
+seed Y=10 G=4.0: at seed [bound-target] +9.32e+23 (delta*=0.500) | after local adversary -49.462 (delta*=0.500, (i) 53.7 (ii) +1.2 (iii) 0.8; max depth now 1.01) FAIL
+worst after adversary: -49.463 at Y=5 G=3.0

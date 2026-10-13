@@ -1,0 +1,24 @@
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:00:12)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:00:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:01:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:01:43)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:02:13)
+[withlock] waiting for /Users/samuellavery/work/riemann-submission/bench/.leanlock (19:02:43)
+       24.65 real        14.42 user        10.21 sys
+          6724354048  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              492865  page reclaims
+                   5  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                1122  involuntary context switches
+        189624762857  instructions retired
+         82663566451  cycles elapsed
+          1725760816  peak memory footprint

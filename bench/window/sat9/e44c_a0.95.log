@@ -1,0 +1,4 @@
+(b) a=0.95 L= 50: min E_end +75.545646 | ||grad|| 2.28e-04 | min Hess eig -6.746e+02 (NOT PD) | y_inf 1.8590 | end depth 0.800 | layer max 1.859 | Newton its 44 | 112s
+(b) a=0.95 L=100: min E_end +45.777846 | ||grad|| 5.26e+05 | min Hess eig -1.321e+05 (NOT PD) | y_inf 2.3195 | end depth 0.800 | layer max 2.444 | Newton its 399 | 195s
+(b) a=0.95 L=200: min E_end +39.028284 | ||grad|| 4.09e+05 | min Hess eig -4.400e+05 (NOT PD) | y_inf 2.3224 | end depth 0.800 | layer max 2.539 | Newton its 399 | 372s
+(b) a=0.95 L=400: min E_end +35.637457 | ||grad|| 3.03e+05 | min Hess eig -3.684e+05 (NOT PD) | y_inf 2.3259 | end depth 0.800 | layer max 2.590 | Newton its 399 | 865s

@@ -1,0 +1,9 @@
+density term: t = 0.500, band |a| >= 0.50 (taper to 0.75); h_W(0) = 0.0081, |h_W''| <= 1.12, tail |h_W(u)| <= 0.1285/u^2
+block32  N=64  Y=0.4 P=32 t=0.50 tlow=0.0050: joint lower bound -0.4934 (/sum y^2 -0.096) = Q_pp 6.4499 + T_pp 1.6727 + V_env -8.1905 + tails -1.8514 + density const +1.4259 | exact periodic LP 9.6831 (P_h 2.516) | 14477 cells 12s
+block16  N=64  Y=0.2 P=16 t=0.50 tlow=0.0050: joint lower bound +0.0365 (/sum y^2 +0.057) = Q_pp 1.7498 + T_pp 0.3076 + V_env -2.0980 + tails -0.3701 + density const +0.4472 | exact periodic LP 2.3230 (P_h 0.864) | 10549 cells 7s
+block16  N=64  Y=0.4 P=16 t=0.50 tlow=0.0050: joint lower bound +0.1112 (/sum y^2 +0.043) = Q_pp 6.2630 + T_pp 1.4531 + V_env -7.5698 + tails -0.9775 + density const +0.9424 | exact periodic LP 7.1961 (P_h 1.710) | 10429 cells 8s
+comp8    N=64  Y=0.4 P= 8 t=0.50 tlow=0.0050: joint lower bound +0.3166 (/sum y^2 +0.616) = Q_pp 0.6532 + T_pp 1.1549 + V_env -1.4737 + tails -0.2615 + density const +0.2438 | exact periodic LP 1.5713 (P_h 0.533) | 8506 cells 6s
+comp4    N=64  Y=0.4 P= 4 t=0.50 tlow=0.0050: joint lower bound +1.1517 (/sum y^2 +3.311) = Q_pp 1.8796 + T_pp 1.5082 + V_env -2.0440 + tails -0.1648 + density const -0.0272 | exact periodic LP 2.5184 (P_h 0.226) | 7444 cells 5s
+comp8    N=64  Y=0.2 P= 8 t=0.50 tlow=0.0050: joint lower bound +0.1132 (/sum y^2 +0.880) = Q_pp 0.3377 + T_pp 0.1224 + V_env -0.2999 + tails -0.1507 + density const +0.1038 | exact periodic LP 0.5259 (P_h 0.238) | 8564 cells 6s
+block64  N=128 Y=0.2 P=64 t=0.50 tlow=0.0050: joint lower bound -0.1758 (/sum y^2 -0.069) = Q_pp 2.0220 + T_pp 0.6691 + V_env -2.7060 + tails -1.2728 + density const +1.1120 | exact periodic LP 5.1160 (P_h 2.667) | 22797 cells 23s
+block64  N=128 Y=0.4 P=64 t=0.50 tlow=0.0050: joint lower bound -1.5920 (/sum y^2 -0.155) = Q_pp 6.5585 + T_pp 2.0596 + V_env -8.8642 + tails -3.3617 + density const +2.0158 | exact periodic LP 11.6694 (P_h 3.927) | 22618 cells 23s

@@ -1,0 +1,5 @@
+far (>1e-1)       12625 leaves | max box width median 3.965 | widest gap median 5.397 | any gap lower bound > 2.5: 55.2% | > 3.5: 25.1% | n_constraints median 28 | eps median 0.469
+mid (1e-2..1e-1)   2160 leaves | max box width median 2.168 | widest gap median 4.087 | any gap lower bound > 2.5: 59.2% | > 3.5: 9.2% | n_constraints median 28 | eps median 0.058
+near (<=1e-2)       121 leaves | max box width median 0.935 | widest gap median 2.717 | any gap lower bound > 2.5: 27.3% | > 3.5: 0.0% | n_constraints median 28 | eps median 0.005
+far leaves: share with a long gap (lb > 2.5) at position r: [4.4, 11.0, 7.0, 10.5, 11.5, 8.1, 12.4, 6.5]
+far leaves eps quantiles (10/50/90%): [0.159, 0.469, 1.228]
